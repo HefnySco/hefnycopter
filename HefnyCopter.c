@@ -1,0 +1,418 @@
+/*
+ * XXcontrol_KRHefny.c
+ *
+ * Created: 20-Jul-12 5:40:52 PM
+ *  Author: M.Hefny
+ */ 
+// **************************************************************************
+// * 						GNU GPL V2 notice
+// **************************************************************************
+// * This is a QuadCopter code compatible with KK boards. 
+// * The code is inspired by Inspired by KKmulticopter Based on assembly code by Rolf R Bakke, 
+// * and C code by Mike Barton & NeXtCopterPlus
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// * 
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// * 
+// * You should have received a copy of the GNU General Public License
+// * along with this program.If not, see <http://www.gnu.org/licenses/>.
+// * 
+// * NB: Summary - all derivative code MUST be released with the source code!
+// *
+// **************************************************************************
+
+#define QUAD_COPTER
+/*
+
+Quad
+                    M1 CW
+                     |
+                     |
+                     |
+                   +---+
+		 CCW M2----|   |----M3 CCW
+                   +---+
+                     |
+                     |
+                     |
+                   M4 CW
+				   
+				   
+Quad-X
+       
+           M1 CW       M2 CCW
+			  \          /
+               \        / 
+                \ ---  /
+                 |    |
+                / ---  \
+               /        \ 
+			  /          \ 
+          M4 CCW        M3 CW
+
+*/
+
+// Adjust these:
+// 		down if you have too much gyro assistance
+// 		up if you have maxxed your gyro gain 
+#define ROLL_GAIN_MULTIPLIER 	3	// 2
+#define PITCH_GAIN_MULTIPLIER 	3	// 2
+#define YAW_GAIN_MULTIPLIER 	3	// 2
+
+// Minsoo
+#define NORMAL_STICK_ROLL_GAIN		50		// Stick %, Normal: 50, Acro: 60~70
+#define NORMAL_STICK_PITCH_GAIN		50		// Stick %, Normal: 50, Acro: 60~70
+#define NORMAL_STICK_YAW_GAIN		50		// Stick %, Normal: 50, Acro: 60~70
+#define ACRO_STICK_ROLL_GAIN		65		// Stick %, Normal: 50, Acro: 60~70
+#define ACRO_STICK_PITCH_GAIN		65		// Stick %, Normal: 50, Acro: 60~70
+#define ACRO_STICK_YAW_GAIN			65		// Stick %, Normal: 50, Acro: 60~70
+#define UFO_STICK_YAW_GAIN			90		// Stick %, Normal: 50, Acro: 60~70, UFO: 80~90
+#define ADC_GAIN_DIVIDER			200		// Gyro Value Range (-100~100: 150, -150~150: 225, -250~250: 375)
+
+
+// enable this line if you don't have Yaw gyro connected
+//#define EXTERNAL_YAW_GYRO
+
+
+
+/* ----------- Main Code -----------  */
+
+#include <avr/io.h>  
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <util/delay.h>
+#include <avr/interrupt.h> 
+
+#include "typedefs.h"
+#include "io_cfg.h"
+#include "Commons.h"
+#include "Headers.h"
+#include "Init.h"
+#include "motors.h"
+#include "ISR.h"
+#include "ADC.h"
+#include "Pots.h"
+
+
+volatile BOOL RxChannelsUpdatingFlag;
+
+
+
+
+/*
+	Main Function
+*/
+int main(void)
+{
+	setup();
+	
+	while (1)
+	{
+		loop();
+	}
+
+	return 1;
+}
+
+
+void setup(void)
+{
+	
+	pmm_out_step=0;
+	
+	//uint16_t i;	// nb was uint8_t, must be uint16_t for TRI
+	uint16_t RxChannel1ZeroOffset, RxChannel2ZeroOffset, RxChannel4ZeroOffset;
+
+	MCUCR |= (1<<PUD);	// Pull-up Disable
+
+
+	InitIO();
+	
+	InitTimers();
+	
+	Initial_EEPROM_Config_Load();					// loads config at start-up 
+
+	Init_ADC();
+
+	GyroCalibrated = false;
+	Armed = false;
+	RxChannelsUpdatingFlag = 0;
+
+	Config.RxChannel1ZeroOffset=1540;	// [value range: from 1000 to 2000] "1540 is exactly the middle"
+	Config.RxChannel2ZeroOffset=1540;	// scale from -100 to 100
+	Config.RxChannel3ZeroOffset=1120;	// scale from 0 to 100
+	Config.RxChannel4ZeroOffset=1540;	
+
+	RxChannel1 = Config.RxChannel1ZeroOffset;		// prime the channels 1520;
+	RxChannel2 = Config.RxChannel2ZeroOffset;		// 1520;
+	RxChannel3 = Config.RxChannel3ZeroOffset;		// 1120;
+	RxChannel4 = Config.RxChannel4ZeroOffset;		// 1520;
+
+	// flash LED
+	LED = OFF;
+	FlashLED (100,2);
+	CalibrateGyros();
+	Armed=false;
+	
+	sei();											// Global Interrupts 
+	
+	
+}
+
+
+uint16_t TCNT1_X_snapshot=0;
+uint16_t cROLL;
+uint16_t cPITCH;
+uint16_t fROLL;
+uint16_t fPITCH;
+uint16_t fYAW;
+bool bXQuadMode = false;	
+bool bResetTCNR1_X = true;
+void loop(void)
+{
+	bResetTCNR1_X = true;
+	
+	if (bResetTCNR1_X==true)
+	{
+		TCNT1_X_snapshot= 0; // reset timeout
+	}
+		
+	RxGetChannels();
+	
+	if (RxInCollective < STICKThrottle_ARMING) 
+	{	// Throttle is LOW
+		
+		ReadGainValues(); // i can change switches while still armed.
+		
+		if ((Armed == true) && (RxInYaw < STICK_LEFT))
+		{
+			bResetTCNR1_X  = false;
+			if (TCNT1_X_snapshot==0)  TCNT1_X_snapshot = TCNT1_X; // start counting
+			if ( (TCNT1_X- TCNT1_X_snapshot) > 16 )
+			{
+				Armed = false;
+				LED = OFF;
+				TCNT1_X_snapshot =0; // reset timer
+			}
+		}
+		
+		if ((Armed == false) && (RxInYaw > STICK_RIGHT))
+		{
+			bResetTCNR1_X = false;
+			if (TCNT1_X_snapshot==0)  TCNT1_X_snapshot = TCNT1_X; // start counting
+			if ( (TCNT1_X- TCNT1_X_snapshot) > 16 )
+			{
+				Armed = true;
+				LED =ON;
+				FlashLED (200,4);
+				CalibrateGyros();
+				FlashLED (50,4);
+				TCNT1_X_snapshot =0; // reset timer
+			}		
+		}
+		
+		
+		if (!Armed)
+		{	//set modes
+		
+			if ((RxInRoll > STICK_RIGHT))
+			{	// X-QUAD MODE
+				bResetTCNR1_X = false;
+				if (TCNT1_X_snapshot==0)  TCNT1_X_snapshot = TCNT1_X; // start counting
+				if ( (TCNT1_X- TCNT1_X_snapshot) > 16 )
+				{
+					bXQuadMode = true;
+					LED = OFF;
+					FlashLED (100,8);
+					TCNT1_X_snapshot =0; // reset timer
+				}		
+
+			
+			}
+			else  if ((RxInRoll < STICK_LEFT))
+			{	// QUAD COPTER MODE
+				bResetTCNR1_X = false;
+				if (TCNT1_X_snapshot==0)  TCNT1_X_snapshot = TCNT1_X; // start counting
+				if ( (TCNT1_X- TCNT1_X_snapshot) > 16 )
+				{
+					bXQuadMode = false;
+					LED = OFF;
+					FlashLED (200,4);
+					TCNT1_X_snapshot =0; // reset timer
+				}		
+
+			
+			} 
+			
+			
+		}
+	}
+	else
+	{	
+		if (!Armed)
+		{
+			
+			
+		}
+		else
+		{
+			
+	
+			MotorOut1 = RxInCollective;
+			MotorOut2 = RxInCollective;
+			MotorOut3 = RxInCollective;
+			MotorOut4 = RxInCollective;		
+	
+			ReadGyros();
+		
+			if ((gyroADC[ROLL] < 50) || (gyroADC[ROLL] > -50))
+			{
+				gyroADC_updated[ROLL] = gyroADC[ROLL];
+			}			
+			if ((gyroADC[PITCH] < 50) || (gyroADC[PITCH] > -50))
+			{
+				gyroADC_updated[PITCH] = gyroADC[PITCH];
+			}
+			if ((gyroADC[YAW] < 50) || (gyroADC[YAW] > -50))
+			{
+				gyroADC_updated[YAW] = gyroADC[YAW];
+			}	
+			
+			if (bXQuadMode==true)
+			{
+				cPITCH = gyroADC_updated[ROLL] - gyroADC_updated[PITCH]; 
+				cROLL = (gyroADC_updated[ROLL] + gyroADC_updated[PITCH])/2;
+			
+			}
+			else
+			{
+				cPITCH = gyroADC_updated[PITCH];
+				cROLL = gyroADC_updated[ROLL];
+			}
+		
+			// Add ROLL
+			fROLL = RxInRoll + cROLL ;//* GainInADC[ROLL];	//[-100,100] / 8  + [-50,50] / 8
+			fROLL = fROLL >> 3; 
+			MotorOut2 += fROLL;
+			MotorOut3 -= fROLL;
+		
+			// Add PITCH
+			fPITCH = (RxInPitch /2)+ (cPITCH /4);//* GainInADC[PITCH];
+			//fPITCH = fPITCH >> 3 ; 
+			MotorOut1 += fPITCH;
+			MotorOut4 -= fPITCH;
+		
+			// Add YAW
+			//fYAW = RxInYaw + gyroADC_updated[YAW] ;//* GainInADC[YAW];
+			//fYAW = fYAW >> 3;
+			//MotorOut1 -= fYAW;
+			//MotorOut2 += fYAW;
+			//MotorOut3 += fYAW;
+			//MotorOut4 -= fYAW;
+	
+			if (MotorOut1<10) MotorOut1=10;
+			if (MotorOut2<10) MotorOut2=10;
+			if (MotorOut3<10) MotorOut3=10;
+			if (MotorOut4<10) MotorOut4=10;
+	
+		}
+	}		
+	
+	
+		
+	
+		if (!Armed)
+		{
+			MotorOut1 = 0;
+			MotorOut2 = 0;
+			MotorOut3 = 0;
+			MotorOut4 = 0;
+		}
+		
+		output_motor_ppm();
+				
+}	
+
+
+
+//--- Get and scale RX channel inputs ---
+void RxGetChannels(void)
+{
+	
+	
+	static int16_t RxChannel;
+
+	while ( RxChannelsUpdatingFlag );
+
+	RxChannel = RxChannel1;
+	RxChannel -= Config.RxChannel1ZeroOffset;				// normalise   [ - 0 + ]
+	RxInRoll = (RxChannel >> 2);                    //     "
+
+	while ( RxChannelsUpdatingFlag );
+
+	RxChannel = RxChannel2;
+	RxChannel -= Config.RxChannel2ZeroOffset;				// normalise	[ - 0 + ]
+	RxInPitch = (RxChannel >> 2);                   //     "
+
+	while ( RxChannelsUpdatingFlag );
+
+	RxChannel = RxChannel3;
+	RxChannel -= Config.RxChannel3ZeroOffset;				// scale 0->100	[  0  + ]
+	RxInCollective = (RxChannel >> 3);              // 
+
+	while ( RxChannelsUpdatingFlag );
+
+	RxChannel = RxChannel4;
+	RxChannel -= Config.RxChannel4ZeroOffset;				// normalise	[ - 0 + ]
+	RxInYaw = (RxChannel >> 2);                     //     "
+	
+}
+
+
+
+
+void delay_us(uint8_t time)            /* time delay for us */
+{ 
+ while(time--)
+ {
+	asm volatile ("NOP"); asm volatile ("NOP"); 
+	asm volatile ("NOP"); asm volatile ("NOP"); 
+	asm volatile ("NOP"); asm volatile ("NOP"); 
+	asm volatile ("NOP"); 
+ }
+}
+
+void delay_ms(uint16_t time)
+{
+	uint8_t i;
+	while(time--)
+	{
+		for(i=0;i<10;i++) delay_us(100);
+	}
+}
+
+
+void FlashLED (msDuration, Times)
+{
+	bool CurrentLED = LED;
+	
+	for (int i=0; i< Times; ++i)
+	{
+		LED = ~LED;
+		delay_ms(msDuration);
+		LED = ~LED;
+		delay_ms(msDuration);		
+	}
+	
+	LED = CurrentLED;
+	
+}
+
+
