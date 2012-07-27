@@ -42,5 +42,5 @@ void ReadGainValues(void)
 
 	read_adc(PITCH_POT);		// Read yaw gain ADC5 
 	GainInADC[PITCH] = ADCW;
-
+	
 }

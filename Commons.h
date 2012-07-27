@@ -16,7 +16,7 @@
 // Stick Arming - enable this line to enable Stick arming
 #define STICK_LEFT  -100
 #define STICK_RIGHT  100
-#define STICKThrottle_ARMING 20
+#define STICKThrottle_ARMING 10
 
 // Max Collective
 // limits the maximum stick collective (range 80->100  100=Off)
@@ -67,7 +67,7 @@ volatile uint16_t		vBat;
 enum GyroDirection	{	GYRO_NORMAL = 0, GYRO_REVERSED };
 enum GyroArrayIndex {	ROLL = 0, PITCH, YAW, ALT };
 enum ADCInputs		{	YAW_GYRO = 0, PITCH_GYRO, ROLL_GYRO, ROLL_POT, PITCH_POT, YAW_POT, VBAT };
-enum PORT_ONOFF		{	ON =0, OFF};
+
 /* EOF - Enumerations */
 
 

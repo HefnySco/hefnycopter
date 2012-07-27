@@ -156,7 +156,7 @@ void setup(void)
 	RxChannel4 = Config.RxChannel4ZeroOffset;		// 1520;
 
 	// flash LED
-	LED = OFF;
+	LED = 0;
 	FlashLED (100,2);
 	CalibrateGyros();
 	Armed=false;
@@ -170,6 +170,7 @@ void setup(void)
 uint16_t TCNT1_X_snapshot=0;
 uint16_t cROLL;
 uint16_t cPITCH;
+uint16_t cYAW;
 uint16_t fROLL;
 uint16_t fPITCH;
 uint16_t fYAW;
@@ -177,15 +178,15 @@ bool bXQuadMode = false;
 bool bResetTCNR1_X = true;
 void loop(void)
 {
+	
 	bResetTCNR1_X = true;
 	
-	if (bResetTCNR1_X==true)
-	{
-		TCNT1_X_snapshot= 0; // reset timeout
-	}
-		
+
 	RxGetChannels();
 	
+	
+		
+		
 	if (RxInCollective < STICKThrottle_ARMING) 
 	{	// Throttle is LOW
 		
@@ -198,7 +199,7 @@ void loop(void)
 			if ( (TCNT1_X- TCNT1_X_snapshot) > 16 )
 			{
 				Armed = false;
-				LED = OFF;
+				LED = 0;
 				TCNT1_X_snapshot =0; // reset timer
 			}
 		}
@@ -210,7 +211,7 @@ void loop(void)
 			if ( (TCNT1_X- TCNT1_X_snapshot) > 16 )
 			{
 				Armed = true;
-				LED =ON;
+				LED = 1;
 				FlashLED (200,4);
 				CalibrateGyros();
 				FlashLED (50,4);
@@ -229,7 +230,7 @@ void loop(void)
 				if ( (TCNT1_X- TCNT1_X_snapshot) > 16 )
 				{
 					bXQuadMode = true;
-					LED = OFF;
+					LED = 0;
 					FlashLED (100,8);
 					TCNT1_X_snapshot =0; // reset timer
 				}		
@@ -243,7 +244,7 @@ void loop(void)
 				if ( (TCNT1_X- TCNT1_X_snapshot) > 16 )
 				{
 					bXQuadMode = false;
-					LED = OFF;
+					LED = 0;
 					FlashLED (200,4);
 					TCNT1_X_snapshot =0; // reset timer
 				}		
@@ -253,6 +254,11 @@ void loop(void)
 			
 			
 		}
+	
+		MotorOut1 = 0;
+		MotorOut2 = 0;
+		MotorOut3 = 0;
+		MotorOut4 = 0;
 	}
 	else
 	{	
@@ -272,17 +278,20 @@ void loop(void)
 	
 			ReadGyros();
 		
-			if ((gyroADC[ROLL] < 50) || (gyroADC[ROLL] > -50))
+				
+			if ((gyroADC[ROLL] < 5) || (gyroADC[ROLL] > -5))
 			{
 				gyroADC_updated[ROLL] = gyroADC[ROLL];
+				
 			}			
-			if ((gyroADC[PITCH] < 50) || (gyroADC[PITCH] > -50))
+			if ((gyroADC[PITCH] < 5) || (gyroADC[PITCH] > -5))
 			{
 				gyroADC_updated[PITCH] = gyroADC[PITCH];
 			}
-			if ((gyroADC[YAW] < 50) || (gyroADC[YAW] > -50))
+			if ((gyroADC[YAW] < 5) || (gyroADC[YAW] > -5))
 			{
 				gyroADC_updated[YAW] = gyroADC[YAW];
+
 			}	
 			
 			if (bXQuadMode==true)
@@ -290,37 +299,83 @@ void loop(void)
 				cPITCH = gyroADC_updated[ROLL] - gyroADC_updated[PITCH]; 
 				cROLL = (gyroADC_updated[ROLL] + gyroADC_updated[PITCH])/2;
 			
+							
+				if (cPITCH> 100) cPITCH =100;	
+				else if (cPITCH < -100)	cPITCH = -100;
+			
+				if (cPITCH> 100) cPITCH =100;	
+				else if (cPITCH < -100)	cPITCH = -100;
+			
+				if (gyroADC_updated[YAW] > 100) cYAW =100;	
+				else if (cPITCH < -100)	cYAW= -100;
+				
+			
+				// Add ROLL
+				fROLL = (RxInRoll * 60 / 100) + (cROLL >> 1 ) ;//* GainInADC[ROLL];	//[-100,100] / 8  + [-50,50] / 8
+				fROLL = fROLL >> 1; 
+				MotorOut1 += fROLL;
+				MotorOut2 -= fROLL;
+				MotorOut3 -= fROLL;
+				MotorOut4 += fROLL;
+		
+				// Add PITCH
+				fPITCH = (RxInPitch  * 60 / 100 )+ (cPITCH >> 1 );//* GainInADC[PITCH];
+				fPITCH = fPITCH > 1; 
+				MotorOut1 += fPITCH;
+				MotorOut2 += fPITCH;
+				MotorOut3 -= fPITCH;
+				MotorOut4 -= fPITCH;
+				// Add YAW
+				fYAW = (RxInYaw * 60 / 100)+ (cYAW >> 1);//* GainInADC[YAW];
+				//fYAW = fYAW >> 3;
+				MotorOut1 -= fYAW;
+				MotorOut2 += fYAW;
+				MotorOut3 -= fYAW;
+				MotorOut4 += fYAW;
+	
 			}
 			else
 			{
 				cPITCH = gyroADC_updated[PITCH];
 				cROLL = gyroADC_updated[ROLL];
+				
+				if (cPITCH> 100) cPITCH =100;	
+				else if (cPITCH < -100)	cPITCH = -100;
+			
+				if (cPITCH> 100) cPITCH =100;	
+				else if (cPITCH < -100)	cPITCH = -100;
+			
+				if (gyroADC_updated[YAW] > 100) cYAW =100;	
+				else if (cPITCH < -100)	cYAW= -100;
+				
+			
+				// Add ROLL
+				fROLL = (RxInRoll * 60 / 100) + (cROLL >> 1 ) ;//* GainInADC[ROLL];	//[-100,100] / 8  + [-50,50] / 8
+				//fROLL = fROLL >> 3; 
+				MotorOut2 += fROLL;
+				MotorOut3 -= fROLL;
+		
+				// Add PITCH
+				fPITCH = (RxInPitch  * 60 / 100 )+ (cPITCH >> 1 );//* GainInADC[PITCH];
+				//fPITCH = fPITCH >> 3 ; 
+				MotorOut1 += fPITCH;
+				MotorOut4 -= fPITCH;
+		
+				// Add YAW
+				fYAW = (RxInYaw * 60 / 100)+ (cYAW >> 1);//* GainInADC[YAW];
+				//fYAW = fYAW >> 3;
+				MotorOut1 -= fYAW;
+				MotorOut2 += fYAW;
+				MotorOut3 += fYAW;
+				MotorOut4 -= fYAW;
+	
 			}
 		
-			// Add ROLL
-			fROLL = RxInRoll + cROLL ;//* GainInADC[ROLL];	//[-100,100] / 8  + [-50,50] / 8
-			fROLL = fROLL >> 3; 
-			MotorOut2 += fROLL;
-			MotorOut3 -= fROLL;
-		
-			// Add PITCH
-			fPITCH = (RxInPitch /2)+ (cPITCH /4);//* GainInADC[PITCH];
-			//fPITCH = fPITCH >> 3 ; 
-			MotorOut1 += fPITCH;
-			MotorOut4 -= fPITCH;
-		
-			// Add YAW
-			//fYAW = RxInYaw + gyroADC_updated[YAW] ;//* GainInADC[YAW];
-			//fYAW = fYAW >> 3;
-			//MotorOut1 -= fYAW;
-			//MotorOut2 += fYAW;
-			//MotorOut3 += fYAW;
-			//MotorOut4 -= fYAW;
-	
-			if (MotorOut1<10) MotorOut1=10;
-			if (MotorOut2<10) MotorOut2=10;
-			if (MotorOut3<10) MotorOut3=10;
-			if (MotorOut4<10) MotorOut4=10;
+			
+			if (MotorOut1<5) MotorOut1=5;
+			if (MotorOut2<5) MotorOut2=5;
+			if (MotorOut3<5) MotorOut3=5;
+			if (MotorOut4<5) MotorOut4=5;
 	
 		}
 	}		
@@ -328,15 +383,21 @@ void loop(void)
 	
 		
 	
-		if (!Armed)
-		{
-			MotorOut1 = 0;
-			MotorOut2 = 0;
-			MotorOut3 = 0;
-			MotorOut4 = 0;
-		}
+	if (!Armed)
+	{
+		MotorOut1 = 0;
+		MotorOut2 = 0;
+		MotorOut3 = 0;
+		MotorOut4 = 0;
+	}
 		
-		output_motor_ppm();
+	output_motor_ppm();
+	
+	if (bResetTCNR1_X==true)
+	{
+		TCNT1_X_snapshot= 0; // reset timeout
+	}
+		
 				
 }	
 

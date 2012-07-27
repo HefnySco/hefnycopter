@@ -45,6 +45,12 @@ ISR(TIMER2_OVF_vect)
 {
 	
 	TCNT2_X +=1; // each step is 1u x 0xffff = 0.065536
+	/*if (TCNT2_X==10)
+	{
+		
+		LED= ~LED;
+		TCNT2_X=0;
+	}*/
 }
 
 #ifndef CPPM_MODE  	// Normal RX mode
