@@ -1,6 +1,6 @@
 /*
  * XXcontrol_KRHefny.c
- *
+ * 
  * Created: 20-Jul-12 5:40:52 PM
  *  Author: M.Hefny
  */ 
@@ -26,6 +26,16 @@
 // * NB: Summary - all derivative code MUST be released with the source code!
 // *
 // **************************************************************************
+// Version History
+// 0.1 
+//		* Main Skeleton
+// 0.2 
+//		* QuadCopter is flying
+// 0.3 
+//		* Settings:
+//		*	Reset
+//		*	Stick Center
+//		*	Gyro Reversing
 
 #define QUAD_COPTER
 /*
@@ -101,9 +111,18 @@ volatile BOOL RxChannelsUpdatingFlag;
 int main(void)
 {
 	setup();
+	
+	ReadGainValues();
 	ResetValues ();
 	StickCenter();
 	GyroRevereing();
+	
+	// flash LED
+	LED = 0;
+	FlashLED (100,2);
+	CalibrateGyros();
+	Armed=false;
+	
 	
 	while (1)
 	{
@@ -137,20 +156,12 @@ void setup(void)
 	Armed = false;
 	RxChannelsUpdatingFlag = 0;
 
-	Config.RollGyroDirection 	= GYRO_REVERSED;
-	Config.PitchGyroDirection	= GYRO_REVERSED;
-	Config.YawGyroDirection		= GYRO_NORMAL;
-
+	
 	RxChannel1 = Config.RxChannel1ZeroOffset;		// prime the channels 1520;
 	RxChannel2 = Config.RxChannel2ZeroOffset;		// 1520;
 	RxChannel3 = Config.RxChannel3ZeroOffset;		// 1120;
 	RxChannel4 = Config.RxChannel4ZeroOffset;		// 1520;
 
-	// flash LED
-	LED = 0;
-	FlashLED (100,2);
-	CalibrateGyros();
-	Armed=false;
 	
 	sei();											// Global Interrupts 
 	

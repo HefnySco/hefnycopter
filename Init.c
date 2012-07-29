@@ -108,7 +108,7 @@ void ResetValues (void)
 	if  ((GainInADC[ROLL] <= MIN_POT_Extreme) && (GainInADC[YAW] <= MIN_POT_Extreme) && (GainInADC[PITCH] <= MIN_POT_Extreme))		// less than 5%
 	{
 	   Save_Default_Config_to_EEPROM();
-	   LED = 0;
+	   LED = 1;
 	   FlashLED (200,4);
 	   while (1);	
 	}
@@ -125,10 +125,10 @@ void StickCenter (void)
 	    Config.RxChannel4ZeroOffset  = 0;
 
 		LED = 0;
-		FlashLED (200,2);
+		FlashLED (200,4);
 		
 		// 5 Seconds Delay, for binding
-		delay_ms(5000);
+		delay_ms(4000);
 		
 		FlashLED (200,2);
 		
@@ -161,8 +161,8 @@ void GyroRevereing (void)
 	// Gyro direction reversing
 	if (GainInADC[ROLL] <= MIN_POT_Extreme)		// less than 5% (5/100) * 1023 = 51 
 	{
-		// flash LED 3 times
-		FlashLED (200,2);
+		// flash LED 4 times
+		FlashLED (200,4);
 		
 		while(1)
 		{
@@ -171,27 +171,39 @@ void GyroRevereing (void)
 			if (RxInRoll < STICK_LEFT) {	// normal(left)
 				Config.RollGyroDirection = GYRO_NORMAL;
 				Save_Config_to_EEPROM();
+				delay_ms(200);
 				FlashLED (200,2);
+				delay_ms(500);
 			} if (RxInRoll > STICK_RIGHT) {	// reverse(right)
 				Config.RollGyroDirection = GYRO_REVERSED;
 				Save_Config_to_EEPROM();
+				delay_ms(200);
 				FlashLED (200,3);
+				delay_ms(500);
 			} else if (RxInPitch < STICK_LEFT) { // normal(up)
 				Config.PitchGyroDirection = GYRO_NORMAL;
 				Save_Config_to_EEPROM();
+				delay_ms(200);
 				FlashLED (200,4);
+				delay_ms(500);
 			} else if (RxInPitch > STICK_RIGHT) { // reverse(down)
 				Config.PitchGyroDirection = GYRO_REVERSED;
 				Save_Config_to_EEPROM();
+				delay_ms(200);
 				FlashLED (200,5);
-			} else if (RxInYaw < STICK_LEFT) { // normal(left)
+				delay_ms(500);
+			} else if (RxInYaw > STICK_RIGHT) { // normal(left)
 				Config.YawGyroDirection = GYRO_NORMAL;
 				Save_Config_to_EEPROM();
+				delay_ms(200);
 				FlashLED (200,6);
-			} else if (RxInYaw > STICK_RIGHT) { // reverse(right)
+				delay_ms(500);
+			} else if (RxInYaw < STICK_LEFT ) { // reverse(right)
 				Config.YawGyroDirection = GYRO_REVERSED;
 				Save_Config_to_EEPROM();
+				delay_ms(200);
 				FlashLED (200,7);
+				delay_ms(500);
 			}
 		}
 	}
