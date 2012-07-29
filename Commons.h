@@ -10,7 +10,7 @@
 #define COMMONS_H_
 
 
-#define MAX_GYRO_VALUE 500
+
 
 /* DEFINITIONS */
 
