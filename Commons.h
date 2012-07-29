@@ -14,6 +14,12 @@
 
 /* DEFINITIONS */
 
+// POD Values without any modifications.
+#define MAX_POT_Extreme	1010
+#define MAX_POT			1000
+#define MID_POT			580
+#define MIN_POT			100
+#define MIN_POT_Extreme	50
 
 // This one determines the range of the gain potmeters.
 //Reducing the value by one doubles the range.

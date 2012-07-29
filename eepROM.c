@@ -23,16 +23,21 @@ void Initial_EEPROM_Config_Load(void)
 	// load up last settings from EEPROM
 	if(eeprom_read_byte((uint8_t*) EEPROM_DATA_START_POS )!=0x47)
 	{
-		Config.setup = 0x47;
-		Set_EEPROM_Default_Config();
-		// write to eeProm
-		Save_Config_to_EEPROM_Init();
+		Save_Default_Config_to_EEPROM();
+		
 	} else {
 		// read eeprom
 		eeprom_read_block(&Config, (void*) EEPROM_DATA_START_POS, sizeof(CONFIG_STRUCT)); 
 	}
 }
 
+void Save_Default_Config_to_EEPROM (void)
+{
+	Config.setup = 0x47;
+	Set_EEPROM_Default_Config();
+	// write to eeProm
+	Save_Config_to_EEPROM_Init();
+}
 
 void Set_EEPROM_Default_Config(void)
 {

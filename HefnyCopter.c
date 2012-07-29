@@ -61,24 +61,12 @@ Quad-X
 // Adjust these:
 // 		down if you have too much gyro assistance
 // 		up if you have maxxed your gyro gain 
-#define ROLL_GAIN_MULTIPLIER 	1 //3	// 2
-#define PITCH_GAIN_MULTIPLIER 	1 //3	// 2
-#define YAW_GAIN_MULTIPLIER 	1 //3	// 2
+#define ROLL_GAIN_MULTIPLIER 		1 //3	// 2
+#define PITCH_GAIN_MULTIPLIER 		1 //3	// 2
+#define YAW_GAIN_MULTIPLIER 		1 //3	// 2
 
-// Minsoo
-#define NORMAL_STICK_ROLL_GAIN		50		// Stick %, Normal: 50, Acro: 60~70
-#define NORMAL_STICK_PITCH_GAIN		50		// Stick %, Normal: 50, Acro: 60~70
-#define NORMAL_STICK_YAW_GAIN		50		// Stick %, Normal: 50, Acro: 60~70
-#define ACRO_STICK_ROLL_GAIN		65		// Stick %, Normal: 50, Acro: 60~70
-#define ACRO_STICK_PITCH_GAIN		65		// Stick %, Normal: 50, Acro: 60~70
-#define ACRO_STICK_YAW_GAIN			65		// Stick %, Normal: 50, Acro: 60~70
-#define UFO_STICK_YAW_GAIN			90		// Stick %, Normal: 50, Acro: 60~70, UFO: 80~90
-//#define ADC_GAIN_DIVIDER			200		// Gyro Value Range (-100~100: 150, -150~150: 225, -250~250: 375)
-#define ADC_GAIN_DIVIDER			400	
-#define MAX_GYRO_VALUE				500
-
-// enable this line if you don't have Yaw gyro connected
-//#define EXTERNAL_YAW_GYRO
+#define ADC_GAIN_DIVIDER			400		// doubling value will decrease POTS range to half.
+#define MAX_GYRO_VALUE				500		// max value is 1024 /2  u can set it to [300 , 200] the higher the most sensitive
 
 
 
@@ -113,6 +101,9 @@ volatile BOOL RxChannelsUpdatingFlag;
 int main(void)
 {
 	setup();
+	ResetValues ();
+	StickCenter();
+	GyroRevereing();
 	
 	while (1)
 	{
@@ -307,13 +298,11 @@ void loop(void)
 				cROLL = (gyroADC_updated[ROLL] + gyroADC_updated[PITCH])/2; 
 				cPITCH  = (gyroADC_updated[ROLL] - gyroADC_updated[PITCH]);
 					
-				//cPITCH   = gyroADC_updated[PITCH];
 				cPITCH  *= ( GainInADC[PITCH]    * PITCH_GAIN_MULTIPLIER);
 				cPITCH  /= ADC_GAIN_DIVIDER;
 				
 			
-				//cROLL    = gyroADC_updated[ROLL];							// [-500,500]
-				cROLL   *= (GainInADC[ROLL]  * ROLL_GAIN_MULTIPLIER);		//
+				cROLL   *= (GainInADC[ROLL]  * ROLL_GAIN_MULTIPLIER);		
 				cROLL   /= ADC_GAIN_DIVIDER;	
 								
 				cYAW     = gyroADC[YAW]; 
@@ -323,7 +312,7 @@ void loop(void)
 			
 				// Add ROLL
 				if (Config.RollGyroDirection == GYRO_REVERSED) cROLL = cROLL * (-1);	
-				fROLL = (RxInRoll >> 2) - (cROLL) ;  // [-50,+50] + []
+				fROLL = (RxInRoll >> 2) - (cROLL) ;  
 				fROLL = fROLL >> 1; 
 				MotorOut1 += fROLL;
 				MotorOut2 -= fROLL;
@@ -332,7 +321,7 @@ void loop(void)
 		
 				// Add PITCH
 				if (Config.PitchGyroDirection == GYRO_REVERSED) cPITCH = cPITCH * (-1);	
-				fPITCH = (RxInPitch >> 2 )- (cPITCH);//* GainInADC[PITCH];
+				fPITCH = (RxInPitch >> 2 )- (cPITCH);
 				fPITCH = fPITCH >> 1; 
 				MotorOut1 += fPITCH;
 				MotorOut2 += fPITCH;
@@ -341,7 +330,7 @@ void loop(void)
 				
 				// Add YAW
 				if (Config.YawGyroDirection== GYRO_REVERSED) cYAW = cYAW * (-1);	
-				fYAW = (RxInYaw >> 2 )- (cYAW);//* GainInADC[YAW];
+				fYAW = (RxInYaw >> 2 )- (cYAW);
 				if (fYAW > YawLimit) fYAW= YawLimit;
 				if (fYAW < -YawLimit) fYAW= -YawLimit;
 				MotorOut1 -= fYAW;
@@ -352,7 +341,7 @@ void loop(void)
 			}
 			else
 			{
-				
+				// Limit Gyro maximum
 				if (gyroADC_updated[PITCH]> MAX_GYRO_VALUE)		gyroADC_updated[PITCH] = MAX_GYRO_VALUE;
 				if (gyroADC_updated[PITCH]< -MAX_GYRO_VALUE)	gyroADC_updated[PITCH] = -MAX_GYRO_VALUE;
 				if (gyroADC_updated[ROLL]> MAX_GYRO_VALUE)		gyroADC_updated[ROLL] = MAX_GYRO_VALUE;
@@ -360,51 +349,37 @@ void loop(void)
 				if (gyroADC[YAW]> MAX_GYRO_VALUE)				gyroADC[YAW] = MAX_GYRO_VALUE;
 				if (gyroADC[YAW]< -MAX_GYRO_VALUE)				gyroADC[YAW] = -MAX_GYRO_VALUE;
 			
-				
+				// calculate PITCH
 				cPITCH   = gyroADC_updated[PITCH];
 				cPITCH  *= ( GainInADC[PITCH]    * PITCH_GAIN_MULTIPLIER);
 				cPITCH  /= ADC_GAIN_DIVIDER;
 				
-				
-				cROLL    = gyroADC_updated[ROLL];							// [-500,500]
-				cROLL   *= (GainInADC[ROLL]  * ROLL_GAIN_MULTIPLIER);		//
+				// calculate ROLL
+				cROLL    = gyroADC_updated[ROLL];							
+				cROLL   *= (GainInADC[ROLL]  * ROLL_GAIN_MULTIPLIER);		
 				cROLL   /= ADC_GAIN_DIVIDER;	
 				
-				
+				// calculate YAW
 				cYAW     = gyroADC[YAW]; 
 				cYAW	 *= (GainInADC[YAW] * YAW_GAIN_MULTIPLIER); 
 				cYAW    /= ADC_GAIN_DIVIDER;
 				
-				if (cPITCH > 0)
-				{
-					LED = 1;
-				}
-				else
-				{
 					
-					LED =0;
-				}
-			
-					 
-				
-				
-				
-				// Add ROLL
+				// Add ROLL [chk reverse - add to RX - update motors]
 				if (Config.RollGyroDirection == GYRO_REVERSED) cROLL = cROLL * (-1);	
-				fROLL = (RxInRoll >> 2) - (cROLL) ;  // [-50,+50] + []
+				fROLL = (RxInRoll >> 2) - (cROLL) ;  
 				MotorOut2 += fROLL;
 				MotorOut3 -= fROLL;
 		
-				// Add PITCH
+				// Add PITCH [chk reverse - add to RX - update motors]
 				if (Config.PitchGyroDirection == GYRO_REVERSED) cPITCH = cPITCH * (-1);	
-				fPITCH = (RxInPitch >> 2 )- (cPITCH);//* GainInADC[PITCH];
-				//fPITCH = fPITCH >> 3 ; 
+				fPITCH = (RxInPitch >> 2 )- (cPITCH);
 				MotorOut1 += fPITCH;
 				MotorOut4 -= fPITCH;
 		
-				// Add YAW
+				// Add YAW [chk reverse - add to RX - update motors]
 				if (Config.YawGyroDirection== GYRO_REVERSED) cYAW = cYAW * (-1);	
-				fYAW = (RxInYaw >> 2 )- (cYAW);//* GainInADC[YAW];
+				fYAW = (RxInYaw >> 2 )- (cYAW);
 				if (fYAW > YawLimit) fYAW= YawLimit;
 				if (fYAW < -YawLimit) fYAW= -YawLimit;
 				MotorOut1 -= fYAW;
@@ -414,7 +389,7 @@ void loop(void)
 	
 			}
 		
-			
+			// Save motors from turning-off
 			if (MotorOut1<10) MotorOut1=10;
 			if (MotorOut2<10) MotorOut2=10;
 			if (MotorOut3<10) MotorOut3=10;

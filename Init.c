@@ -100,3 +100,99 @@ void InitTimers (void)
 	TCNT2   = 0;		// reset counter
 	TCNT2_X = 0;		// this value overflow every 4us x 0xffff = 0.262144 sec, and tick every 0.001024 sec
 }
+
+
+void ResetValues (void)
+{
+	// Stick Centering
+	if  ((GainInADC[ROLL] <= MIN_POT_Extreme) && (GainInADC[YAW] <= MIN_POT_Extreme) && (GainInADC[PITCH] <= MIN_POT_Extreme))		// less than 5%
+	{
+	   Save_Default_Config_to_EEPROM();
+	   LED = 0;
+	   FlashLED (200,4);
+	   while (1);	
+	}
+}	
+
+void StickCenter (void)
+{
+	// Stick Centering
+	if (GainInADC[PITCH] <= MIN_POT_Extreme)		// less than 5%
+	{
+	    // set offsets to zero (otherwise we affect what we want to calibrate !!)
+	    Config.RxChannel1ZeroOffset  = 0;
+	    Config.RxChannel2ZeroOffset  = 0;
+	    Config.RxChannel4ZeroOffset  = 0;
+
+		LED = 0;
+		FlashLED (200,2);
+		
+		// 5 Seconds Delay, for binding
+		delay_ms(5000);
+		
+		FlashLED (200,2);
+		
+		for (int i=0;i<4;i++)
+		{
+	 		RxGetChannels();
+
+		    Config.RxChannel1ZeroOffset += RxInRoll;
+		    Config.RxChannel2ZeroOffset += RxInPitch;
+		    Config.RxChannel4ZeroOffset += RxInYaw;
+
+			delay_ms(100);
+		}
+		
+		Config.RxChannel3ZeroOffset  = 1120;
+	    
+		// Store gyro direction to EEPROM
+		Save_Config_to_EEPROM();
+
+		// flash LED, Ending Sign
+		LED = 1;
+		FlashLED (200,2);
+		while (1); // Loop forever
+	}
+}
+
+void GyroRevereing (void)
+{
+	
+	// Gyro direction reversing
+	if (GainInADC[ROLL] <= MIN_POT_Extreme)		// less than 5% (5/100) * 1023 = 51 
+	{
+		// flash LED 3 times
+		FlashLED (200,2);
+		
+		while(1)
+		{
+			RxGetChannels();
+
+			if (RxInRoll < STICK_LEFT) {	// normal(left)
+				Config.RollGyroDirection = GYRO_NORMAL;
+				Save_Config_to_EEPROM();
+				FlashLED (200,2);
+			} if (RxInRoll > STICK_RIGHT) {	// reverse(right)
+				Config.RollGyroDirection = GYRO_REVERSED;
+				Save_Config_to_EEPROM();
+				FlashLED (200,3);
+			} else if (RxInPitch < STICK_LEFT) { // normal(up)
+				Config.PitchGyroDirection = GYRO_NORMAL;
+				Save_Config_to_EEPROM();
+				FlashLED (200,4);
+			} else if (RxInPitch > STICK_RIGHT) { // reverse(down)
+				Config.PitchGyroDirection = GYRO_REVERSED;
+				Save_Config_to_EEPROM();
+				FlashLED (200,5);
+			} else if (RxInYaw < STICK_LEFT) { // normal(left)
+				Config.YawGyroDirection = GYRO_NORMAL;
+				Save_Config_to_EEPROM();
+				FlashLED (200,6);
+			} else if (RxInYaw > STICK_RIGHT) { // reverse(right)
+				Config.YawGyroDirection = GYRO_REVERSED;
+				Save_Config_to_EEPROM();
+				FlashLED (200,7);
+			}
+		}
+	}
+}

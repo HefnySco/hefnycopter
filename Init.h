@@ -12,6 +12,8 @@
 
 void InitIO (void);
 void InitTimers (void);
-
+void ResetValues (void);
+void StickCenter (void);
+void GyroRevereing (void);
 
 #endif /* INIT_H_ */
