@@ -38,7 +38,7 @@ void Set_EEPROM_Default_Config(void)
 {
 	Config.RollGyroDirection 	= GYRO_REVERSED;
 	Config.PitchGyroDirection	= GYRO_REVERSED;
-	Config.YawGyroDirection		= GYRO_NORMAL;
+	Config.YawGyroDirection		= GYRO_REVERSED;
 
 	Config.RxChannel1ZeroOffset	= 1540;
 	Config.RxChannel2ZeroOffset	= 1540;

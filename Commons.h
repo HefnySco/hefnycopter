@@ -45,7 +45,7 @@
 #define STICK_LEFT  -60 //-100
 #define STICK_RIGHT  60 //100
 #define STICKThrottle_ARMING 10
-
+#define STICKPOSITION_MIN	 16  // minimum duration for stick to accept a command.
 // Max Collective
 // limits the maximum stick collective (range 80->100  100=Off)
 // this allows gyros to stabilise better when full throttle applied
