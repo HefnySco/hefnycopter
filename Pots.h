@@ -9,7 +9,7 @@
 #ifndef POTS_H_
 #define POTS_H_
 
-// POD Values
+// POD Values without any modifications.
 #define MAX_POT_Extreme	1010
 #define MAX_POT			1000
 #define MID_POT			580

@@ -61,9 +61,9 @@ Quad-X
 // Adjust these:
 // 		down if you have too much gyro assistance
 // 		up if you have maxxed your gyro gain 
-#define ROLL_GAIN_MULTIPLIER 	3	// 2
-#define PITCH_GAIN_MULTIPLIER 	3	// 2
-#define YAW_GAIN_MULTIPLIER 	3	// 2
+#define ROLL_GAIN_MULTIPLIER 	1 //3	// 2
+#define PITCH_GAIN_MULTIPLIER 	1 //3	// 2
+#define YAW_GAIN_MULTIPLIER 	1 //3	// 2
 
 // Minsoo
 #define NORMAL_STICK_ROLL_GAIN		50		// Stick %, Normal: 50, Acro: 60~70
@@ -145,10 +145,10 @@ void setup(void)
 	Armed = false;
 	RxChannelsUpdatingFlag = 0;
 
-	Config.RxChannel1ZeroOffset=1540;	// [value range: from 1000 to 2000] "1540 is exactly the middle"
-	Config.RxChannel2ZeroOffset=1540;	// scale from -100 to 100
-	Config.RxChannel3ZeroOffset=1120;	// scale from 0 to 100
-	Config.RxChannel4ZeroOffset=1540;	
+	//Config.RxChannel1ZeroOffset=1540;	// [value range: from 1000 to 2000] "1540 is exactly the middle"
+	//Config.RxChannel2ZeroOffset=1540;	// scale from -100 to 100
+	//Config.RxChannel3ZeroOffset=1120;	// scale from 0 to 100
+	//Config.RxChannel4ZeroOffset=1540;	
 
 	RxChannel1 = Config.RxChannel1ZeroOffset;		// prime the channels 1520;
 	RxChannel2 = Config.RxChannel2ZeroOffset;		// 1520;
@@ -168,12 +168,12 @@ void setup(void)
 
 
 uint16_t TCNT1_X_snapshot=0;
-uint16_t cROLL;
-uint16_t cPITCH;
-uint16_t cYAW;
-uint16_t fROLL;
-uint16_t fPITCH;
-uint16_t fYAW;
+int16_t cROLL;
+int16_t cPITCH;
+int16_t cYAW;
+int16_t fROLL;
+int16_t fPITCH;
+int16_t fYAW;
 bool bXQuadMode = false;	
 bool bResetTCNR1_X = true;
 void loop(void)
@@ -184,9 +184,6 @@ void loop(void)
 
 	RxGetChannels();
 	
-	
-		
-		
 	if (RxInCollective < STICKThrottle_ARMING) 
 	{	// Throttle is LOW
 		
@@ -214,6 +211,7 @@ void loop(void)
 				LED = 1;
 				FlashLED (200,4);
 				CalibrateGyros();
+				ReadGainValues();
 				FlashLED (50,4);
 				TCNT1_X_snapshot =0; // reset timer
 			}		
@@ -255,6 +253,7 @@ void loop(void)
 			
 		}
 	
+		// Stop motors if Throttle Stick is less than minimum.
 		MotorOut1 = 0;
 		MotorOut2 = 0;
 		MotorOut3 = 0;
@@ -269,7 +268,10 @@ void loop(void)
 		}
 		else
 		{
-			
+			if (RxInCollective <( STICKThrottle_ARMING - 20))
+			{
+				CalibrateGyros();
+			}	
 	
 			MotorOut1 = RxInCollective;
 			MotorOut2 = RxInCollective;
@@ -277,41 +279,45 @@ void loop(void)
 			MotorOut4 = RxInCollective;		
 	
 			ReadGyros();
-		
+			ReadGainValues();
 				
-			if ((gyroADC[ROLL] < 5) || (gyroADC[ROLL] > -5))
-			{
-				gyroADC_updated[ROLL] = gyroADC[ROLL];
+			gyroADC_updated[ROLL] = gyroADC[ROLL];
 				
-			}			
-			if ((gyroADC[PITCH] < 5) || (gyroADC[PITCH] > -5))
-			{
-				gyroADC_updated[PITCH] = gyroADC[PITCH];
-			}
-			if ((gyroADC[YAW] < 5) || (gyroADC[YAW] > -5))
-			{
-				gyroADC_updated[YAW] = gyroADC[YAW];
+			gyroADC_updated[PITCH] = gyroADC[PITCH];
+			
+			gyroADC_updated[YAW] = gyroADC[YAW];
 
-			}	
 			
 			if (bXQuadMode==true)
 			{
-				cPITCH = gyroADC_updated[ROLL] - gyroADC_updated[PITCH]; 
-				cROLL = (gyroADC_updated[ROLL] + gyroADC_updated[PITCH])/2;
-			
+				//cPITCH = (gyroADC_updated[ROLL] + gyroADC_updated[PITCH])/2; 
+				//cROLL  = (gyroADC_updated[ROLL] - gyroADC_updated[PITCH]);
 							
-				if (cPITCH> 100) cPITCH =100;	
-				else if (cPITCH < -100)	cPITCH = -100;
+				if (gyroADC_updated[PITCH]> MAX_GYRO_VALUE) gyroADC_updated[PITCH] = MAX_GYRO_VALUE;
+				if (gyroADC_updated[PITCH]< -MAX_GYRO_VALUE) gyroADC_updated[PITCH] = -MAX_GYRO_VALUE;
+				if (gyroADC_updated[ROLL]> MAX_GYRO_VALUE) gyroADC_updated[ROLL] = MAX_GYRO_VALUE;
+				if (gyroADC_updated[ROLL]< -MAX_GYRO_VALUE) gyroADC_updated[ROLL] = -MAX_GYRO_VALUE;
+				if (gyroADC[YAW]> MAX_GYRO_VALUE) gyroADC[YAW] = MAX_GYRO_VALUE;
+				if (gyroADC[YAW]< -MAX_GYRO_VALUE) gyroADC[YAW] = -MAX_GYRO_VALUE;
 			
-				if (cPITCH> 100) cPITCH =100;	
-				else if (cPITCH < -100)	cPITCH = -100;
-			
-				if (gyroADC_updated[YAW] > 100) cYAW =100;	
-				else if (cPITCH < -100)	cYAW= -100;
+				
+				cPITCH  = gyroADC_updated[PITCH];
+				cPITCH  *= ( GainInADC[PITCH]    * PITCH_GAIN_MULTIPLIER);
+				cPITCH/= ADC_GAIN_DIVIDER;
+				
+				
+				cROLL   = gyroADC_updated[ROLL];		
+				cROLL   *= (GainInADC[ROLL]  * ROLL_GAIN_MULTIPLIER);		// 100 * 50 * 3 = 15000	150 * 50 * 3 = 22500		250 * 50 * 3 = 37500
+				cROLL  /= ADC_GAIN_DIVIDER;	
+				
+				
+				cYAW  = gyroADC[YAW] * (GainInADC[YAW] * YAW_GAIN_MULTIPLIER);
+				cYAW /= ADC_GAIN_DIVIDER;
+				
 				
 			
 				// Add ROLL
-				fROLL = (RxInRoll * 60 / 100) + (cROLL >> 1 ) ;//* GainInADC[ROLL];	//[-100,100] / 8  + [-50,50] / 8
+				fROLL = (RxInRoll  >> 2 ) + (cROLL ) ; [-50,+50] + []
 				fROLL = fROLL >> 1; 
 				MotorOut1 += fROLL;
 				MotorOut2 -= fROLL;
@@ -319,14 +325,14 @@ void loop(void)
 				MotorOut4 += fROLL;
 		
 				// Add PITCH
-				fPITCH = (RxInPitch  * 60 / 100 )+ (cPITCH >> 1 );//* GainInADC[PITCH];
+				fPITCH = (RxInPitch >> 2  )+ (cPITCH  );//* GainInADC[PITCH];
 				fPITCH = fPITCH > 1; 
 				MotorOut1 += fPITCH;
 				MotorOut2 += fPITCH;
 				MotorOut3 -= fPITCH;
 				MotorOut4 -= fPITCH;
 				// Add YAW
-				fYAW = (RxInYaw * 60 / 100)+ (cYAW >> 1);//* GainInADC[YAW];
+				fYAW = (RxInYaw >> 2 )- (cYAW );//* GainInADC[YAW];
 				//fYAW = fYAW >> 3;
 				MotorOut1 -= fYAW;
 				MotorOut2 += fYAW;
@@ -336,34 +342,61 @@ void loop(void)
 			}
 			else
 			{
-				cPITCH = gyroADC_updated[PITCH];
-				cROLL = gyroADC_updated[ROLL];
 				
-				if (cPITCH> 100) cPITCH =100;	
-				else if (cPITCH < -100)	cPITCH = -100;
+				if (gyroADC_updated[PITCH]> MAX_GYRO_VALUE) gyroADC_updated[PITCH] = MAX_GYRO_VALUE;
+				if (gyroADC_updated[PITCH]< -MAX_GYRO_VALUE) gyroADC_updated[PITCH] = -MAX_GYRO_VALUE;
+				if (gyroADC_updated[ROLL]> MAX_GYRO_VALUE) gyroADC_updated[ROLL] = MAX_GYRO_VALUE;
+				if (gyroADC_updated[ROLL]< -MAX_GYRO_VALUE) gyroADC_updated[ROLL] = -MAX_GYRO_VALUE;
+				if (gyroADC[YAW]> MAX_GYRO_VALUE) gyroADC[YAW] = MAX_GYRO_VALUE;
+				if (gyroADC[YAW]< -MAX_GYRO_VALUE) gyroADC[YAW] = -MAX_GYRO_VALUE;
 			
-				if (cPITCH> 100) cPITCH =100;	
-				else if (cPITCH < -100)	cPITCH = -100;
-			
-				if (gyroADC_updated[YAW] > 100) cYAW =100;	
-				else if (cPITCH < -100)	cYAW= -100;
 				
+				cPITCH  = gyroADC_updated[PITCH];
+				cPITCH  *= ( GainInADC[PITCH]    * PITCH_GAIN_MULTIPLIER);
+				cPITCH/= ADC_GAIN_DIVIDER;
+				
+				
+				cROLL   = gyroADC_updated[ROLL];							// [-500,500]
+				cROLL   *= (GainInADC[ROLL]  * ROLL_GAIN_MULTIPLIER);		//
+				cROLL  /= ADC_GAIN_DIVIDER;	
+				
+				
+				cYAW  = gyroADC[YAW] * (GainInADC[YAW] * YAW_GAIN_MULTIPLIER); 
+				cYAW /= ADC_GAIN_DIVIDER;
+				
+				if (cPITCH > 0)
+				{
+					LED = 1;
+				}
+				else
+				{
+					
+					LED =0;
+				}
 			
+					 
+				
+				
+				
 				// Add ROLL
-				fROLL = (RxInRoll * 60 / 100) + (cROLL >> 1 ) ;//* GainInADC[ROLL];	//[-100,100] / 8  + [-50,50] / 8
+				if (Config.RollGyroDirection == GYRO_REVERSED) cROLL = cROLL * (-1);	
+				fROLL = (RxInRoll >> 2) + (cROLL  ) ;  // [-50,+50] + []
 				//fROLL = fROLL >> 3; 
 				MotorOut2 += fROLL;
 				MotorOut3 -= fROLL;
 		
 				// Add PITCH
-				fPITCH = (RxInPitch  * 60 / 100 )+ (cPITCH >> 1 );//* GainInADC[PITCH];
+				if (Config.PitchGyroDirection == GYRO_REVERSED) cPITCH = cPITCH * (-1);	
+				fPITCH = (RxInPitch >> 2 )+ (cPITCH  );//* GainInADC[PITCH];
 				//fPITCH = fPITCH >> 3 ; 
 				MotorOut1 += fPITCH;
 				MotorOut4 -= fPITCH;
 		
 				// Add YAW
-				fYAW = (RxInYaw * 60 / 100)+ (cYAW >> 1);//* GainInADC[YAW];
-				//fYAW = fYAW >> 3;
+				if (Config.RollGyroDirection == GYRO_REVERSED) cYAW = cYAW * (-1);	
+				fYAW = (RxInYaw >> 2 )- (cYAW );//* GainInADC[YAW];
+				if (fYAW > YawLimit) fYAW= YawLimit;
+				if (fYAW < -YawLimit) fYAW= -YawLimit;
 				MotorOut1 -= fYAW;
 				MotorOut2 += fYAW;
 				MotorOut3 += fYAW;
@@ -372,10 +405,10 @@ void loop(void)
 			}
 		
 			
-			if (MotorOut1<5) MotorOut1=5;
-			if (MotorOut2<5) MotorOut2=5;
-			if (MotorOut3<5) MotorOut3=5;
-			if (MotorOut4<5) MotorOut4=5;
+			if (MotorOut1<10) MotorOut1=10;
+			if (MotorOut2<10) MotorOut2=10;
+			if (MotorOut3<10) MotorOut3=10;
+			if (MotorOut4<10) MotorOut4=10;
 	
 		}
 	}		
@@ -477,3 +510,14 @@ void FlashLED (msDuration, Times)
 }
 
 
+int16_t FastDiv (int16_t x, int y)
+{
+	
+	for (int i=0;i<y;++i)
+	{
+		
+		x = x > 1;
+	}
+	
+	return x;
+}

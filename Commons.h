@@ -9,13 +9,41 @@
 #ifndef COMMONS_H_
 #define COMMONS_H_
 
+
+#define MAX_GYRO_VALUE 500
+
 /* DEFINITIONS */
+
+
+// This one determines the range of the gain potmeters.
+//Reducing the value by one doubles the range.
+//Increasing the value by one halves the range.
+
+#define PotScaleRoll	 10 // 1024   //2^10
+#define PotScalePitch	 10 // 1024   //2^10
+#define PotScaleYaw	     10 // 1024   //2^10
+
+
+// This one determines the stick sensitivity.
+// Reducing the value by one doubles the sensitivity.
+// Increasing the value by one halves the sensitivity.
+
+#define StickScaleRoll	 11 //2048	//2^11
+#define StickScalePitch	 11 //2048	//2^11
+#define StickScaleYaw	 11 //2048	//2^11
+
+
+// This one determines the maximum Yaw command applied, in percent.
+// Less gives less yaw authority, but also less possibility of motor saturation.
+// More gives more yaw authority, but also more possibility of motor saturation during full rudder stick.
+
+#define YawLimit	 30
 
 
 		
 // Stick Arming - enable this line to enable Stick arming
-#define STICK_LEFT  -100
-#define STICK_RIGHT  100
+#define STICK_LEFT  -60 //-100
+#define STICK_RIGHT  60 //100
 #define STICKThrottle_ARMING 10
 
 // Max Collective
@@ -57,7 +85,7 @@ volatile int16_t		gyroZero[3];					// Used for calibrating Gyros on ground
 
 // POTS
 volatile uint16_t		GainInADC[3];
-volatile int8_t			GainIn[3];
+//volatile int8_t			GainIn[3];
 volatile uint16_t		vBat;
 #define UC_ADC_MAX 1023				// Used to invert ADC reading. Do not change.
 
