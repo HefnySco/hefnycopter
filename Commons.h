@@ -80,7 +80,7 @@
 
 // TIMERS
 volatile uint16_t TCNT1_X;				// This value overflow every 4294.967296 sec [1.19 hr], and tick every 0.065536 sec
-volatile uint16_t TCNT2_X;				// this value overflow every 8us x 0xffff = 0.524288 sec, and tick every 0.002048 sec
+volatile uint16_t TCNT2_X;				// This value tick 4us x 0xffff = 0.262144 sec, and overflow every 0.001024 sec
 volatile uint16_t OCR0A_X;
 
 // GYRO

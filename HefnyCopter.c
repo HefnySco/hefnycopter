@@ -33,9 +33,14 @@
 //		* QuadCopter is flying
 // 0.3 
 //		* Settings:
-//		*	Reset
-//		*	Stick Center
-//		*	Gyro Reversing
+//		*	- Reset
+//		*	- Stick Center
+//		*	- Gyro Reversing
+// 0.4 
+//		* Settings:
+//		*	- Calibrate ESC
+//		* X-QUAD Switching without the need of board orientation
+//		* update misleading code comments 
 
 #define QUAD_COPTER
 /*
@@ -56,7 +61,7 @@ Quad
 				   
 Quad-X
        
-           M1 CW       M2 CCW
+           M1 CW       M3 CCW
 			  \          /
                \        / 
                 \ ---  /
@@ -64,7 +69,9 @@ Quad-X
                 / ---  \
                /        \ 
 			  /          \ 
-          M4 CCW        M3 CW
+          M2 CCW        M4 CW
+		  
+		  NOTE: X-QUAD motors order are different from many other code on Internet such as XXController & QuadControllerV#_#
 
 */
 
@@ -75,8 +82,8 @@ Quad-X
 #define PITCH_GAIN_MULTIPLIER 		1 //3	// 2
 #define YAW_GAIN_MULTIPLIER 		1 //3	// 2
 
-#define ADC_GAIN_DIVIDER			400		// doubling value will decrease POTS range to half.
-#define MAX_GYRO_VALUE				500		// max value is 1024 /2  u can set it to [300 , 200] the higher the most sensitive
+#define ADC_GAIN_DIVIDER			800			// doubling value will decrease POTS range to half.
+#define MAX_GYRO_VALUE				500			// max value is 1024 /2  u can set it to [300 , 200] the higher the most sensitive
 
 
 
@@ -116,7 +123,8 @@ int main(void)
 	ResetValues ();
 	StickCenter();
 	GyroRevereing();
-	
+	ESCThrottleCalibration();
+
 	// flash LED
 	LED = 0;
 	FlashLED (100,2);
@@ -275,10 +283,11 @@ void loop(void)
 		}
 		else
 		{
-			if (RxInCollective <( STICKThrottle_ARMING - 20))
+			if (RxInCollective <( STICKThrottle_ARMING - 20)) // calibrate again before leaving ground to average vibrations.
 			{
 				CalibrateGyros();
-			}	
+			}
+				
 	
 			MotorOut1 = RxInCollective;
 			MotorOut2 = RxInCollective;
@@ -287,80 +296,48 @@ void loop(void)
 	
 			ReadGyros();
 			ReadGainValues();
-				
-			gyroADC_updated[ROLL] = gyroADC[ROLL];
-				
-			gyroADC_updated[PITCH] = gyroADC[PITCH];
 			
-			gyroADC_updated[YAW] = gyroADC[YAW];
-
 			
-			if (bXQuadMode==true)
-			{
-							
-				if (gyroADC_updated[PITCH]> MAX_GYRO_VALUE)		gyroADC_updated[PITCH] = MAX_GYRO_VALUE;
-				if (gyroADC_updated[PITCH]< -MAX_GYRO_VALUE)	gyroADC_updated[PITCH] = -MAX_GYRO_VALUE;
-				if (gyroADC_updated[ROLL]> MAX_GYRO_VALUE)		gyroADC_updated[ROLL] = MAX_GYRO_VALUE;
-				if (gyroADC_updated[ROLL]< -MAX_GYRO_VALUE)		gyroADC_updated[ROLL] = -MAX_GYRO_VALUE;
-				if (gyroADC[YAW]> MAX_GYRO_VALUE)				gyroADC[YAW] = MAX_GYRO_VALUE;
-				if (gyroADC[YAW]< -MAX_GYRO_VALUE)				gyroADC[YAW] = -MAX_GYRO_VALUE;
+			/*	
+			gyroADC[ROLL] = (gyroADC[ROLL]) * 30 / 21;
+			gyroADC[PITCH] = (gyroADC[PITCH])* 30 / 21;
 			
+			if ((gyroADC_updated[PITCH] >0) && (gyroADC_updated[ROLL] >0))
+			{	// Left
+				gyroADC_updated[ROLL] = (gyroADC[ROLL] - gyroADC[PITCH]); 
+				gyroADC_updated[PITCH] = (gyroADC[PITCH] - gyroADC[PITCH]); 
 				
-				cROLL = (gyroADC_updated[ROLL] + gyroADC_updated[PITCH])/2; 
-				cPITCH  = (gyroADC_updated[ROLL] - gyroADC_updated[PITCH]);
-					
-				cPITCH  *= ( GainInADC[PITCH]    * PITCH_GAIN_MULTIPLIER);
-				cPITCH  /= ADC_GAIN_DIVIDER;
-				
-			
-				cROLL   *= (GainInADC[ROLL]  * ROLL_GAIN_MULTIPLIER);		
-				cROLL   /= ADC_GAIN_DIVIDER;	
-								
-				cYAW     = gyroADC[YAW]; 
-				cYAW	 *= (GainInADC[YAW] * YAW_GAIN_MULTIPLIER); 
-				cYAW    /= ADC_GAIN_DIVIDER;
-				
-			
-				// Add ROLL
-				if (Config.RollGyroDirection == GYRO_REVERSED) cROLL = cROLL * (-1);	
-				fROLL = (RxInRoll >> 2) - (cROLL) ;  
-				fROLL = fROLL >> 1; 
-				MotorOut1 += fROLL;
-				MotorOut2 -= fROLL;
-				MotorOut3 -= fROLL;
-				MotorOut4 += fROLL;
-		
-				// Add PITCH
-				if (Config.PitchGyroDirection == GYRO_REVERSED) cPITCH = cPITCH * (-1);	
-				fPITCH = (RxInPitch >> 2 )- (cPITCH);
-				fPITCH = fPITCH >> 1; 
-				MotorOut1 += fPITCH;
-				MotorOut2 += fPITCH;
-				MotorOut3 -= fPITCH;
-				MotorOut4 -= fPITCH;
-				
-				// Add YAW
-				if (Config.YawGyroDirection== GYRO_REVERSED) cYAW = cYAW * (-1);	
-				fYAW = (RxInYaw >> 2 )- (cYAW);
-				if (fYAW > YawLimit) fYAW= YawLimit;
-				if (fYAW < -YawLimit) fYAW= -YawLimit;
-				MotorOut1 -= fYAW;
-				MotorOut2 += fYAW;
-				MotorOut3 -= fYAW;
-				MotorOut4 += fYAW;
-	
+			}else
+			if ((gyroADC_updated[PITCH] >0) && (gyroADC_updated[ROLL] <0))
+			{  // forward
+				gyroADC_updated[ROLL] = (gyroADC[ROLL] - gyroADC[PITCH]); 
+				gyroADC_updated[PITCH] = (gyroADC[PITCH] - gyroADC[PITCH]); 
+			}else
+			if ((gyroADC_updated[PITCH] <0) && (gyroADC_updated[ROLL] >0))
+			{ // backword
+				gyroADC_updated[ROLL] = (gyroADC[ROLL] - gyroADC[PITCH]); 
+				gyroADC_updated[PITCH] = (gyroADC[PITCH] - gyroADC[PITCH]); 
+			}else
+			if ((gyroADC_updated[PITCH] <0) && (gyroADC_updated[ROLL] <0))
+			{ // right
+				gyroADC_updated[ROLL] = (gyroADC[ROLL] - gyroADC[PITCH]); 
+				gyroADC_updated[PITCH] = (gyroADC[PITCH] - gyroADC[PITCH]); 
 			}
-			else
-			{
-				// Limit Gyro maximum
-				if (gyroADC_updated[PITCH]> MAX_GYRO_VALUE)		gyroADC_updated[PITCH] = MAX_GYRO_VALUE;
-				if (gyroADC_updated[PITCH]< -MAX_GYRO_VALUE)	gyroADC_updated[PITCH] = -MAX_GYRO_VALUE;
-				if (gyroADC_updated[ROLL]> MAX_GYRO_VALUE)		gyroADC_updated[ROLL] = MAX_GYRO_VALUE;
-				if (gyroADC_updated[ROLL]< -MAX_GYRO_VALUE)		gyroADC_updated[ROLL] = -MAX_GYRO_VALUE;
-				if (gyroADC[YAW]> MAX_GYRO_VALUE)				gyroADC[YAW] = MAX_GYRO_VALUE;
-				if (gyroADC[YAW]< -MAX_GYRO_VALUE)				gyroADC[YAW] = -MAX_GYRO_VALUE;
+			*/
+			gyroADC_updated[ROLL]	= (gyroADC[ROLL]);
+			gyroADC_updated[PITCH]	= (gyroADC[PITCH]);
+			gyroADC_updated[YAW]	= (gyroADC[YAW]);
 			
-				// calculate PITCH
+			
+			// LIMIT GYRO
+			if (gyroADC_updated[PITCH]> MAX_GYRO_VALUE)		gyroADC_updated[PITCH] = MAX_GYRO_VALUE;
+			if (gyroADC_updated[PITCH]< -MAX_GYRO_VALUE)	gyroADC_updated[PITCH] = -MAX_GYRO_VALUE;
+			if (gyroADC_updated[ROLL]> MAX_GYRO_VALUE)		gyroADC_updated[ROLL] = MAX_GYRO_VALUE;
+			if (gyroADC_updated[ROLL]< -MAX_GYRO_VALUE)		gyroADC_updated[ROLL] = -MAX_GYRO_VALUE;
+			if (gyroADC_updated[YAW]> MAX_GYRO_VALUE)		gyroADC_updated[YAW] = MAX_GYRO_VALUE;
+			if (gyroADC_updated[YAW]< -MAX_GYRO_VALUE)		gyroADC_updated[YAW] = -MAX_GYRO_VALUE;
+			
+			// calculate PITCH
 				cPITCH   = gyroADC_updated[PITCH];
 				cPITCH  *= ( GainInADC[PITCH]    * PITCH_GAIN_MULTIPLIER);
 				cPITCH  /= ADC_GAIN_DIVIDER;
@@ -371,42 +348,78 @@ void loop(void)
 				cROLL   /= ADC_GAIN_DIVIDER;	
 				
 				// calculate YAW
-				cYAW     = gyroADC[YAW]; 
+				cYAW     = gyroADC_updated[YAW]; 
 				cYAW	 *= (GainInADC[YAW] * YAW_GAIN_MULTIPLIER); 
 				cYAW    /= ADC_GAIN_DIVIDER;
 				
 					
 				// Add ROLL [chk reverse - add to RX - update motors]
 				if (Config.RollGyroDirection == GYRO_REVERSED) cROLL = cROLL * (-1);	
-				fROLL = (RxInRoll >> 2) - (cROLL) ;  
-				MotorOut2 += fROLL;
-				MotorOut3 -= fROLL;
+				//fROLL = (RxInRoll >> 2) - (cROLL) ;  
+				MotorOut2 -= cROLL;
+				MotorOut3 += cROLL;
 		
 				// Add PITCH [chk reverse - add to RX - update motors]
 				if (Config.PitchGyroDirection == GYRO_REVERSED) cPITCH = cPITCH * (-1);	
-				fPITCH = (RxInPitch >> 2 )- (cPITCH);
-				MotorOut1 += fPITCH;
-				MotorOut4 -= fPITCH;
+				MotorOut1 -= cPITCH;
+				MotorOut4 += cPITCH;
 		
 				// Add YAW [chk reverse - add to RX - update motors]
 				if (Config.YawGyroDirection== GYRO_REVERSED) cYAW = cYAW * (-1);	
-				fYAW = (RxInYaw >> 2 )- (cYAW);
-				if (fYAW > YawLimit) fYAW= YawLimit;
-				if (fYAW < -YawLimit) fYAW= -YawLimit;
+				//fYAW = (RxInYaw >> 2 )- (cYAW);
+				//if (fYAW > YawLimit) fYAW= YawLimit;
+				//if (fYAW < -YawLimit) fYAW= -YawLimit;
+				MotorOut1 += cYAW;
+				MotorOut2 -= cYAW;
+				MotorOut3 -= cYAW;
+				MotorOut4 += cYAW;
+				
+			if (bXQuadMode==true)
+			{
+							
+				fROLL = (RxInRoll >> 2);  
+				MotorOut1 += fROLL;
+				MotorOut2 += fROLL;
+				MotorOut3 -= fROLL;
+				MotorOut4 -= fROLL;
+				
+				fPITCH = (RxInPitch >> 2 );
+				MotorOut1 += fPITCH;
+				MotorOut2 -= fPITCH;
+				MotorOut3 += fPITCH;
+				MotorOut4 -= fPITCH;
+				
+				fYAW = (RxInYaw >> 2 );
+				MotorOut1 -= fYAW;
+				MotorOut2 += fYAW;
+				MotorOut3 += fYAW;
+				MotorOut4 -= fYAW;
+			}
+			else
+			{
+				
+				fROLL = (RxInRoll >> 2);  
+				MotorOut2 += fROLL;
+				MotorOut3 -= fROLL;
+		
+				fPITCH = (RxInPitch >> 2 );
+				MotorOut1 += fPITCH;
+				MotorOut4 -= fPITCH;
+		
+				fYAW = (RxInYaw >> 2 );
 				MotorOut1 -= fYAW;
 				MotorOut2 += fYAW;
 				MotorOut3 += fYAW;
 				MotorOut4 -= fYAW;
 	
 			}
-		
+		}
+				
 			// Save motors from turning-off
 			if (MotorOut1<10) MotorOut1=10;
 			if (MotorOut2<10) MotorOut2=10;
 			if (MotorOut3<10) MotorOut3=10;
 			if (MotorOut4<10) MotorOut4=10;
-	
-		}
 	}		
 	
 	

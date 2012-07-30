@@ -37,9 +37,6 @@ volatile uint8_t m1,m2,m3,m4;
 
 void output_motor_ppm(void)
 {
-	// Only enable motors when armed or not connected to the GUI
-	
-
 	// Make sure we have spent enough time between pulses
 	// Also, handle the odd case where the TCNT1 rolls over and TCNT1 < MotorStartTCNT1
 	
@@ -48,9 +45,6 @@ void output_motor_ppm(void)
 	if (CurrentTCNT1 > MotorStartTCNT1) ElapsedTCNT1 = CurrentTCNT1 - MotorStartTCNT1;
 	else ElapsedTCNT1 = (0xffff - MotorStartTCNT1) + CurrentTCNT1;
 		
-	
-	
-	
 	// If period less than 1/ESC_RATE, pad it out.
 	PWM_Low_Pulse_Interval = (PWM_LOW_PULSE_INTERVAL - ElapsedTCNT1) / 8;
 	
@@ -61,10 +55,7 @@ void output_motor_ppm(void)
 		
 		for (i=0;i<PWM_Low_Pulse_Interval;i++)
 		{
-			//while (TCNT2 < 64);		// 8MHz * 64 = 8us
-			//TCNT2 -= 64;
-			
-			while (TCNT2 < 128);
+			while (TCNT2 < 128);   // TCNT2=128 ==> 512 micro seconds [@ 8 MHz / 32].
 			TCNT2-=128;
 		}
 	}
@@ -112,22 +103,24 @@ void output_motor_ppm(void)
 	
 	for (i=0;i<BASE_PULSE;i++)	// BASE_PULSE * 8us = 1ms
 	{
-		while (TCNT2 < 4);		// 8MHz * 64 = 8us
+		while (TCNT2 < 4);		// [8MHz / 32] x 4 = 16us
 		TCNT2 = 0;
 	}
 	
 	
-
+	TCNT2 = 0;					// Reset counter again
 	// Now switch off the pulses as required
 	// 1120us to 1920us = 800us / 4us = 200 steps
 	// Motors 0->200, 1120->1920 us
 	for (i=0;i<MOTORS_HIGH_VALUE+20;i++)			// 220 gives a max of 2000us (1120 + (220 * 4us)) - TWEAK THIS
 	{
+		// TIP: motor accuracy in SW is [0-200] while we can go from [0-800] we need to enhance SW range to get better accuracy
+		// TIP2: we also need to speed up TCNT2 to achieve better accuracy.
 		while (TCNT2 < 1);		// 8MHz * 32 = 4us
 		TCNT2 = 0;
 
-
-		if (i==m1) M1 = 0;
+		// stop motor when its on-duration is over
+		if (i==m1) M1 = 0;		
 		if (i==m2) M2 = 0;
 		if (i==m3) M3 = 0;
 		if (i==m4) M4 = 0;

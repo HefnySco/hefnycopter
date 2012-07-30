@@ -15,5 +15,5 @@ void InitTimers (void);
 void ResetValues (void);
 void StickCenter (void);
 void GyroRevereing (void);
-
+void ESCThrottleCalibration (void);
 #endif /* INIT_H_ */

@@ -21,6 +21,7 @@
 #include "io_cfg.h"
 #include "Commons.h"
 #include "Init.h"
+#include "motors.h"
 
 
 
@@ -77,7 +78,7 @@ void InitTimers (void)
 	// timer0 (8bit) - run @ 8MHz / 64 = 125 KHz = 8us
 	// used to control ESC/servo pulse length
 	TCCR0A = (1 << WGM01);					// Mode = CTC
-    TCCR0B = (1 << CS02); // | (1 << CS00);		//| (1 << CS00); 
+    TCCR0B = (1 << CS02); 
 	//OCR0A = 255;							// 8us * 255 = 
 	//OCR0A_X=2;
 	//TIMSK0  |= (1 << OCIE0A); 				// Enable Interrupt TimerCounter0 Compare Match A (SIG_OUTPUT_COMPARE0A)
@@ -87,18 +88,18 @@ void InitTimers (void)
 	TCCR1A  = 0;
 	TCCR1B  = (1 << CS11);
 	TIMSK1 |= (1 << TOIE1); // Enable overflow interrupt 
-	TCNT1   = 0;		// reset counter
-	TCNT1_X = 0;		// This value overflow every 4294.967296 sec [1.19 hr], and tick every 0.065536 sec
+	TCNT1   = 0;			// reset counter
+	TCNT1_X = 0;			// This value overflow every 4294.967296 sec [1.19 hr], and tick every 0.065536 sec
 
 		
-	// timer2 8bit - run @ 8MHz / 8 = 250 KHz = 4us
+	// timer2 8bit - run @ 8MHz / 32 = 250 KHz = 4us
 	// and Stick-Arming
 	TCCR2A  = (1 << WGM22);	
-	TCCR2B  = (1 << CS21) | (1 << CS20);	
+	TCCR2B  = (1 << CS21) | (1 << CS20);	//  div by 32 == 4 us tick
 	TIMSK2 |= (1 << TOIE2); // Enable overflow interrupt 
 	TIFR2   = 0;
 	TCNT2   = 0;		// reset counter
-	TCNT2_X = 0;		// this value overflow every 4us x 0xffff = 0.262144 sec, and tick every 0.001024 sec
+	TCNT2_X = 0;		// this overflows every 67.108864 sec, value tick 4us x 0xff = 0.001024 sec
 }
 
 
@@ -207,4 +208,33 @@ void GyroRevereing (void)
 			}
 		}
 	}
+}
+
+void ESCThrottleCalibration (void)
+{
+	// Gyro direction reversing
+	if ((GainInADC[YAW] <= MIN_POT_Extreme))
+	{
+		// flash LED 4 times
+		FlashLED (200,4);
+		
+		LED =1;
+		Armed = true;
+		
+		while (1)
+		{
+			RxGetChannels();
+			
+			MotorOut1 = RxInCollective;
+			MotorOut2 = RxInCollective;
+			MotorOut3 = RxInCollective;
+			MotorOut4 = RxInCollective;		
+	
+			output_motor_ppm();
+		
+		}			
+	
+	}		
+	
+	
 }

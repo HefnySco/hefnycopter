@@ -36,7 +36,7 @@ ISR (TIMER0_COMPA_vect)
 ISR(TIMER1_OVF_vect)
 {
 	
-	TCNT1_X +=1; // each step is 1u x 0xffff = 0.065536
+	TCNT1_X +=1; // This value overflow every 4294.967296 sec [1.19 hr], and tick every 0.065536 sec
 }
 
 
@@ -44,7 +44,7 @@ ISR(TIMER1_OVF_vect)
 ISR(TIMER2_OVF_vect)
 {
 	
-	TCNT2_X +=1; // each step is 1u x 0xffff = 0.065536
+	TCNT2_X +=1; // this overflows every 67.108864 sec, value tick 4us x 0xff = 0.001024 sec
 	/*if (TCNT2_X==10)
 	{
 		
@@ -84,6 +84,7 @@ ISR(INT0_vect)
 	else 
 	{				// Falling
 		RxChannel2 = TCNT1 - RxChannel2Start;
+		// TIP: Add logic here as ROLL
 	}
 	RxChannelsUpdatedFlag = true;
 }
@@ -97,6 +98,7 @@ ISR(INT1_vect)
 	else 
 	{				// Falling
 		RxChannel3 = TCNT1 - RxChannel3Start;
+		// TIP: Add logic here as ROLL
 	}
 	RxChannelsUpdatedFlag = true;
 }
@@ -110,6 +112,7 @@ ISR(PCINT0_vect)
 	else 
 	{				// Falling
 		RxChannel4 = TCNT1 - RxChannel4Start;
+		// TIP: Add logic here as ROLL
 	}
 	RxChannelsUpdatedFlag = true;
 }
