@@ -18,8 +18,7 @@
     <ToolchainFlavour>Native</ToolchainFlavour>
     <AsfVersion>2.11.1</AsfVersion>
     <avrtoolinterface />
-    <avrtool>
-    </avrtool>
+    <avrtool>com.atmel.avrdbg.tool.simulator</avrtool>
     <com_atmel_avrdbg_tool_simulator>
       <ToolType>com.atmel.avrdbg.tool.simulator</ToolType>
       <ToolName>AVR Simulator</ToolName>
@@ -27,7 +26,7 @@
       </ToolNumber>
       <Channel>
         <host>127.0.0.1</host>
-        <port>2272</port>
+        <port>3456</port>
         <ssl>False</ssl>
       </Channel>
     </com_atmel_avrdbg_tool_simulator>

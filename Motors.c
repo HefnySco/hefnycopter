@@ -33,10 +33,16 @@ volatile uint8_t i;
 volatile static uint16_t MotorStartTCNT1, ElapsedTCNT1, CurrentTCNT1;
 volatile uint8_t m1,m2,m3,m4;
 	
+uint16_t tempTCNT1;
+uint8_t tempTCNT2;
+
 
 
 void output_motor_ppm(void)
 {
+	// Only enable motors when armed or not connected to the GUI
+	
+
 	// Make sure we have spent enough time between pulses
 	// Also, handle the odd case where the TCNT1 rolls over and TCNT1 < MotorStartTCNT1
 	
@@ -45,18 +51,25 @@ void output_motor_ppm(void)
 	if (CurrentTCNT1 > MotorStartTCNT1) ElapsedTCNT1 = CurrentTCNT1 - MotorStartTCNT1;
 	else ElapsedTCNT1 = (0xffff - MotorStartTCNT1) + CurrentTCNT1;
 		
+	
+	
+	
 	// If period less than 1/ESC_RATE, pad it out.
 	PWM_Low_Pulse_Interval = (PWM_LOW_PULSE_INTERVAL - ElapsedTCNT1) / 8;
 	
 	if (PWM_Low_Pulse_Interval > 0)
 	{
-		TIFR2 &= ~(1 << TOV2);		// Clear overflow
-		TCNT2 = 0;					// Reset counter
-		
+		LED=~LED;
+		//TIFR2 &= ~(1 << TOV2);		// Clear overflow
+		//TCNT2 = 0;					// Reset counter
+		tempTCNT1 = TCNT1 + 512;
 		for (i=0;i<PWM_Low_Pulse_Interval;i++)
 		{
-			while (TCNT2 < 128);   // TCNT2=128 ==> 512 micro seconds [@ 8 MHz / 32].
-			TCNT2-=128;
+			//while (TCNT2 < 128);
+			//TCNT2-=128;
+			while (TCNT1 < tempTCNT1);
+			tempTCNT1 = TCNT1 + 512;
+
 		}
 	}
 	
@@ -95,44 +108,38 @@ void output_motor_ppm(void)
 
 	// Measure period of ESC rate from here
 	MotorStartTCNT1 = TCNT1;
-
 	
 	// Create the base pulse of 1120us
 	TIFR2 &= ~(1 << TOV2);		// Clear overflow
 	TCNT2 = 0;					// Reset counter
-	
+	tempTCNT1 = TCNT1 + 16; 
 	for (i=0;i<BASE_PULSE;i++)	// BASE_PULSE * 8us = 1ms
 	{
-		while (TCNT2 < 4);		// [8MHz / 32] x 4 = 16us
-		TCNT2 = 0;
+		//while (TCNT2 < 4);		// 8MHz * 64 = 8us
+		//TCNT2 = 0;
+		while (TCNT1 < tempTCNT1);
+		tempTCNT1 = TCNT1 + 16;
 	}
 	
 	
-	TCNT2 = 0;					// Reset counter again
+	tempTCNT1 = TCNT1 + 4;
 	// Now switch off the pulses as required
 	// 1120us to 1920us = 800us / 4us = 200 steps
 	// Motors 0->200, 1120->1920 us
 	for (i=0;i<MOTORS_HIGH_VALUE+20;i++)			// 220 gives a max of 2000us (1120 + (220 * 4us)) - TWEAK THIS
 	{
-		// TIP: motor accuracy in SW is [0-200] while we can go from [0-800] we need to enhance SW range to get better accuracy
-		// TIP2: we also need to speed up TCNT2 to achieve better accuracy.
-		while (TCNT2 < 1);		// 8MHz * 32 = 4us
-		TCNT2 = 0;
-
-		// stop motor when its on-duration is over
-		if (i==m1) M1 = 0;		
+		//while (TCNT2 < 1);		// 8MHz * 32 = 4us
+		//TCNT2 = 0;
+		//while (TCNT1 < tempTCNT1);
+		//tempTCNT1 = TCNT1 + 4;
+		// NO CODE SHOULD BE ADDED HERE . IT IS ECAXCTLY 4 us loop
+		asm ("nop");
+		asm ("nop");
+		if (i==m1) M1 = 0;
 		if (i==m2) M2 = 0;
 		if (i==m3) M3 = 0;
 		if (i==m4) M4 = 0;
 	} 
 	
-	/*
-	//OCR0A = 8 * BASE_PULSE;
-	OCR0A +=4;  //first loop in the output_motor_ppm2()  
-	pmm_out_step=1;
-	//pMotorFunction = output_motor_ppm2;
-	output_motor_ppm2();
-	*/
-
 }
 	

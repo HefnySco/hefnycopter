@@ -54,7 +54,7 @@
 #define STICKPOSITION_MIN	 16  // minimum duration for stick to accept a command.
 // Max Collective
 // limits the maximum stick collective (range 80->100  100=Off)
-// this allows gyros to stabilise better when full throttle applied
+// this allows gyros to stabilize better when full throttle applied
 #define MAX_COLLECTIVE 180			
 
 // trimming value for motors when generating PWM signals.
@@ -63,8 +63,8 @@
 // defines output rate to ESC/Servo
 // either define by setting ESC_RATE (Max is approx 495Hz)
 // uses Timer 1 ticks to control output rate.
-//#define ESC_RATE 300	// in Hz
-#define ESC_RATE 400	// in Hz (at SINGLE_COPTER and DUAL_COPTER)
+#define ESC_RATE 300	// in Hz
+//#define ESC_RATE 400	// in Hz (at SINGLE_COPTER and DUAL_COPTER)
 //#define ESC_RATE 450	// in Hz
 //#define ESC_RATE 495	// in Hz
 

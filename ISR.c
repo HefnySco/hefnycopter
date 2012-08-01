@@ -83,8 +83,14 @@ ISR(INT0_vect)
 	} 
 	else 
 	{				// Falling
-		RxChannel2 = TCNT1 - RxChannel2Start;
-		// TIP: Add logic here as ROLL
+		if (TCNT1 < RxChannel2Start) 
+		{
+			RxChannel2 = 0xffff - RxChannel2Start + TCNT1;
+		}				
+		else
+		{
+			RxChannel2 = TCNT1 - RxChannel2Start;
+		}			
 	}
 	RxChannelsUpdatedFlag = true;
 }
@@ -97,8 +103,14 @@ ISR(INT1_vect)
 	} 
 	else 
 	{				// Falling
-		RxChannel3 = TCNT1 - RxChannel3Start;
-		// TIP: Add logic here as ROLL
+		if (TCNT1 < RxChannel3Start) 
+		{
+			RxChannel3 = 0xffff - RxChannel3Start + TCNT1;
+		}				
+		else
+		{
+			RxChannel3 = TCNT1 - RxChannel3Start;
+		}			
 	}
 	RxChannelsUpdatedFlag = true;
 }
@@ -111,8 +123,14 @@ ISR(PCINT0_vect)
 	} 
 	else 
 	{				// Falling
-		RxChannel4 = TCNT1 - RxChannel4Start;
-		// TIP: Add logic here as ROLL
+		if (TCNT1 < RxChannel3Start) 
+		{
+			RxChannel4 = 0xffff - RxChannel4Start + TCNT1;
+		}				
+		else
+		{
+			RxChannel4 = TCNT1 - RxChannel4Start;
+		}		
 	}
 	RxChannelsUpdatedFlag = true;
 }

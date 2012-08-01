@@ -111,7 +111,7 @@ volatile BOOL RxChannelsUpdatingFlag;
 
 
 
-
+//#define Debugging used in debugging to skip initialization
 /*
 	Main Function
 */
@@ -119,12 +119,14 @@ int main(void)
 {
 	setup();
 	
+#ifndef Debugging
+	
 	ReadGainValues();
 	ResetValues ();
 	StickCenter();
 	GyroRevereing();
 	ESCThrottleCalibration();
-
+#endif
 	// flash LED
 	LED = 0;
 	FlashLED (100,2);
@@ -278,11 +280,13 @@ void loop(void)
 	{	
 		if (!Armed)
 		{
-			
-			
+			MotorOut1 = 0;
+			MotorOut2 = 0;
+			MotorOut3 = 0;
+			MotorOut4 = 0;
 		}
 		else
-		{
+		{	// Armed
 			if (RxInCollective <( STICKThrottle_ARMING - 20)) // calibrate again before leaving ground to average vibrations.
 			{
 				CalibrateGyros();
@@ -298,32 +302,7 @@ void loop(void)
 			ReadGainValues();
 			
 			
-			/*	
-			gyroADC[ROLL] = (gyroADC[ROLL]) * 30 / 21;
-			gyroADC[PITCH] = (gyroADC[PITCH])* 30 / 21;
-			
-			if ((gyroADC_updated[PITCH] >0) && (gyroADC_updated[ROLL] >0))
-			{	// Left
-				gyroADC_updated[ROLL] = (gyroADC[ROLL] - gyroADC[PITCH]); 
-				gyroADC_updated[PITCH] = (gyroADC[PITCH] - gyroADC[PITCH]); 
-				
-			}else
-			if ((gyroADC_updated[PITCH] >0) && (gyroADC_updated[ROLL] <0))
-			{  // forward
-				gyroADC_updated[ROLL] = (gyroADC[ROLL] - gyroADC[PITCH]); 
-				gyroADC_updated[PITCH] = (gyroADC[PITCH] - gyroADC[PITCH]); 
-			}else
-			if ((gyroADC_updated[PITCH] <0) && (gyroADC_updated[ROLL] >0))
-			{ // backword
-				gyroADC_updated[ROLL] = (gyroADC[ROLL] - gyroADC[PITCH]); 
-				gyroADC_updated[PITCH] = (gyroADC[PITCH] - gyroADC[PITCH]); 
-			}else
-			if ((gyroADC_updated[PITCH] <0) && (gyroADC_updated[ROLL] <0))
-			{ // right
-				gyroADC_updated[ROLL] = (gyroADC[ROLL] - gyroADC[PITCH]); 
-				gyroADC_updated[PITCH] = (gyroADC[PITCH] - gyroADC[PITCH]); 
-			}
-			*/
+		
 			gyroADC_updated[ROLL]	= (gyroADC[ROLL]);
 			gyroADC_updated[PITCH]	= (gyroADC[PITCH]);
 			gyroADC_updated[YAW]	= (gyroADC[YAW]);
@@ -339,7 +318,7 @@ void loop(void)
 			
 			// calculate PITCH
 				cPITCH   = gyroADC_updated[PITCH];
-				cPITCH  *= ( GainInADC[PITCH]    * PITCH_GAIN_MULTIPLIER);
+				cPITCH  *= (GainInADC[PITCH]    * PITCH_GAIN_MULTIPLIER);
 				cPITCH  /= ADC_GAIN_DIVIDER;
 				
 				// calculate ROLL
@@ -355,7 +334,6 @@ void loop(void)
 					
 				// Add ROLL [chk reverse - add to RX - update motors]
 				if (Config.RollGyroDirection == GYRO_REVERSED) cROLL = cROLL * (-1);	
-				//fROLL = (RxInRoll >> 2) - (cROLL) ;  
 				MotorOut2 -= cROLL;
 				MotorOut3 += cROLL;
 		
@@ -366,9 +344,6 @@ void loop(void)
 		
 				// Add YAW [chk reverse - add to RX - update motors]
 				if (Config.YawGyroDirection== GYRO_REVERSED) cYAW = cYAW * (-1);	
-				//fYAW = (RxInYaw >> 2 )- (cYAW);
-				//if (fYAW > YawLimit) fYAW= YawLimit;
-				//if (fYAW < -YawLimit) fYAW= -YawLimit;
 				MotorOut1 += cYAW;
 				MotorOut2 -= cYAW;
 				MotorOut3 -= cYAW;
@@ -377,40 +352,34 @@ void loop(void)
 			if (bXQuadMode==true)
 			{
 							
-				fROLL = (RxInRoll >> 2);  
-				MotorOut1 += fROLL;
-				MotorOut2 += fROLL;
-				MotorOut3 -= fROLL;
-				MotorOut4 -= fROLL;
+				MotorOut1 += RxInRoll ;
+				MotorOut2 += RxInRoll ;
+				MotorOut3 -= RxInRoll ;
+				MotorOut4 -= RxInRoll ;
 				
-				fPITCH = (RxInPitch >> 2 );
-				MotorOut1 += fPITCH;
-				MotorOut2 -= fPITCH;
-				MotorOut3 += fPITCH;
-				MotorOut4 -= fPITCH;
+				MotorOut1 += RxInPitch;
+				MotorOut2 -= RxInPitch;
+				MotorOut3 += RxInPitch;
+				MotorOut4 -= RxInPitch;
 				
-				fYAW = (RxInYaw >> 2 );
-				MotorOut1 -= fYAW;
-				MotorOut2 += fYAW;
-				MotorOut3 += fYAW;
-				MotorOut4 -= fYAW;
+				MotorOut1 -= RxInYaw;
+				MotorOut2 += RxInYaw;
+				MotorOut3 += RxInYaw;
+				MotorOut4 -= RxInYaw;
 			}
 			else
 			{
 				
-				fROLL = (RxInRoll >> 2);  
-				MotorOut2 += fROLL;
-				MotorOut3 -= fROLL;
+				MotorOut2 += RxInRoll ;
+				MotorOut3 -= RxInRoll ;
 		
-				fPITCH = (RxInPitch >> 2 );
-				MotorOut1 += fPITCH;
-				MotorOut4 -= fPITCH;
+				MotorOut1 += RxInPitch ;
+				MotorOut4 -= RxInPitch ;
 		
-				fYAW = (RxInYaw >> 2 );
-				MotorOut1 -= fYAW;
-				MotorOut2 += fYAW;
-				MotorOut3 += fYAW;
-				MotorOut4 -= fYAW;
+				MotorOut1 -= RxInYaw ;
+				MotorOut2 += RxInYaw ;
+				MotorOut3 += RxInYaw ;
+				MotorOut4 -= RxInYaw ;
 	
 			}
 		}
@@ -456,13 +425,13 @@ void RxGetChannels(void)
 
 	RxChannel = RxChannel1;
 	RxChannel -= Config.RxChannel1ZeroOffset;				// normalise   [ - 0 + ]
-	RxInRoll = (RxChannel >> 2);                    //     "
+	RxInRoll = (RxChannel >> 4);                    //   -400:400  "
 
 	while ( RxChannelsUpdatingFlag );
 
 	RxChannel = RxChannel2;
 	RxChannel -= Config.RxChannel2ZeroOffset;				// normalise	[ - 0 + ]
-	RxInPitch = (RxChannel >> 2);                   //     "
+	RxInPitch = (RxChannel >> 4);                   //     "
 
 	while ( RxChannelsUpdatingFlag );
 
@@ -474,7 +443,7 @@ void RxGetChannels(void)
 
 	RxChannel = RxChannel4;
 	RxChannel -= Config.RxChannel4ZeroOffset;				// normalise	[ - 0 + ]
-	RxInYaw = (RxChannel >> 2);                     //     "
+	RxInYaw = (RxChannel >> 4);                     //     "
 	
 }
 
