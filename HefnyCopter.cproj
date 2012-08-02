@@ -5,7 +5,7 @@
     <ProjectVersion>5.1</ProjectVersion>
     <ToolchainName>com.Atmel.AVRGCC8</ToolchainName>
     <ProjectGuid>{df953d89-ad29-4eb4-9969-a149b34cf576}</ProjectGuid>
-    <avrdevice>ATmega168PA</avrdevice>
+    <avrdevice>ATmega328P</avrdevice>
     <avrdeviceseries>none</avrdeviceseries>
     <OutputType>Executable</OutputType>
     <Language>C</Language>
@@ -26,7 +26,7 @@
       </ToolNumber>
       <Channel>
         <host>127.0.0.1</host>
-        <port>3456</port>
+        <port>4030</port>
         <ssl>False</ssl>
       </Channel>
     </com_atmel_avrdbg_tool_simulator>

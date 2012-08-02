@@ -59,7 +59,7 @@ void output_motor_ppm(void)
 	
 	if (PWM_Low_Pulse_Interval > 0)
 	{
-		LED=~LED;
+		//LED=~LED;
 		//TIFR2 &= ~(1 << TOV2);		// Clear overflow
 		//TCNT2 = 0;					// Reset counter
 		tempTCNT1 = TCNT1 + 512;
