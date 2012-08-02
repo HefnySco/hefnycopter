@@ -109,7 +109,7 @@ Quad-X
 
 volatile BOOL RxChannelsUpdatingFlag;
 
-
+//#define Debugging
 
 //#define Debugging used in debugging to skip initialization
 /*
@@ -196,13 +196,13 @@ void loop(void)
 
 	RxGetChannels();
 	
+	
 	if (RxInCollective < STICKThrottle_ARMING) 
 	{	// Throttle is LOW
 		// Here you can add code without caring about delays. As there quad is already off and on land.
 		// here we test different positions of sticks to enable arm/disarm, Quad/X-Quad
 		
 		ReadGainValues(); // keep reading values of POTS here. as we can change the value while quad is armed. but sure it is on land and motors are off.
-		
 		// DisArm Check
 		if ((Armed == true) && (RxInYaw < STICK_LEFT))
 		{
@@ -349,38 +349,40 @@ void loop(void)
 				MotorOut3 -= cYAW;
 				MotorOut4 += cYAW;
 				
+				fROLL = (RxInRoll >> 2); 
+				fPITCH = (RxInPitch >> 2);
+				fYAW =	(RxInYaw >> 2);
+				
 			if (bXQuadMode==true)
 			{
 							
-				MotorOut1 += RxInRoll ;
-				MotorOut2 += RxInRoll ;
-				MotorOut3 -= RxInRoll ;
-				MotorOut4 -= RxInRoll ;
+				MotorOut1 += fROLL ;
+				MotorOut2 += fROLL ;
+				MotorOut3 -= fROLL ;
+				MotorOut4 -= fROLL ;
 				
-				MotorOut1 += RxInPitch;
-				MotorOut2 -= RxInPitch;
-				MotorOut3 += RxInPitch;
-				MotorOut4 -= RxInPitch;
+				MotorOut1 += fPITCH;
+				MotorOut2 -= fPITCH;
+				MotorOut3 += fPITCH;
+				MotorOut4 -= fPITCH;
 				
-				MotorOut1 -= RxInYaw;
-				MotorOut2 += RxInYaw;
-				MotorOut3 += RxInYaw;
-				MotorOut4 -= RxInYaw;
+				MotorOut1 -= fYAW;
+				MotorOut2 += fYAW;
+				MotorOut3 += fYAW;
+				MotorOut4 -= fYAW;
 			}
 			else
 			{
+				MotorOut2 += fROLL ;
+				MotorOut3 -= fROLL ;
 				
-				MotorOut2 += RxInRoll ;
-				MotorOut3 -= RxInRoll ;
+				MotorOut1 += fPITCH ;
+				MotorOut4 -= fPITCH ;
 		
-				MotorOut1 += RxInPitch ;
-				MotorOut4 -= RxInPitch ;
-		
-				MotorOut1 -= RxInYaw ;
-				MotorOut2 += RxInYaw ;
-				MotorOut3 += RxInYaw ;
-				MotorOut4 -= RxInYaw ;
-	
+				MotorOut1 -= fYAW ;
+				MotorOut2 += fYAW ;
+				MotorOut3 += fYAW ;
+				MotorOut4 -= fYAW ;
 			}
 		}
 				
@@ -425,13 +427,13 @@ void RxGetChannels(void)
 
 	RxChannel = RxChannel1;
 	RxChannel -= Config.RxChannel1ZeroOffset;				// normalise   [ - 0 + ]
-	RxInRoll = (RxChannel >> 4);                    //   -400:400  "
+	RxInRoll = (RxChannel >> 2);                    //   -400:400  "
 
 	while ( RxChannelsUpdatingFlag );
 
 	RxChannel = RxChannel2;
 	RxChannel -= Config.RxChannel2ZeroOffset;				// normalise	[ - 0 + ]
-	RxInPitch = (RxChannel >> 4);                   //     "
+	RxInPitch = (RxChannel >> 2);                   //     "
 
 	while ( RxChannelsUpdatingFlag );
 
@@ -443,7 +445,7 @@ void RxGetChannels(void)
 
 	RxChannel = RxChannel4;
 	RxChannel -= Config.RxChannel4ZeroOffset;				// normalise	[ - 0 + ]
-	RxInYaw = (RxChannel >> 4);                     //     "
+	RxInYaw = (RxChannel >> 2);                     //     "
 	
 }
 

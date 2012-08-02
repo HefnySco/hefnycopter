@@ -129,7 +129,7 @@ void StickCenter (void)
 		FlashLED (200,4);
 		
 		// 5 Seconds Delay, for binding
-		delay_ms(4000);
+		delay_ms(6000);
 		
 		FlashLED (200,2);
 		
