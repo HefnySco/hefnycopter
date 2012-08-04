@@ -38,6 +38,7 @@
 #define StickScalePitch	 11 //2048	//2^11
 #define StickScaleYaw	 11 //2048	//2^11
 
+#define StickDivFactor	2	// 2^(StickDivFactor)
 
 // This one determines the maximum Yaw command applied, in percent.
 // Less gives less yaw authority, but also less possibility of motor saturation.
@@ -63,7 +64,7 @@
 // defines output rate to ESC/Servo
 // either define by setting ESC_RATE (Max is approx 495Hz)
 // uses Timer 1 ticks to control output rate.
-#define ESC_RATE 300	// in Hz
+#define ESC_RATE 310	// in Hz
 //#define ESC_RATE 400	// in Hz (at SINGLE_COPTER and DUAL_COPTER)
 //#define ESC_RATE 450	// in Hz
 //#define ESC_RATE 495	// in Hz
@@ -80,7 +81,6 @@
 
 // TIMERS
 volatile uint16_t TCNT1_X;				// This value overflow every 4294.967296 sec [1.19 hr], and tick every 0.065536 sec
-volatile uint16_t TCNT2_X;				// This value tick 4us x 0xffff = 0.262144 sec, and overflow every 0.001024 sec
 volatile uint16_t OCR0A_X;
 
 // GYRO
@@ -105,7 +105,7 @@ enum ADCInputs		{	YAW_GYRO = 0, PITCH_GYRO, ROLL_GYRO, ROLL_POT, PITCH_POT, YAW_
 /* EOF - Enumerations */
 
 
-bool Armed;
+volatile bool Armed;
 
 
 // eeProm data structure

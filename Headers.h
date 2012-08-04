@@ -26,6 +26,6 @@ void Init_ADC(void);
 void delay_us(uint8_t time);
 void delay_ms(uint16_t time);
 
-
+int16_t FastMult  (int16_t x, int y);
 
 #endif /* HEADERS_H_ */

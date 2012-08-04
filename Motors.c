@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <util/delay.h>
+#include <util/atomic.h>
 #include <avr/interrupt.h> 
 #include <avr/eeprom.h>
 
@@ -46,8 +47,11 @@ void output_motor_ppm(void)
 	// Make sure we have spent enough time between pulses
 	// Also, handle the odd case where the TCNT1 rolls over and TCNT1 < MotorStartTCNT1
 	
+	ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+   {
+      CurrentTCNT1 = TCNT1;
+   }
 	
-	CurrentTCNT1 = TCNT1;
 	if (CurrentTCNT1 > MotorStartTCNT1) ElapsedTCNT1 = CurrentTCNT1 - MotorStartTCNT1;
 	else ElapsedTCNT1 = (0xffff - MotorStartTCNT1) + CurrentTCNT1;
 		
@@ -55,22 +59,16 @@ void output_motor_ppm(void)
 	
 	
 	// If period less than 1/ESC_RATE, pad it out.
-	PWM_Low_Pulse_Interval = (PWM_LOW_PULSE_INTERVAL - ElapsedTCNT1) / 8;
-	
-	if (PWM_Low_Pulse_Interval > 0)
+	// TCNT1 tick is 1us & TCNT2 tick is 4us
+	PWM_Low_Pulse_Interval = (PWM_LOW_PULSE_INTERVAL - ElapsedTCNT1) /16 ; //>> 3  ;
+	while (PWM_Low_Pulse_Interval > 0)
 	{
-		//LED=~LED;
-		//TIFR2 &= ~(1 << TOV2);		// Clear overflow
-		//TCNT2 = 0;					// Reset counter
-		tempTCNT1 = TCNT1 + 512;
-		for (i=0;i<PWM_Low_Pulse_Interval;i++)
-		{
-			//while (TCNT2 < 128);
-			//TCNT2-=128;
-			while (TCNT1 < tempTCNT1);
-			tempTCNT1 = TCNT1 + 512;
-
-		}
+		TCNT2=0;
+		tempTCNT2 = TCNT2 + 4; 	
+		LED =~LED;
+		while (TCNT2 < tempTCNT2);		// 8MHz * 64 = 8us
+		PWM_Low_Pulse_Interval -=1;
+		
 	}
 	
 	
@@ -106,27 +104,35 @@ void output_motor_ppm(void)
 	M3 = 1;
 	M4 = 1;
 
+	
 	// Measure period of ESC rate from here
-	MotorStartTCNT1 = TCNT1;
+	ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+   {
+      MotorStartTCNT1 = TCNT1;
+   }
+	
 	
 	// Create the base pulse of 1120us
-	TIFR2 &= ~(1 << TOV2);		// Clear overflow
-	TCNT2 = 0;					// Reset counter
-	tempTCNT1 = TCNT1 + 16; 
+	//TIFR2 &= ~(1 << TOV2);		// Clear overflow
+	//TCNT2 = 0;					// Reset counter
+	//tempTCNT1 = TCNT1 + 16; 
+	TCNT2 = 0;
+	tempTCNT2 = TCNT2 + 4; 
 	for (i=0;i<BASE_PULSE;i++)	// BASE_PULSE * 8us = 1ms
 	{
-		//while (TCNT2 < 4);		// 8MHz * 64 = 8us
-		//TCNT2 = 0;
-		while (TCNT1 < tempTCNT1);
-		tempTCNT1 = TCNT1 + 16;
+		while (TCNT2 < tempTCNT2);		// 8MHz * 64 = 8us
+		TCNT2=0;
+		tempTCNT2 = TCNT2 + 4; 	
+		////while (TCNT1 < tempTCNT1);
+		////tempTCNT1 = TCNT1 + 16;
 	}
 	
 	
-	tempTCNT1 = TCNT1 + 4;
+	//tempTCNT1 = TCNT1 + 4;
 	// Now switch off the pulses as required
 	// 1120us to 1920us = 800us / 4us = 200 steps
 	// Motors 0->200, 1120->1920 us
-	for (i=0;i<MOTORS_HIGH_VALUE+20;i++)			// 220 gives a max of 2000us (1120 + (220 * 4us)) - TWEAK THIS
+	for (i=0;i<MOTORS_HIGH_VALUE+1;i++)			// 220 gives a max of 2000us (1120 + (220 * 4us)) - TWEAK THIS
 	{
 		//while (TCNT2 < 1);		// 8MHz * 32 = 4us
 		//TCNT2 = 0;
@@ -140,6 +146,6 @@ void output_motor_ppm(void)
 		if (i==m3) M3 = 0;
 		if (i==m4) M4 = 0;
 	} 
-	
+
 }
 	

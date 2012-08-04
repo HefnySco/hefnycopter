@@ -41,6 +41,13 @@
 //		*	- Calibrate ESC
 //		* X-QUAD Switching without the need of board orientation
 //		* update misleading code comments 
+// 0.45
+//		* Gain for Roll & PITCH read from PITCH POT only.
+//		* Fixing issues:
+//			Atomic TCNT1 timer read.
+//			Loop of PWM_LOW_PULSE_INTERVAL is back dependent on TCNT2 because we need ATOMIC read if we use TCNT2 that disables interrupts.
+//			ISR - Throttle time variable corrected.
+//			Min Motor Values =10 moved to the correct position.
 
 #define QUAD_COPTER
 /*
@@ -236,7 +243,7 @@ void loop(void)
 		
 		
 		if (!Armed)
-		{	//set modes
+		{	//set modes Quad , X-Quad
 		
 			if ((RxInRoll > STICK_RIGHT))
 			{	// X-QUAD MODE
@@ -277,16 +284,17 @@ void loop(void)
 		MotorOut4 = 0;
 	}
 	else
-	{	
+	{	// Throttle stick is NOT Down
+		
 		if (!Armed)
-		{
+		{  // However we are still DisArmed
 			MotorOut1 = 0;
 			MotorOut2 = 0;
 			MotorOut3 = 0;
 			MotorOut4 = 0;
 		}
 		else
-		{	// Armed
+		{	// Armed & Throttle Stick > MIN . . . We should Fly now.
 			if (RxInCollective <( STICKThrottle_ARMING - 20)) // calibrate again before leaving ground to average vibrations.
 			{
 				CalibrateGyros();
@@ -323,7 +331,7 @@ void loop(void)
 				
 				// calculate ROLL
 				cROLL    = gyroADC_updated[ROLL];							
-				cROLL   *= (GainInADC[ROLL]  * ROLL_GAIN_MULTIPLIER);		
+				cROLL   *= (GainInADC[PITCH] /*GainInADC[ROLL]*/  * ROLL_GAIN_MULTIPLIER);		
 				cROLL   /= ADC_GAIN_DIVIDER;	
 				
 				// calculate YAW
@@ -384,26 +392,21 @@ void loop(void)
 				MotorOut3 += fYAW ;
 				MotorOut4 -= fYAW ;
 			}
-		}
-				
+			
+			
 			// Save motors from turning-off
 			if (MotorOut1<10) MotorOut1=10;
 			if (MotorOut2<10) MotorOut2=10;
 			if (MotorOut3<10) MotorOut3=10;
 			if (MotorOut4<10) MotorOut4=10;
-	}		
+			
+			
+		} // End of ARMED & Throttle > Minimum
+				
+			
+	}  // End of Throttle stick is NOT Down [Armed Could be True or not]
 	
-	
-		
-	
-	if (!Armed)
-	{
-		MotorOut1 = 0;
-		MotorOut2 = 0;
-		MotorOut3 = 0;
-		MotorOut4 = 0;
-	}
-		
+
 	output_motor_ppm();
 	
 	if (bResetTCNR1_X==true)
@@ -427,25 +430,25 @@ void RxGetChannels(void)
 
 	RxChannel = RxChannel1;
 	RxChannel -= Config.RxChannel1ZeroOffset;				// normalise   [ - 0 + ]
-	RxInRoll = (RxChannel >> 2);                    //   -400:400  "
+	RxInRoll = (RxChannel >> StickDivFactor);				//   -250:250  "
 
 	while ( RxChannelsUpdatingFlag );
 
 	RxChannel = RxChannel2;
 	RxChannel -= Config.RxChannel2ZeroOffset;				// normalise	[ - 0 + ]
-	RxInPitch = (RxChannel >> 2);                   //     "
+	RxInPitch = (RxChannel >> StickDivFactor);				//     "
 
 	while ( RxChannelsUpdatingFlag );
 
 	RxChannel = RxChannel3;
 	RxChannel -= Config.RxChannel3ZeroOffset;				// scale 0->100	[  0  + ]
-	RxInCollective = (RxChannel >> 3);              // 
+	RxInCollective = (RxChannel >> 3);						// 
 
 	while ( RxChannelsUpdatingFlag );
 
 	RxChannel = RxChannel4;
 	RxChannel -= Config.RxChannel4ZeroOffset;				// normalise	[ - 0 + ]
-	RxInYaw = (RxChannel >> 2);                     //     "
+	RxInYaw = (RxChannel >> StickDivFactor);				//     "
 	
 }
 
@@ -496,7 +499,20 @@ int16_t FastDiv (int16_t x, int y)
 	for (int i=0;i<y;++i)
 	{
 		
-		x = x > 1;
+		x = x >> 1;
+	}
+	
+	return x;
+}
+
+
+int16_t FastMult (int x, int y)
+{
+	
+	for (int i=0;i<y;++i)
+	{
+		
+		x = x << 1;
 	}
 	
 	return x;

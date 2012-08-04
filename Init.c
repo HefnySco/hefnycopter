@@ -96,10 +96,9 @@ void InitTimers (void)
 	// and Stick-Arming
 	TCCR2A  = (1 << WGM22);	
 	TCCR2B  = (1 << CS21) | (1 << CS20);	//  div by 32 == 4 us tick
-	TIMSK2 |= (1 << TOIE2); // Enable overflow interrupt 
+	TIMSK2  = 0; // Disable Timer Interrupt 
 	TIFR2   = 0;
-	TCNT2   = 0;		// reset counter
-	TCNT2_X = 0;		// this overflows every 67.108864 sec, value tick 4us x 0xff = 0.001024 sec
+	TCNT2	= 0;		// this overflows every  4us x 0xff = 0.001024 sec,  value tick 4us 
 }
 
 
@@ -115,6 +114,8 @@ void ResetValues (void)
 	}
 }	
 
+int StickDiv;
+
 void StickCenter (void)
 {
 	// Stick Centering
@@ -128,31 +129,36 @@ void StickCenter (void)
 		LED = 0;
 		FlashLED (200,4);
 		
+		
+		StickDiv = FastMult (2,StickDivFactor);
+		
 		// 5 Seconds Delay, for binding
 		delay_ms(6000);
 		
 		FlashLED (200,2);
 		
-		for (int i=0;i<4;i++)
-		{
-	 		RxGetChannels();
+		while (1)
+		{	
+			for (int i=0;i<4;i++)
+			{
+	 			RxGetChannels();
 
-		    Config.RxChannel1ZeroOffset += RxInRoll;
-		    Config.RxChannel2ZeroOffset += RxInPitch;
-		    Config.RxChannel4ZeroOffset += RxInYaw;
+				Config.RxChannel1ZeroOffset = (RxInRoll << StickDivFactor);
+				Config.RxChannel2ZeroOffset = (RxInPitch << StickDivFactor);
+				Config.RxChannel4ZeroOffset = (RxInYaw << StickDivFactor);
 
-			delay_ms(100);
-		}
+				delay_ms(100);
+			}
 		
-		Config.RxChannel3ZeroOffset  = 1120;
+			Config.RxChannel3ZeroOffset  = 1120;
 	    
-		// Store gyro direction to EEPROM
-		Save_Config_to_EEPROM();
+			// Store gyro direction to EEPROM
+			Save_Config_to_EEPROM();
 
-		// flash LED, Ending Sign
-		LED = 1;
-		FlashLED (200,2);
-		while (1); // Loop forever
+			// flash LED, Ending Sign
+			LED = 1;
+			FlashLED (200,2);
+		}		
 	}
 }
 

@@ -35,23 +35,10 @@ ISR (TIMER0_COMPA_vect)
 
 ISR(TIMER1_OVF_vect)
 {
-	
 	TCNT1_X +=1; // This value overflow every 4294.967296 sec [1.19 hr], and tick every 0.065536 sec
+	//TIFR1 &= ~(1 << TOV1);		// Clear overflow
 }
 
-
-
-ISR(TIMER2_OVF_vect)
-{
-	
-	TCNT2_X +=1; // this overflows every 67.108864 sec, value tick 4us x 0xff = 0.001024 sec
-	/*if (TCNT2_X==10)
-	{
-		
-		LED= ~LED;
-		TCNT2_X=0;
-	}*/
-}
 
 #ifndef CPPM_MODE  	// Normal RX mode
 
@@ -123,7 +110,7 @@ ISR(PCINT0_vect)
 	} 
 	else 
 	{				// Falling
-		if (TCNT1 < RxChannel3Start) 
+		if (TCNT1 < RxChannel4Start) 
 		{
 			RxChannel4 = 0xffff - RxChannel4Start + TCNT1;
 		}				
