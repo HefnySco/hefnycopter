@@ -109,7 +109,7 @@ void ResetValues (void)
 	{
 	   Save_Default_Config_to_EEPROM();
 	   LED = 1;
-	   FlashLED (200,4);
+	   FlashLED (LED_LONG_TOGGLE,4);
 	   while (1);	
 	}
 }	
@@ -127,7 +127,7 @@ void StickCenter (void)
 	    Config.RxChannel4ZeroOffset  = 0;
 
 		LED = 0;
-		FlashLED (200,4);
+		FlashLED (LED_LONG_TOGGLE,4);
 		
 		
 		StickDiv = FastMult (2,StickDivFactor);
@@ -135,7 +135,7 @@ void StickCenter (void)
 		// 5 Seconds Delay, for binding
 		delay_ms(6000);
 		
-		FlashLED (200,2);
+		FlashLED (LED_LONG_TOGGLE,2);
 		
 		while (1)
 		{	
@@ -157,7 +157,7 @@ void StickCenter (void)
 
 			// flash LED, Ending Sign
 			LED = 1;
-			FlashLED (200,2);
+			FlashLED (LED_LONG_TOGGLE,2);
 		}		
 	}
 }
@@ -169,7 +169,7 @@ void GyroRevereing (void)
 	if (GainInADC[ROLL] <= MIN_POT_Extreme)		// less than 5% (5/100) * 1023 = 51 
 	{
 		// flash LED 4 times
-		FlashLED (200,4);
+		FlashLED (LED_LONG_TOGGLE,4);
 		
 		while(1)
 		{
@@ -179,37 +179,37 @@ void GyroRevereing (void)
 				Config.RollGyroDirection = GYRO_NORMAL;
 				Save_Config_to_EEPROM();
 				delay_ms(200);
-				FlashLED (200,2);
+				FlashLED (LED_LONG_TOGGLE,2);
 				delay_ms(500);
 			} if (RxInRoll > STICK_RIGHT) {	// reverse(right)
 				Config.RollGyroDirection = GYRO_REVERSED;
 				Save_Config_to_EEPROM();
 				delay_ms(200);
-				FlashLED (200,3);
+				FlashLED (LED_LONG_TOGGLE,3);
 				delay_ms(500);
 			} else if (RxInPitch < STICK_LEFT) { // normal(up)
 				Config.PitchGyroDirection = GYRO_NORMAL;
 				Save_Config_to_EEPROM();
 				delay_ms(200);
-				FlashLED (200,4);
+				FlashLED (LED_LONG_TOGGLE,4);
 				delay_ms(500);
 			} else if (RxInPitch > STICK_RIGHT) { // reverse(down)
 				Config.PitchGyroDirection = GYRO_REVERSED;
 				Save_Config_to_EEPROM();
 				delay_ms(200);
-				FlashLED (200,5);
+				FlashLED (LED_LONG_TOGGLE,5);
 				delay_ms(500);
 			} else if (RxInYaw > STICK_RIGHT) { // normal(left)
 				Config.YawGyroDirection = GYRO_NORMAL;
 				Save_Config_to_EEPROM();
 				delay_ms(200);
-				FlashLED (200,6);
+				FlashLED (LED_LONG_TOGGLE,6);
 				delay_ms(500);
 			} else if (RxInYaw < STICK_LEFT ) { // reverse(right)
 				Config.YawGyroDirection = GYRO_REVERSED;
 				Save_Config_to_EEPROM();
 				delay_ms(200);
-				FlashLED (200,7);
+				FlashLED (LED_LONG_TOGGLE,7);
 				delay_ms(500);
 			}
 		}
@@ -222,7 +222,7 @@ void ESCThrottleCalibration (void)
 	if ((GainInADC[YAW] <= MIN_POT_Extreme))
 	{
 		// flash LED 4 times
-		FlashLED (200,4);
+		FlashLED (LED_LONG_TOGGLE,4);
 		
 		LED =1;
 		Armed = true;

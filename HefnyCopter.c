@@ -219,7 +219,7 @@ void loop(void)
 			{
 				Armed = false;
 				LED = 0;
-				FlashLED (200,4);
+				FlashLED (LED_LONG_TOGGLE,4);
 				TCNT1_X_snapshot =0; // reset timer
 			}
 		}
@@ -233,10 +233,10 @@ void loop(void)
 			{
 				Armed = true;
 				LED = 1;
-				FlashLED (200,4);
+				FlashLED (LED_LONG_TOGGLE,4);
 				CalibrateGyros();
 				ReadGainValues();
-				FlashLED (50,4);
+				FlashLED (LED_SHORT_TOGGLE,4);
 				TCNT1_X_snapshot =0; // reset timer
 			}		
 		}
@@ -267,7 +267,7 @@ void loop(void)
 				{
 					bXQuadMode = false;
 					LED = 0;
-					FlashLED (200,4);
+					FlashLED (LED_LONG_TOGGLE,4);
 					TCNT1_X_snapshot =0; // reset timer
 				}		
 

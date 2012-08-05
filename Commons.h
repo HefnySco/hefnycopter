@@ -64,8 +64,8 @@
 // defines output rate to ESC/Servo
 // either define by setting ESC_RATE (Max is approx 495Hz)
 // uses Timer 1 ticks to control output rate.
-#define ESC_RATE 310	// in Hz
-//#define ESC_RATE 400	// in Hz (at SINGLE_COPTER and DUAL_COPTER)
+//#define ESC_RATE 310	// in Hz
+#define ESC_RATE 400	// in Hz (at SINGLE_COPTER and DUAL_COPTER)
 //#define ESC_RATE 450	// in Hz
 //#define ESC_RATE 495	// in Hz
 
@@ -104,6 +104,8 @@ enum ADCInputs		{	YAW_GYRO = 0, PITCH_GYRO, ROLL_GYRO, ROLL_POT, PITCH_POT, YAW_
 
 /* EOF - Enumerations */
 
+#define LED_LONG_TOGGLE 100
+#define LED_SHORT_TOGGLE 50
 
 volatile bool Armed;
 
