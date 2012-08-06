@@ -48,6 +48,18 @@
 //			Loop of PWM_LOW_PULSE_INTERVAL is back dependent on TCNT2 because we need ATOMIC read if we use TCNT2 that disables interrupts.
 //			ISR - Throttle time variable corrected.
 //			Min Motor Values =10 moved to the correct position.
+// 0.5
+//		* remove _delay_ms(10); from Calibrating Gyro
+//		* update ADC_GAIN_DIVIDER to 1000 
+//		* remove gyroADC_update : no need for it
+//		* reduce MAX_GYRO_VALUEfrom 500 to 250
+//		* create MAX_GYRO_RESPONSE_VALUE and set it to 25
+//		* change RXInxxx variables
+//		* increase StickDivFactor to 4
+//		* decrease STICK_RIGHTfrom 60 to 20 Stick ranges should be frpm [-25, +25]
+//		* remove PITCH_GAIN_MULTIPLIER & ROLL_GAIN_MULTIPLIER & YAW_GAIN_MULTIPLIER
+//		* POT ROLL: is used as YAW trims.
+//		* POT PITCH: is used for both Pitch & Roll Gyros
 
 #define QUAD_COPTER
 /*
@@ -85,13 +97,14 @@ Quad-X
 // Adjust these:
 // 		down if you have too much gyro assistance
 // 		up if you have maxxed your gyro gain 
-#define ROLL_GAIN_MULTIPLIER 		1 //3	// 2
-#define PITCH_GAIN_MULTIPLIER 		1 //3	// 2
-#define YAW_GAIN_MULTIPLIER 		1 //3	// 2
+#define ROLL_GAIN_MULTIPLIER 		1 //3	// 2		/* used as YAW offset */
+#define PITCH_GAIN_MULTIPLIER 		1 //3	// 2		/* used for both Roll & Pitch */
+#define YAW_GAIN_MULTIPLIER 		1 //3	// 2		
 
-#define ADC_GAIN_DIVIDER			800			// doubling value will decrease POTS range to half.
-#define MAX_GYRO_VALUE				500			// max value is 1024 /2  u can set it to [300 , 200] the higher the most sensitive
-
+#define ADC_GAIN_DIVIDER			1000		// doubling value will decrease POTS range to half.
+//#define STICK_GAIN_DIVIDER			2048
+#define MAX_GYRO_VALUE				250			// max value is 1024 /2  u can set it to [300 , 200] the higher the most sensitive
+#define MAX_GYRO_RESPONSE_VALUE		25
 
 
 /* ----------- Main Code -----------  */
@@ -195,6 +208,36 @@ int16_t fPITCH;
 int16_t fYAW;
 bool bXQuadMode = false;	
 bool bResetTCNR1_X = true;
+
+
+void loop2 (void)
+{
+	ReadGainValues();
+	ReadGyros();
+	RxGetChannels();
+	/*
+	if (gyroADC[PITCH]> 200) gyroADC[PITCH] = 200;
+	cPITCH   = gyroADC[PITCH];
+				cPITCH  *= (GainInADC[PITCH]);
+				cPITCH  /= ADC_GAIN_DIVIDER;
+				
+	if (cPITCH > 25)
+	{
+		LED = ~LED;
+	}*/
+	
+	if ((RxInYaw < STICK_LEFT))
+	{
+		LED =0;
+	}
+	
+	if ((RxInYaw > STICK_RIGHT))
+	{
+		LED =1;
+	}
+}
+
+
 void loop(void)
 {
 	
@@ -301,43 +344,54 @@ void loop(void)
 			}
 				
 	
+	
+			
 			MotorOut1 = RxInCollective;
 			MotorOut2 = RxInCollective;
 			MotorOut3 = RxInCollective;
 			MotorOut4 = RxInCollective;		
 	
+	
+			/*
+			*
+			*	Stabilization Logic.
+			*	The logic is independent of Quad configuration 
+			*/
+	
 			ReadGyros();
 			ReadGainValues();
 			
-			
-		
-			gyroADC_updated[ROLL]	= (gyroADC[ROLL]);
-			gyroADC_updated[PITCH]	= (gyroADC[PITCH]);
-			gyroADC_updated[YAW]	= (gyroADC[YAW]);
-			
-			
+				
 			// LIMIT GYRO
-			if (gyroADC_updated[PITCH]> MAX_GYRO_VALUE)		gyroADC_updated[PITCH] = MAX_GYRO_VALUE;
-			if (gyroADC_updated[PITCH]< -MAX_GYRO_VALUE)	gyroADC_updated[PITCH] = -MAX_GYRO_VALUE;
-			if (gyroADC_updated[ROLL]> MAX_GYRO_VALUE)		gyroADC_updated[ROLL] = MAX_GYRO_VALUE;
-			if (gyroADC_updated[ROLL]< -MAX_GYRO_VALUE)		gyroADC_updated[ROLL] = -MAX_GYRO_VALUE;
-			if (gyroADC_updated[YAW]> MAX_GYRO_VALUE)		gyroADC_updated[YAW] = MAX_GYRO_VALUE;
-			if (gyroADC_updated[YAW]< -MAX_GYRO_VALUE)		gyroADC_updated[YAW] = -MAX_GYRO_VALUE;
-			
-			// calculate PITCH
-				cPITCH   = gyroADC_updated[PITCH];
-				cPITCH  *= (GainInADC[PITCH]    * PITCH_GAIN_MULTIPLIER);
+		/*	if (gyroADC[PITCH]> MAX_GYRO_VALUE)		gyroADC[PITCH] = MAX_GYRO_VALUE;
+			if (gyroADC[PITCH]< -MAX_GYRO_VALUE)	gyroADC[PITCH] = -MAX_GYRO_VALUE;
+			if (gyroADC[ROLL]> MAX_GYRO_VALUE)		gyroADC[ROLL] = MAX_GYRO_VALUE;
+			if (gyroADC[ROLL]< -MAX_GYRO_VALUE)		gyroADC[ROLL] = -MAX_GYRO_VALUE;
+			if (gyroADC[YAW]> MAX_GYRO_VALUE)		gyroADC[YAW] = MAX_GYRO_VALUE;
+			if (gyroADC[YAW]< -MAX_GYRO_VALUE)		gyroADC[YAW] = -MAX_GYRO_VALUE;
+			*/
+				// calculate PITCH
+				cPITCH   = gyroADC[PITCH];
+				cPITCH  *= (GainInADC[PITCH]); //   * PITCH_GAIN_MULTIPLIER);
 				cPITCH  /= ADC_GAIN_DIVIDER;
 				
 				// calculate ROLL
-				cROLL    = gyroADC_updated[ROLL];							
-				cROLL   *= (GainInADC[PITCH] /*GainInADC[ROLL]*/  * ROLL_GAIN_MULTIPLIER);		
+				cROLL    = gyroADC[ROLL];							
+				cROLL   *= (GainInADC[PITCH]); // /*GainInADC[ROLL]*/  * ROLL_GAIN_MULTIPLIER);		
 				cROLL   /= ADC_GAIN_DIVIDER;	
 				
 				// calculate YAW
-				cYAW     = gyroADC_updated[YAW]; 
-				cYAW	 *= (GainInADC[YAW] * YAW_GAIN_MULTIPLIER); 
+				cYAW     = gyroADC[YAW]; 
+				cYAW	 *= GainInADC[YAW] ; //* YAW_GAIN_MULTIPLIER; 
 				cYAW    /= ADC_GAIN_DIVIDER;
+				cYAW	+= ((GainInADC[ROLL] - MID_POT) >> 5);
+			
+			if (cPITCH > MAX_GYRO_RESPONSE_VALUE)		cPITCH = MAX_GYRO_RESPONSE_VALUE;
+			if (cPITCH < -MAX_GYRO_RESPONSE_VALUE)		cPITCH = -MAX_GYRO_RESPONSE_VALUE;
+			if (cROLL  > MAX_GYRO_RESPONSE_VALUE)		cROLL  = MAX_GYRO_RESPONSE_VALUE;
+			if (cROLL  < -MAX_GYRO_RESPONSE_VALUE)		cROLL  = -MAX_GYRO_RESPONSE_VALUE;
+			if (cYAW   > MAX_GYRO_RESPONSE_VALUE)		cYAW   = MAX_GYRO_RESPONSE_VALUE;
+			if (cYAW   < -MAX_GYRO_RESPONSE_VALUE)		cYAW   = -MAX_GYRO_RESPONSE_VALUE;
 				
 					
 				// Add ROLL [chk reverse - add to RX - update motors]
@@ -357,40 +411,50 @@ void loop(void)
 				MotorOut3 -= cYAW;
 				MotorOut4 += cYAW;
 				
-				fROLL = (RxInRoll >> 2); 
-				fPITCH = (RxInPitch >> 2);
-				fYAW =	(RxInYaw >> 2);
-				
+				//fROLL = (RxInRoll >> 2); 
+				//fPITCH =(RxInPitch >> 2);
+				//fYAW =(RxInYaw >> 2);
+				//fROLL = GainInADC[ROLL] * RxInRoll /STICK_GAIN_DIVIDER ; //(RxInRoll >> 2); 
+				//fPITCH =GainInADC[ROLL] * RxInPitch /STICK_GAIN_DIVIDER ; // (RxInPitch >> 2);
+				//fYAW =GainInADC[YAW] * RxInYaw /STICK_GAIN_DIVIDER ; //	(RxInYaw >> 2);
+			
+			
+			/*
+			*
+			*	Pilot Control Logic.
+			*	
+			*/
+	
 			if (bXQuadMode==true)
 			{
 							
-				MotorOut1 += fROLL ;
-				MotorOut2 += fROLL ;
-				MotorOut3 -= fROLL ;
-				MotorOut4 -= fROLL ;
+				MotorOut1 += RxInRoll ;
+				MotorOut2 += RxInRoll ;
+				MotorOut3 -= RxInRoll ;
+				MotorOut4 -= RxInRoll ;
 				
-				MotorOut1 += fPITCH;
-				MotorOut2 -= fPITCH;
-				MotorOut3 += fPITCH;
-				MotorOut4 -= fPITCH;
+				MotorOut1 += RxInPitch;
+				MotorOut2 -= RxInPitch;
+				MotorOut3 += RxInPitch;
+				MotorOut4 -= RxInPitch;
 				
-				MotorOut1 -= fYAW;
-				MotorOut2 += fYAW;
-				MotorOut3 += fYAW;
-				MotorOut4 -= fYAW;
+				MotorOut1 -= RxInYaw;
+				MotorOut2 += RxInYaw;
+				MotorOut3 += RxInYaw;
+				MotorOut4 -= RxInYaw;
 			}
 			else
 			{
-				MotorOut2 += fROLL ;
-				MotorOut3 -= fROLL ;
+				MotorOut2 += RxInRoll ;
+				MotorOut3 -= RxInRoll ;
 				
-				MotorOut1 += fPITCH ;
-				MotorOut4 -= fPITCH ;
+				MotorOut1 += RxInPitch ;
+				MotorOut4 -= RxInPitch ;
 		
-				MotorOut1 -= fYAW ;
-				MotorOut2 += fYAW ;
-				MotorOut3 += fYAW ;
-				MotorOut4 -= fYAW ;
+				MotorOut1 -= RxInYaw ;
+				MotorOut2 += RxInYaw ;
+				MotorOut3 += RxInYaw ;
+				MotorOut4 -= RxInYaw ;
 			}
 			
 			
@@ -430,7 +494,7 @@ void RxGetChannels(void)
 
 	RxChannel = RxChannel1;
 	RxChannel -= Config.RxChannel1ZeroOffset;				// normalise   [ - 0 + ]
-	RxInRoll = (RxChannel >> StickDivFactor);				//   -250:250  "
+	RxInRoll = (RxChannel >> StickDivFactor);				//   -25:25  "
 
 	while ( RxChannelsUpdatingFlag );
 

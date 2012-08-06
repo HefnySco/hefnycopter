@@ -45,7 +45,7 @@ void CalibrateGyros(void)
 		gyroZero[PITCH] += gyroADC[PITCH];	
 		gyroZero[YAW] 	+= gyroADC[YAW];
 
-		_delay_ms(10);					// Get a better gyro average over time
+		//_delay_ms(10);					// Get a better gyro average over time
 	}
 
 	gyroZero[ROLL] 	= (gyroZero[ROLL] >> 5);	//Divide by 32				

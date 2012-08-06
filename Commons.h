@@ -21,7 +21,7 @@
 #define MIN_POT			100
 #define MIN_POT_Extreme	50
 
-// This one determines the range of the gain potmeters.
+// This one determines the range of the gain pot meters.
 //Reducing the value by one doubles the range.
 //Increasing the value by one halves the range.
 
@@ -38,7 +38,7 @@
 #define StickScalePitch	 11 //2048	//2^11
 #define StickScaleYaw	 11 //2048	//2^11
 
-#define StickDivFactor	2	// 2^(StickDivFactor)
+#define StickDivFactor	4	// 2^(StickDivFactor)
 
 // This one determines the maximum Yaw command applied, in percent.
 // Less gives less yaw authority, but also less possibility of motor saturation.
@@ -49,10 +49,10 @@
 
 		
 // Stick Arming - enable this line to enable Stick arming
-#define STICK_LEFT  -60 //-100
-#define STICK_RIGHT  60 //100
+#define STICK_LEFT  -20 //-100
+#define STICK_RIGHT  20 //100
 #define STICKThrottle_ARMING 10
-#define STICKPOSITION_MIN	 16  // minimum duration for stick to accept a command.
+#define STICKPOSITION_MIN	 16  // minimum time duration for stick to accept a command.
 // Max Collective
 // limits the maximum stick collective (range 80->100  100=Off)
 // this allows gyros to stabilize better when full throttle applied
@@ -144,10 +144,10 @@ volatile uint16_t RxChannel2;
 volatile uint16_t RxChannel3;
 volatile uint16_t RxChannel4;
 
-volatile int16_t RxInRoll;			// program vars: Normalized values of RXChanneln adjusted in RxGetChannels()
-volatile int16_t RxInPitch;
-volatile int16_t RxInCollective;
-volatile int16_t RxInYaw;
+volatile int8_t RxInRoll;			// program vars: Normalized values of RXChanneln adjusted in RxGetChannels()
+volatile int8_t RxInPitch;
+volatile int8_t RxInCollective;
+volatile int8_t RxInYaw;
 
 
 
