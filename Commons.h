@@ -74,7 +74,7 @@
 #define PWM_LOW_PULSE_INTERVAL (1000000 / ESC_RATE ) // 2020
 //or define by setting PWM_LOW_PULSE_INTERVAL (minimum is 1)
 
-#define BASE_PULSE 1120 / 16 //(1120 / 8) // 1120us / 8us groups
+#define BASE_PULSE  1104 / 16  //1120 / 16 :: I reduced it from 1120 to 1104 as trimming.
 
 /* EOF - DEFINITIONS */
 

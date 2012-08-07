@@ -65,7 +65,7 @@ void output_motor_ppm(void)
 	{
 		TCNT2=0;
 		tempTCNT2 = TCNT2 + 4; 	
-		LED =~LED;
+		//LED =~LED;
 		while (TCNT2 < tempTCNT2);		// 8MHz * 64 = 8us
 		PWM_Low_Pulse_Interval -=1;
 		
@@ -132,19 +132,24 @@ void output_motor_ppm(void)
 	// Now switch off the pulses as required
 	// 1120us to 1920us = 800us / 4us = 200 steps
 	// Motors 0->200, 1120->1920 us
+	TCNT2 = 0;
+	tempTCNT2 = TCNT2 + 1; 
 	for (i=0;i<MOTORS_HIGH_VALUE+1;i++)			// 220 gives a max of 2000us (1120 + (220 * 4us)) - TWEAK THIS
 	{
-		//while (TCNT2 < 1);		// 8MHz * 32 = 4us
-		//TCNT2 = 0;
-		//while (TCNT1 < tempTCNT1);
-		//tempTCNT1 = TCNT1 + 4;
+		while (TCNT2 < tempTCNT2);
+
 		// NO CODE SHOULD BE ADDED HERE . IT IS ECAXCTLY 4 us loop
-		asm ("nop");
-		asm ("nop");
+		//asm ("nop");
+		//asm ("nop");
+		//asm ("nop");
+		//asm ("nop");
+		
 		if (i==m1) M1 = 0;
 		if (i==m2) M2 = 0;
 		if (i==m3) M3 = 0;
 		if (i==m4) M4 = 0;
+		TCNT2 = 0;
+		tempTCNT2 = TCNT2 + 1; 
 	} 
 
 }

@@ -60,6 +60,10 @@
 //		* remove PITCH_GAIN_MULTIPLIER & ROLL_GAIN_MULTIPLIER & YAW_GAIN_MULTIPLIER
 //		* POT ROLL: is used as YAW trims.
 //		* POT PITCH: is used for both Pitch & Roll Gyros
+// 0.6	
+//		* Timing correction after connecting output to an oscilloscopes to check exact signal timing. [BASE_PULSE= 1104 / 16  instead of 1120 / 16]
+
+
 
 #define QUAD_COPTER
 /*
@@ -153,7 +157,7 @@ int main(void)
 	CalibrateGyros();
 	Armed=false;
 	
-	
+	TCNT1 =0;
 	while (1)
 	{
 		loop();
@@ -209,33 +213,26 @@ int16_t fYAW;
 bool bXQuadMode = false;	
 bool bResetTCNR1_X = true;
 
-
+/*
+uint16_t GyroStartReading;
+int16_t DegreeYAW=0;
 void loop2 (void)
 {
 	ReadGainValues();
 	ReadGyros();
-	RxGetChannels();
-	/*
-	if (gyroADC[PITCH]> 200) gyroADC[PITCH] = 200;
-	cPITCH   = gyroADC[PITCH];
-				cPITCH  *= (GainInADC[PITCH]);
-				cPITCH  /= ADC_GAIN_DIVIDER;
-				
-	if (cPITCH > 25)
+	//RxGetChannels();
+	if ((gyroADC[PITCH]< 1000) && (gyroADC[PITCH]> -1000))
 	{
-		LED = ~LED;
-	}*/
-	
-	if ((RxInYaw < STICK_LEFT))
+		DegreeYAW +=(gyroADC[PITCH]);
+	}	
+	if (DegreeYAW > 200)
 	{
-		LED =0;
-	}
-	
-	if ((RxInYaw > STICK_RIGHT))
-	{
-		LED =1;
-	}
-}
+	  LED = 1;
+	}		
+	else 
+		LED = 0;
+		
+}*/
 
 
 void loop(void)
@@ -411,13 +408,7 @@ void loop(void)
 				MotorOut3 -= cYAW;
 				MotorOut4 += cYAW;
 				
-				//fROLL = (RxInRoll >> 2); 
-				//fPITCH =(RxInPitch >> 2);
-				//fYAW =(RxInYaw >> 2);
-				//fROLL = GainInADC[ROLL] * RxInRoll /STICK_GAIN_DIVIDER ; //(RxInRoll >> 2); 
-				//fPITCH =GainInADC[ROLL] * RxInPitch /STICK_GAIN_DIVIDER ; // (RxInPitch >> 2);
-				//fYAW =GainInADC[YAW] * RxInYaw /STICK_GAIN_DIVIDER ; //	(RxInYaw >> 2);
-			
+				
 			
 			/*
 			*
