@@ -86,7 +86,7 @@
     <Compile Include="Accessories\Beeper.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Accessories\glcdfont.c">
+    <Compile Include="Accessories\KeyBoard.cpp">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Accessories\LCD_ST7565.cpp">
@@ -98,6 +98,24 @@
     <Compile Include="Accessories\Misc.cpp">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="gfx\font12x16.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="gfx\font4x6.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="gfx\font6x8.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="gfx\Fonts.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="gfx\glcdfont.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="gfx\logo.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Include\Acc_Sensor.h">
       <SubType>compile</SubType>
     </Compile>
@@ -107,7 +125,13 @@
     <Compile Include="Include\Beeper.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Include\fonts.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Include\GlobalValues.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Include\Glyphs.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Include\Gyro_Sensor.h">
@@ -117,6 +141,9 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Include\HefnyCopter2.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Include\KeyBoard.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Include\LCD_ST7565.h">
@@ -157,6 +184,7 @@
     <Folder Include="Include" />
     <Folder Include="Accessories" />
     <Folder Include="Core" />
+    <Folder Include="gfx" />
     <Folder Include="Sensors" />
   </ItemGroup>
   <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />

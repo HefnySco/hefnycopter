@@ -15,7 +15,7 @@ class Acc_Sensor : public ADC_PORT
 {
 	public:
 		Acc_Sensor();
-
+		void Init(void);
 };
 
 

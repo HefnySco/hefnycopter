@@ -11,10 +11,11 @@
 #include <math.h>
 #include <avr/delay.h>
 #include <avr/pgmspace.h>
-
+ 
 #include "../include/IO_config.h"
 #include "../include/LCD_ST7565.h"
 #include "../Include/Misc.h"
+#include "../Include/Fonts.h"
 
 
 
@@ -29,7 +30,9 @@ uint8_t is_reversed = 1;
  const uint8_t pagemap[] = { 7, 6, 5, 4, 3, 2, 1, 0 };
 // a 5x7 font table
 extern uint8_t PROGMEM font[];
-extern uint8_t PROGMEM font6x8[];
+static uint8_t _curx, _cury;
+static fontdescriptor_t _font;
+
 
 // the memory buffer for the LCD
 uint8_t st7565_buffer[1024] = { 
@@ -116,7 +119,22 @@ uint8_t st7565_buffer[1024] = {
 static uint8_t xUpdateMin, xUpdateMax, yUpdateMin, yUpdateMax;
 #endif
 
-
+static const prog_uchar _initSeq[] = {
+CMD_DISPLAY_ON,
+CMD_SET_DISP_START_LINE,
+CMD_SET_ADC_NORMAL,
+CMD_SET_DISP_NORMAL,
+CMD_SET_ALLPTS_NORMAL,
+0xa2,
+0xee,
+CMD_SET_COM_NORMAL,
+0x2f,	//power control	Vreg int res ratio
+0x24,
+0xac,	//static off
+CMD_NOP,
+0xff,
+0x00 // Termination
+};	
 
 void LCD_ST7565::Init()
 {
@@ -131,11 +149,9 @@ void LCD_ST7565::Init()
   LCD_CS1 = HIGH;
   LCD_SClK = HIGH;
   LCD_RES = LOW;
-  
   _delay_us(500);
-  
   LCD_RES = HIGH;
- 
+ /*
 	st7565_Command(CMD_DISPLAY_ON); //LCD ON		Display start line set
 	st7565_Command(CMD_SET_DISP_START_LINE);
 
@@ -155,7 +171,16 @@ void LCD_ST7565::Init()
 	
 	st7565_Command(CMD_NOP); // NOP
 	st7565_Command(0xff);
-
+*/
+ 
+	const unsigned char* ptr = _initSeq;
+	uint8_t c;
+	while ((c = *ptr))
+	{
+		ptr+=1;
+		st7565_Command(c);
+	}		
+	
 	
 }
 
@@ -187,7 +212,7 @@ void LCD_ST7565::DrawBitmap(uint8_t x, uint8_t y,
 
 void LCD_ST7565::DrawString(uint8_t x, uint8_t line, char *c) {
   while (c[0] != 0) {
-    drawchar(x, line, c[0]);
+    DrawChar(x, line, c[0]);
     c++;
     x += 6; // 6 pixels wide
     if (x + 6 >= LCDWIDTH) {
@@ -205,7 +230,7 @@ void LCD_ST7565::DrawString_P(uint8_t x, uint8_t line, const char *str) {
     char c = pgm_read_byte(str++);
     if (! c)
       return;
-    drawchar(x, line, c);
+    DrawChar(x, line, c);
     x += 6; // 6 pixels wide
     if (x + 6 >= LCDWIDTH) {
       x = 0;    // ran out of this line
@@ -216,15 +241,62 @@ void LCD_ST7565::DrawString_P(uint8_t x, uint8_t line, const char *str) {
   }
 }
 
-void  LCD_ST7565::drawchar(uint8_t x, uint8_t line, char c) {
+
+
+
+void LCD_ST7565::LCDdWriteSprite_P(PGM_P sprite, uint8_t sizeX, uint8_t sizeY, uint8_t mode)
+{
+	uint8_t b = 0;
+	for (uint8_t i = 0; i < sizeX; i++)
+	{
+		for (uint8_t j = 0; j < sizeY; j++)
+		{
+			if (j % 8 == 0)
+					b = pgm_read_byte(sprite++);
+					
+			//if (mode == ROP_COPY)
+			//{
+				if ((_cury % 8 == 0) && (sizeY - j >= 8))
+				{
+					st7565_buffer[_curx + i, + (_cury + j*128) ] =b; //lcdSetByte(_curx + i, _cury + j, b);
+					j += 7; // just +7 b/c the loop increments anyway
+				}
+				else
+					//lcdSetPixel(_curx + i, _cury + j, b & 0x01);
+			//}				
+			//else if (mode == ROP_PAINT)
+			//{
+				//if (b & 0x01)
+					//lcdSetPixel(_curx + i, _cury + j, 1);
+			//}			
+			b >>= 1;
+		}
+	}	
+}
+
+void  LCD_ST7565::DrawChar(uint8_t x, uint8_t line, char c) {
 	
-  for (uint8_t i =0; i<5; i++ ) {
+/*  for (uint8_t i =0; i<5; i++ ) {
     st7565_buffer[x + (line*128) ] = pgm_read_byte(font +(c*5)+i);
     x++;
   }
 
   updateBoundingBox(x, line*8, x+5, line*8 + 8);
+  */
+
+	if (c == '\n')
+	{
+		_cury += _font.sizeY;
+		_curx = 0;
+	}
+	else
+	{
+		LCDdWriteSprite_P(_font.selector(c), _font.sizeX, _font.sizeY, 0);
+		_curx += _font.sizeX;
+	}
 }
+
+
 
 
 // bresenham's algorithm - thx wikpedia
@@ -480,7 +552,7 @@ void LCD_ST7565::ClearDisplay(void) {
 
 
 
-void LCD_ST7565::st7565_set_brightness(uint8_t val) {
+void LCD_ST7565::Set_Brightness(uint8_t val) {
     st7565_Command(CMD_SET_VOLUME_FIRST);
     st7565_Command(CMD_SET_VOLUME_SECOND | (val & 0x3f));
 }
@@ -509,15 +581,12 @@ void LCD_ST7565::st7565_Data(uint8_t c) {
 void LCD_ST7565::ShiftOut(uint8_t datain)
 { 
 	unsigned char i;
-	unsigned char Series,Temp;
-	Series = datain;
-
+	
 	for(i=8;i>0;i--)
 	{
 		LCD_SClK=0;
 	
-		Temp=Series & 0x80;
-		if(Temp)
+		if(datain & 0x80)
 		{
 			LCD_SI=1;
 		}
@@ -526,7 +595,7 @@ void LCD_ST7565::ShiftOut(uint8_t datain)
 			LCD_SI=0;
 		}
 		LCD_SClK=1;
-		Series = Series << 1; 
+		datain = datain << 1; 
 	}
 }
 

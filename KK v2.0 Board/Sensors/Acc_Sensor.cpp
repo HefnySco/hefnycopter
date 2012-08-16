@@ -20,3 +20,10 @@ Acc_Sensor::Acc_Sensor()
 	
 }
 
+
+void Acc_Sensor::Init(void)
+{
+	ACC_X  = INPUT;
+	ACC_Y  = INPUT;
+	ACC_Z  = INPUT;
+}

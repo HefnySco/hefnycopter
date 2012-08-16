@@ -64,7 +64,7 @@ class LCD_ST7565
     
 	void st7565_Command(uint8_t c);
 	void st7565_Data(uint8_t c);
-	void st7565_set_brightness(uint8_t val);
+	void Set_Brightness(uint8_t val);
 	void ClearDisplay(void);
 	void Clear();
 	void Display();
@@ -77,7 +77,7 @@ class LCD_ST7565
   void DrawRect(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint8_t color);
   void FillRect(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint8_t color);
   void DrawLine(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t color);
-  void drawchar(uint8_t x, uint8_t line, char c);
+  void DrawChar(uint8_t x, uint8_t line, char c);
   void DrawString(uint8_t x, uint8_t line, char *c);
   void DrawString_P(uint8_t x, uint8_t line, const char *c);
   void DrawBitmap(uint8_t x, uint8_t y, const uint8_t *bitmap, uint8_t w, uint8_t h, uint8_t color);
@@ -86,6 +86,7 @@ class LCD_ST7565
   int8_t sid, sclk, a0, rst, cs;
   void my_setpixel(uint8_t x, uint8_t y, uint8_t color); 
   void ShiftOut(uint8_t c);
+  void LCDdWriteSprite_P(PGM_P sprite, uint8_t sizeX, uint8_t sizeY, uint8_t mode);
 };
 
 

@@ -20,3 +20,10 @@ Gyro_Sensor::Gyro_Sensor()
 	
 }
 
+
+void Gyro_Sensor::Init(void)
+{
+	GYRO_X = INPUT;
+	GYRO_Y = INPUT;
+	GYRO_Z = INPUT;
+}

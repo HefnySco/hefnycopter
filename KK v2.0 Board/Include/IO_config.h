@@ -27,7 +27,23 @@
 
 
 
+/// Keyboard
+#define KEYBOARD_PORT			PORTB
+#define KEYBOARD_DDR			DDRB
+#define KEYBOARD_PIN			PINB
+#define KEY_S1_BIT_PNUM				7
+#define KEY_S2_BIT_PNUM				6
+#define KEY_S3_BIT_PNUM				5
+#define KEY_S4_BIT_PNUM				4
 
+#define KEY_S1_BIT				REGISTER_BIT(PORTB,7)
+#define KEY_S1_BIT_DIR			REGISTER_BIT(DDRB,7)
+#define KEY_S2_BIT				REGISTER_BIT(PORTB,6)
+#define KEY_S2_BIT_DIR			REGISTER_BIT(DDRB,6)
+#define KEY_S3_BIT				REGISTER_BIT(PORTB,5)
+#define KEY_S3_BIT_DIR			REGISTER_BIT(DDRB,5)
+#define KEY_S4_BIT				REGISTER_BIT(PORTB,4)
+#define KEY_S4_BIT_DIR			REGISTER_BIT(DDRB,4)
 
 
 ///////////// LED

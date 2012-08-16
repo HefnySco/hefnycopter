@@ -15,7 +15,8 @@ class Gyro_Sensor : public ADC_PORT
 {
 	public:
 		Gyro_Sensor();
-
+		void Init(void);
+		
 };
 
 

@@ -8,6 +8,8 @@
 #include <avr/io.h>
 #include <math.h>
 #include <avr/delay.h>
+#include <avr/pgmspace.h>
+
 #include "Include/GlobalValues.h"
 #include "Include/HefnyCopter2.h"
 #include "Include/IO_config.h"
@@ -18,6 +20,7 @@
 #include "Include/Gyro_Sensor.h"
 #include "Include/LCD_ST7565.h"
 #include "Include/Motor.h"
+#include "Include/KeyBoard.h"
 
 LED			mOrangeLED;
 Beeper		mBeeper;
@@ -25,7 +28,7 @@ LCD_ST7565	mLCD;
 Gyro_Sensor mGyroSensor;
 Acc_Sensor  mAccSensor;
 ADC_PORT    mAdcPort;
-
+KeyBoard	mKeyBoard;
 Motor		mMotor;
 
 void Setup (void)
@@ -52,12 +55,6 @@ void Setup (void)
 	
 	
 	// Sensors
-	ACC_X  = INPUT;
-	ACC_Y  = INPUT;
-	ACC_Z  = INPUT;
-	GYRO_X = INPUT;
-	GYRO_Y = INPUT;
-	GYRO_Z = INPUT;
 	V_BAT  = INPUT;
 	
 	// Timers
@@ -74,15 +71,19 @@ void Setup (void)
 	//       76543210
 	PCMSK1= 0b00000001;
 
+	mAccSensor.Init();
+	mGyroSensor.Init();
 	mAdcPort.Init();
+	
+	mKeyBoard.Init();
 	mOrangeLED.FlashLED(200,4);
 	//mBeeper.Beep(200,4);
-	
+	mKeyBoard.Init();
 	mLCD.Init();
 	_delay_ms(500);
    //mLCD.Write_Instruction(CMD_TEST);
    mLCD.Clear();
-   mLCD.DrawString(0,0, (char*)"I am ready");
+   mLCD.DrawString(0,0, (char*)"I am ready ABCDEFG abcde");
    mLCD.DrawLine(0,0,25,25,1);
    mLCD.DrawCircle(50,50,10,1);
    mLCD.Display();
@@ -100,6 +101,15 @@ int main(void)
 }
 
 
+void Loop(void)
+{
+	
+	if ((mKeyBoard.KeyboardRead() & KEY_1))
+	{
+		LED_Orange = ON;
+	}
+	
+}	
 
 
 uint16_t TCNT1_X_snapshot=0;
@@ -112,9 +122,17 @@ int16_t fYAW;
 bool bXQuadMode = false;	
 bool bResetTCNR1_X = true;
 
-void Loop(void)
+void Loop2(void)
 {
 	
+	if ((mKeyBoard.KeyboardRead() & KEY_1))
+	{
+		LED_Orange = OFF;
+	}
+	else
+	{
+		LED_Orange = ON;
+	}
 	bResetTCNR1_X = true;
 	
 
