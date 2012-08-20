@@ -52,20 +52,20 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <ToolchainSettings>
       <AvrGcc>
-        <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
-        <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
-        <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
-        <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
-        <avrgcc.compiler.optimization.level>Optimize (-O1)</avrgcc.compiler.optimization.level>
-        <avrgcc.compiler.optimization.DebugLevel>Default (-g2)</avrgcc.compiler.optimization.DebugLevel>
-        <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
-        <avrgcc.assembler.debugging.DebugLevel>Default (-g2)</avrgcc.assembler.debugging.DebugLevel>
-        <avrgcc.linker.libraries.Libraries>
-          <ListValues>
-            <Value>m</Value>
-          </ListValues>
-        </avrgcc.linker.libraries.Libraries>
-      </AvrGcc>
+  <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
+  <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
+  <avrgcc.compiler.optimization.level>Optimize (-O1)</avrgcc.compiler.optimization.level>
+  <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
+  <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
+  <avrgcc.compiler.optimization.DebugLevel>Maximum (-g3)</avrgcc.compiler.optimization.DebugLevel>
+  <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
+  <avrgcc.linker.libraries.Libraries>
+    <ListValues>
+      <Value>m</Value>
+    </ListValues>
+  </avrgcc.linker.libraries.Libraries>
+  <avrgcc.assembler.debugging.DebugLevel>Default (-g2)</avrgcc.assembler.debugging.DebugLevel>
+</AvrGcc>
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
@@ -82,6 +82,9 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Accessories\Misc.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Core\Timer.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="GFX\font12x16.c">
@@ -115,9 +118,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Include\fonts.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="Include\global.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Include\GlobalValues.h">
@@ -159,13 +159,19 @@
     <Compile Include="Include\Motor.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Include\Receiver.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Include\Timer.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Include\typedefs.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="ISR.c">
+    <Compile Include="Motor.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Motor.c">
+    <Compile Include="Receiver.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Sensors\Acc_Sensor.c">
@@ -186,8 +192,14 @@
     <Folder Include="Accessories" />
     <Folder Include="GFX" />
     <Folder Include="Include" />
+    <Folder Include="DevDocs" />
     <Folder Include="UI" />
     <Folder Include="Sensors" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DevDocs\ScreenStructure.txt">
+      <SubType>compile</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
 </Project>

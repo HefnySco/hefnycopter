@@ -22,6 +22,9 @@
 #include "Include/Motor.h"
 #include "Include/KeyBoard.h"
 #include "Include/Menu.h"
+#include "Include/Timer.h"
+#include "Include/Receiver.h"
+
 
 static const prog_char versionNum[] = "Version 0.1";
 static const prog_char versionAuthor[] = "HefnyCopter2";
@@ -30,12 +33,8 @@ static const prog_char versionAuthor[] = "HefnyCopter2";
 
 void Setup (void)
 {
-	
-	RX_ROLL_DIR 		= INPUT;
-	RX_PITCH_DIR 		= INPUT;
-	RX_COLL_DIR   		= INPUT;
-	RX_YAW_DIR   	 	= INPUT;
-	RX_AUX_DIR   	 	= INPUT;
+	RX_Init();
+
 
 	// Motors
 	M1_DIR = OUTPUT;
@@ -66,25 +65,26 @@ void Setup (void)
 	EIMSK  = _BV(INT0)  | _BV(INT1)  | _BV(INT2);	// enable interrupt for INT0, INT1 and INT2
 	EIFR   = _BV(INTF0) | _BV(INTF1) | _BV(INTF2);	// clear interrupts
 		
-		//PCICR |= _BV(PCIE1) | _BV(PCIE3);				// enable PCI1 and PCI3
-		//PCMSK1 = _BV(PCINT8);							// enable PCINT8 (AUX) -> PCI1
-		//PCMSK3 = _BV(PCINT24);							// enable PCINT24 (THR) -> PCI3
-		//PCIFR  = _BV(PCIF1) | _BV(PCIF3);				// clear interrupts
+	PCICR |= _BV(PCIE1) | _BV(PCIE3);				// enable PCI1 and PCI3
+	PCMSK1 = _BV(PCINT8);							// enable PCINT8 (AUX) -> PCI1
+	PCMSK3 = _BV(PCINT24);							// enable PCINT24 (THR) -> PCI3
+	PCIFR  = _BV(PCIF1) | _BV(PCIF3);				// clear interrupts
 
 	ADCPort_Init();
 	Gyro_Init();
 	Acc_Init();
 	KeyBoard_Init();
+	Timer_Init();
 	menuInit();
 	
 		
 	lcdInit();
-	lcdClear();
-	//lcdWriteGlyph_P(&glyLogo, 0);
-	lcdSetPos(1, 0);
-	lcdWriteString_P(versionNum);
-	lcdSetPos(3, 0);
-	lcdWriteString_P(versionAuthor);
+	LCD_Clear();
+	
+	LCD_SetPos(1, 0);
+	LCD_WriteString_P(versionNum);
+	LCD_SetPos(3, 0);
+	LCD_WriteString_P(versionAuthor);
 	
 	sei();
 	
@@ -99,6 +99,8 @@ int main(void)
 	
 	Setup();
 	
+	//lcdWriteGlyph_P(&glyLogo, 0);
+	_hSensorTest();
     while(1)
     {
         //TODO:: Please write your application code 
@@ -111,6 +113,7 @@ void Loop(void)
 {
 	
 	menuShow();
+	_delay_ms(20);
 
 
 	

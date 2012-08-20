@@ -102,7 +102,13 @@
 #define RX_AUX    			REGISTER_BIT(PINB,0)    
 #define RX_AUX_DIR   		REGISTER_BIT(DDRB,0) //pb0
 
-
+// Index for RX[] variable
+#define RXChannel_AIL			0
+#define RXChannel_ELE			1
+#define RXChannel_RUD			2
+#define RXChannel_THR			3
+#define RXChannel_AUX			4
+#define RXChannels				5
 
 ///////////// Sensors
 #define ACC_X				REGISTER_BIT(PORTA,5)		

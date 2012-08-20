@@ -16,17 +16,17 @@
 #include <avr/pgmspace.h>
 
 void lcdInit();
-void lcdClear();
-void lcdSetPos(uint8_t line, uint8_t column);
+void LCD_Clear();
+void LCD_SetPos(uint8_t line, uint8_t column);
 void lcdWriteChar(char c);
 void lcdWriteString(char *s);
-void lcdWriteString_P(PGM_P s);
+void LCD_WriteString_P(PGM_P s);
 void lcdReverse(uint8_t reversed);
 void lcdSetContrast(uint8_t contrast);
 void lcdSetPixel(uint8_t x, uint8_t y, uint8_t on);
 void lcdLine(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1);
-void lcdEnable();
-void lcdDisable();
+void LCD_Enable();
+void LCD_Disable();
 void lcdSelectFont(const fontdescriptor_t *font);
 void lcdXY(uint8_t x, uint8_t y);
 void lcdWriteGlyph_P(const glyph_t *glyph, uint8_t mode);

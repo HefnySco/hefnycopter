@@ -17,14 +17,20 @@
 #define P_STR static const prog_char
 #endif
 
-P_STR scrPIEditor[] = 
+/*P_STR scrPIEditor[] = 
 	"Axis:\n"
 	"\n"
 	"P Gain:\n"
 	"P Limit:\n"
 	"I Gain:\n"
 	"I Limit:";
+*/
 
+P_STR scrHomePage[] = 
+	"Welcome\n"
+	"   Home:\n"
+	;
+	
 P_STR scrReceiverTest[] = 
 	"Aileron:\n"
 	"Elevator:\n"
@@ -42,11 +48,8 @@ P_STR scrSensorTest[] =
 	"Batt:";
 
 P_STR scrModeSettings[] = 
-	"Self-Level:\n"
-	"Arming:\n"
-	"Link Roll Pitch:\n"
-	"Auto Disarm:\n"
-	"CPPM Enabled:";
+	"Auto Disarm:"
+	;
 
 P_STR scrStickScaling[] = 
 	"Stick Scaling\n"
@@ -169,5 +172,88 @@ P_STR scrMixerEditor[] =
 	"Rudder:\n"
 	"Offset:\n"
 	"Type:       Rate:";
+
+
+//////////////////////////////////////////////////////////////////////////
+// softkeys
+static const prog_char _skHOME[]     = "                 MENU";
+static const prog_char _skMENU[]      = "BACK UP   DOWN ENTER";
+static const prog_char _skBACK[]      = "BACK";
+static const prog_char _skCONTINUE[]  = "BACK         CONTINUE";
+static const prog_char _skCANCELYES[] = "NO	             YES";
+static const prog_char _skPAGE[]      = "BACK PREV NEXT CHANGE";
+static const prog_char _skBACKNEXT[]  = "BACK NEXT";
+static const prog_char _skCANCEL[]    = "CANCEL";
+
+//////////////////////////////////////////////////////////////////////////
+// Menu Structure
+
+void _hHomePage();
+void _hMenu();
+void _hReceiverTest();
+void _hSensorTest();
+void _hSensorCalibration();
+void _hESCCalibration();
+void _hStickCentering();
+void _hShowModelLayout();
+void _hLoadModelLayout();
+void _hDebug();
+void _hFactoryReset();
+
+static const page_t pages[] PROGMEM = {
+/*  0 */	{ _skHOME, _hHomePage, scrHomePage },
+/*  1 */	{ _skMENU, _hMenu},
+///*  2 */	{ _skPAGE, NULL, scrPIEditor},
+/*  3 */	{ _skBACK, _hReceiverTest, scrReceiverTest},
+/*  4 */	{ _skPAGE, NULL, scrModeSettings},
+/*  5 */	{ _skPAGE, NULL, scrStickScaling},
+/*  6 */	{ _skPAGE, NULL, scrMiscSettings},
+///*  7 */	{ _skPAGE, NULL, scrSelflevelSettings},
+/*  8 */	{ _skBACK, _hSensorTest, scrSensorTest},
+/*  9 */	{ _skCONTINUE, _hSensorCalibration, scrSensorCal0},
+/* 12 */	{ _skCONTINUE, _hStickCentering, scrRadioCal0},
+/* 10 */	{ _skCONTINUE, _hESCCalibration, scrESCCal0},
+///* 11 */	{ _skPAGE, NULL, scrCPPMSettings},
+///* 13 */	{ _skPAGE, NULL, scrMixerEditor},
+/* 14 */	{ _skBACKNEXT, _hShowModelLayout},
+///* 15 */	{ _skMENU, _hLoadModelLayout },
+/* 16 */	{ _skBACK, _hDebug },
+/* 16 */	{ _skCANCELYES, _hFactoryReset },
+};
+
+
+
+static const prog_char *lstMenu[] PROGMEM = {
+	//strPIEditor,
+	strReceiverTest,
+	strModeSettings,
+	strStickScaling,
+	strMiscSettings,
+	//strSelflevelSettings,
+	strSensorTest,
+	strSensorCalibration,
+	//strESCCalibration,
+	//strCPPMSettings,
+	strRadioCalibration,
+	strMixerEditor,
+	strShowMotorLayout,
+	strLoadMotorLayout,
+	strDebug,
+	strFactoryReset,
+};
+
+PGM_P tsmMain(uint8_t);
+PGM_P tsmLoadModelLayout(uint8_t);
+
+static uint8_t page, subpage;
+static uint16_t _tStart;
+static page_t currentPage;
+static menu_t mnuMain = {length(lstMenu), tsmMain};
+static menu_t mnuMLayout = {22, tsmLoadModelLayout};
+
+
+#define PAGE_HOME			0
+#define PAGE_MENU			1
+#define PAGE_SHOW_LAYOUT	14
 
 #endif /* MENU_SCREEN_H_ */

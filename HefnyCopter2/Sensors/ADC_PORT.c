@@ -9,6 +9,8 @@
 #include <avr/io.h> 
 #include <avr/interrupt.h>
 #include <util/atomic.h>
+#include <avr/pgmspace.h>
+
 
 #include "../Include/typedefs.h"
 #include "../Include/GlobalValues.h"

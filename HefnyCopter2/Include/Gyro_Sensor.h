@@ -13,6 +13,6 @@
 
 
 		void Gyro_Init(void);
-		
+		char *Gyro_Test(uint8_t channel);
 
 #endif /* GYRO_SENSOR_H_ */

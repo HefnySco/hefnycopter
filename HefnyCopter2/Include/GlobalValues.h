@@ -10,7 +10,7 @@
 #define GLOBALVALUES_H_
 
 #include "typedefs.h"
-
+#include "IO_config.h"
 ///////////////////////////// Define Section
 
 // LED
@@ -32,10 +32,8 @@
 ////////////////////////////// Variables Section
 
 // Receiver Signal Values
-volatile uint16_t RxInCollective;
-volatile uint16_t RxInYaw;
-volatile uint16_t RxInRoll;
-volatile uint16_t RxInPitch;
+
+volatile uint16_t RX[RXChannels];
 
 BOOL	bArmed;
 
@@ -57,5 +55,7 @@ volatile uint16_t OCR0A_X;
 // ADC Values
 
 volatile uint16_t ADCValues[8];
+
+static char Result[8]; 
 
 #endif /* GLOBALVALUES_H_ */

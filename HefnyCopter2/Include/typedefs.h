@@ -58,7 +58,7 @@ typedef struct
 #define _REG_BIT(r,b)	_REG_BIT2(r,b)
 
 
-
+#define P_STR static const prog_char
 
 #define uint8_tswap(a, b) { uint8_t t = a; a = b; b = t; } 
 

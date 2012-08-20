@@ -16,7 +16,7 @@
 
 //#include "../Include/GlobalValues.h"
 #include "../Include/IO_config.h"
-
+#include "../Include/Gyro_Sensor.h"
 #include "../Include/lcd.h"
 #include "../Include/fonts.h"
 
@@ -83,7 +83,7 @@ ISR(TIMER0_OVF_vect, ISR_NOBLOCK)
 	offset %= sizeof(_screen);
 }
 
-void lcdSetPos(uint8_t line, uint8_t column)
+void LCD_SetPos(uint8_t line, uint8_t column)
 {
 	_curx = column % LCDWIDTH;
 	_cury = line * 8;
@@ -137,10 +137,10 @@ void lcdLine(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1)
 	}
 }
 
-void lcdClear()
+void LCD_Clear()
 {
 	memset(_screen, 0, sizeof(_screen));
-	lcdSetPos(0, 0);
+	LCD_SetPos(0, 0);
 	_flags = 0;
 }
 
@@ -202,7 +202,7 @@ void lcdWriteString(char *s)
 		lcdWriteChar(c);
 }
 
-void lcdWriteString_P(PGM_P s)
+void LCD_WriteString_P(PGM_P s)
 {
 	char c;
 	while ((c = pgm_read_byte(s++)))
@@ -220,13 +220,13 @@ void lcdReverse(uint8_t reversed)
 void lcdSetContrast(uint8_t contrast)
 {
 	uint8_t t = TIMSK0;
-	lcdDisable();
+	LCD_Disable();
 	sendCommand(0x81);
 	sendCommand(contrast & 0x3F); 
 	TIMSK0 = t;
 }
 
-void lcdEnable()
+void LCD_Enable()
 {
 	// reset timer0 to avoid re-entrant call of ISR b/c it is non blocking
 	TCNT0 = 0;
@@ -234,7 +234,7 @@ void lcdEnable()
 	TIMSK0 |= _BV(TOIE0);	// enable interrupt on overflow
 }
 
-void lcdDisable()
+void LCD_Disable()
 {
 	TIMSK0 &= ~_BV(TOIE0);	// disable overflow interrupt
 }
@@ -287,6 +287,6 @@ void lcdInit()
 	// at 256 as interrupt based output of data bytes
 	// ie every 1024us one byte is send to display. whole screen takes about 105ms
 	TCCR0B = _BV(CS01);		// clk/8
-	lcdEnable();
+	LCD_Enable();
 }
 

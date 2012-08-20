@@ -14,6 +14,7 @@
 
 	
 	void Acc_Init(void);
+	char *Acc_Test(uint8_t channel);
 
 
 #endif /* ACC_SENSOR_H_ */

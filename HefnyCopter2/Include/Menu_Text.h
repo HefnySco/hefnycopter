@@ -22,17 +22,18 @@ P_STR strOFF[] = "OFF";
 P_STR strON[] = "ON";
 
 // main menu
-P_STR strPIEditor[] = "PI Editor";
+//P_STR strPIEditor[] = "PI Editor";
 P_STR strReceiverTest[] = "Receiver Test";
 P_STR strModeSettings[] = "Mode Settings";
 P_STR strStickScaling[] = "Stick Scaling";
+P_STR strRadioCalibration[] = "Stick Centering";
 P_STR strMiscSettings[] = "Misc. Settings";
-P_STR strSelflevelSettings[] = "Self-level Settings";
+//P_STR strSelflevelSettings[] = "Self-level Settings";
 P_STR strSensorTest[] = "Sensor Test";
 P_STR strSensorCalibration[] = "Sensor Calibration";
-P_STR strCPPMSettings[] = "CPPM Settings";
-P_STR strESCCalibration[] = "ESC Calibration";
-P_STR strRadioCalibration[] = "Stick Centering";
+//P_STR strCPPMSettings[] = "CPPM Settings";
+//P_STR strESCCalibration[] = "ESC Calibration";
+
 P_STR strMixerEditor[] = "Mixer Editor";
 P_STR strShowMotorLayout[] = "Show Model Layout";
 P_STR strLoadMotorLayout[] = "Load Model Layout";

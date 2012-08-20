@@ -5,7 +5,9 @@
  *  Author: hefny
  */ 
 
-#include <avr/io.h> 
+#include <avr/io.h>
+#include <util/delay.h>
+
 
 #include "../Include/typedefs.h"
 #include "../Include/LED.h"
@@ -13,7 +15,7 @@
 #include "../Include/IO_config.h"
 
 
-void LED_FlashOrangeLED (uint16_t msDuration, uint8_t Times)
+void LED_FlashOrangeLED (uint32_t msDuration, uint8_t Times)
 {
 	bool CurrentLED_Status = LED_Orange;
 	
