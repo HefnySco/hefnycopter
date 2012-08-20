@@ -1,0 +1,16 @@
+/*
+ * ScreenStructure.txt
+ *
+ * Created: 8/17/2012 9:58:35 PM
+ *  Author: hefny
+ */ 
+
+ Main Screen
+		- Flying Parameters
+		- StickScaling
+		- StickCenter
+		- Calibration
+		- Sensor Testing
+		- RX Testing
+		- Flying Mode
+		- Misc.	
