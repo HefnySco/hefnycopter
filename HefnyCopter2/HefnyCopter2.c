@@ -14,9 +14,8 @@
 #include "Include/IO_config.h"
 #include "Include/LED.h"
 #include "Include/Beeper.h"
-#include "Include/Acc_Sensor.h"
+#include "Include/Sensors.h"
 #include "Include/ADC_PORT.h"
-#include "Include/Gyro_Sensor.h"
 #include "Include/GlobalValues.h"
 #include "Include/LCD.h"
 #include "Include/Motor.h"
@@ -25,6 +24,37 @@
 #include "Include/Timer.h"
 #include "Include/Receiver.h"
 
+/*
+
+Quad
+                    M1 CW
+                     |
+                     |
+                     |
+                   +---+
+		 CCW M2----|   |----M3 CCW
+                   +---+
+                     |
+                     |
+                     |
+                   M4 CW
+				   
+				   
+Quad-X
+       
+           M1 CW       M3 CCW
+			  \          /
+               \        / 
+                \ ---  /
+                 |    |
+                / ---  \
+               /        \ 
+			  /          \ 
+          M2 CCW        M4 CW
+		  
+		  NOTE: X-QUAD motors order are different from many other code on Internet such as XXController & QuadControllerV#_#
+
+*/
 
 static const prog_char versionNum[] = "Version 0.1";
 static const prog_char versionAuthor[] = "HefnyCopter2";
@@ -71,14 +101,13 @@ void Setup (void)
 	PCIFR  = _BV(PCIF1) | _BV(PCIF3);				// clear interrupts
 
 	ADCPort_Init();
-	Gyro_Init();
-	Acc_Init();
+	Sensors_Init();
 	KeyBoard_Init();
 	Timer_Init();
 	menuInit();
 	
 		
-	lcdInit();
+	LCD_Init();
 	LCD_Clear();
 	
 	LCD_SetPos(1, 0);

@@ -84,6 +84,9 @@
     <Compile Include="Accessories\Misc.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Core\eepROM.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Core\Timer.c">
       <SubType>compile</SubType>
     </Compile>
@@ -108,13 +111,13 @@
     <Compile Include="HefnyCopter2.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Include\Acc_Sensor.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="Include\ADC_PORT.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Include\Beeper.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Include\eepROM.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Include\fonts.h">
@@ -126,7 +129,7 @@
     <Compile Include="Include\Glyphs.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Include\Gyro_Sensor.h">
+    <Compile Include="Include\Sensors.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Include\HefnyCopter2.h">
@@ -174,13 +177,10 @@
     <Compile Include="Receiver.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Sensors\Acc_Sensor.c">
+    <Compile Include="Sensors\Sensors.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Sensors\ADC_PORT.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="Sensors\Gyro_Sensor.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="UI\menu.c">

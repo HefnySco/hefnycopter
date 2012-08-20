@@ -8,6 +8,8 @@
 
 #ifndef IO_CONFIG_H_
 #define IO_CONFIG_H_
+#include <avr/io.h>
+
 #include "typedefs.h"
 
 
@@ -24,8 +26,25 @@
 #define LCD_SI					REGISTER_BIT(PORTD,1)
 #define LCD_SI_DIR				REGISTER_BIT(DDRD,1)
 
+#define LCD_CS		_REG_BIT(LCD_PORT, LCD_CS_BIT)
+#define LCD_RST		_REG_BIT(LCD_PORT, LCD_RST_BIT)
+#define LCD_A0		_REG_BIT(LCD_PORT, LCD_A0_BIT)
+#define LCD_SCL		_REG_BIT(LCD_PORT, LCD_SCL_BIT)
+#define LCD_SDA		_REG_BIT(LCD_PORT, LCD_SDA_BIT)
+#define LCD_CS_DIR	_REG_BIT(LCD_DDR, LCD_CS_BIT)
+#define LCD_RST_DIR	_REG_BIT(LCD_DDR, LCD_RST_BIT)
+#define LCD_A0_DIR	_REG_BIT(LCD_DDR, LCD_A0_BIT)
+#define LCD_SCL_DIR	_REG_BIT(LCD_DDR, LCD_SCL_BIT)
+#define LCD_SDA_DIR	_REG_BIT(LCD_DDR, LCD_SDA_BIT)
 
-
+#define LCD_PORT	PORTD
+#define LCD_DDR		DDRD
+#define LCD_PIN		PIND
+#define LCD_CS_BIT	5
+#define LCD_RST_BIT	6
+#define LCD_A0_BIT	7
+#define LCD_SCL_BIT	4
+#define LCD_SDA_BIT	1
 
 /// Keyboard
 #define KEYBOARD_PORT			PORTB

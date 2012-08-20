@@ -13,6 +13,8 @@
 #include "typedefs.h"
 
 
+#define HEFNYCOPTER2_SIGNATURE 0x75
+
 ///////////// LCD
 #define LCD_PORT	PORTD
 #define LCD_DDR		DDRD
@@ -79,6 +81,12 @@
 ///////////// Digital Inputs
 // inputs from receiver
 
+#define PWM_MIN				800		// was 922
+#define PWM_LOW				1120	// used if output = 0
+#define PWM_MID				1520
+#define PWM_MAX				2200	// was 2118
+#define PWM_CAL_RANGE		100
+#define PPM_SYNC_LENGTH		3000
 
 
 #define RX_ROLL_vect		INT1_vect
@@ -128,6 +136,14 @@
 #define GYRO_Z_PNUM			2
 #define V_BAT_PNUM			3
 
+#define ACC_X_Index			4
+#define ACC_Y_Index			5
+#define ACC_Z_Index			6
+#define GYRO_X_Index		0
+#define GYRO_Y_Index		3
+#define GYRO_Z_Index		1
+#define V_BAT_Index			2
+#define SENSORS_ALL			7
 
 ///////////// Motors
 #define M1		  				REGISTER_BIT(PORTC,6)

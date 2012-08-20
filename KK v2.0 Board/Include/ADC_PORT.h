@@ -15,6 +15,9 @@ class ADC_PORT {
 	public:
 		ADC_PORT();
 		void Init();
+		uint16_t adcRead(uint8_t channel);
+		uint16_t adcGet(uint8_t channel);
+
 };
 
 

@@ -16,7 +16,7 @@
 
 //#include "../Include/GlobalValues.h"
 #include "../Include/IO_config.h"
-#include "../Include/Gyro_Sensor.h"
+#include "../Include/Sensors.h"
 #include "../Include/lcd.h"
 #include "../Include/fonts.h"
 
@@ -261,7 +261,7 @@ static const prog_uchar _initSeq[] = {
 	0x00, // (terminator)
 };
 
-void lcdInit()
+void LCD_Init()
 {
 	// pins
 	LCD_CS_DIR = OUTPUT;

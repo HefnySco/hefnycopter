@@ -2,6 +2,10 @@
 #define TYPE_DEFS_H_
 
 #include <stdint.h>
+#include <avr/io.h>
+
+#define F_CPU	20000000
+
 
 //set bit	or PORTB |= (1<<3); 
 //#define set_bit(port, bit) ((port) |= (uint8_t)(1 << bit))
@@ -35,6 +39,21 @@ typedef struct
 
 #define REGISTER_BIT(rg,bt) ((volatile _io_reg*)&rg)->bit##bt
 
+
+
+typedef struct  
+{
+	unsigned int bit0 : 1;
+	unsigned int bit1 : 1;
+	unsigned int bit2 : 1;
+	unsigned int bit3 : 1;
+	unsigned int bit4 : 1;
+	unsigned int bit5 : 1;
+	unsigned int bit6 : 1;
+	unsigned int bit7 : 1;
+} volatile _bitreg8;
+#define _REG_BIT2(r,b)	((*(_bitreg8*)&r).bit ## b)
+#define _REG_BIT(r,b)	_REG_BIT2(r,b)
 
 /* Example:
 

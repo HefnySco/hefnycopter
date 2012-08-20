@@ -58,4 +58,55 @@ volatile uint16_t ADCValues[8];
 
 static char Result[8]; 
 
+
+
+// eeProm data structure
+typedef struct Config_Struct CONFIG_STRUCT;
+struct Config_Struct
+{
+	uint8_t	setup;					// byte to identify if already setup
+
+	uint8_t RollGyroDirection;
+	uint8_t PitchGyroDirection;
+	uint8_t YawGyroDirection;
+
+	// allows setting to zero
+	uint16_t RxChannel1ZeroOffset;
+	uint16_t RxChannel2ZeroOffset;
+	uint16_t RxChannel3ZeroOffset;  // currently fixed
+	uint16_t RxChannel4ZeroOffset;
+
+};
+
+
+
+
+typedef struct  
+{
+	uint8_t signature;
+	uint8_t RX_mode;
+	uint16_t RX_zero[RXChannels];
+	//uint8_t RX_chmap[RXChannels];
+	uint16_t Sensor_zero[SENSORS_ALL];
+	//uint8_t CalibrateFlags;
+	pid_param_t PID[3];
+	uint8_t SelfLevelMode;
+	uint8_t ArmingMode;
+	uint8_t AutoDisarm;
+	uint8_t LinkRollPitch;
+	uint8_t ReceiverMode;
+	uint8_t MixerIndex;
+	uint8_t StickScaling[4];
+	uint8_t MinThrottle;
+	uint8_t LCDContrast;
+	uint8_t HeightDampening;
+	uint8_t HeightDampeningLimit;
+	uint8_t LVA;
+	pid_param_t PID_SelfLevel;
+	uint8_t AccTrimPitch;
+	uint8_t AccTrimRoll;
+	//model_t Mixer;
+} config_t;
+
+
 #endif /* GLOBALVALUES_H_ */

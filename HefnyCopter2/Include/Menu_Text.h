@@ -15,6 +15,7 @@
 #ifndef P_STR
 #define P_STR static const prog_char
 #endif
+#include "../Include/typedefs.h"
 
 P_STR strSAFE[] = "SAFE";
 P_STR strARMED[] = "ARMED";

@@ -21,7 +21,6 @@ ISR (RX_COLL_vect)
 	if (RX_COLL)
 	{
 		RX_raw[RXChannel_THR]=TCNT1;
-		LED_Orange= ~LED_Orange;	
 	}
 	else
 	{

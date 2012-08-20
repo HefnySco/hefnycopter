@@ -15,7 +15,7 @@
 #include "glyphs.h"
 #include <avr/pgmspace.h>
 
-void lcdInit();
+void LCD_Init();
 void LCD_Clear();
 void LCD_SetPos(uint8_t line, uint8_t column);
 void lcdWriteChar(char c);

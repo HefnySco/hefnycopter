@@ -9,6 +9,7 @@
 #include <math.h>
 #include <avr/delay.h>
 #include <avr/pgmspace.h>
+#include <avr/interrupt.h>
 
 #include "Include/GlobalValues.h"
 #include "Include/HefnyCopter2.h"
@@ -24,12 +25,16 @@
 
 LED			mOrangeLED;
 Beeper		mBeeper;
-LCD_ST7565	mLCD;
+//LCD_ST7565	mLCD;
 Gyro_Sensor mGyroSensor;
 Acc_Sensor  mAccSensor;
 ADC_PORT    mAdcPort;
 KeyBoard	mKeyBoard;
 Motor		mMotor;
+
+static const prog_char versionNum[] = "Version 0.2a";
+static const prog_char versionAuthor[] = "By Oliver Schulz";
+
 
 void Setup (void)
 {
@@ -57,46 +62,60 @@ void Setup (void)
 	// Sensors
 	V_BAT  = INPUT;
 	
+	/*
 	// Timers
 	TCCR1A = 0;	//Set timer 1 to run at 2.5MHz
 	TCCR1B = 0;
 	TCCR1C = 0;
+	*/
 	
-	// Interrupts Settings
-	EIMSK = 0b00000111;
-	//        76543210
-	PCICR = 0b00001010;
-	//       76543210
-	PCMSK3= 0b00000001;
-	//       76543210
-	PCMSK1= 0b00000001;
+		// enable interrupts
+		//EICRA  = _BV(ISC00) | _BV(ISC10) | _BV(ISC20);	// any edge on INT0, INT1 and INT2
+		//EIMSK  = _BV(INT0)  | _BV(INT1)  | _BV(INT2);	// enable interrupt for INT0, INT1 and INT2
+		//EIFR   = _BV(INTF0) | _BV(INTF1) | _BV(INTF2);	// clear interrupts
+		
+		//PCICR |= _BV(PCIE1) | _BV(PCIE3);				// enable PCI1 and PCI3
+		//PCMSK1 = _BV(PCINT8);							// enable PCINT8 (AUX) -> PCI1
+		//PCMSK3 = _BV(PCINT24);							// enable PCINT24 (THR) -> PCI3
+		//PCIFR  = _BV(PCIF1) | _BV(PCIF3);				// clear interrupts
 
-	mAccSensor.Init();
-	mGyroSensor.Init();
-	mAdcPort.Init();
+	//mAccSensor.Init();
+	//mGyroSensor.Init();
+	//mAdcPort.Init();
 	
-	mKeyBoard.Init();
-	mOrangeLED.FlashLED(200,4);
+	//mKeyBoard.Init();
+	//mOrangeLED.FlashLED(200,4);
 	//mBeeper.Beep(200,4);
 	mKeyBoard.Init();
-	mLCD.Init();
-	_delay_ms(500);
-   //mLCD.Write_Instruction(CMD_TEST);
-   mLCD.Clear();
-   mLCD.DrawString(0,0, (char*)"I am ready ABCDEFG abcde");
-   mLCD.DrawLine(0,0,25,25,1);
-   mLCD.DrawCircle(50,50,10,1);
-   mLCD.Display();
+	//mLCD.Init();
+	
+	lcdClear();
+	lcdSetPos(1, 0);
+	lcdWriteString_P(versionNum);
+	lcdSetPos(2, 0);
+	lcdWriteString_P(versionAuthor);
+	sei();
+	
+	//_delay_ms(500);
+    
 }
 
 int main(void)
 {
 	
-	Setup();
+	
+	lcdInit();
+	lcdClear();
+	//lcdWriteGlyph_P(&glyLogo, 0);
+	lcdSetPos(1, 0);
+	lcdWriteString_P(versionNum);
+	lcdSetPos(2, 0);
+	lcdWriteString_P(versionAuthor);
+	sei();
 	
     while(1)
     {
-        Loop();
+        //TODO:: Please write your application code 
     }
 }
 

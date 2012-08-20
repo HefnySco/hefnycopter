@@ -60,7 +60,6 @@ typedef struct
 
 
 //////////////////////////////////////////////////////////////////////////
-#define P_STR static const prog_char
 #include "../Include/menu_text.h"
 #include "../Include/menu_screen.h"
 
@@ -338,18 +337,18 @@ void _hSensorTest()
 {
 	
 	LCD_SetPos(0, 48);
-	lcdWriteString(Gyro_Test(GYRO_X_PNUM));
+	lcdWriteString(Sensors_Gyro_Test(GYRO_X_PNUM));
 	LCD_SetPos(1, 48);
-	lcdWriteString(Gyro_Test(GYRO_Y_PNUM));
+	lcdWriteString(Sensors_Gyro_Test(GYRO_Y_PNUM));
 	LCD_SetPos(2, 48);
-	lcdWriteString(Gyro_Test(GYRO_Z_PNUM));
+	lcdWriteString(Sensors_Gyro_Test(GYRO_Z_PNUM));
 	
 	LCD_SetPos(3, 48);
-	lcdWriteString(Acc_Test(ACC_X_PNUM));
+	lcdWriteString(Sensors_Acc_Test(ACC_X_PNUM));
 	LCD_SetPos(4, 48);
-	lcdWriteString(Acc_Test(ACC_Y_PNUM));
+	lcdWriteString(Sensors_Acc_Test(ACC_Y_PNUM));
 	LCD_SetPos(5, 48);
-	lcdWriteString(Acc_Test(ACC_Z_PNUM));
+	lcdWriteString(Sensors_Acc_Test(ACC_Z_PNUM));
 	
 	
 	/*

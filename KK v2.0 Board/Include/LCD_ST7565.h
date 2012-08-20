@@ -54,40 +54,36 @@
 #define CMD_NOP  0xE3
 #define CMD_TEST  0xF0
   
+#include "../Include/glyphs.h"
+#include "../Include/Fonts.h"
+#include <avr/pgmspace.h>
+  
 
-class LCD_ST7565 
-{
-	public:
-	void ClearScreen ();
-	void Init();
-	
-    
-	void st7565_Command(uint8_t c);
-	void st7565_Data(uint8_t c);
-	void Set_Brightness(uint8_t val);
-	void ClearDisplay(void);
-	void Clear();
-	void Display();
+//class LCD_ST7565 
+//{
+	//public:
 
-	void SetPixel(uint8_t x, uint8_t y, uint8_t color);
-	uint8_t GetPixel(uint8_t x, uint8_t y);
-	void FillCircle(uint8_t x0, uint8_t y0, uint8_t r, uint8_t color);
-	void DrawCircle(uint8_t x0, uint8_t y0, uint8_t r, uint8_t color);
-	
-  void DrawRect(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint8_t color);
-  void FillRect(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint8_t color);
-  void DrawLine(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t color);
-  void DrawChar(uint8_t x, uint8_t line, char c);
-  void DrawString(uint8_t x, uint8_t line, char *c);
-  void DrawString_P(uint8_t x, uint8_t line, const char *c);
-  void DrawBitmap(uint8_t x, uint8_t y, const uint8_t *bitmap, uint8_t w, uint8_t h, uint8_t color);
+void lcdInit();
+void lcdClear();
+void lcdSetPos(uint8_t line, uint8_t column);
+void lcdWriteChar(char c);
+void lcdWriteString(char *s);
+void lcdWriteString_P(PGM_P s);
+void lcdReverse(uint8_t reversed);
+void lcdSetContrast(uint8_t contrast);
+void lcdSetPixel(uint8_t x, uint8_t y, uint8_t on);
+void lcdLine(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1);
+void lcdEnable();
+void lcdDisable();
+void lcdSelectFont(const fontdescriptor_t *font);
+void lcdXY(uint8_t x, uint8_t y);
+void lcdWriteGlyph_P(const glyph_t *glyph, uint8_t mode);
 
- private:
-  int8_t sid, sclk, a0, rst, cs;
-  void my_setpixel(uint8_t x, uint8_t y, uint8_t color); 
-  void ShiftOut(uint8_t c);
-  void LCDdWriteSprite_P(PGM_P sprite, uint8_t sizeX, uint8_t sizeY, uint8_t mode);
-};
+#define ROP_COPY	0
+#define ROP_PAINT	1
+#define ROP_INVERT	2
+
+//};
 
 
 #endif /* LCD_ST7565_H_ */
