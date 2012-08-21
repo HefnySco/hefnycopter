@@ -195,7 +195,7 @@ void lcdWriteChar(char c)
 	}
 }
 
-void lcdWriteString(char *s)
+void LCD_WriteString(char *s)
 {
 	char c;
 	while ((c = *s++))

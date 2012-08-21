@@ -34,6 +34,8 @@
 // Receiver Signal Values
 
 volatile uint16_t RX[RXChannels];
+uint16_t RX_MAX_raw[RXChannels];
+uint16_t RX_MIN_raw[RXChannels];
 
 BOOL	bArmed;
 
@@ -56,8 +58,8 @@ volatile uint16_t OCR0A_X;
 
 volatile uint16_t ADCValues[8];
 
-static char Result[8]; 
-
+volatile char Result[8]; 
+volatile uint16_t nResult[8];
 
 
 // eeProm data structure
@@ -84,11 +86,12 @@ struct Config_Struct
 typedef struct  
 {
 	uint8_t signature;
+	uint8_t IsCalibrated;
 	uint8_t RX_mode;
-	uint16_t RX_zero[RXChannels];
+	uint16_t RX_Max[RXChannels];
+	uint16_t RX_Min[RXChannels];
 	//uint8_t RX_chmap[RXChannels];
 	uint16_t Sensor_zero[SENSORS_ALL];
-	//uint8_t CalibrateFlags;
 	pid_param_t PID[3];
 	uint8_t SelfLevelMode;
 	uint8_t ArmingMode;
@@ -108,5 +111,5 @@ typedef struct
 	//model_t Mixer;
 } config_t;
 
-
+config_t Config;
 #endif /* GLOBALVALUES_H_ */

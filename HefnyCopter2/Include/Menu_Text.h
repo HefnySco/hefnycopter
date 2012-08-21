@@ -77,7 +77,7 @@ P_STR strThro[] = "Thro";
 
 P_STR strWait[] = "Waiting";
 P_STR strSec[] = "sec";
-P_STR strCalSucc[] = "Calibration succeeded";
+P_STR strCalSucc[] = "Bad Calibration";
 P_STR strAreYouSure[] = "Are you sure?";
 
 P_STR strMotor[] = "Motor:";

@@ -136,13 +136,14 @@
 #define GYRO_Z_PNUM			2
 #define V_BAT_PNUM			3
 
-#define ACC_X_Index			4
-#define ACC_Y_Index			5
-#define ACC_Z_Index			6
+// Order is aligned with Menu Screens
+#define ACC_X_Index			3
+#define ACC_Y_Index			4
+#define ACC_Z_Index			5
 #define GYRO_X_Index		0
-#define GYRO_Y_Index		3
-#define GYRO_Z_Index		1
-#define V_BAT_Index			2
+#define GYRO_Y_Index		1
+#define GYRO_Z_Index		2
+#define V_BAT_Index			6
 #define SENSORS_ALL			7
 
 ///////////// Motors

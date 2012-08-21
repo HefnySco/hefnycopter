@@ -23,6 +23,7 @@
 #include "Include/Menu.h"
 #include "Include/Timer.h"
 #include "Include/Receiver.h"
+#include "Include/eepROM.h"
 
 /*
 
@@ -83,6 +84,7 @@ void Setup (void)
 	// Sensors
 	V_BAT  = INPUT;
 	
+	Initial_EEPROM_Config_Load();
 	
 	// Timers
 	TCCR1A = 0;	//Set timer 1 to run at 2.5MHz
@@ -129,7 +131,7 @@ int main(void)
 	Setup();
 	
 	//lcdWriteGlyph_P(&glyLogo, 0);
-	_hSensorTest();
+	//_hSensorCalibration();
     while(1)
     {
         //TODO:: Please write your application code 

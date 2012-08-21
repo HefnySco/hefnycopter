@@ -22,7 +22,8 @@ extern uint8_t RX_good;
 
 
 void rxInit(uint8_t mode);
-void RX_GetReceiverValues (void);
+void RX_StickCenterCalibrationInit(void);
+ uint16_t RX_GetReceiverValues (uint8_t Channel);
 void RX_StickCenterCalibration(void);
 
 

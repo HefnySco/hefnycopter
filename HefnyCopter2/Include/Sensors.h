@@ -14,5 +14,6 @@
 		void Sensors_Init(void);
 		char *Sensors_Gyro_Test(uint8_t channel);
 		char *Sensors_Acc_Test(uint8_t channel);
+		void Sensors_Calibrate (void);
 
 #endif /* SENSOR_H_ */

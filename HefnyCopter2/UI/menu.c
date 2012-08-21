@@ -9,18 +9,24 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <util/delay.h>
+#include <util/atomic.h>
 
+#include "../Include/typedefs.h"
 #include "../Include/GlobalValues.h"
 #include "../Include/IO_config.h"
 #include "../Include/Lcd.h"
 #include "../Include/Keyboard.h"
 #include "../Include/ADC_PORT.h"
+#include "../Include/Receiver.h"
 //#include "rx.h"
 #include "../Include/Beeper.h"
+
 #include <avr/pgmspace.h>
 #include <stdlib.h>
 #include <avr/wdt.h>
 
+BOOL	ReStart=false;
 uint8_t _mykey;
 #define KEY_INIT	1
 #define ISINIT		(_mykey & KEY_INIT)
@@ -277,7 +283,6 @@ void _hHomePage()
 	if (KEY4)	// MENU
 	{
 		loadPage(PAGE_MENU);
-		LED_Orange = ~LED_Orange;
 		return;
 	}
 	
@@ -294,8 +299,12 @@ void _hHomePage()
 		//LCD_WriteString_P(strBattery);
 	}
 	
-	//LCD_SetPos(3, 84);
-	//if (State.SelfLevel)
+	LCD_SetPos(3, 84);
+	if (Config.IsCalibrated==0)
+	{
+		LCD_SetPos(5, 20);
+		LCD_WriteString_P(PSTR("Not Calibrated !"));
+	}
 	//LCD_WriteString_P(strON);
 	//else		
 		//LCD_WriteString_P(strOFF);
@@ -326,10 +335,10 @@ void _hHomePage()
 	//
 	//LCD_SetPos(5, 9*6);
 	//utoa(BATT / 10, s, 10);
-	//lcdWriteString(s);
+	//LCD_WriteString(s);
 	//lcdWriteChar('.');
 	//utoa(BATT % 10, s, 10);
-	//lcdWriteString(s);
+	//LCD_WriteString(s);
 	//LCD_WriteString_P(PSTR(" V "));
 }
 
@@ -337,24 +346,24 @@ void _hSensorTest()
 {
 	
 	LCD_SetPos(0, 48);
-	lcdWriteString(Sensors_Gyro_Test(GYRO_X_PNUM));
+	LCD_WriteString(Sensors_Gyro_Test(GYRO_X_PNUM));
 	LCD_SetPos(1, 48);
-	lcdWriteString(Sensors_Gyro_Test(GYRO_Y_PNUM));
+	LCD_WriteString(Sensors_Gyro_Test(GYRO_Y_PNUM));
 	LCD_SetPos(2, 48);
-	lcdWriteString(Sensors_Gyro_Test(GYRO_Z_PNUM));
+	LCD_WriteString(Sensors_Gyro_Test(GYRO_Z_PNUM));
 	
 	LCD_SetPos(3, 48);
-	lcdWriteString(Sensors_Acc_Test(ACC_X_PNUM));
+	LCD_WriteString(Sensors_Acc_Test(ACC_X_PNUM));
 	LCD_SetPos(4, 48);
-	lcdWriteString(Sensors_Acc_Test(ACC_Y_PNUM));
+	LCD_WriteString(Sensors_Acc_Test(ACC_Y_PNUM));
 	LCD_SetPos(5, 48);
-	lcdWriteString(Sensors_Acc_Test(ACC_Z_PNUM));
+	LCD_WriteString(Sensors_Acc_Test(ACC_Z_PNUM));
 	
 	
 	/*
 	utoa(ADCPort_Get(V_BAT_PNUM), s, 10);
 	LCD_SetPos(6, 48);
-	lcdWriteString(s);
+	LCD_WriteString(s);
 	lcdWriteChar(32);
 	*/
 }
@@ -362,54 +371,103 @@ void _hSensorTest()
 void _hReceiverTest()
 {
 	char _t[10];
+
 	for (uint8_t i = 0; i < RXChannels; i++)
 	{
-		LCD_SetPos(i, 66);
+		LCD_SetPos(i, 40);
 		//if (RX_good & _BV(i))
 		//{
-			utoa(RX[i], _t, 10);
-			lcdWriteString(_t);
-			for (uint8_t i = 0; i < sizeof(strNoSignal) - strlen(_t); i++)
-				lcdWriteChar(32);
+			utoa(RX_GetReceiverValues (i), _t, 10);
+			LCD_WriteString(_t);
 		//}
 		//else
 		//	LCD_WriteString_P(strNoSignal);
 	}			
 }
 
-void _hSensorCalibration()
+
+void _hStickCentering()
 {
-	//if (subpage == 0)
-	//{
-		//if (KEY4)
-		//{
-			//subpage = 1;
-			//LCD_Clear();
-			//LCD_SetPos(3, 18);
-			//LCD_WriteString_P(strWait);
-			//LCD_SetPos(3, 78);
-			//LCD_WriteString_P(strSec);
-			//writeSoftkeys(_skCANCEL);
-			//_tStart = millis();
-		//}			
-	//}
-	//else if (subpage == 1)
-	//{
-		//LCD_SetPos(3, 66);
-		//uint8_t sec = (millis() - _tStart) / 1000;
-		//lcdWriteChar((5-sec) + 48);
-		//if (sec >= 5)
-		//{
-			//sensorsCalibate();
-			//configSave();
-			//LCD_SetPos(3, 0);
-			//LCD_WriteString_P(strCalSucc);
-			//writeSoftkeys(NULL);
-			//subpage = 2;
-		//}
-	//}
+	char _t[10];
+	BOOL bError = false; 
+	if (ISINIT)
+	{
+		RX_StickCenterCalibrationInit();
+	}
+	
+	if (KEY4 & (!bError))
+	{
+		// Save config
+		for (uint8_t i = 0; i < RXChannels; i++)
+		{
+				Config.RX_Max[i] = RX_MAX_raw[i];
+				Config.RX_Min[i] = RX_MIN_raw[i];
+		}		
+		//Save_Config_to_EEPROM();
+		Beeper_Beep(700,1);
+	}
+	
+	RX_StickCenterCalibration();
+	for (uint8_t i = 0; i < RXChannels; i++)
+	{
+		LCD_SetPos(i, 35);
+		utoa(RX_MAX_raw[i], _t, 10);
+		LCD_WriteString(_t);
+		LCD_WriteString(" ");
+		utoa(RX_MIN_raw[i], _t, 10);
+		LCD_WriteString(_t);	
+		if ((RX_MAX_raw[i]< RX_MIN_raw[i]) || (RX_MIN_raw[i]==0))  // RX_MIN_raw[i]=0 if the Remote is OFF when entering the test
+		{
+			LCD_WriteString_P(PSTR(" err"));	
+			bError = TRUE;
+		}
+		else
+		{
+			LCD_WriteString_P(PSTR("    "));	
+		}
+		
+	}		
 	//else if (KEY4)
 		//loadPage(PAGE_MENU);
+}
+
+void _hSensorCalibration()
+{
+
+	if (ISINIT)
+	{
+		ReStart = false;
+		uint8_t i;
+		for (i=0; i<10;++i)
+		{
+			Beeper_Beep(70,1);
+			_delay_ms (1500); // delay to avoid click vibration.	
+		
+		}
+	
+		Sensors_Calibrate ();
+		
+		for (i=0; i<6;++i)
+		{
+			LCD_SetPos(i, 48);	
+			utoa(nResult[i],Result,10);
+			LCD_WriteString(&Result);
+		}	
+		
+
+		Config.IsCalibrated = true;
+		for (i=0;i<6;++i)
+		Config.Sensor_zero[i] = nResult[i];
+		Save_Config_to_EEPROM();
+	
+		Beeper_Beep(700,1);
+	}
+	
+	if (KEY4)
+	{
+		_mykey |= KEY_INIT;
+	}
+	
 }
 
 void _hESCCalibration()
@@ -429,24 +487,6 @@ void _hESCCalibration()
 	}
 }
 
-void _hStickCentering()
-{
-	//if (subpage == 0)
-	//{
-		//if (KEY4)
-		//{
-			//rxCalibrate();
-			//configSave();
-			//LCD_Clear();
-			//LCD_SetPos(3, 0);
-			//LCD_WriteString_P(strCalSucc);
-			//writeSoftkeys(NULL);
-			//subpage = 1;
-		//}
-	//}
-	//else if (KEY4)
-		//loadPage(PAGE_MENU);
-}
 
 void _hDebug()
 {
@@ -454,7 +494,7 @@ void _hDebug()
 	//LCD_WriteString_P(PSTR("MixerIndex: "));
 	//char s[7];
 	//utoa(Config.MixerIndex, s, 10);
-	//lcdWriteString(s);
+	//LCD_WriteString(s);
 }
 
 void _hFactoryReset()
@@ -490,7 +530,7 @@ void menuShow()
 	
 	LCD_Disable();
 	if (oldPage != page)
-	{
+	{	// if this is a new page then KEY_INIT = true
 		_mykey |= KEY_INIT;
 		subpage = 0;
 		LCD_Clear();

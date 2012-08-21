@@ -7,6 +7,7 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <util/atomic.h>
 
 #include "Include/typedefs.h"
 #include "Include/GlobalValues.h"
@@ -14,6 +15,7 @@
 #include "Include/Receiver.h"
 
 volatile uint16_t RX_raw[RXChannels];
+
 
 __attribute__ ((section(".lowtext")))
 ISR (RX_COLL_vect)
@@ -137,14 +139,42 @@ void RX_Init(void)
 	RX_AUX_DIR   	 	= INPUT;
 }
 
-void RX_GetReceiverValues (void)
+void RX_StickCenterCalibrationInit(void)
 {
-	
+	for (int i=0; i<RXChannels; ++i)
+	{
+		RX_MAX_raw[i]=0;
+		RX_MIN_raw[i]=0xfffe;
+	}
 }
+
+
+  uint16_t RX_GetReceiverValues (uint8_t Channel)
+{
+	uint16_t _t;
+	ATOMIC_BLOCK(ATOMIC_FORCEON)
+		_t = RX[Channel];
+	return _t;
+}
+
 
 
 void RX_StickCenterCalibration (void)
 {
+	
+	uint16_t tempRX;
+	for (int i=0;i<RXChannels;++i)
+	{
+		tempRX = RX_GetReceiverValues(i);
+		if ( tempRX > RX_MAX_raw[i]) 
+		{
+			RX_MAX_raw[i] = tempRX;
+		}
+		else if (tempRX < RX_MIN_raw[i]) 
+		{
+			RX_MIN_raw[i] = tempRX;
+		}
+	}
 	
 	
 }

@@ -32,11 +32,11 @@ P_STR scrHomePage[] =
 	;
 	
 P_STR scrReceiverTest[] = 
-	"Aileron:\n"
-	"Elevator:\n"
-	"Rudder:\n"
-	"Throttle:\n"
-	"Auxiliary:";
+	"Ail:\n"
+	"Ele:\n"
+	"Rud:\n"
+	"Thr:\n"
+	"Aux:";
 
 P_STR scrSensorTest[] = 
 	"Gyro X:\n"
@@ -157,14 +157,14 @@ PROGMEM const prog_char* scrESCCal[] =
 		scrESCCal5,
 	};
 
-P_STR scrRadioCal0[] = 
-	"Release sticks on the\n"
-	"transmitter and set \n"
-	"throttle to idle.\n"
+/*P_STR scrRadioCal0[] = 
+	"Move Thr & Ele up - down\n"
+	"Move Rud & Ail left - right\n"
+	"to max limits slowly.\n"
 	"\n"
 	"Press CONTINUE to\n"
-	"calibrate.";
-
+	"save.";
+*/
 P_STR scrMixerEditor[] = 
 	"Throttle:       Ch:\n"
 	"Aileron:\n"
@@ -210,9 +210,9 @@ static const page_t pages[] PROGMEM = {
 /*  6 */	{ _skPAGE, NULL, scrMiscSettings},
 ///*  7 */	{ _skPAGE, NULL, scrSelflevelSettings},
 /*  8 */	{ _skBACK, _hSensorTest, scrSensorTest},
-/*  9 */	{ _skCONTINUE, _hSensorCalibration, scrSensorCal0},
-/* 12 */	{ _skCONTINUE, _hStickCentering, scrRadioCal0},
-/* 10 */	{ _skCONTINUE, _hESCCalibration, scrESCCal0},
+/*  9 */	{ _skCONTINUE, _hSensorCalibration, scrSensorTest},
+/* 12 */	{ _skCONTINUE, _hStickCentering, scrReceiverTest},
+///* 10 */	{ _skCONTINUE, _hESCCalibration, scrESCCal0},
 ///* 11 */	{ _skPAGE, NULL, scrCPPMSettings},
 ///* 13 */	{ _skPAGE, NULL, scrMixerEditor},
 /* 14 */	{ _skBACKNEXT, _hShowModelLayout},
@@ -232,12 +232,12 @@ static const prog_char *lstMenu[] PROGMEM = {
 	//strSelflevelSettings,
 	strSensorTest,
 	strSensorCalibration,
+	strRadioCalibration,
 	//strESCCalibration,
 	//strCPPMSettings,
-	strRadioCalibration,
-	strMixerEditor,
+	//strMixerEditor,
 	strShowMotorLayout,
-	strLoadMotorLayout,
+//  strLoadMotorLayout,
 	strDebug,
 	strFactoryReset,
 };

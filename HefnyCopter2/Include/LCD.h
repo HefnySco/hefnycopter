@@ -19,7 +19,7 @@ void LCD_Init();
 void LCD_Clear();
 void LCD_SetPos(uint8_t line, uint8_t column);
 void lcdWriteChar(char c);
-void lcdWriteString(char *s);
+void LCD_WriteString(char *s);
 void LCD_WriteString_P(PGM_P s);
 void lcdReverse(uint8_t reversed);
 void lcdSetContrast(uint8_t contrast);
