@@ -33,7 +33,7 @@ void Initial_EEPROM_Config_Load(void)
 
 void Save_Default_Config_to_EEPROM (void)
 {
-	Config.setup = 0x74; // HefnyCopter Signature
+	Config.setup = 0x47; // HefnyCopter Signature
 	Set_EEPROM_Default_Config();
 	// write to eeProm
 	Save_Config_to_EEPROM_Init();
