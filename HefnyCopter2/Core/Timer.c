@@ -19,7 +19,7 @@ volatile uint32_t x=0;
 ISR(TIMER1_OVF_vect)
 {
 	x = x+1;
-	TCNT1_X++;
+	TCNT1_X++; // click every 0.0032768 sec [1 sec = 305.17578125 TCNT1_X]
 	
 }
 

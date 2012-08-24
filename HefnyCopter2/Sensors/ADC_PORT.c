@@ -20,8 +20,12 @@
 
 
 
-
-
+/**
+ * Called when the voltage conversion is finished
+ * 
+ *  8.913kHz on mega128 16MHz 1kHz/channel ??
+ ***** I used 20 MHz 13 - 260 us conv average = (260-13)/2 + 13 = 136.5 us = 7.326 KHz
+*/
 ISR(ADC_vect, ISR_NOBLOCK)
 {
 	static uint8_t _index;
@@ -29,6 +33,8 @@ ISR(ADC_vect, ISR_NOBLOCK)
 	_index = (_index + 1) % 8U;
 	ADMUX = _index;
 	ADCSRA |= _BV(ADSC);
+	
+	
 }
 
 void ADCPort_Init ()

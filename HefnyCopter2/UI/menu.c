@@ -33,7 +33,7 @@ uint8_t _mykey;
 #define KEY1		(_mykey & KEY_1)
 #define KEY2		(_mykey & KEY_2)
 #define KEY3		(_mykey & KEY_3)
-#define KEY4		(_mykey & KEY_4)
+#define KEY4		(_mykey & KEY_4)  
 #define ANYKEY		(_mykey)
 #define KEYPRESS	(_mykey & (KEY_1|KEY_2|KEY_3|KEY_4))
 #define NOKEYRETURN {if (!_mykey) return;}
@@ -403,7 +403,7 @@ void _hStickCentering()
 				Config.RX_Max[i] = RX_MAX_raw[i];
 				Config.RX_Min[i] = RX_MIN_raw[i];
 		}		
-		//Save_Config_to_EEPROM();
+		Save_Config_to_EEPROM();
 		Beeper_Beep(700,1);
 	}
 	
@@ -448,7 +448,7 @@ void _hSensorCalibration()
 		Sensors_Calibrate ();
 		
 		for (i=0; i<6;++i)
-		{
+		{ // order is aligned with ACC_X_Index & GYRO_X_Index
 			LCD_SetPos(i, 48);	
 			utoa(nResult[i],Result,10);
 			LCD_WriteString(&Result);
@@ -488,13 +488,182 @@ void _hESCCalibration()
 }
 
 
+
+#define aX A3
+#define aY A4
+#define aZ A5
+
+#define RAD_TO_DEG 57.295779513082320876798154814105
+
+//gyros
+float gyroXadc;
+float gyroXrate;
+float gyroXangle;
+
+float gyroYadc;
+float gyroYrate;
+float gyroYangle;
+
+float gyroZadc;
+float gyroZrate;
+float gyroZangle;
+
+
+//accelerometers
+
+int accZeroX;//x-axis
+float accXadc;
+float accXval;
+float accXangle;
+
+int accZeroY;//y-axis
+float accYadc;
+float accYval;
+float accYangle;
+
+int accZeroZ;//z-axis
+float accZadc;
+float accZval;
+float accZangle;
+
+//Results
+float xAngle;
+float yAngle;
+float compAngleX;
+float compAngleY;
+
+float R;//force vector
+//Used for timing
+uint16_t timer=0;
+double dtime=0;  
+uint16_t dt;
+char sXDeg[10];
 void _hDebug()
 {
-	//LCD_SetPos(0, 0);
-	//LCD_WriteString_P(PSTR("MixerIndex: "));
-	//char s[7];
-	//utoa(Config.MixerIndex, s, 10);
-	//LCD_WriteString(s);
+	if (ISINIT)
+	{
+  	    //timer = TCNT1;	
+		  
+		dtime = 1;
+		dt=150;
+		LCD_Clear();
+		LCD_SetPos(1,6);
+		LCD_WriteString_P(PSTR("AR")); // A Rate
+		LCD_SetPos(2,6);
+		LCD_WriteString_P(PSTR("AD")); // A Deg
+		LCD_SetPos(3,6);
+		LCD_WriteString_P(PSTR("GV")); 
+		LCD_SetPos(4,6);
+		LCD_WriteString_P(PSTR("GD"));
+		LCD_SetPos(5,6);
+		LCD_WriteString_P(PSTR("D"));
+		LCD_SetPos(6,6);
+		LCD_WriteString_P(PSTR("Time"));
+		gyroXangle=0;
+	}
+	else
+	{
+	
+		if (KEY2)
+		{
+			dt+=1;
+			gyroXangle=0;
+			compAngleX=0;
+			gyroYangle=0;
+			compAngleY=0;
+		}
+		if (KEY3)
+		{
+			dt-=1;
+			gyroXangle=0;
+			compAngleX=0;
+			gyroYangle=0;
+			compAngleY=0;
+		}	
+	
+  //timer = TCNT1;	
+  gyroXadc = ADCPort_Get(GYRO_X_PNUM)/10;
+  gyroXrate = (gyroXadc-Config.Sensor_zero[GYRO_X_Index]) ;//* 1.0323;//(gyroXadc-gryoZeroX)/Sensitivity - in quids              Sensitivity = 0.00333/3.3*1023=1.0323
+  if ((gyroXrate<=1) && (gyroXrate>=-1))
+  {
+	  gyroXrate=0;
+  }
+  gyroXangle=gyroXangle+gyroXrate * dtime;//Without any filter
+  
+  gyroYadc = ADCPort_Get(GYRO_Y_PNUM);
+  gyroYrate = (gyroYadc-Config.Sensor_zero[GYRO_Y_Index]) ;//* 1.0323;//(gyroYadc-gryoZeroX)/Sensitivity - in quids              Sensitivity = 0.00333/3.3*1023=1.0323
+  if ((gyroYrate<=1) && (gyroYrate>=-1))
+  {
+	  gyroYrate=0;
+  }
+ gyroYangle=gyroYangle+gyroYrate;//Without any filter
+  
+  gyroZadc = ADCPort_Get(GYRO_Z_PNUM);
+  gyroZrate = (gyroZadc-Config.Sensor_zero[GYRO_Z_Index]);///1.0323;//(gyroZadc-gryoZeroX)/Sensitivity - in quids              Sensitivity = 0.00333/3.3*1023=1.0323
+  //gyroZangle=gyroZangle+gyroZrate*dtime/1000;//Without any filter
+  
+  accXadc = ADCPort_Get(ACC_X_PNUM);
+  accXval = (accXadc-Config.Sensor_zero[ACC_X_Index]);//(accXadc-accZeroX)/Sensitivity - in quids              Sensitivity = 0.33/3.3*1023=102,3
+  
+  accYadc = ADCPort_Get(ACC_Y_PNUM);
+  accYval = (accYadc-Config.Sensor_zero[ACC_Y_Index]);///102;//(accXadc-accZeroX)/Sensitivity - in quids              Sensitivity = 0.33/3.3*1023=102,3
+  
+  accZadc = ADCPort_Get(ACC_Z_PNUM);
+  accZval = (accZadc-Config.Sensor_zero[ACC_Z_Index]);///102;//(accXadc-accZeroX)/Sensitivity - in quids              Sensitivity = 0.33/3.3*1023=102,3
+  //accZval++;//1g in horizontal position
+  
+  //R = sqrt(pow(accXval,2)+pow(accYval,2)+pow(accZval,2));//the force vector
+  accXangle = accXval * 0.72; //acos(accXval/R)*RAD_TO_DEG-90;
+  accYangle = accYval * 0.72; //acos(accYval/R)*RAD_TO_DEG-90;
+  //accZangle = acos(accZval/R)*RAD_TO_DEG;
+ 
+  
+  compAngleX = (0.98*(compAngleX+(gyroXrate)*dt/1000))+(0.02*(accYangle));
+  compAngleY = (0.6*(compAngleY-(gyroYrate)*dt/1000))+(0.4*(accXangle));
+ for (int c=0;c<dt;++c)
+ {
+  _delay_ms(1);
+  }  
+ // utoa(compAngleX,sXDeg,10);
+ 
+ 
+  dtostrf( accXval, 3, 4, sXDeg);
+  LCD_SetPos(1,48);
+  LCD_WriteString(sXDeg);
+  LCD_WriteString_P(PSTR("    "));
+
+  dtostrf( accXangle, 3, 4, sXDeg);
+  LCD_SetPos(2,48);
+  LCD_WriteString(sXDeg);
+  LCD_WriteString_P(PSTR("    "));
+
+  
+  //sprintf(sXDeg,"%i",gyroXrate);
+  dtostrf( gyroYrate, 3, 4, sXDeg);
+  LCD_SetPos(3,48);
+  LCD_WriteString(sXDeg);
+  LCD_WriteString_P(PSTR("    "));
+
+   //sprintf(sXDeg,"%i",gyroXrate);
+  dtostrf( gyroYangle, 3, 4, sXDeg);
+  LCD_SetPos(4,48);
+  LCD_WriteString(sXDeg);
+  LCD_WriteString_P(PSTR("    "));
+
+ //sprintf(sXDeg,"%i",gyroXrate);
+  dtostrf( compAngleY, 3, 4, sXDeg);
+  LCD_SetPos(5,48);
+  LCD_WriteString(sXDeg);
+  LCD_WriteString_P(PSTR("    "));
+
+
+  dtostrf( dt, 3, 4, sXDeg);
+  LCD_SetPos(6,48);
+  LCD_WriteString(sXDeg);
+  LCD_WriteString_P(PSTR("    "));
+
+
+ 	}
 }
 
 void _hFactoryReset()
