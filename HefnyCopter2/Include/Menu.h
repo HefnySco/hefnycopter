@@ -9,8 +9,8 @@
 #ifndef MENU_H_
 #define MENU_H_
 
-void menuInit();
-void menuShow();
+void Menu_MenuInit();
+void Menu_MenuShow();
 
 
 

@@ -15,7 +15,7 @@
 #include "../Include/IO_config.h"
 
 
-void LED_FlashOrangeLED (uint32_t msDuration, uint8_t Times)
+void LED_FlashOrangeLED (uint16_t msDuration, uint8_t Times)
 {
 	bool CurrentLED_Status = LED_Orange;
 	

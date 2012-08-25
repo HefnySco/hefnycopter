@@ -239,7 +239,7 @@ void LCD_Disable()
 	TIMSK0 &= ~_BV(TOIE0);	// disable overflow interrupt
 }
 
-void lcdSelectFont(const fontdescriptor_t *font)
+void LCD_SelectFont(const fontdescriptor_t *font)
 {
 	if (font == NULL)
 		font = &font6x8;
@@ -281,7 +281,7 @@ void LCD_Init()
 	while ((c = pgm_read_byte(ptr++)))
 		sendCommand(c);
 	
-	lcdSelectFont(NULL);		// select default font
+	LCD_SelectFont(NULL);		// select default font
 	
 	// use timer0 with clk/8 and overflow
 	// at 256 as interrupt based output of data bytes

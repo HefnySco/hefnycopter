@@ -13,7 +13,7 @@
 #include "typedefs.h"
 
 
-#define HEFNYCOPTER2_SIGNATURE 0x75
+#define HEFNYCOPTER2_SIGNATURE 0x77
 
 ///////////// LCD
 #define LCD_PORT	PORTD
@@ -88,7 +88,7 @@
 #define PWM_CAL_RANGE		100
 #define PPM_SYNC_LENGTH		3000
 
-
+/*
 #define RX_ROLL_vect		INT1_vect
 #define RX_ROLL    			REGISTER_BIT(PIND,3)	
 #define RX_ROLL_DIR   		REGISTER_BIT(DDRD,3)
@@ -109,6 +109,32 @@
 #define RX_AUX_vect			PCINT1_vect
 #define RX_AUX    			REGISTER_BIT(PINB,0)    
 #define RX_AUX_DIR   		REGISTER_BIT(DDRB,0) //pb0
+*/
+
+
+// Reduced cables configurations:
+#define RX_ROLL_vect		INT0_vect
+#define RX_ROLL    			REGISTER_BIT(PIND,2)	
+#define RX_ROLL_DIR   		REGISTER_BIT(DDRD,2)
+
+#define RX_PITCH_vect		PCINT3_vect
+#define RX_PITCH    		REGISTER_BIT(PIND,0)	
+#define RX_PITCH_DIR   		REGISTER_BIT(DDRD,0)
+
+#define RX_COLL_vect		INT1_vect
+#define RX_COLL    			REGISTER_BIT(PIND,3)	
+#define RX_COLL_DIR   		REGISTER_BIT(DDRD,3) //pd0
+
+#define RX_YAW_vect			INT2_vect
+#define RX_YAW    			REGISTER_BIT(PINB,2)    
+#define RX_YAW_DIR   		REGISTER_BIT(DDRB,2)
+
+
+#define RX_AUX_vect			PCINT1_vect
+#define RX_AUX    			REGISTER_BIT(PINB,0)    
+#define RX_AUX_DIR   		REGISTER_BIT(DDRB,0) //pb0
+
+
 
 // Index for RX[] variable
 #define RXChannel_AIL			0

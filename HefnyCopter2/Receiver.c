@@ -16,6 +16,7 @@
 
 volatile uint16_t RX_raw[RXChannels];
 
+#define RX_Div_Factor	16	// div by 16
 
 __attribute__ ((section(".lowtext")))
 ISR (RX_COLL_vect)
@@ -32,7 +33,7 @@ ISR (RX_COLL_vect)
 		}
 		else
 		{
-			RX[RXChannel_THR] = 0xffff - RX_raw[RXChannel_THR] + TCNT1;	
+			RX[RXChannel_THR] = (0xffff - RX_raw[RXChannel_THR] + TCNT1 );	
 		}
 		
 	}
@@ -56,7 +57,7 @@ ISR (RX_ROLL_vect)
 		}
 		else
 		{
-			RX[RXChannel_AIL] = 0xffff - RX_raw[RXChannel_AIL] + TCNT1;	
+			RX[RXChannel_AIL] = (0xffff - RX_raw[RXChannel_AIL] + TCNT1 );	
 		}
 		
 	}
@@ -79,7 +80,7 @@ ISR (RX_PITCH_vect)
 		}
 		else
 		{
-			RX[RXChannel_ELE] = 0xffff - RX_raw[RXChannel_ELE] + TCNT1;	
+			RX[RXChannel_ELE] = (0xffff - RX_raw[RXChannel_ELE] + TCNT1);	
 		}
 		
 	}
@@ -101,7 +102,7 @@ ISR (RX_YAW_vect)
 		}
 		else
 		{
-			RX[RXChannel_RUD] = 0xffff - RX_raw[RXChannel_RUD] + TCNT1;	
+			RX[RXChannel_RUD] = (0xffff - RX_raw[RXChannel_RUD] + TCNT1);	
 		}
 		
 	}
@@ -123,7 +124,7 @@ ISR (RX_AUX_vect)
 		}
 		else
 		{
-			RX[RXChannel_AUX] = 0xffff - RX_raw[RXChannel_AUX] + TCNT1;	
+			RX[RXChannel_AUX] = (0xffff - RX_raw[RXChannel_AUX] + TCNT1);	
 		}
 		
 	}
@@ -149,7 +150,7 @@ void RX_StickCenterCalibrationInit(void)
 }
 
 
-  uint16_t RX_GetReceiverValues (uint8_t Channel)
+  uint16_t RX_raw_GetReceiverValues (uint8_t Channel)
 {
 	uint16_t _t;
 	ATOMIC_BLOCK(ATOMIC_FORCEON)
@@ -157,7 +158,45 @@ void RX_StickCenterCalibrationInit(void)
 	return _t;
 }
 
+ int16_t RX_GetReceiverValues (uint8_t Channel)
+{
+	int16_t _t;
+	ATOMIC_BLOCK(ATOMIC_FORCEON)
+		_t = ((int)(RX[Channel] - Config.RX_Mid[Channel])) / RX_Div_Factor;
 
+	return _t;
+}
+
+/*
+// Retrives Throttle value [0 - 1000].
+// IMPORTANT: if throttle signal is accidently -or using trim- less than Config.RX_Min[RXChannel_THR] then the returned value will be roll back
+// to 0xffff range which means an agressive Quadcopter action. we avoid this by using a signed int.
+*/
+int16_t RX_GetReceiverThrottleValue ()
+{
+	int16_t _t;
+	ATOMIC_BLOCK(ATOMIC_FORCEON)
+		_t = ((int)(RX[RXChannel_THR] - Config.RX_Min[RXChannel_THR])) / RX_Div_Factor;
+	
+	return _t;
+}
+
+void RX_CopyReceiverValues (void)
+{
+	for (int i=0;i<RXChannels;++i)
+	{
+		if (i == RXChannel_THR)
+		{
+			RX_Latest[i]= RX_GetReceiverThrottleValue(i);	 
+		}
+		else
+		{
+			RX_Latest[i]= RX_GetReceiverValues(i);	 
+		}
+		
+	}		
+	
+}
 
 void RX_StickCenterCalibration (void)
 {
@@ -165,7 +204,7 @@ void RX_StickCenterCalibration (void)
 	uint16_t tempRX;
 	for (int i=0;i<RXChannels;++i)
 	{
-		tempRX = RX_GetReceiverValues(i);
+		tempRX = RX_raw_GetReceiverValues(i);
 		if ( tempRX > RX_MAX_raw[i]) 
 		{
 			RX_MAX_raw[i] = tempRX;
@@ -175,6 +214,4 @@ void RX_StickCenterCalibration (void)
 			RX_MIN_raw[i] = tempRX;
 		}
 	}
-	
-	
 }

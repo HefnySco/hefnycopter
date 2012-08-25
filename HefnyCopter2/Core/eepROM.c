@@ -82,7 +82,7 @@ void Save_Default_Config_to_EEPROM (void)
 	// Init values.
 	for (uint8_t i = 0; i < RXChannels; i++)
 	{
-		defaultConfig.RX_Max[i] = PWM_MAX;
+		defaultConfig.RX_Mid[i] = PWM_MID;
 		defaultConfig.RX_Min[i] = PWM_LOW;
 	}	
 	

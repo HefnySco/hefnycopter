@@ -11,6 +11,9 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 #include <util/atomic.h>
+#include <avr/pgmspace.h>
+#include <stdlib.h>
+#include <avr/wdt.h>
 
 #include "../Include/typedefs.h"
 #include "../Include/GlobalValues.h"
@@ -22,21 +25,8 @@
 //#include "rx.h"
 #include "../Include/Beeper.h"
 
-#include <avr/pgmspace.h>
-#include <stdlib.h>
-#include <avr/wdt.h>
 
 BOOL	ReStart=false;
-uint8_t _mykey;
-#define KEY_INIT	1
-#define ISINIT		(_mykey & KEY_INIT)
-#define KEY1		(_mykey & KEY_1)
-#define KEY2		(_mykey & KEY_2)
-#define KEY3		(_mykey & KEY_3)
-#define KEY4		(_mykey & KEY_4)  
-#define ANYKEY		(_mykey)
-#define KEYPRESS	(_mykey & (KEY_1|KEY_2|KEY_3|KEY_4))
-#define NOKEYRETURN {if (!_mykey) return;}
 
 typedef const prog_char screen_t[7][22];
 typedef struct  
@@ -65,6 +55,7 @@ typedef struct
 } menu_t;
 
 
+char sXDeg[10];
 //////////////////////////////////////////////////////////////////////////
 #include "../Include/menu_text.h"
 #include "../Include/menu_screen.h"
@@ -202,9 +193,9 @@ static void showMotor(uint8_t motor, uint8_t withDir)
 		//
 		//lcdXY(x - 2, y - 2);
 		//lcdReverse(1);
-		//lcdSelectFont(&font4x6);
+		//LCD_SelectFont(&font4x6);
 		//lcdWriteChar(motor + '1');
-		//lcdSelectFont(NULL);
+		//LCD_SelectFont(NULL);
 		//lcdReverse(0);
 		//
 		//if (withDir)
@@ -289,9 +280,9 @@ void _hHomePage()
 	if (ISINIT)
 	{
 		//LCD_SetPos(0, 36);
-		//lcdSelectFont(&font12x16);
+		//LCD_SelectFont(&font12x16);
 		//LCD_WriteString_P(strSAFE);
-		//lcdSelectFont(NULL);
+		//LCD_SelectFont(NULL);
 		//LCD_SetPos(3, 0);
 		//LCD_WriteString_P(strSelflevel);
 		//LCD_WriteString_P(strSpIsSp);
@@ -299,11 +290,18 @@ void _hHomePage()
 		//LCD_WriteString_P(strBattery);
 	}
 	
-	LCD_SetPos(3, 84);
-	if (Config.IsCalibrated==0)
+	LCD_SetPos(5, 5);
+	LCD_WriteString_P(PSTR("Calibrate:"));
+		
+	if (!(Config.IsCalibrated & CALIBRATED_SENSOR)) 
 	{
-		LCD_SetPos(5, 20);
-		LCD_WriteString_P(PSTR("Not Calibrated !"));
+		LCD_SetPos(6, 10);
+		LCD_WriteString_P(PSTR("Sensors"));
+	}
+	if (!(Config.IsCalibrated & CALIBRATED_Stick)) 
+	{
+		LCD_SetPos(6, 70);
+		LCD_WriteString_P(PSTR("Sticks"));
 	}
 	//LCD_WriteString_P(strON);
 	//else		
@@ -370,15 +368,19 @@ void _hSensorTest()
 
 void _hReceiverTest()
 {
-	char _t[10];
-
+	
+	RX_CopyReceiverValues();
+		
 	for (uint8_t i = 0; i < RXChannels; i++)
 	{
 		LCD_SetPos(i, 40);
 		//if (RX_good & _BV(i))
 		//{
-			utoa(RX_GetReceiverValues (i), _t, 10);
-			LCD_WriteString(_t);
+			utoa(RX_Latest[i], sXDeg, 10);
+			
+			itoa(RX_Latest[i], sXDeg, 10);
+			LCD_WriteString(sXDeg);
+			LCD_WriteString("    ");
 		//}
 		//else
 		//	LCD_WriteString_P(strNoSignal);
@@ -395,22 +397,32 @@ void _hStickCentering()
 		RX_StickCenterCalibrationInit();
 	}
 	
-	if (KEY4 & (!bError))
+	if (KEY4)
 	{
-		// Save config
-		for (uint8_t i = 0; i < RXChannels; i++)
+		if (!bError)
 		{
-				Config.RX_Max[i] = RX_MAX_raw[i];
-				Config.RX_Min[i] = RX_MIN_raw[i];
-		}		
-		Save_Config_to_EEPROM();
-		Beeper_Beep(700,1);
+			// Save config
+			for (uint8_t i = 0; i < RXChannels; i++)
+			{
+					Config.RX_Mid[i] = (RX_MAX_raw[i]+RX_MIN_raw[i])/2;
+					Config.RX_Min[i] = RX_MIN_raw[i];
+			}		
+			
+			Config.IsCalibrated= (Config.IsCalibrated | CALIBRATED_Stick);
+			Save_Config_to_EEPROM();
+			Beeper_Beep(700,1);	
+		}
+		else
+		{
+			Beeper_Beep(200,3);	
+		}
+		
 	}
 	
 	RX_StickCenterCalibration();
 	for (uint8_t i = 0; i < RXChannels; i++)
 	{
-		LCD_SetPos(i, 35);
+		LCD_SetPos(i, 30);
 		utoa(RX_MAX_raw[i], _t, 10);
 		LCD_WriteString(_t);
 		LCD_WriteString(" ");
@@ -455,11 +467,10 @@ void _hSensorCalibration()
 		}	
 		
 
-		Config.IsCalibrated = true;
+		Config.IsCalibrated = (Config.IsCalibrated | CALIBRATED_SENSOR);
 		for (i=0;i<6;++i)
 		Config.Sensor_zero[i] = nResult[i];
 		Save_Config_to_EEPROM();
-	
 		Beeper_Beep(700,1);
 	}
 	
@@ -537,7 +548,7 @@ float R;//force vector
 uint16_t timer=0;
 double dtime=0;  
 uint16_t dt;
-char sXDeg[10];
+
 void _hDebug()
 {
 	if (ISINIT)
@@ -683,12 +694,13 @@ void _hFactoryReset()
 	//}
 }
 
-void menuShow()
+void Menu_MenuShow()
 {
 	static uint8_t oldPage = 0xFF;
 	
 	_mykey = Keyboard_Read();
-		
+	_mykey = _mykey | _TXKeys;
+	// Throttle is not low to avoid conflict with other Armind/Disarmin TX commands
 	if (KEY1)	// BACK
 	{
 		if (page > PAGE_MENU) // if any page then go to main menu
@@ -710,9 +722,11 @@ void menuShow()
 
 	if (KEYPRESS)
 		Beeper_Beep(70,1);
+		
+	_TXKeys = 0; // No Key Pressed
 }
 
-void menuInit()
+void Menu_MenuInit()
 {
 	_mykey |= KEY_INIT;
 	loadPage(PAGE_HOME);

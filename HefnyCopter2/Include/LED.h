@@ -12,7 +12,7 @@
 #include <inttypes.h>
 
 
-	void LED_FlashLED (uint16_t msDuration, uint8_t Times);
+	void LED_FlashOrangeLED (uint16_t msDuration, uint8_t Times);
 
 
 

@@ -5,29 +5,26 @@
  *  Author: hefny
  */ 
 
+#include <util/delay.h>
 
 #include "../Include/Misc.h"
 
 
 //////////////////////////////// TIMING
 
-void delay_us(uint8_t time)            /* time delay for us */
-{ 
-	 while(time--)
-	 {
-		asm volatile ("NOP"); asm volatile ("NOP"); 
-		asm volatile ("NOP"); asm volatile ("NOP"); 
-		asm volatile ("NOP"); asm volatile ("NOP"); 
-		asm volatile ("NOP"); 
-	 }
+void delay_us(uint16_t time)
+{
+	while(time--) 
+	{ 
+		_delay_us(1); 
+	}
 }
 
 void delay_ms(uint16_t time)
 {
-	uint8_t i;
-	while(time--)
-	{
-		for(i=0;i<10;i++) delay_us(100);
+	while(time--) 
+	{ 
+		_delay_ms(1); 
 	}
 }
 

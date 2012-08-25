@@ -23,8 +23,11 @@ extern uint8_t RX_good;
 
 void rxInit(uint8_t mode);
 void RX_StickCenterCalibrationInit(void);
- uint16_t RX_GetReceiverValues (uint8_t Channel);
+int16_t RX_GetReceiverThrottleValue ();
+int16_t RX_GetReceiverValues (uint8_t Channel);
+uint16_t RX_raw_GetReceiverValues (uint8_t Channel);
 void RX_StickCenterCalibration(void);
+void RX_CopyReceiverValues (void);
 
 
 
