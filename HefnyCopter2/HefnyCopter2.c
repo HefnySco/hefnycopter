@@ -293,10 +293,11 @@ void MainLoop(void)
 			if ((Config.IsCalibrated & CALIBRATED_SENSOR) && (Config.IsCalibrated & CALIBRATED_Stick) && RX_Latest[RXChannel_THR] > STICKThrottle_ARMING)
 			{ // if Throttle is high and stick are calibrated
 		
+				if (TCNT1_X_snapshot1==0)  TCNT1_X_snapshot1 = TCNT1_X; // start counting
+				
 	 			if ((RX_Latest[RXChannel_ELE]) > STICK_LEFT) 
 				{
 					bResetTCNR1_X = false;
-					if (TCNT1_X_snapshot1==0)  TCNT1_X_snapshot1 = TCNT1_X; // start counting
 					if ( (TCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_SHORT_TIME )
 					{
 						_TXKeys = KEY_3;
@@ -307,7 +308,6 @@ void MainLoop(void)
 				else if ((RX_Latest[RXChannel_ELE]) < STICK_RIGHT) 
 				{
 					bResetTCNR1_X = false;
-					if (TCNT1_X_snapshot1==0) TCNT1_X_snapshot1 = TCNT1_X; // start counting
 					if ( (TCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_SHORT_TIME )
 					{
 						_TXKeys = KEY_2;
@@ -319,7 +319,6 @@ void MainLoop(void)
 				if ((RX_Latest[RXChannel_AIL]) > STICK_LEFT) 
 				{
 					bResetTCNR1_X = false;
-					if (TCNT1_X_snapshot1==0)  TCNT1_X_snapshot1 = TCNT1_X; // start counting
 					if ( (TCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_SHORT_TIME )
 					{
 						_TXKeys = KEY_4;
@@ -330,7 +329,6 @@ void MainLoop(void)
 				else if ((RX_Latest[RXChannel_AIL]) < STICK_RIGHT) 
 				{
 					bResetTCNR1_X = false;
-					if (TCNT1_X_snapshot1==0) TCNT1_X_snapshot1 = TCNT1_X; // start counting
 					if ( (TCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_SHORT_TIME )
 					{
 						_TXKeys = KEY_1;
