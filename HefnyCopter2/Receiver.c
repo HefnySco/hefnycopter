@@ -14,7 +14,13 @@
 #include "Include/IO_config.h"
 #include "Include/Receiver.h"
 
+// RX_GOOD How does it work?
+// I checked this behavior on Orange Receivers CH6.
+// When TX remote is turned OFF the only valid signal is THR others are no signals.
+// so I monitor a dead signal on any of RX except THR this could be any one... I chose YAW.... 
+// I detect the lost signal in the RX_GetReceiverThrottleValue() because it is called less 1/4 times than the other function RX_GetReceiverValue()
 volatile uint16_t RX_raw[RXChannels];
+volatile uint16_t RX_LastValidSignal_timestamp;
 
 #define RX_Div_Factor	16	// div by 16
 
@@ -105,6 +111,8 @@ ISR (RX_YAW_vect)
 			RX[RXChannel_RUD] = (0xffff - RX_raw[RXChannel_RUD] + TCNT1);	
 		}
 		
+		RX_LastValidSignal_timestamp = TCNT2_X;
+		RX_Good = TRUE;
 	}
 }
 
@@ -127,6 +135,8 @@ ISR (RX_AUX_vect)
 			RX[RXChannel_AUX] = (0xffff - RX_raw[RXChannel_AUX] + TCNT1);	
 		}
 		
+		
+
 	}
 }
 
@@ -138,6 +148,9 @@ void RX_Init(void)
 	RX_COLL_DIR   		= INPUT;
 	RX_YAW_DIR   	 	= INPUT;
 	RX_AUX_DIR   	 	= INPUT;
+	
+	RX_Good=false;
+	RX_LastValidSignal_timestamp= TCNT2_X;
 }
 
 void RX_StickCenterCalibrationInit(void)
@@ -161,6 +174,7 @@ void RX_StickCenterCalibrationInit(void)
  int16_t RX_GetReceiverValues (uint8_t Channel)
 {
 	int16_t _t;
+	if (RX_Good==false) return 0;
 	ATOMIC_BLOCK(ATOMIC_FORCEON)
 		_t = ((int)(RX[Channel] - Config.RX_Mid[Channel])) / RX_Div_Factor;
 
@@ -175,8 +189,17 @@ void RX_StickCenterCalibrationInit(void)
 int16_t RX_GetReceiverThrottleValue ()
 {
 	int16_t _t;
+	if (RX_Good==false) return 0;
+	
 	ATOMIC_BLOCK(ATOMIC_FORCEON)
+	{
+		if ((TCNT2_X - RX_LastValidSignal_timestamp) > 100)
+		{
+			RX_Good =false;
+			return 0;
+		}
 		_t = ((int)(RX[RXChannel_THR] - Config.RX_Min[RXChannel_THR])) / RX_Div_Factor;
+	}		
 	
 	return _t;
 }

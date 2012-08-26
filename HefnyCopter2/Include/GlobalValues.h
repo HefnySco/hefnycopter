@@ -75,6 +75,7 @@ volatile int16_t  RX_Latest [RXChannels];
 uint16_t RX_MAX_raw			[RXChannels];
 uint16_t RX_MIN_raw			[RXChannels];
 
+volatile BOOL RX_Good;
 BOOL	IsArmed;
 
 // Motors Signals
@@ -88,7 +89,7 @@ uint16_t MotorOut4;
 
 // TIMERS
 volatile uint16_t TCNT1_X;				// TCNT1_X click every 0.0032768 sec [1 sec = 305.17578125 TCNT1_X]
-volatile uint16_t TCNT2_X;				// TCNT2  overflows every  3.2us x 0xff = 0.0008192 sec,  TCNT2_X value tick every 8192 us and overflow every 53.6870912 sec
+volatile uint16_t TCNT2_X;				// TCNT2  overflows every  3.2us x 0xff = 0.0008192 sec,  TCNT2_X value tick every 819.2 us and overflow every 53.6870912 sec
 //volatile uint16_t OCR0A_X;
 uint16_t TCNT1_X_snapshot1;
 uint16_t TCNT2_X_snapshot2;

@@ -27,6 +27,7 @@
 
 
 BOOL	ReStart=false;
+static uint8_t oldPage;
 
 typedef const prog_char screen_t[7][22];
 typedef struct  
@@ -156,7 +157,8 @@ uint8_t doMenu(menu_t *menu)
 		for (uint8_t j = 0; j < 21 - strlen_P(item); j++)
 			lcdWriteChar(32);
 	}
-
+	
+	
 	lcdReverse(0);
 	LCD_SetPos(6, 58);
 	if (menu->top < menu->len - 5)
@@ -279,29 +281,37 @@ void _hHomePage()
 	
 	if (ISINIT)
 	{
-		//LCD_SetPos(0, 36);
-		//LCD_SelectFont(&font12x16);
-		//LCD_WriteString_P(strSAFE);
-		//LCD_SelectFont(NULL);
-		//LCD_SetPos(3, 0);
-		//LCD_WriteString_P(strSelflevel);
-		//LCD_WriteString_P(strSpIsSp);
-		//LCD_SetPos(5, 0);
-		//LCD_WriteString_P(strBattery);
-	}
-	
-	LCD_SetPos(5, 5);
-	LCD_WriteString_P(PSTR("Calibrate:"));
 		
-	if (!(Config.IsCalibrated & CALIBRATED_SENSOR)) 
-	{
-		LCD_SetPos(6, 10);
-		LCD_WriteString_P(PSTR("Sensors"));
+		LCD_SetPos(5, 40);
+		if (!(Config.IsCalibrated & CALIBRATED_SENSOR)) 
+		{
+			LCD_WriteString_P(PSTR("SN-Err"));
+		}
+		else
+		{
+			LCD_WriteString_P(PSTR("SN-OK "));
+		}
+		if (!(Config.IsCalibrated & CALIBRATED_Stick)) 
+		{
+			
+			LCD_WriteString_P(PSTR(" ST-Err"));
+		}
+		else
+		{
+			
+			LCD_WriteString_P(PSTR(" ST-OK "));
+		}
+		
 	}
-	if (!(Config.IsCalibrated & CALIBRATED_Stick)) 
+
+	LCD_SetPos(5, 0);
+	if (RX_Good==false)
 	{
-		LCD_SetPos(6, 70);
-		LCD_WriteString_P(PSTR("Sticks"));
+		LCD_WriteString_P(PSTR("RX-Err"));
+	}
+	else
+	{
+		LCD_WriteString_P(PSTR("RX-OK "));
 	}
 	//LCD_WriteString_P(strON);
 	//else		
@@ -696,7 +706,7 @@ void _hFactoryReset()
 
 void Menu_MenuShow()
 {
-	static uint8_t oldPage = 0xFF;
+	
 	
 	_mykey = Keyboard_Read();
 	_mykey = _mykey | _TXKeys;
@@ -728,6 +738,7 @@ void Menu_MenuShow()
 
 void Menu_MenuInit()
 {
+	oldPage=0xff;
 	_mykey |= KEY_INIT;
 	loadPage(PAGE_HOME);
 }

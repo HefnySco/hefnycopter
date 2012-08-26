@@ -28,7 +28,7 @@ int16_t	PWM_Low_Pulse_Interval = PWM_LOW_PULSE_INTERVAL;
 
 
 volatile uint8_t i;
-volatile static uint16_t MotorStartTCNT2, ElapsedTCNT1, CurrentTCNT1,CurrentTCNT2;
+volatile static uint16_t MotorStartTCNT, ElapsedTCNT1, ElapsedTCNT2, CurrentTCNT1,CurrentTCNT2;
 volatile uint8_t m1,m2,m3,m4;
 	
 uint16_t tempTCNT1;
@@ -49,19 +49,19 @@ void Motor_GenerateOutputSignal(void)
       CurrentTCNT2 = TCNT2_X;
    }
 
-   if (CurrentTCNT1 > MotorStartTCNT1) 
+   if (CurrentTCNT1 > MotorStartTCNT) 
    {
-		ElapsedTCNT2 = CurrentTCNT2 - MotorStartTCNT2;
+		ElapsedTCNT2 = CurrentTCNT2 - MotorStartTCNT;
    }
    else 
    {
-		ElapsedTCNT2 = (0xffff - MotorStartTCNT2) + CurrentTCNT2;
+		ElapsedTCNT2 = (0xffff - MotorStartTCNT) + CurrentTCNT2;
    }		
 	
 	
 	
 	// If period less than 1/ESC_RATE, pad it out.
-	// TCNT1 tick is 50ns & TCNT2 tick is 3.2us and TCNT2_X ticks every 8192 us.
+	// TCNT1 tick is 50ns & TCNT2 tick is 3.2us and TCNT2_X ticks every 819.2 us.
 	PWM_Low_Pulse_Interval = (PWM_LOW_PULSE_INTERVAL - ElapsedTCNT2)  ; //>> 3  ;
 	while (PWM_Low_Pulse_Interval > 0)
 	{
@@ -110,7 +110,7 @@ void Motor_GenerateOutputSignal(void)
 	// Measure period of ESC rate from here
 	ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
    {
-      MotorStartTCNT1 = TCNT1;
+      MotorStartTCNT = TCNT1;
    }
 	
 	

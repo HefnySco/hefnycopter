@@ -29,7 +29,7 @@
 #include "Include/Receiver.h"
 #include "Include/eepROM.h"
 #include "Include/fonts.h"
-
+#include "Include/Menu_Text.h"
 
 /*
 
@@ -174,6 +174,10 @@ void Loop(void)
 
 }
 
+
+/*
+	This is the main loop of the application.
+*/
 void MainLoop(void)
 {
 	
@@ -181,28 +185,29 @@ void MainLoop(void)
 		
 	bResetTCNR1_X = true;
 	
-	
 	// HINT: you can try to skip this if flying to save time for more useful tasks as user cannot access menu when flying
 	if (TCNT2_X_snapshot2==0) TCNT2_X_snapshot2 = TCNT2_X;
-	if ( (TCNT2_X- TCNT2_X_snapshot2) > 10 )  // TCNT2_X ticks in 3.2us
+	if ( (!IsArmed) && (TCNT2_X- TCNT2_X_snapshot2) > 20 )  // TCNT2_X ticks in 3.2us
 	{
 		Menu_MenuShow();	
 		TCNT2_X_snapshot2=0;
 	}		
 		
-
-		
+	
 	if (RX_Latest[RXChannel_THR] < STICKThrottle_ARMING) 
 	{	// Throttle is LOW
 		// Here you can add code without caring about delays. As there quad is already off and on land.
 		// here we test different positions of sticks to enable arm/disarm, Quad/X-Quad
+		
+		
+		if (TCNT1_X_snapshot1==0)  TCNT1_X_snapshot1 = TCNT1_X; // start counting
 		
 		/////ReadGainValues(); // keep reading values of POTS here. as we can change the value while quad is armed. but sure it is on land and motors are off.
 		// DisArm Check
 		if ((IsArmed == true) && (RX_Latest[RXChannel_RUD] < STICK_RIGHT))
 		{
 			bResetTCNR1_X  = false;
-			if (TCNT1_X_snapshot1==0)  TCNT1_X_snapshot1 = TCNT1_X; // start counting
+			//if (TCNT1_X_snapshot1==0)  TCNT1_X_snapshot1 = TCNT1_X; // start counting
 			if ( (TCNT1_X - TCNT1_X_snapshot1) > STICKPOSITION_LONG_TIME )
 			{
 				IsArmed = false;
@@ -216,15 +221,15 @@ void MainLoop(void)
 		if ((IsArmed == false) && (RX_Latest[RXChannel_RUD] > STICK_LEFT))
 		{
 			bResetTCNR1_X = false;
-			if (TCNT1_X_snapshot1==0)  TCNT1_X_snapshot1 = TCNT1_X; // start counting
-			else if ( (TCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_LONG_TIME )
+			//if (TCNT1_X_snapshot1==0)  TCNT1_X_snapshot1 = TCNT1_X; // start counting
+			if ( (TCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_LONG_TIME )
 			{
 				IsArmed = true;
 				
 				LCD_Clear();
 				LCD_SelectFont (&font12x16);
 				LCD_SetPos(3, 30);
-				LCD_WriteString_P(PSTR("ARMED"));
+				LCD_WriteString_P(strARMED);
 				LCD_SelectFont (NULL);
 				Menu_MenuInit();
 				
@@ -243,7 +248,7 @@ void MainLoop(void)
 			if (RX_Latest[RXChannel_AIL]  < STICK_RIGHT)
 			{// X-QUAD MODE
 				bResetTCNR1_X = false;
-				if (TCNT1_X_snapshot1==0)  TCNT1_X_snapshot1 = TCNT1_X; // start counting
+				//if (TCNT1_X_snapshot1==0)  TCNT1_X_snapshot1 = TCNT1_X; // start counting
 				if ( (TCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_LONG_TIME )
 				{
 					bXQuadMode = true;
@@ -254,7 +259,7 @@ void MainLoop(void)
 			else  if ((RX_Latest[RXChannel_AIL]  > STICK_LEFT))
 			{	// QUAD COPTER MODE
 				bResetTCNR1_X = false;
-				if (TCNT1_X_snapshot1==0)  TCNT1_X_snapshot1 = TCNT1_X; // start counting
+				//if (TCNT1_X_snapshot1==0)  TCNT1_X_snapshot1 = TCNT1_X; // start counting
 				if ( (TCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_LONG_TIME )
 				{
 					bXQuadMode = false;
@@ -283,8 +288,10 @@ void MainLoop(void)
 			MotorOut3 = 0;
 			MotorOut4 = 0;
 			
-			if (RX_Latest[RXChannel_THR] > STICKThrottle_ARMING)
-			{
+			
+			///////////////// Sticks as Keyboard --- we are already disarmed to reach here.
+			if ((Config.IsCalibrated & CALIBRATED_SENSOR) && (Config.IsCalibrated & CALIBRATED_Stick) && RX_Latest[RXChannel_THR] > STICKThrottle_ARMING)
+			{ // if Throttle is high and stick are calibrated
 		
 	 			if ((RX_Latest[RXChannel_ELE]) > STICK_LEFT) 
 				{
@@ -332,6 +339,7 @@ void MainLoop(void)
 				
 				}		 		
 			}	
+			///////////////// EOF Sticks as Keyboard
 	
 		}
 		else
@@ -463,7 +471,7 @@ void MainLoop(void)
 	}  // End of Throttle stick is NOT Down [Armed Could be True or not]
 	
 
-	//Motor_GenerateOutputSignal();
+//	Motor_GenerateOutputSignal();
 	
 	if (bResetTCNR1_X==true)
 	{
