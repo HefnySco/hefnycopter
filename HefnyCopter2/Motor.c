@@ -28,7 +28,7 @@ int16_t	PWM_Low_Pulse_Interval = PWM_LOW_PULSE_INTERVAL;
 
 
 volatile uint8_t i;
-volatile static uint16_t MotorStartTCNT1, ElapsedTCNT1, CurrentTCNT1;
+volatile static uint16_t MotorStartTCNT2, ElapsedTCNT1, CurrentTCNT1,CurrentTCNT2;
 volatile uint8_t m1,m2,m3,m4;
 	
 uint16_t tempTCNT1;
@@ -43,21 +43,26 @@ void Motor_GenerateOutputSignal(void)
 
 	// Make sure we have spent enough time between pulses
 	// Also, handle the odd case where the TCNT1 rolls over and TCNT1 < MotorStartTCNT1
-	
+
 	ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
    {
-      CurrentTCNT1 = TCNT1;
+      CurrentTCNT2 = TCNT2_X;
    }
-	
-	if (CurrentTCNT1 > MotorStartTCNT1) ElapsedTCNT1 = CurrentTCNT1 - MotorStartTCNT1;
-	else ElapsedTCNT1 = (0xffff - MotorStartTCNT1) + CurrentTCNT1;
-		
+
+   if (CurrentTCNT1 > MotorStartTCNT1) 
+   {
+		ElapsedTCNT2 = CurrentTCNT2 - MotorStartTCNT2;
+   }
+   else 
+   {
+		ElapsedTCNT2 = (0xffff - MotorStartTCNT2) + CurrentTCNT2;
+   }		
 	
 	
 	
 	// If period less than 1/ESC_RATE, pad it out.
-	// TCNT1 tick is 1us & TCNT2 tick is 4us
-	PWM_Low_Pulse_Interval = (PWM_LOW_PULSE_INTERVAL - ElapsedTCNT1)  ; //>> 3  ;
+	// TCNT1 tick is 50ns & TCNT2 tick is 3.2us and TCNT2_X ticks every 8192 us.
+	PWM_Low_Pulse_Interval = (PWM_LOW_PULSE_INTERVAL - ElapsedTCNT2)  ; //>> 3  ;
 	while (PWM_Low_Pulse_Interval > 0)
 	{
 		TCNT2=0;

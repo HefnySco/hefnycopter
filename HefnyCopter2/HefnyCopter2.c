@@ -217,7 +217,7 @@ void MainLoop(void)
 		{
 			bResetTCNR1_X = false;
 			if (TCNT1_X_snapshot1==0)  TCNT1_X_snapshot1 = TCNT1_X; // start counting
-			if ( (TCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_LONG_TIME )
+			else if ( (TCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_LONG_TIME )
 			{
 				IsArmed = true;
 				
@@ -451,10 +451,10 @@ void MainLoop(void)
 			
 			
 			// Save motors from turning-off
-			if (MotorOut1<10) MotorOut1=10;
-			if (MotorOut2<10) MotorOut2=10;
-			if (MotorOut3<10) MotorOut3=10;
-			if (MotorOut4<10) MotorOut4=10;
+			if (MotorOut1<MOTORS_IDLE_VALUE) MotorOut1=MOTORS_IDLE_VALUE;
+			if (MotorOut2<MOTORS_IDLE_VALUE) MotorOut2=MOTORS_IDLE_VALUE;
+			if (MotorOut3<MOTORS_IDLE_VALUE) MotorOut3=MOTORS_IDLE_VALUE;
+			if (MotorOut4<MOTORS_IDLE_VALUE) MotorOut4=MOTORS_IDLE_VALUE;
 			
 			
 		} // End of ARMED & Throttle > Minimum

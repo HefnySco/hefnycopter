@@ -47,10 +47,10 @@ uint8_t _TXKeys;
 // Max Collective
 // limits the maximum stick collective (range 80->100  100=Off)
 // this allows gyros to stabilize better when full throttle applied
-#define MAX_COLLECTIVE 180
+#define MAX_COLLECTIVE		180
 // trimming value for motors when generating PWM signals.
-#define MOTORS_HIGH_VALUE	200  
-
+#define MOTORS_HIGH_VALUE	1000  
+#define MOTORS_IDLE_VALUE	50
 // Defines output rate to ESC/Servo
 // either define by setting ESC_RATE (Max is approx 495Hz)
 // uses Timer 1 ticks to control output rate.
@@ -58,9 +58,9 @@ uint8_t _TXKeys;
 #define ESC_RATE 400	// in Hz (at SINGLE_COPTER and DUAL_COPTER)
 //#define ESC_RATE 450	// in Hz
 //#define ESC_RATE 495	// in Hz
-#define PWM_LOW_PULSE_INTERVAL (20000000 / ESC_RATE ) // 2020
-#define BASE_PULSE  22080 / 16  //1120 / 16 :: I reduced it from 1120 to 1104 as trimming.
-#define PWM_LOW_PULSE_INTERVAL (20000000 / ESC_RATE ) // 2020
+#define PWM_LOW_PULSE_INTERVAL (1221 / ESC_RATE ) // 
+#define BASE_PULSE				22080   //  TCNT1 tick in 20MHz [50ns]:: I reduced it from 1120 to 1104 as trimming.
+#define PWM_LOW_PULSE_INTERVAL (1221 / ESC_RATE ) // 2020
 
 
 
@@ -87,8 +87,8 @@ uint16_t MotorOut4;
 
 
 // TIMERS
-volatile uint16_t TCNT1_X;				// This value overflow every 4294.967296 sec [1.19 hr], and tick every 0.065536 sec
-volatile uint16_t TCNT2_X;				// This value overflow every 4294.967296 sec [1.19 hr], and tick every 0.065536 sec
+volatile uint16_t TCNT1_X;				// TCNT1_X click every 0.0032768 sec [1 sec = 305.17578125 TCNT1_X]
+volatile uint16_t TCNT2_X;				// TCNT2  overflows every  3.2us x 0xff = 0.0008192 sec,  TCNT2_X value tick every 8192 us and overflow every 53.6870912 sec
 //volatile uint16_t OCR0A_X;
 uint16_t TCNT1_X_snapshot1;
 uint16_t TCNT2_X_snapshot2;
