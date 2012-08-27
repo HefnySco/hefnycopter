@@ -27,7 +27,7 @@ int16_t RX_GetReceiverThrottleValue ();
 int16_t RX_GetReceiverValues (uint8_t Channel);
 uint16_t RX_raw_GetReceiverValues (uint8_t Channel);
 void RX_StickCenterCalibration(void);
-void RX_CopyReceiverValues (void);
+void RX_CopyLatestReceiverValues (void);
 
 
 

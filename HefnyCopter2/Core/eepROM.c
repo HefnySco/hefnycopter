@@ -79,22 +79,25 @@ void Initial_EEPROM_Config_Load(void)
 
 void Save_Default_Config_to_EEPROM (void)
 {
+	
+	// copy default config to config.
+	Set_EEPROM_Default_Config();
+	
+	
 	// Init values.
 	for (uint8_t i = 0; i < RXChannels; i++)
 	{
-		defaultConfig.RX_Mid[i] = PWM_MID;
-		defaultConfig.RX_Min[i] = PWM_LOW;
+		Config.RX_Mid[i] = PWM_MID;
+		Config.RX_Min[i] = PWM_LOW;
 	}	
 	
-	// Save config
-	Set_EEPROM_Default_Config();
 	// write to eeProm
 	Save_Config_to_EEPROM_Init();
 }
 
 void Set_EEPROM_Default_Config(void)
 {
-	memcpy ( &Config, &defaultConfig, sizeof(config_t));
+	memcpy_P ( &Config, &defaultConfig, sizeof(config_t));
 }
 
 void Save_Config_to_EEPROM(void)

@@ -56,7 +56,7 @@ typedef struct
 } menu_t;
 
 
-char sXDeg[10];
+
 //////////////////////////////////////////////////////////////////////////
 #include "../Include/menu_text.h"
 #include "../Include/menu_screen.h"
@@ -313,41 +313,6 @@ void _hHomePage()
 	{
 		LCD_WriteString_P(PSTR("RX-OK "));
 	}
-	//LCD_WriteString_P(strON);
-	//else		
-		//LCD_WriteString_P(strOFF);
-	//
-	//LCD_SetPos(4, 0);
-	//if (State.Error)
-	//{
-		//LCD_WriteString_P(strError);
-		//lcdWriteChar(32);
-		//if (State.Error & ERR_NOT_CALIBRATED)
-			//LCD_WriteString_P(strSensorNotCal);
-		//else 
-		//{
-			//LCD_WriteString_P(PSTR("no "));
-			//if (State.Error & ERR_NO_ROLL)
-				//LCD_WriteString_P(strRoll);
-			//else if (State.Error & ERR_NO_PITCH)
-				//LCD_WriteString_P(strPitch);
-			//else if (State.Error & ERR_NO_YAW)
-				//LCD_WriteString_P(strYaw);
-			//else 
-				//LCD_WriteString_P(strThro);
-			//LCD_WriteString_P(PSTR(" input"));
-		//}
-	//}	
-	//else
-		//LCD_WriteString_P(PSTR("Ready for departure!"));
-	//
-	//LCD_SetPos(5, 9*6);
-	//utoa(BATT / 10, s, 10);
-	//LCD_WriteString(s);
-	//lcdWriteChar('.');
-	//utoa(BATT % 10, s, 10);
-	//LCD_WriteString(s);
-	//LCD_WriteString_P(PSTR(" V "));
 }
 
 void _hSensorTest()
@@ -366,35 +331,33 @@ void _hSensorTest()
 	LCD_WriteString(Sensors_Acc_Test(ACC_Y_PNUM));
 	LCD_SetPos(5, 48);
 	LCD_WriteString(Sensors_Acc_Test(ACC_Z_PNUM));
-	
-	
-	/*
-	utoa(ADCPort_Get(V_BAT_PNUM), s, 10);
-	LCD_SetPos(6, 48);
-	LCD_WriteString(s);
-	lcdWriteChar(32);
-	*/
 }
 
 void _hReceiverTest()
 {
 	
-	RX_CopyReceiverValues();
+	RX_CopyLatestReceiverValues();
+		
 		
 	for (uint8_t i = 0; i < RXChannels; i++)
 	{
 		LCD_SetPos(i, 40);
-		//if (RX_good & _BV(i))
-		//{
-			utoa(RX_Latest[i], sXDeg, 10);
 			
-			itoa(RX_Latest[i], sXDeg, 10);
-			LCD_WriteString(sXDeg);
-			LCD_WriteString("    ");
-		//}
-		//else
-		//	LCD_WriteString_P(strNoSignal);
+		itoa(RX_Latest[i], sXDeg, 10);
+		LCD_WriteString(sXDeg);
+		LCD_WriteString("    ");
 	}			
+	
+	LCD_SetPos(6, 40);
+		
+	if (RX_Good==false)
+	{
+		LCD_WriteString_P(strNoSignal);
+	}	
+	else
+	{
+		LCD_WriteString_P("         ");
+	}
 }
 
 
@@ -463,7 +426,7 @@ void _hSensorCalibration()
 		for (i=0; i<10;++i)
 		{
 			Beeper_Beep(70,1);
-			_delay_ms (1500); // delay to avoid click vibration.	
+			delay_ms (1500); // delay to avoid click vibration.	
 		
 		}
 	
@@ -643,7 +606,7 @@ void _hDebug()
   compAngleY = (0.6*(compAngleY-(gyroYrate)*dt/1000))+(0.4*(accXangle));
  for (int c=0;c<dt;++c)
  {
-  _delay_ms(1);
+   delay_ms(1);
   }  
  // utoa(compAngleX,sXDeg,10);
  
@@ -710,7 +673,7 @@ void Menu_MenuShow()
 	
 	_mykey = Keyboard_Read();
 	_mykey = _mykey | _TXKeys;
-	// Throttle is not low to avoid conflict with other Armind/Disarmin TX commands
+	// Throttle is not low to avoid conflict with other Arming/Disarming TX commands
 	if (KEY1)	// BACK
 	{
 		if (page > PAGE_MENU) // if any page then go to main menu

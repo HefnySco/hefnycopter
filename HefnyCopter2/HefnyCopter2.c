@@ -11,7 +11,7 @@
 #include <avr/pgmspace.h>
 #include <stdlib.h>
 #include <avr/wdt.h>
-
+#include <util/atomic.h>
 
 #include "Include/GlobalValues.h"
 #include "Include/HefnyCopter2.h"
@@ -125,10 +125,9 @@ void Setup (void)
 	
 	sei();
 	
-	_delay_ms(800);
+	delay_ms(20);
     
 }
-
 
 
 int main(void)
@@ -136,19 +135,16 @@ int main(void)
 	
 	Setup();
 	
-	/*while (1)
-	{
-		_delay_ms(100);
-	}*/
+	 
 	// If not calibrated then dont loop in the main loop to menu or motor actions betcause of RX channel positions.
 	while ((!(Config.IsCalibrated & CALIBRATED_SENSOR)) || (!(Config.IsCalibrated & CALIBRATED_Stick)))
 	{
 		Loop();
 	}
+	
 	while(1)
     {
-      
-		MainLoop();
+    	MainLoop();
     }
 }
 
@@ -166,7 +162,7 @@ void Loop(void)
 {
 	
 	if (TCNT2_X_snapshot2==0) TCNT2_X_snapshot2 = TCNT2_X;
-	if ( (TCNT2_X- TCNT2_X_snapshot2) > 10 )  // TCNT2_X ticks in 3.2us
+	if ( (TCNT2_X- TCNT2_X_snapshot2) > LCD_RefreashRate )  
 	{
 		Menu_MenuShow();	
 		TCNT2_X_snapshot2=0;
@@ -181,18 +177,17 @@ void Loop(void)
 void MainLoop(void)
 {
 	
-	RX_CopyReceiverValues();
+	RX_CopyLatestReceiverValues();
 		
 	bResetTCNR1_X = true;
 	
 	// HINT: you can try to skip this if flying to save time for more useful tasks as user cannot access menu when flying
-	if (TCNT2_X_snapshot2==0) TCNT2_X_snapshot2 = TCNT2_X;
-	if ( (!IsArmed) && (TCNT2_X- TCNT2_X_snapshot2) > 20 )  // TCNT2_X ticks in 3.2us
+	if (TCNT2_X_snapshot2==0) TCNT2_X_snapshot2 = TCNT1_X;
+	else if ( (!IsArmed) && (TCNT1_X- TCNT2_X_snapshot2) > 20 )  // TCNT1_X ticks in 3.2768us
 	{
 		Menu_MenuShow();	
 		TCNT2_X_snapshot2=0;
 	}		
-		
 	
 	if (RX_Latest[RXChannel_THR] < STICKThrottle_ARMING) 
 	{	// Throttle is LOW
@@ -347,13 +342,11 @@ void MainLoop(void)
 				//CalibrateGyros();
 			}
 				
-	
-	
 			
-			MotorOut1 = RX[RXChannel_THR];
-			MotorOut2 = RX[RXChannel_THR];
-			MotorOut3 = RX[RXChannel_THR];
-			MotorOut4 = RX[RXChannel_THR];		
+			MotorOut1 = RX_Latest[RXChannel_THR];
+			MotorOut2 = RX_Latest[RXChannel_THR];
+			MotorOut3 = RX_Latest[RXChannel_THR];
+			MotorOut4 = RX_Latest[RXChannel_THR];		
 	
 	
 			///////*
@@ -361,13 +354,13 @@ void MainLoop(void)
 			//////*	Stabilization Logic.
 			//////*	The logic is independent of Quad configuration 
 			//////*/
-	//////
+			//////
 			//////ReadGyros();
 			//////ReadGainValues();
 			//////
 				//////
 			//////// LIMIT GYRO
-		///////*	if (gyroADC[PITCH]> MAX_GYRO_VALUE)		gyroADC[PITCH] = MAX_GYRO_VALUE;
+			///////*	if (gyroADC[PITCH]> MAX_GYRO_VALUE)		gyroADC[PITCH] = MAX_GYRO_VALUE;
 			//////if (gyroADC[PITCH]< -MAX_GYRO_VALUE)	gyroADC[PITCH] = -MAX_GYRO_VALUE;
 			//////if (gyroADC[ROLL]> MAX_GYRO_VALUE)		gyroADC[ROLL] = MAX_GYRO_VALUE;
 			//////if (gyroADC[ROLL]< -MAX_GYRO_VALUE)		gyroADC[ROLL] = -MAX_GYRO_VALUE;
@@ -423,37 +416,37 @@ void MainLoop(void)
 			*	
 			*/
 	
-			if (bXQuadMode==true)
-			{
-							
-				MotorOut1 += RX[RXChannel_AIL] ;
-				MotorOut2 += RX[RXChannel_AIL] ;
-				MotorOut3 -= RX[RXChannel_AIL] ;
-				MotorOut4 -= RX[RXChannel_AIL] ;
-				
-				MotorOut1 += RX[RXChannel_ELE];
-				MotorOut2 -= RX[RXChannel_ELE];
-				MotorOut3 += RX[RXChannel_ELE];
-				MotorOut4 -= RX[RXChannel_ELE];
-				
-				MotorOut1 -= RX[RXChannel_RUD];
-				MotorOut2 += RX[RXChannel_RUD];
-				MotorOut3 += RX[RXChannel_RUD];
-				MotorOut4 -= RX[RXChannel_RUD];
-			}
-			else
-			{
-				MotorOut2 += RX[RXChannel_AIL] ;
-				MotorOut3 -= RX[RXChannel_AIL] ;
-				
-				MotorOut1 += RX[RXChannel_ELE] ;
-				MotorOut4 -= RX[RXChannel_ELE] ;
-		
-				MotorOut1 -= RX[RXChannel_RUD] ;
-				MotorOut2 += RX[RXChannel_RUD] ;
-				MotorOut3 += RX[RXChannel_RUD] ;
-				MotorOut4 -= RX[RXChannel_RUD] ;
-			}
+			//if (bXQuadMode==true)
+			//{
+							//
+				//MotorOut1 += RX[RXChannel_AIL] ;
+				//MotorOut2 += RX[RXChannel_AIL] ;
+				//MotorOut3 -= RX[RXChannel_AIL] ;
+				//MotorOut4 -= RX[RXChannel_AIL] ;
+				//
+				//MotorOut1 += RX[RXChannel_ELE];
+				//MotorOut2 -= RX[RXChannel_ELE];
+				//MotorOut3 += RX[RXChannel_ELE];
+				//MotorOut4 -= RX[RXChannel_ELE];
+				//
+				//MotorOut1 -= RX[RXChannel_RUD];
+				//MotorOut2 += RX[RXChannel_RUD];
+				//MotorOut3 += RX[RXChannel_RUD];
+				//MotorOut4 -= RX[RXChannel_RUD];
+			//}
+			//else
+			//{
+				//MotorOut2 += RX[RXChannel_AIL] ;
+				//MotorOut3 -= RX[RXChannel_AIL] ;
+				//
+				//MotorOut1 += RX[RXChannel_ELE] ;
+				//MotorOut4 -= RX[RXChannel_ELE] ;
+		//
+				//MotorOut1 -= RX[RXChannel_RUD] ;
+				//MotorOut2 += RX[RXChannel_RUD] ;
+				//MotorOut3 += RX[RXChannel_RUD] ;
+				//MotorOut4 -= RX[RXChannel_RUD] ;
+			//}
 			
 			
 			// Save motors from turning-off
@@ -469,8 +462,10 @@ void MainLoop(void)
 	}  // End of Throttle stick is NOT Down [Armed Could be True or not]
 	
 
-//	Motor_GenerateOutputSignal();
-	
+	Motor_GenerateOutputSignal();
+	//LCD_SetPos(0,0);
+	//itoa (MotorOut1,sXDeg,10);
+	//LCD_WriteString(sXDeg);
 	if (bResetTCNR1_X==true)
 	{
 		TCNT1_X_snapshot1= 0; // reset timeout

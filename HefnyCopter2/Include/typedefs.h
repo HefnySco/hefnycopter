@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include <avr/io.h>
 
-#define F_CPU	20000000
+#define F_CPU	20000000UL	// 20 MHz
 
 
 //set bit	or PORTB |= (1<<3); 

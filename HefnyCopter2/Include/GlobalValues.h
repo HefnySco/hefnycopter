@@ -9,6 +9,8 @@
 #ifndef GLOBALVALUES_H_
 #define GLOBALVALUES_H_
 
+
+
 #include "typedefs.h"
 #include "IO_config.h"
 ///////////////////////////// Define Section
@@ -17,11 +19,12 @@
 //#define 
 
 // LED
-#define LED_LONG_TOGGLE 800
-#define LED_SHORT_TOGGLE 400
+#define LED_LONG_TOGGLE  80  // 800 
+#define LED_SHORT_TOGGLE 30 // 400
 
 // LCD
 #define LCD_RefreashRate	10
+char sXDeg[10];
 
 // KeyBoard
 uint8_t _mykey;
@@ -50,17 +53,17 @@ uint8_t _TXKeys;
 #define MAX_COLLECTIVE		180
 // trimming value for motors when generating PWM signals.
 #define MOTORS_HIGH_VALUE	1000  
-#define MOTORS_IDLE_VALUE	50
+#define MOTORS_IDLE_VALUE	40
 // Defines output rate to ESC/Servo
 // either define by setting ESC_RATE (Max is approx 495Hz)
 // uses Timer 1 ticks to control output rate.
-//#define ESC_RATE 310	// in Hz
-#define ESC_RATE 400	// in Hz (at SINGLE_COPTER and DUAL_COPTER)
+#define ESC_RATE 50	// in Hz
+//#define ESC_RATE 400	// in Hz (at SINGLE_COPTER and DUAL_COPTER)
 //#define ESC_RATE 450	// in Hz
 //#define ESC_RATE 495	// in Hz
-#define PWM_LOW_PULSE_INTERVAL (1221 / ESC_RATE ) // 
-#define BASE_PULSE				22080   //  TCNT1 tick in 20MHz [50ns]:: I reduced it from 1120 to 1104 as trimming.
-#define PWM_LOW_PULSE_INTERVAL (1221 / ESC_RATE ) // 2020
+#define PWM_LOW_PULSE_INTERVAL 1000000 / ESC_RATE // time in ms for a delay.
+#define BASE_PULSE				1000   //  :: I reduced it from 1120 to 1104 as trimming.
+
 
 
 

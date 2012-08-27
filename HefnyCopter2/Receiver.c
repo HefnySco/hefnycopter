@@ -111,7 +111,7 @@ ISR (RX_YAW_vect)
 			RX[RXChannel_RUD] = (0xffff - RX_raw[RXChannel_RUD] + TCNT1);	
 		}
 		
-		RX_LastValidSignal_timestamp = TCNT2_X;
+		RX_LastValidSignal_timestamp = TCNT1_X;
 		RX_Good = TRUE;
 	}
 }
@@ -150,7 +150,8 @@ void RX_Init(void)
 	RX_AUX_DIR   	 	= INPUT;
 	
 	RX_Good=false;
-	RX_LastValidSignal_timestamp= TCNT2_X;
+	ATOMIC_BLOCK(ATOMIC_FORCEON)
+		RX_LastValidSignal_timestamp= TCNT1_X;
 }
 
 void RX_StickCenterCalibrationInit(void)
@@ -193,7 +194,7 @@ int16_t RX_GetReceiverThrottleValue ()
 	
 	ATOMIC_BLOCK(ATOMIC_FORCEON)
 	{
-		if ((TCNT2_X - RX_LastValidSignal_timestamp) > 100)
+		if ((TCNT1_X - RX_LastValidSignal_timestamp) > 50)
 		{
 			RX_Good =false;
 			return 0;
@@ -204,7 +205,7 @@ int16_t RX_GetReceiverThrottleValue ()
 	return _t;
 }
 
-void RX_CopyReceiverValues (void)
+void RX_CopyLatestReceiverValues (void)
 {
 	for (int i=0;i<RXChannels;++i)
 	{
