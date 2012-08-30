@@ -115,7 +115,8 @@ static void lcdSetByte(uint8_t x, uint8_t y, uint8_t b)
 		*scr = b;
 }
 
-void lcdLine(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1)
+
+void LCD_Line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1)
 {
 	// simple optimized bresenham algorithm
 	int8_t dx =  abs(x1 - x0);
@@ -135,6 +136,33 @@ void lcdLine(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1)
 		if (e2 > dy) { err += dy; x0 += sx; } /* e_xy + e_x > 0 */
 		if (e2 < dx) { err += dx; y0 += sy; } /* e_xy + e_y < 0 */
 	}
+}
+
+void LCD_Rectangle(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t color)
+{
+	uint8_t a;
+	if (x0 > x1) { a = x0; x0 = x1; x1 = a;}
+	if (y0 > y1) { a = y0; y0 = y1; y1 = a;}
+	for (a = x0; a <= x1; a++)
+	{
+		lcdSetPixel(a, y0, color);
+		lcdSetPixel(a, y1, color);
+	}
+	for (a = y0; a <= y1; a++)
+	{
+		lcdSetPixel(x0, a, color);
+		lcdSetPixel(x1, a, color);
+	}
+}
+
+void LCD_FillRectangle(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t color)
+{
+	uint8_t a;
+	if (x0 > x1) { a = x0; x0 = x1; x1 = a;}
+	if (y0 > y1) { a = y0; y0 = y1; y1 = a;}
+	for (a = y0; a <= y1; a++)
+		for(uint8_t i = x0; i <= x1; i++)
+			lcdSetPixel(i, a, color);
 }
 
 void LCD_Clear()
@@ -216,6 +244,45 @@ void lcdReverse(uint8_t reversed)
 	else
 		_flags &= ~REVERSED;
 }
+
+
+void LCD_WriteSpace(uint8_t len)
+{
+	for (uint8_t i = 0; i < len; i++)
+		lcdWriteChar(32);
+}
+
+void LCD_WritePadded(char *s, uint8_t len)
+{
+	LCD_WriteString(s);
+	LCD_WriteSpace(len - strlen(s));
+}
+
+void LCD_WritePadded_P(const char *s, uint8_t len)
+{
+	LCD_WriteString_P(s);
+	LCD_WriteSpace(len - strlen_P(s));
+}
+
+
+void LCD_WriteString_Pex(uint8_t x, uint8_t y, PGM_P str, uint8_t len, BOOL LCDReverse)
+{
+	lcdReverse(LCDReverse);
+	LCD_SetPos(x, y);
+	LCD_WritePadded_P(str, len);
+	lcdReverse(0);
+}
+
+void LCD_WriteValue(uint8_t x, uint8_t y, int16_t value, uint8_t len, BOOL LCDReverse)
+{
+	char s[7];
+	itoa(value, s, 10);
+	lcdReverse(LCDReverse);
+	LCD_SetPos(x, y);
+	LCD_WritePadded(s, len);
+	lcdReverse(0);
+}
+
 
 void lcdSetContrast(uint8_t contrast)
 {

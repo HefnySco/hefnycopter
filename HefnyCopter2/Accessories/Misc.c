@@ -35,33 +35,33 @@
 //}
 
 
-void delay_ms(uint16_t times)            /* time delay for us */
+
+
+void delay_us(uint16_t time)            /* time delay for us */
 { 
-	times *=10;
-	int8_t TimeOut;
-	int8_t Multi;
-	while(times > 0)
-   {
-	   for (Multi=0;Multi<10;++Multi)
-	   {
-		    if (TCNT1H > (255-20))
-			{
-				TimeOut = 0xff-TCNT1H;
-			}
-			else
-			{
-				TimeOut = TCNT1H + 20;	
-			}
-			while (TCNT1H < TimeOut); 
-			times-=1;
-	   }		
-   }
+ while(time--)
+ {
+	asm volatile ("NOP"); asm volatile ("NOP"); 
+	asm volatile ("NOP"); asm volatile ("NOP"); 
+	asm volatile ("NOP"); asm volatile ("NOP"); 
+	asm volatile ("NOP"); 
+	asm volatile ("NOP"); asm volatile ("NOP"); 
+	asm volatile ("NOP"); asm volatile ("NOP"); 
+	asm volatile ("NOP"); asm volatile ("NOP"); 
+	asm volatile ("NOP"); 
+ }
 }
 
-void delay_us(uint16_t time)
+void delay_ms(uint16_t time)
 {
-	
+	uint8_t i;
+	while(time--)
+	{
+		for(i=0;i<10;i++) delay_us(100);
+	}
 }
+
+
 //////////////////////////////// EOF - TIMIMG
 
 

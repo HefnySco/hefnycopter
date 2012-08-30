@@ -30,7 +30,9 @@ char sXDeg[10];
 uint8_t _mykey;
 uint8_t _TXKeys;
 #define KEY_INIT	1
-#define ISINIT		(_mykey & KEY_INIT)
+#define KEY_REFRESH	2
+#define IS_INIT		(_mykey & KEY_INIT)
+#define IS_KEYREFRESH	(_mykey & KEY_REFRESH)
 #define KEY1		(_mykey & KEY_1)
 #define KEY2		(_mykey & KEY_2)
 #define KEY3		(_mykey & KEY_3)
@@ -133,7 +135,8 @@ typedef struct
 	uint8_t HeightDampening;
 	uint8_t HeightDampeningLimit;
 	uint8_t LVA;
-	pid_param_t PID_SelfLevel;
+	//pid_param_t PID_SelfLevel;
+	uint8_t	AccGain;
 	uint8_t AccTrimPitch;
 	uint8_t AccTrimRoll;
 	//model_t Mixer;

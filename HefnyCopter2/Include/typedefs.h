@@ -5,6 +5,10 @@
 #include <stdbool.h>
 #include <avr/io.h>
 
+
+#define P_STR static const prog_char
+
+
 #define F_CPU	20000000UL	// 20 MHz
 
 

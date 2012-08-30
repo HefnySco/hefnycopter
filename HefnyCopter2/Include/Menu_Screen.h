@@ -13,9 +13,7 @@
 #ifndef MENU_SCREEN_H_
 #define MENU_SCREEN_H_
 
-#ifndef P_STR
-#define P_STR static const prog_char
-#endif
+
 
 /*P_STR scrPIEditor[] = 
 	"Axis:\n"
@@ -66,12 +64,11 @@ P_STR scrMiscSettings[] =
 	"Alarm 1/10 volts:\n"
 	"Servo filter:";
 
-P_STR scrSelflevelSettings[] =
-	"P Gain:\n"
-	"P Limit:\n"
-	"\n"
-	"Acc Trim Roll:\n"
-	"Acc Trim Pitch:";
+P_STR scrSelfLeveling[] =
+	"Active:\n"
+	"Gain:\n"
+	"Trim Roll:\n"
+	"Trim Pitch:";
 
 P_STR scrCPPMSettings[] = 
 	"Roll (Ail):\n"
@@ -176,7 +173,7 @@ P_STR scrMixerEditor[] =
 
 //////////////////////////////////////////////////////////////////////////
 // softkeys
-static const prog_char _skHOME[]     = "                 MENU";
+static const prog_char _skHOME[]      = "                MENU";
 static const prog_char _skMENU[]      = "BACK UP   DOWN ENTER";
 static const prog_char _skBACK[]      = "BACK";
 static const prog_char _skCONTINUE[]  = "BACK         CONTINUE";
@@ -184,13 +181,14 @@ static const prog_char _skCANCELYES[] = "NO	             YES";
 static const prog_char _skPAGE[]      = "BACK PREV NEXT CHANGE";
 static const prog_char _skBACKNEXT[]  = "BACK NEXT";
 static const prog_char _skCANCEL[]    = "CANCEL";
-
+static const prog_char _skEDIT[]      = "CANCEL  DOWN  UP  OK";
 //////////////////////////////////////////////////////////////////////////
 // Menu Structure
 
 void _hHomePage();
 void _hMenu();
 void _hReceiverTest();
+void _hSelfLeveling();
 void _hSensorTest();
 void _hSensorCalibration();
 void _hESCCalibration();
@@ -203,7 +201,7 @@ void _hFactoryReset();
 static const page_t pages[] PROGMEM = {
 /*  0 */	{ _skHOME, _hHomePage, scrHomePage },
 /*  1 */	{ _skMENU, _hMenu},
-///*  2 */	{ _skPAGE, NULL, scrPIEditor},
+/*  2 */	{ _skBACK, _hSelfLeveling, scrSelfLeveling},
 /*  3 */	{ _skBACK, _hReceiverTest, scrReceiverTest},
 /*  4 */	{ _skPAGE, NULL, scrModeSettings},
 /*  5 */	{ _skPAGE, NULL, scrStickScaling},
@@ -224,7 +222,7 @@ static const page_t pages[] PROGMEM = {
 
 
 static const prog_char *lstMenu[] PROGMEM = {
-	//strPIEditor,
+	strSelflevel,
 	strReceiverTest,
 	strModeSettings,
 	strStickScaling,
@@ -245,16 +243,23 @@ static const prog_char *lstMenu[] PROGMEM = {
 PGM_P tsmMain(uint8_t);
 PGM_P tsmLoadModelLayout(uint8_t);
 
-static uint8_t page, subpage;
+static uint8_t page, subpage,subindex;
 static uint16_t _tStart;
 static page_t currentPage;
 static menu_t mnuMain = {length(lstMenu), tsmMain};
 static menu_t mnuMLayout = {22, tsmLoadModelLayout};
-
+int16_t editValue, editLoLimit, editHiLimit;
+uint8_t editMode, editValueType;
+ uint8_t* editValuePtr;
 
 #define PAGE_HOME			0
 #define PAGE_MENU			1
 #define PAGE_SHOW_LAYOUT	14
+
+
+#define TYPE_UINT8		2
+#define TYPE_INT8		1
+#define TYPE_INT16		3
 
 
 #endif /* MENU_SCREEN_H_ */

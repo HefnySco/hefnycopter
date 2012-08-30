@@ -28,16 +28,6 @@ static config_t defaultConfig PROGMEM =
 	.IsCalibrated=0,
 	.MixerIndex = 0,
 	.RX_mode = 0, //RX_MODE_CPPM,
-	//.RX_MAX_raw[RXChannel_AIL] = PWM_MID,
-	//.RX_zero[RXChannel_ELE] = PWM_MID,
-	//.RX_zero[RXChannel_RUD] = PWM_MID,
-	//.RX_zero[RXChannel_THR] = PWM_LOW,
-	//.RX_zero[RXChannel_AUX] = PWM_MID,
-	//.RX_chmap[AIL] = 0,
-	//.RX_chmap[ELE] = 1,
-	//.RX_chmap[RUD] = 3,
-	//.RX_chmap[THR] = 2,
-	//.RX_chmap[AUX] = 4,
 	.Sensor_zero[GYRO_X_Index] = 548,
 	.Sensor_zero[GYRO_Y_Index] = 548,
 	.Sensor_zero[GYRO_Z_Index] = 548,
@@ -58,7 +48,7 @@ static config_t defaultConfig PROGMEM =
 	.HeightDampening = 0,
 	.HeightDampeningLimit = 30,
 	.LVA = 0,
-	.PID_SelfLevel = { 40, 20, 0, 0},
+	.AccGain=0,
 	.AccTrimPitch = 0,
 	.AccTrimRoll = 0,
 };
@@ -106,6 +96,8 @@ void Save_Config_to_EEPROM(void)
 	cli();
 	eeprom_write_block_changes( (const void*) &Config, (void*) EEPROM_DATA_START_POS, sizeof(config_t));	//current_config CONFIG_STRUCT
 	sei();
+	
+	Beeper_Beep(700,1);	
 }
 
 

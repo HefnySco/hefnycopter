@@ -132,7 +132,6 @@ void Setup (void)
 
 int main(void)
 {
-	
 	Setup();
 	
 	 
@@ -416,37 +415,37 @@ void MainLoop(void)
 			*	
 			*/
 	
-			//if (bXQuadMode==true)
-			//{
-							//
-				//MotorOut1 += RX[RXChannel_AIL] ;
-				//MotorOut2 += RX[RXChannel_AIL] ;
-				//MotorOut3 -= RX[RXChannel_AIL] ;
-				//MotorOut4 -= RX[RXChannel_AIL] ;
-				//
-				//MotorOut1 += RX[RXChannel_ELE];
-				//MotorOut2 -= RX[RXChannel_ELE];
-				//MotorOut3 += RX[RXChannel_ELE];
-				//MotorOut4 -= RX[RXChannel_ELE];
-				//
-				//MotorOut1 -= RX[RXChannel_RUD];
-				//MotorOut2 += RX[RXChannel_RUD];
-				//MotorOut3 += RX[RXChannel_RUD];
-				//MotorOut4 -= RX[RXChannel_RUD];
-			//}
-			//else
-			//{
-				//MotorOut2 += RX[RXChannel_AIL] ;
-				//MotorOut3 -= RX[RXChannel_AIL] ;
-				//
-				//MotorOut1 += RX[RXChannel_ELE] ;
-				//MotorOut4 -= RX[RXChannel_ELE] ;
-		//
-				//MotorOut1 -= RX[RXChannel_RUD] ;
-				//MotorOut2 += RX[RXChannel_RUD] ;
-				//MotorOut3 += RX[RXChannel_RUD] ;
-				//MotorOut4 -= RX[RXChannel_RUD] ;
-			//}
+			if (bXQuadMode==true)
+			{
+			
+				MotorOut1 += RX[RXChannel_AIL] ;
+				MotorOut2 += RX[RXChannel_AIL] ;
+				MotorOut3 -= RX[RXChannel_AIL] ;
+				MotorOut4 -= RX[RXChannel_AIL] ;
+				
+				MotorOut1 += RX[RXChannel_ELE];
+				MotorOut2 -= RX[RXChannel_ELE];
+				MotorOut3 += RX[RXChannel_ELE];
+				MotorOut4 -= RX[RXChannel_ELE];
+				
+				MotorOut1 -= RX[RXChannel_RUD];
+				MotorOut2 += RX[RXChannel_RUD];
+				MotorOut3 += RX[RXChannel_RUD];
+				MotorOut4 -= RX[RXChannel_RUD];
+			}
+			else
+			{
+				MotorOut2 += RX[RXChannel_AIL] ;
+				MotorOut3 -= RX[RXChannel_AIL] ;
+				
+				MotorOut1 += RX[RXChannel_ELE] ;
+				MotorOut4 -= RX[RXChannel_ELE] ;
+				
+				MotorOut1 -= RX[RXChannel_RUD] ;
+				MotorOut2 += RX[RXChannel_RUD] ;
+				MotorOut3 += RX[RXChannel_RUD] ;
+				MotorOut4 -= RX[RXChannel_RUD] ;
+			}
 			
 			
 			// Save motors from turning-off

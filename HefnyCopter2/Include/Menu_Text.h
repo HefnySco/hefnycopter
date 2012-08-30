@@ -12,9 +12,6 @@
 #ifndef MENU_TEXT_H_
 #define MENU_TEXT_H_
 
-#ifndef P_STR
-#define P_STR static const prog_char
-#endif
 #include "../Include/typedefs.h"
 
 P_STR strSAFE[] = "SAFE";
@@ -29,7 +26,7 @@ P_STR strModeSettings[] = "Mode Settings";
 P_STR strStickScaling[] = "Stick Scaling";
 P_STR strRadioCalibration[] = "Stick Centering";
 P_STR strMiscSettings[] = "Misc. Settings";
-//P_STR strSelflevelSettings[] = "Self-level Settings";
+P_STR strSelflevel[] = "Self Leveling";
 P_STR strSensorTest[] = "Sensor Test";
 P_STR strSensorCalibration[] = "Sensor Calibration";
 //P_STR strCPPMSettings[] = "CPPM Settings";
@@ -42,7 +39,6 @@ P_STR strDebug[] = "Debug";
 P_STR strFactoryReset[] = "Factory Reset";
 
 
-P_STR strSelflevel[] = "Self-level";
 P_STR strIofPI[] = "I of PI";
 P_STR strSpIsSp[] = " is ";
 

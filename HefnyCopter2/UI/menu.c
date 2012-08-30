@@ -57,6 +57,14 @@ typedef struct
 
 
 
+typedef struct
+{
+	uint8_t X, Y;
+	void *valuePtr;
+	int16_t loLimit, hiLimit;
+	uint8_t len;
+} edit_element_t;
+
 //////////////////////////////////////////////////////////////////////////
 #include "../Include/menu_text.h"
 #include "../Include/menu_screen.h"
@@ -99,18 +107,109 @@ void loadPage(uint8_t pageIndex)
 
 void defaultHandler()
 {
-	if (ISINIT) // if first 
-	{	// 1- display screen content
-		if (currentPage.screen)  
-			LCD_WriteString_P(currentPage.screen);
-		// 2- Display control buttons... always be last to overwrite any graphics on it.
-		writeSoftkeys(currentPage.softkeys); 
+	
+	if (editMode==true)
+	{		// edit mode?
+		editModeHandler();
 	}
+	else
+	{
+		if (IS_INIT | IS_KEYREFRESH)
+		{
+			LCD_Clear();
+			// 1- display screen content
+			if (currentPage.screen)
+				LCD_WriteString_P(currentPage.screen);
+			// 2- Display control buttons... always be last to overwrite any graphics on it.
+			writeSoftkeys(currentPage.softkeys);
+			LCD_SetPos(0, 0);
+		}
 		
-	if (currentPage.handler)
-	{		// Now call screen handler.
+		if (currentPage.handler)
 			currentPage.handler();
+		
 	}			
+}
+
+
+void PageKey(uint8_t num)
+{
+	if (KEY2)	// PREV
+		subpage = subpage == 0 ? num - 1 : subpage - 1;
+	else if (KEY3) // NEXT
+		subpage = (subpage + 1) % num;
+}
+
+
+void editModeHandler()
+{
+	if (KEY4)	// DONE;
+	{
+		editMode = false;
+		_mykey = KEY_REFRESH;
+		
+		if (editValueType == TYPE_UINT8)
+			*((uint8_t*)editValuePtr) = (uint8_t) editValue;
+		else if (editValueType == TYPE_INT8)
+			*((int8_t*)editValuePtr) = (int8_t) editValue;
+// 		else if (editValueType == TYPE_INT16)
+// 			*(int16_t*)editValuePtr = editValue;
+		
+		//Save_Config_to_EEPROM();
+		
+		LCD_SelectFont(NULL);
+		defaultHandler();
+		return;
+	}
+	if (ANYKEY)
+	{
+		if (KEY2)	// DOWN?
+		{
+			if (editValue > editLoLimit)
+				editValue--;
+		}
+		else if (KEY3)	// UP?
+		{
+			if (editValue < editHiLimit)
+				editValue++;
+		}
+		else if (KEY1)	// CLR?
+		{
+			editMode = false;
+			_mykey = KEY_REFRESH;
+	
+			LCD_SelectFont(NULL);
+			defaultHandler();
+			return;	
+		}
+			
+		LCD_WriteValue(2, 34, editValue, 5, -1);
+	}
+}
+
+static void startEditMode(void* valuePtr, int16_t loLimit, int16_t hiLimit, uint8_t valueType)
+{
+	editMode = true;
+	_mykey = KEY_INIT;
+	editValuePtr = valuePtr;
+	editValueType = valueType;
+	
+	if (valueType == TYPE_UINT8)
+		editValue = *(uint8_t*)valuePtr;
+	else if (valueType == TYPE_INT8)
+		editValue = *(int8_t*)valuePtr;
+// 	else if (valueType == TYPE_INT16)
+// 		editValue = *(int16_t*)valuePtr;
+	
+	editLoLimit = loLimit;
+	editHiLimit = hiLimit;
+	
+	LCD_FillRectangle(30, 11, 98, 34, 0);
+	LCD_Rectangle(30, 11, 98, 34, 1);
+	LCD_Rectangle(31, 12, 97, 33, 1);
+	writeSoftkeys(_skEDIT);
+	LCD_SelectFont(NULL);//&font12x16);
+	editModeHandler();
 }
 
 
@@ -149,16 +248,10 @@ uint8_t doMenu(menu_t *menu)
 	{
 		LCD_SetPos(i + 1, 0);
 		PGM_P item = menu->textSelector(menu->top + i);
-		if (menu->top + i == menu->marked)
-			lcdReverse(1);
-		else
-			lcdReverse(0);
-		LCD_WriteString_P(item);
-		for (uint8_t j = 0; j < 21 - strlen_P(item); j++)
-			lcdWriteChar(32);
+		lcdReverse(menu->top + i == menu->marked);
+		LCD_WritePadded_P(item, 21);
 	}
-	
-	
+
 	lcdReverse(0);
 	LCD_SetPos(6, 58);
 	if (menu->top < menu->len - 5)
@@ -171,54 +264,6 @@ void _hMenu()
 {
 	if (doMenu(&mnuMain))
 		loadPage(mnuMain.marked + 2);
-}
-
-static void showMotor(uint8_t motor, uint8_t withDir)
-{
-	//uint8_t x = 96;
-	//uint8_t y = 32;
-	//mixer_channel_t *channel = &Config.Mixer.Channel[motor];
-	//
-	//if (channel->flags & FLAG_ESC)
-	//{
-		//x += (channel->Aileron >> 2);
-		//y -= (channel->Elevator >> 2);
-	//
-		//lcdLine(x, y, 96, 32);
-		//lcdXY(x - 4, y - 4);
-		//lcdWriteGlyph_P(&glyBall, ROP_PAINT);
-		//lcdXY(x - 4, y - 7);
-		//if (channel->Rudder >= 0)
-			//lcdWriteGlyph_P(&glyDirCW, ROP_PAINT);
-		//else
-			//lcdWriteGlyph_P(&glyDirCCW, ROP_PAINT);
-		//
-		//lcdXY(x - 2, y - 2);
-		//lcdReverse(1);
-		//LCD_SelectFont(&font4x6);
-		//lcdWriteChar(motor + '1');
-		//LCD_SelectFont(NULL);
-		//lcdReverse(0);
-		//
-		//if (withDir)
-		//{
-			//LCD_SetPos(2, 0);
-			//LCD_WriteString_P(strDirSeen);
-			//LCD_SetPos(5, 0);
-			//if (channel->Rudder >= 0)
-				//LCD_WriteString_P(strCW);
-			//else
-				//LCD_WriteString_P(strCCW);
-		//}
-	//}
-	//else if (withDir)
-	//{
-		//LCD_SetPos(3, 64);
-		//if (channel->flags == FLAG_NONE)
-			//LCD_WriteString_P(strUnused);
-		//else
-			//LCD_WriteString_P(strServo);
-	//}
 }
 
 void _hShowModelLayout()
@@ -235,12 +280,14 @@ void _hShowModelLayout()
 		{
 			LCD_WriteString_P(strALL);
 			for (uint8_t i = 0; i < 8; i++)
-				showMotor(i, 0);
+			{
+			}				
+				//showMotor(i, 0);
 		}			
 		else
 		{
 			lcdWriteChar(subpage + '0');
-			showMotor(subpage - 1, 1);
+			//showMotor(subpage - 1, 1);
 		}
 		writeSoftkeys(NULL);
 	}
@@ -248,7 +295,7 @@ void _hShowModelLayout()
 
 void _hLoadModelLayout()
 {
-	//if (ISINIT)
+	//if (IS_INIT)
 		//mnuMLayout.marked = Config.MixerIndex;
 //
 	//if (subpage == 0)
@@ -279,7 +326,7 @@ void _hHomePage()
 		return;
 	}
 	
-	if (ISINIT)
+	if (IS_INIT)
 	{
 		
 		LCD_SetPos(5, 40);
@@ -365,7 +412,7 @@ void _hStickCentering()
 {
 	char _t[10];
 	BOOL bError = false; 
-	if (ISINIT)
+	if (IS_INIT)
 	{
 		RX_StickCenterCalibrationInit();
 	}
@@ -383,7 +430,6 @@ void _hStickCentering()
 			
 			Config.IsCalibrated= (Config.IsCalibrated | CALIBRATED_Stick);
 			Save_Config_to_EEPROM();
-			Beeper_Beep(700,1);	
 		}
 		else
 		{
@@ -419,7 +465,7 @@ void _hStickCentering()
 void _hSensorCalibration()
 {
 
-	if (ISINIT)
+	if (IS_INIT)
 	{
 		ReStart = false;
 		uint8_t i;
@@ -444,7 +490,6 @@ void _hSensorCalibration()
 		for (i=0;i<6;++i)
 		Config.Sensor_zero[i] = nResult[i];
 		Save_Config_to_EEPROM();
-		Beeper_Beep(700,1);
 	}
 	
 	if (KEY4)
@@ -471,6 +516,35 @@ void _hESCCalibration()
 	}
 }
 
+static uint8_t a=5;
+
+void _hSelfLeveling()
+{
+
+	NOKEYRETURN;
+	
+	PageKey(4);
+	
+	if (KEY4)
+	{
+		switch (subpage)
+		{
+			case 0: startEditMode(&Config.SelfLevelMode,0,1,TYPE_UINT8);
+			case 1: startEditMode(&(Config.AccGain),0,200,TYPE_UINT8); break;
+			case 2: startEditMode(&(Config.AccTrimRoll),0,200,TYPE_UINT8); break;
+			case 3: startEditMode(&(Config.AccTrimPitch),0,200,TYPE_UINT8);	break; 
+		}
+		return;		
+		
+	}
+	
+	lcdReverse(subpage == 0);
+	LCD_WriteValue(0,80,a,3,0==subpage);
+	LCD_WriteValue(1,80,Config.AccGain,3,1==subpage);
+	LCD_WriteValue(2,80,Config.SelfLevelMode,3,2==subpage);
+	LCD_WriteValue(3,80,Config.SelfLevelMode,3,3==subpage);
+	
+}
 
 
 #define aX A3
@@ -509,13 +583,11 @@ int accZeroZ;//z-axis
 float accZadc;
 float accZval;
 float accZangle;
-
 //Results
 float xAngle;
 float yAngle;
 float compAngleX;
 float compAngleY;
-
 float R;//force vector
 //Used for timing
 uint16_t timer=0;
@@ -524,7 +596,7 @@ uint16_t dt;
 
 void _hDebug()
 {
-	if (ISINIT)
+	if (IS_INIT)
 	{
   	    //timer = TCNT1;	
 		  
@@ -652,7 +724,7 @@ void _hDebug()
 
 void _hFactoryReset()
 {
-	//if (ISINIT)
+	//if (IS_INIT)
 	//{
 		//LCD_SetPos(3, 18);
 		//LCD_WriteString_P(strAreYouSure);
@@ -673,8 +745,9 @@ void Menu_MenuShow()
 	
 	_mykey = Keyboard_Read();
 	_mykey = _mykey | _TXKeys;
+	
 	// Throttle is not low to avoid conflict with other Arming/Disarming TX commands
-	if (KEY1)	// BACK
+	if (KEY1 && !editMode)	// BACK
 	{
 		if (page > PAGE_MENU) // if any page then go to main menu
 			loadPage(PAGE_MENU);
@@ -687,7 +760,8 @@ void Menu_MenuShow()
 	{	// if this is a new page then KEY_INIT = true
 		_mykey |= KEY_INIT;
 		subpage = 0;
-		LCD_Clear();
+		subindex = 0;
+		//LCD_Clear();
 		oldPage = page;
 	}
 	defaultHandler();
@@ -702,7 +776,7 @@ void Menu_MenuShow()
 void Menu_MenuInit()
 {
 	oldPage=0xff;
-	_mykey |= KEY_INIT;
+	//_mykey |= KEY_INIT;
 	loadPage(PAGE_HOME);
 }
 
