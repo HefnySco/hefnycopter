@@ -22,7 +22,7 @@
 
 
 
-static config_t defaultConfig PROGMEM = 
+static config_t const defaultConfig PROGMEM = 
 {
 	.signature = HEFNYCOPTER2_SIGNATURE,
 	.IsCalibrated=0,

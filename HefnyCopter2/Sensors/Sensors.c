@@ -109,8 +109,8 @@ void Sensors_Calibrate (void)
 {
 //	memset(&nResult,1,14);
 	BOOL LEDOLD = LED_Orange;
-	int i=0;
-	for (i=0;i<7;++i)
+	int i;
+	for (i=0;i<6;++i)
 	{
 		nResult [i]=0;
 	}

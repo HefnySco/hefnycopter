@@ -116,6 +116,9 @@
     <Compile Include="HefnyCopter2.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="IMU\IMU.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Include\ADC_PORT.h">
       <SubType>compile</SubType>
     </Compile>
@@ -132,6 +135,9 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Include\Glyphs.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Include\IMU.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Include\Sensors.h">
@@ -198,6 +204,7 @@
     <Folder Include="GFX" />
     <Folder Include="Include" />
     <Folder Include="DevDocs" />
+    <Folder Include="IMU" />
     <Folder Include="UI" />
     <Folder Include="Sensors" />
   </ItemGroup>

@@ -75,7 +75,7 @@ uint8_t _TXKeys;
 // Receiver Signal Values
 
 volatile uint16_t RX        [RXChannels];
-volatile int16_t  RX_Latest [RXChannels];
+volatile int16_t  RX_Latest [RXChannels];   // the actual RX values that are used for calculations.
 // used for calibration...not initialized... true values are in Config in case IsCalibrated & Stick = True.
 uint16_t RX_MAX_raw			[RXChannels];
 uint16_t RX_MIN_raw			[RXChannels];
@@ -143,4 +143,8 @@ typedef struct
 } config_t;
 
 config_t Config;
+
+
+
+
 #endif /* GLOBALVALUES_H_ */
