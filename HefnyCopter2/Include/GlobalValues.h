@@ -26,21 +26,7 @@
 #define LCD_RefreashRate	10
 char sXDeg[10];
 
-// KeyBoard
-uint8_t _mykey;
-uint8_t _TXKeys;
-#define KEY_INIT	1
-#define KEY_REFRESH	2
-#define IS_INIT		(_mykey & KEY_INIT)
-#define IS_KEYREFRESH	(_mykey & KEY_REFRESH)
-#define KEY1		(_mykey & KEY_1)
-#define KEY2		(_mykey & KEY_2)
-#define KEY3		(_mykey & KEY_3)
-#define KEY4		(_mykey & KEY_4)  
-#define ANYKEY		(_mykey)
-#define KEYPRESS	(_mykey & (KEY_1|KEY_2|KEY_3|KEY_4))
-#define NOKEYRETURN {if (!_mykey) return;}
-
+ 
 
 
 // Stick Arming - enable this line to enable Stick arming
@@ -100,12 +86,14 @@ uint16_t TCNT1_X_snapshot1;
 uint16_t TCNT2_X_snapshot2;
 BOOL bResetTCNR1_X;
 
+
+
 // ADC Values
-
 volatile uint16_t ADCValues[8];
-
+uint16_t Sensors_Latest [8];
 volatile char Result[8]; 
 volatile uint16_t nResult[8];
+uint16_t nTemp16;
 
 #define CALIBRATED_ALL		3
 #define CALIBRATED_Stick	1
@@ -113,6 +101,7 @@ volatile uint16_t nResult[8];
 
 // eeProm data structure
 
+#define IMU_SelfLevelMode	1
 typedef struct  
 {
 	uint8_t signature;

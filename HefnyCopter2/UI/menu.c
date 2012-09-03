@@ -22,9 +22,13 @@
 #include "../Include/Keyboard.h"
 #include "../Include/ADC_PORT.h"
 #include "../Include/Receiver.h"
+#include "../Include/Sensors.h"
 //#include "rx.h"
 #include "../Include/Beeper.h"
 #include "../Include/IMU.h"
+
+
+
 
 static uint8_t oldPage;
 
@@ -104,6 +108,7 @@ void loadPage(uint8_t pageIndex)
 	page = pageIndex;
 }
 
+
 void defaultHandler()
 {
 	
@@ -113,7 +118,7 @@ void defaultHandler()
 	}
 	else
 	{
-		if (IS_INIT | IS_KEYREFRESH)
+		if (IS_INIT | IS_KEYREFRESH) 
 		{
 			LCD_Clear();
 			// 1- display screen content
@@ -121,10 +126,11 @@ void defaultHandler()
 				LCD_WriteString_P(currentPage.screen);
 			// 2- Display control buttons... always be last to overwrite any graphics on it.
 			writeSoftkeys(currentPage.softkeys);
-			LCD_SetPos(0, 0);
+			//LCD_SetPos(0, 0);
 		}
 		
 		if (currentPage.handler)
+
 			currentPage.handler();
 		
 	}			
@@ -252,6 +258,13 @@ uint8_t doMenu(menu_t *menu)
 	}
 
 	lcdReverse(0);
+
+
+
+
+
+
+
 	LCD_SetPos(6, 58);
 	if (menu->top < menu->len - 5)
 		lcdWriteGlyph_P(&glyArrowDown, 0);
@@ -259,11 +272,13 @@ uint8_t doMenu(menu_t *menu)
 	return 0;
 }
 
+
 void _hMenu()
 {
 	if (doMenu(&mnuMain))
 		loadPage(mnuMain.marked + 2);
 }
+
 
 void _hShowModelLayout()
 {
@@ -328,36 +343,47 @@ void _hHomePage()
 	if (IS_INIT)
 	{
 		
-		LCD_SetPos(5, 40);
+		LCD_SetPos(5, 60);
 		if (!(Config.IsCalibrated & CALIBRATED_SENSOR)) 
 		{
-			LCD_WriteString_P(PSTR("SN-Err"));
+			LCD_WriteString_P(strErr);
 		}
 		else
 		{
-			LCD_WriteString_P(PSTR("SN-OK "));
+			LCD_WriteString_P(strOK);
 		}
+		LCD_SetPos(5, 102);
 		if (!(Config.IsCalibrated & CALIBRATED_Stick)) 
 		{
 			
-			LCD_WriteString_P(PSTR(" ST-Err"));
+			LCD_WriteString_P(strErr);
 		}
 		else
 		{
 			
-			LCD_WriteString_P(PSTR(" ST-OK "));
+			LCD_WriteString_P(strOK);
 		}
 		
 	}
-
-	LCD_SetPos(5, 0);
+	// Write Voltage
+	LCD_SetPos(2, 30);
+	nTemp16 = Sensor_GetBattery();
+	utoa(nTemp16 /10,sXDeg,10);
+	LCD_WriteString(sXDeg);
+	LCD_WriteString_P(PSTR("."));
+	utoa(nTemp16 %10,sXDeg,10);
+	LCD_WriteString(sXDeg);
+	LCD_WriteString_P(strSPC3);
+	
+	// Write RX Status
+	LCD_SetPos(5, 18);
 	if (RX_Good==false)
 	{
-		LCD_WriteString_P(PSTR("RX-Err"));
+		LCD_WriteString_P(strErr);
 	}
 	else
 	{
-		LCD_WriteString_P(PSTR("RX-OK "));
+		LCD_WriteString_P(strOK);
 	}
 }
 
@@ -366,46 +392,19 @@ void _hSensorTest()
 	
 	LCD_SetPos(0, 48);
 	LCD_WriteString(Sensors_Gyro_Test(GYRO_X_PNUM));
-	LCD_WriteString_P(strSpace);
-	itoa(ADCPort_Get(GYRO_X_PNUM) - Config.Sensor_zero[GYRO_X_Index],sXDeg,10);
-	LCD_WriteString(sXDeg);
-	LCD_WriteString_P(strSpace3);
-	
 	LCD_SetPos(1, 48);
 	LCD_WriteString(Sensors_Gyro_Test(GYRO_Y_PNUM));
-	LCD_WriteString_P(strSpace);
-	itoa(ADCPort_Get(GYRO_Y_PNUM) - Config.Sensor_zero[GYRO_Y_Index],sXDeg,10);
-	LCD_WriteString(sXDeg);
-	LCD_WriteString_P(strSpace3);
-	
 	LCD_SetPos(2, 48);
 	LCD_WriteString(Sensors_Gyro_Test(GYRO_Z_PNUM));
-	LCD_WriteString_P(strSpace);
-	itoa(ADCPort_Get(GYRO_Z_PNUM) - Config.Sensor_zero[GYRO_Z_Index],sXDeg,10);
-	strcat_P(sXDeg,strSpace3);
-	LCD_WriteString(sXDeg);
 	
 	LCD_SetPos(3, 48);
 	LCD_WriteString(Sensors_Acc_Test(ACC_X_PNUM));
-	LCD_WriteString_P(strSpace);
-	itoa(ADCPort_Get(ACC_X_PNUM) - Config.Sensor_zero[ACC_X_Index],sXDeg,10);
-	strcat_P(sXDeg,strSpace3);
-	LCD_WriteString(sXDeg);
-	
 	LCD_SetPos(4, 48);
 	LCD_WriteString(Sensors_Acc_Test(ACC_Y_PNUM));
-	LCD_WriteString_P(strSpace);
-	itoa(ADCPort_Get(ACC_Y_PNUM) - Config.Sensor_zero[ACC_Y_Index],sXDeg,10);
-	strcat_P(sXDeg,strSpace3);
-	LCD_WriteString(sXDeg);
-	
 	LCD_SetPos(5, 48);
 	LCD_WriteString(Sensors_Acc_Test(ACC_Z_PNUM));
-	LCD_WriteString_P(PSTR(" "));
-	itoa(ADCPort_Get(ACC_Z_PNUM) - Config.Sensor_zero[ACC_Z_Index],sXDeg,10);
-	strcat_P(sXDeg,strSpace3);
-	LCD_WriteString(sXDeg);
-	
+	LCD_SetPos(6, 48);
+	LCD_WriteString(Sensor_GetBattery());
 }
 
 void _hReceiverTest()
@@ -458,6 +457,7 @@ void _hStickCentering()
 			
 			Config.IsCalibrated= (Config.IsCalibrated | CALIBRATED_Stick);
 			Save_Config_to_EEPROM();
+			Beeper_Beep(700,1);	
 		}
 		else
 		{
@@ -499,7 +499,7 @@ void _hSensorCalibration()
 		for (i=0; i<10;++i)
 		{
 			Beeper_Beep(70,1);
-			delay_ms (500); // delay to avoid click vibration.	
+			delay_ms (1500); // delay to avoid click vibration.	
 		
 		}
 	
@@ -517,6 +517,7 @@ void _hSensorCalibration()
 		for (i=0;i<6;++i)
 		Config.Sensor_zero[i] = nResult[i];
 		Save_Config_to_EEPROM();
+		Beeper_Beep(700,1);
 	}
 	
 	if (KEY4)
@@ -543,39 +544,49 @@ void _hESCCalibration()
 	}
 }
 
-static uint8_t a=5;
 
 void _hSelfLeveling()
 {
 
 	NOKEYRETURN;
 	
-	PageKey(4);
-	
 	if (KEY4)
 	{
 		switch (subpage)
 		{
-			case 0: startEditMode(&Config.SelfLevelMode,0,1,TYPE_UINT8);
-			case 1: startEditMode(&(Config.AccGain),0,200,TYPE_UINT8); break;
-			case 2: startEditMode(&(Config.AccTrimRoll),0,200,TYPE_UINT8); break;
-			case 3: startEditMode(&(Config.AccTrimPitch),0,200,TYPE_UINT8);	break; 
+			case 0: Config.SelfLevelMode ^=IMU_SelfLevelMode; break;
+			case 1: startEditMode(&(Config.AccGain),0,200,TYPE_UINT8); return ;
+			case 2: startEditMode(&(Config.AccTrimRoll),0,200,TYPE_UINT8); return ;
+			case 3: startEditMode(&(Config.AccTrimPitch),0,200,TYPE_UINT8);	return ;
 		}
-		return;		
-		
 	}
 	
+	PageKey(4);
+	
 	lcdReverse(subpage == 0);
-	LCD_WriteValue(0,80,a,3,0==subpage);
+	if (Config.SelfLevelMode==IMU_SelfLevelMode)
+	{
+		strcpy_P(sXDeg,strNo);
+	}
+	else
+	{
+		strcpy_P(sXDeg,strYes);
+	}
+	LCD_WriteStringex (0,80,sXDeg,0==subpage);
 	LCD_WriteValue(1,80,Config.AccGain,3,1==subpage);
-	LCD_WriteValue(2,80,Config.SelfLevelMode,3,2==subpage);
-	LCD_WriteValue(3,80,Config.SelfLevelMode,3,3==subpage);
+	LCD_WriteValue(2,80,Config.AccTrimRoll,3,2==subpage);
+	LCD_WriteValue(3,80,Config.AccTrimPitch,3,3==subpage);
 	
 }
 
-
 int16_t AccTotal;
 int16_t OldAcc;
+
+
+
+
+
+
 void _hDebug()
 {
 	if (IS_INIT)
@@ -628,25 +639,26 @@ void _hDebug()
 	OldAcc = t;
 
 	utoa(AccTotal, sXDeg,10);
+
 	LCD_SetPos(1,48);
-	strcat_P(sXDeg,strSpace3);
+	strcat_P(sXDeg,strSPC3);
 	LCD_WriteString(sXDeg);	
  
  	dtostrf( CompAngleX, 3, 4, sXDeg);
+
 	LCD_SetPos(4,48);
-	strcat_P(sXDeg,strSpace3);
+	strcat_P(sXDeg,strSPC3);
 	LCD_WriteString(sXDeg);
 
 	dtostrf( CompAngleY, 3, 4, sXDeg);
 	LCD_SetPos(5,48);
-	strcat_P(sXDeg,strSpace3);
-	LCD_WriteString(sXDeg);
-	LCD_WriteString_P(PSTR("    "));
+	strcat_P(sXDeg,strSPC3);
 
+	LCD_WriteString(sXDeg);
+	LCD_WriteString_P(strSPC4);
 
 	}
 }
-
 void _hFactoryReset()
 {
 	//if (IS_INIT)
@@ -670,7 +682,6 @@ void Menu_MenuShow()
 	
 	_mykey = Keyboard_Read();
 	_mykey = _mykey | _TXKeys;
-	
 	// Throttle is not low to avoid conflict with other Arming/Disarming TX commands
 	if (KEY1 && !editMode)	// BACK
 	{
@@ -686,7 +697,6 @@ void Menu_MenuShow()
 		_mykey |= KEY_INIT;
 		subpage = 0;
 		subindex = 0;
-		//LCD_Clear();
 		oldPage = page;
 	}
 	defaultHandler();

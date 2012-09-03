@@ -69,7 +69,9 @@ char *Sensors_Gyro_Test(uint8_t channel)
 }
 
 
-
+/*
+// This function Test if sensors are working OK or not.
+*/
 char *Sensors_Acc_Test(uint8_t channel)
 {
 	
@@ -136,3 +138,21 @@ void Sensors_Calibrate (void)
 		nResult[i] /=25;
 	}	
 }
+
+void Sensors_ReadAll (void)
+{
+	Sensors_Latest[ACC_X_Index] = ADCPort_Get(ACC_X_PNUM);
+	Sensors_Latest[ACC_Y_Index] = ADCPort_Get(ACC_Y_PNUM);
+	Sensors_Latest[ACC_Z_Index] = ADCPort_Get(ACC_Z_PNUM);
+		
+	Sensors_Latest[GYRO_X_Index] = ADCPort_Get(GYRO_X_PNUM);
+	Sensors_Latest[GYRO_Y_Index] = ADCPort_Get(GYRO_Y_PNUM);
+	Sensors_Latest[GYRO_Z_Index] = ADCPort_Get(GYRO_Z_PNUM);
+	
+	Sensors_Latest[V_BAT_Index] = Sensor_GetBattery();
+}
+
+inline uint16_t  Sensor_GetBattery(void)
+{
+	return ADCPort_Get(V_BAT_PNUM) * 100 / 372;
+} 

@@ -164,7 +164,7 @@ void LCD_FillRectangle(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t c
 		for(uint8_t i = x0; i <= x1; i++)
 			lcdSetPixel(i, a, color);
 }
-
+ 
 void LCD_Clear()
 {
 	memset(_screen, 0, sizeof(_screen));
@@ -225,10 +225,28 @@ void lcdWriteChar(char c)
 
 void LCD_WriteString(char *s)
 {
-	char c;
-	while ((c = *s++))
-		lcdWriteChar(c);
+	while (*s)
+	{
+		lcdWriteChar(*s);
+		s++;
+	}		
 }
+
+
+
+void LCD_WriteStringex(uint8_t x, uint8_t y, char *str, BOOL LCDReverse)
+{
+	lcdReverse(LCDReverse);
+	LCD_SetPos(x, y);
+	while (*str)
+	{
+		lcdWriteChar(*str);
+		str++;
+	}		
+	lcdReverse(0);
+}
+
+
 
 void LCD_WriteString_P(PGM_P s)
 {
@@ -236,6 +254,16 @@ void LCD_WriteString_P(PGM_P s)
 	while ((c = pgm_read_byte(s++)))
 		lcdWriteChar(c);
 }
+
+
+void LCD_WriteString_Pex(uint8_t x, uint8_t y, PGM_P str, uint8_t len, BOOL LCDReverse)
+{
+	lcdReverse(LCDReverse);
+	LCD_SetPos(x, y);
+	LCD_WritePadded_P(str, len);
+	lcdReverse(0);
+}
+
 
 void lcdReverse(uint8_t reversed)
 {
@@ -258,19 +286,11 @@ void LCD_WritePadded(char *s, uint8_t len)
 	LCD_WriteSpace(len - strlen(s));
 }
 
+
 void LCD_WritePadded_P(const char *s, uint8_t len)
 {
 	LCD_WriteString_P(s);
 	LCD_WriteSpace(len - strlen_P(s));
-}
-
-
-void LCD_WriteString_Pex(uint8_t x, uint8_t y, PGM_P str, uint8_t len, BOOL LCDReverse)
-{
-	lcdReverse(LCDReverse);
-	LCD_SetPos(x, y);
-	LCD_WritePadded_P(str, len);
-	lcdReverse(0);
 }
 
 void LCD_WriteValue(uint8_t x, uint8_t y, int16_t value, uint8_t len, BOOL LCDReverse)

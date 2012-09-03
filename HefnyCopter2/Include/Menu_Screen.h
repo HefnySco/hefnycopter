@@ -14,7 +14,6 @@
 #define MENU_SCREEN_H_
 
 
-
 /*P_STR scrPIEditor[] = 
 	"Axis:\n"
 	"\n"
@@ -25,8 +24,12 @@
 */
 
 P_STR scrHomePage[] = 
-	"Welcome\n"
-	"   Home:\n"
+	"HefnyCopter v0.2\n"
+	"\n"
+	"Batt:\n"
+	"\n"
+	"\n"
+	"RX:    SN:    ST:"
 	;
 	
 P_STR scrReceiverTest[] = 
@@ -69,6 +72,7 @@ P_STR scrSelfLeveling[] =
 	"Gain:\n"
 	"Trim Roll:\n"
 	"Trim Pitch:";
+
 
 P_STR scrCPPMSettings[] = 
 	"Roll (Ail):\n"
@@ -173,7 +177,7 @@ P_STR scrMixerEditor[] =
 
 //////////////////////////////////////////////////////////////////////////
 // softkeys
-static const prog_char _skHOME[]      = "                MENU";
+static const prog_char _skHOME[]     = "                 MENU";
 static const prog_char _skMENU[]      = "BACK UP   DOWN ENTER";
 static const prog_char _skBACK[]      = "BACK";
 static const prog_char _skCONTINUE[]  = "BACK         CONTINUE";
@@ -219,7 +223,7 @@ static const page_t pages[] PROGMEM = {
 /* 16 */	{ _skCANCELYES, _hFactoryReset },
 };
 
-
+ 
 
 static const prog_char *lstMenu[] PROGMEM = {
 	strSelflevel,
@@ -250,7 +254,8 @@ static menu_t mnuMain = {length(lstMenu), tsmMain};
 static menu_t mnuMLayout = {22, tsmLoadModelLayout};
 int16_t editValue, editLoLimit, editHiLimit;
 uint8_t editMode, editValueType;
- uint8_t* editValuePtr;
+uint8_t* editValuePtr;
+
 
 #define PAGE_HOME			0
 #define PAGE_MENU			1
@@ -260,6 +265,4 @@ uint8_t editMode, editValueType;
 #define TYPE_UINT8		2
 #define TYPE_INT8		1
 #define TYPE_INT16		3
-
-
 #endif /* MENU_SCREEN_H_ */

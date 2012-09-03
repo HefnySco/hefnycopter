@@ -30,7 +30,6 @@
 #include "Include/eepROM.h"
 #include "Include/fonts.h"
 #include "Include/Menu_Text.h"
-#include "Include/IMU.h"
 
 /*
 
@@ -133,6 +132,7 @@ void Setup (void)
 
 int main(void)
 {
+	
 	Setup();
 	
 	 
@@ -208,7 +208,7 @@ void MainLoop(void)
 				IsArmed = false;
 				LED_Orange = OFF;
 				LED_FlashOrangeLED (LED_LONG_TOGGLE,4);
-				bResetTCNR1_X = true; // reset timer
+				TCNT1_X_snapshot1 =0; // reset timer
 			}
 		}
 		
@@ -232,7 +232,7 @@ void MainLoop(void)
 				LED_FlashOrangeLED (LED_LONG_TOGGLE,4);
 				///CalibrateGyros();
 				///LED_FlashOrangeLED (LED_SHORT_TOGGLE,4);
-				bResetTCNR1_X = true; // reset timer
+				TCNT1_X_snapshot1 =0; // reset timer
 			}		
 		}
 		
@@ -248,7 +248,7 @@ void MainLoop(void)
 				{
 					bXQuadMode = true;
 					LED_FlashOrangeLED (LED_LONG_TOGGLE,8);
-					bResetTCNR1_X = true; // reset timer
+					TCNT1_X_snapshot1 =0; // reset timer
 				}
 			}			
 			else  if ((RX_Latest[RXChannel_AIL]  > STICK_LEFT))
@@ -259,7 +259,7 @@ void MainLoop(void)
 				{
 					bXQuadMode = false;
 					LED_FlashOrangeLED (LED_LONG_TOGGLE,4);
-					bResetTCNR1_X = true; // reset timer
+					TCNT1_X_snapshot1 =ON; // reset timer
 				}		
 			
 			} 
@@ -285,7 +285,7 @@ void MainLoop(void)
 			
 			
 			///////////////// Sticks as Keyboard --- we are already disarmed to reach here.
-			if ((Config.IsCalibrated & CALIBRATED_Stick) && RX_Latest[RXChannel_THR] > STICKThrottle_ARMING)
+			if ((Config.IsCalibrated & CALIBRATED_SENSOR) && (Config.IsCalibrated & CALIBRATED_Stick) && RX_Latest[RXChannel_THR] > STICKThrottle_ARMING)
 			{ // if Throttle is high and stick are calibrated
 		
 				if (TCNT1_X_snapshot1==0)  TCNT1_X_snapshot1 = TCNT1_X; // start counting
@@ -296,8 +296,7 @@ void MainLoop(void)
 					if ( (TCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_SHORT_TIME )
 					{
 						_TXKeys = KEY_3;
-						bResetTCNR1_X = true; // reset timer
-						
+						TCNT1_X_snapshot1 =0; // reset timer
 					}		
 				
 				}
@@ -307,10 +306,10 @@ void MainLoop(void)
 					if ( (TCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_SHORT_TIME )
 					{
 						_TXKeys = KEY_2;
-						bResetTCNR1_X = true; // reset timer
+						TCNT1_X_snapshot1 =0; // reset timer
 					}		
 				
-				}		 	
+				}		 	 
 				
 				if ((RX_Latest[RXChannel_AIL]) > STICK_LEFT) 
 				{
@@ -318,7 +317,7 @@ void MainLoop(void)
 					if ( (TCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_SHORT_TIME )
 					{
 						_TXKeys = KEY_4;
-						bResetTCNR1_X = true; // reset timer
+						TCNT1_X_snapshot1 =0; // reset timer
 					}		
 				
 				}
@@ -328,7 +327,7 @@ void MainLoop(void)
 					if ( (TCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_SHORT_TIME )
 					{
 						_TXKeys = KEY_1;
-						bResetTCNR1_X = true; // reset timer
+						TCNT1_X_snapshot1 =0; // reset timer
 					}		
 				
 				}		 		
@@ -417,57 +416,37 @@ void MainLoop(void)
 			*	
 			*/
 	
-			if (bXQuadMode==true)
-			{
-			
-				MotorOut1 += RX[RXChannel_AIL] ;
-				MotorOut2 += RX[RXChannel_AIL] ;
-				MotorOut3 -= RX[RXChannel_AIL] ;
-				MotorOut4 -= RX[RXChannel_AIL] ;
-				
-				MotorOut1 += RX[RXChannel_ELE];
-				MotorOut2 -= RX[RXChannel_ELE];
-				MotorOut3 += RX[RXChannel_ELE];
-				MotorOut4 -= RX[RXChannel_ELE];
-				
-				MotorOut1 -= RX[RXChannel_RUD];
-				MotorOut2 += RX[RXChannel_RUD];
-				MotorOut3 += RX[RXChannel_RUD];
-				MotorOut4 -= RX[RXChannel_RUD];
-			}
-			else
-			{
-				MotorOut2 += RX[RXChannel_AIL] ;
-				MotorOut3 -= RX[RXChannel_AIL] ;
-				
-				MotorOut1 += RX[RXChannel_ELE] ;
-				MotorOut4 -= RX[RXChannel_ELE] ;
-				
-				MotorOut1 -= RX[RXChannel_RUD] ;
-				MotorOut2 += RX[RXChannel_RUD] ;
-				MotorOut3 += RX[RXChannel_RUD] ;
-				MotorOut4 -= RX[RXChannel_RUD] ;
-			}
-			
-			
-			
-			if (Config.SelfLevelMode==1)
-			{
-				
-				if ((CompAngleX > 3) || (CompAngleX < -3))
-				{
-					MotorOut2 += CompAngleX * Config.AccGain + Config.AccTrimRoll;
-					MotorOut3 -= CompAngleX * Config.AccGain - Config.AccTrimRoll;
-				}
-				
-				if ((CompAngleY > 3) || (CompAngleY < -3))
-				{
-					MotorOut1 += CompAngleY * Config.AccGain + Config.AccTrimPitch;
-					MotorOut4 -= CompAngleY * Config.AccGain - Config.AccTrimPitch;
-				}
-				
-			}
-			
+			//if (bXQuadMode==true)
+			//{
+							//
+				//MotorOut1 += RX[RXChannel_AIL] ;
+				//MotorOut2 += RX[RXChannel_AIL] ;
+				//MotorOut3 -= RX[RXChannel_AIL] ;
+				//MotorOut4 -= RX[RXChannel_AIL] ;
+				//
+				//MotorOut1 += RX[RXChannel_ELE];
+				//MotorOut2 -= RX[RXChannel_ELE];
+				//MotorOut3 += RX[RXChannel_ELE];
+				//MotorOut4 -= RX[RXChannel_ELE];
+				//
+				//MotorOut1 -= RX[RXChannel_RUD];
+				//MotorOut2 += RX[RXChannel_RUD];
+				//MotorOut3 += RX[RXChannel_RUD];
+				//MotorOut4 -= RX[RXChannel_RUD];
+			//}
+			//else
+			//{
+				//MotorOut2 += RX[RXChannel_AIL] ;
+				//MotorOut3 -= RX[RXChannel_AIL] ;
+				//
+				//MotorOut1 += RX[RXChannel_ELE] ;
+				//MotorOut4 -= RX[RXChannel_ELE] ;
+		//
+				//MotorOut1 -= RX[RXChannel_RUD] ;
+				//MotorOut2 += RX[RXChannel_RUD] ;
+				//MotorOut3 += RX[RXChannel_RUD] ;
+				//MotorOut4 -= RX[RXChannel_RUD] ;
+			//}
 			
 			
 			// Save motors from turning-off

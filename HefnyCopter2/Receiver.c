@@ -204,7 +204,7 @@ int16_t RX_GetReceiverThrottleValue ()
 	
 	return _t;
 }
-
+ 
 void RX_CopyLatestReceiverValues (void)
 {
 	for (int i=0;i<RXChannels;++i)

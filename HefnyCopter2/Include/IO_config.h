@@ -47,7 +47,7 @@
 #define LCD_SCL_DIR				_REG_BIT(LCD_DDR, LCD_SCL_BIT)
 #define LCD_SDA_DIR				_REG_BIT(LCD_DDR, LCD_SDA_BIT)
 
-
+ 
 
 /// Keyboard
 #define KEYBOARD_PORT			PORTB
