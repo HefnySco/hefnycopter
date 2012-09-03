@@ -30,9 +30,10 @@ char sXDeg[10];
 
 
 // Stick Arming - enable this line to enable Stick arming
-#define STICK_LEFT				 400 //  [-500, 500]
-#define STICK_RIGHT				-400 //
-#define STICKThrottle_ARMING		50
+#define STICK_LEFT				 400	//  the total range is from [-500, 500]
+#define STICK_RIGHT				-400	
+#define STICKThrottle_HIGH			850	//  the total range is from [ 0, 1000]
+#define STICKThrottle_ARMING		50	//  the total range is from [ 0, 1000]
 #define STICKPOSITION_LONG_TIME		305  // minimum time duration for stick to accept a command.
 #define STICKPOSITION_SHORT_TIME	80
 // Max Collective
@@ -83,7 +84,7 @@ volatile uint16_t TCNT1_X;				// TCNT1_X click every 0.0032768 sec [1 sec = 305.
 volatile uint16_t TCNT2_X;				// TCNT2  overflows every  3.2us x 0xff = 0.0008192 sec,  TCNT2_X value tick every 819.2 us and overflow every 53.6870912 sec
 //volatile uint16_t OCR0A_X;
 uint16_t TCNT1_X_snapshot1;
-uint16_t TCNT2_X_snapshot2;
+uint16_t TCNT_X_snapshot2;
 BOOL bResetTCNR1_X;
 
 

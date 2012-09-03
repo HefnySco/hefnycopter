@@ -161,11 +161,11 @@ BOOL bXQuadMode;
 void Loop(void)
 {
 	
-	if (TCNT2_X_snapshot2==0) TCNT2_X_snapshot2 = TCNT2_X;
-	if ( (TCNT2_X- TCNT2_X_snapshot2) > LCD_RefreashRate )  
+	if (TCNT_X_snapshot2==0) TCNT_X_snapshot2 = TCNT2_X;
+	if ( (TCNT2_X- TCNT_X_snapshot2) > LCD_RefreashRate )  
 	{
 		Menu_MenuShow();	
-		TCNT2_X_snapshot2=0;
+		TCNT_X_snapshot2=0;
 	}		
 
 }
@@ -182,12 +182,13 @@ void MainLoop(void)
 	bResetTCNR1_X = true;
 	
 	// HINT: you can try to skip this if flying to save time for more useful tasks as user cannot access menu when flying
-	if (TCNT2_X_snapshot2==0) TCNT2_X_snapshot2 = TCNT1_X;
-	else if ( (!IsArmed) && (TCNT1_X- TCNT2_X_snapshot2) > 20 )  // TCNT1_X ticks in 3.2768us
+	if (TCNT_X_snapshot2==0) TCNT_X_snapshot2 = TCNT1_X;
+	else if ( (!IsArmed) && (TCNT1_X- TCNT_X_snapshot2) > 20 )  // TCNT1_X ticks in 32.768us
 	{
 		Menu_MenuShow();	
-		TCNT2_X_snapshot2=0;
+		TCNT_X_snapshot2=0;
 	}		
+	
 	
 	if (RX_Latest[RXChannel_THR] < STICKThrottle_ARMING) 
 	{	// Throttle is LOW
@@ -202,7 +203,6 @@ void MainLoop(void)
 		if ((IsArmed == true) && (RX_Latest[RXChannel_RUD] < STICK_RIGHT))
 		{
 			bResetTCNR1_X  = false;
-			//if (TCNT1_X_snapshot1==0)  TCNT1_X_snapshot1 = TCNT1_X; // start counting
 			if ( (TCNT1_X - TCNT1_X_snapshot1) > STICKPOSITION_LONG_TIME )
 			{
 				IsArmed = false;
@@ -216,7 +216,6 @@ void MainLoop(void)
 		if ((IsArmed == false) && (RX_Latest[RXChannel_RUD] > STICK_LEFT))
 		{
 			bResetTCNR1_X = false;
-			//if (TCNT1_X_snapshot1==0)  TCNT1_X_snapshot1 = TCNT1_X; // start counting
 			if ( (TCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_LONG_TIME )
 			{
 				IsArmed = true;
@@ -230,8 +229,6 @@ void MainLoop(void)
 				
 				LED_Orange = ON;
 				LED_FlashOrangeLED (LED_LONG_TOGGLE,4);
-				///CalibrateGyros();
-				///LED_FlashOrangeLED (LED_SHORT_TOGGLE,4);
 				TCNT1_X_snapshot1 =0; // reset timer
 			}		
 		}
@@ -243,7 +240,6 @@ void MainLoop(void)
 			if (RX_Latest[RXChannel_AIL]  < STICK_RIGHT)
 			{// X-QUAD MODE
 				bResetTCNR1_X = false;
-				//if (TCNT1_X_snapshot1==0)  TCNT1_X_snapshot1 = TCNT1_X; // start counting
 				if ( (TCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_LONG_TIME )
 				{
 					bXQuadMode = true;
@@ -254,12 +250,11 @@ void MainLoop(void)
 			else  if ((RX_Latest[RXChannel_AIL]  > STICK_LEFT))
 			{	// QUAD COPTER MODE
 				bResetTCNR1_X = false;
-				//if (TCNT1_X_snapshot1==0)  TCNT1_X_snapshot1 = TCNT1_X; // start counting
 				if ( (TCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_LONG_TIME )
 				{
 					bXQuadMode = false;
 					LED_FlashOrangeLED (LED_LONG_TOGGLE,4);
-					TCNT1_X_snapshot1 =ON; // reset timer
+					TCNT1_X_snapshot1 =0; // reset timer
 				}		
 			
 			} 
@@ -285,7 +280,7 @@ void MainLoop(void)
 			
 			
 			///////////////// Sticks as Keyboard --- we are already disarmed to reach here.
-			if ((Config.IsCalibrated & CALIBRATED_SENSOR) && (Config.IsCalibrated & CALIBRATED_Stick) && RX_Latest[RXChannel_THR] > STICKThrottle_ARMING)
+			if ((Config.IsCalibrated & CALIBRATED_SENSOR) && (Config.IsCalibrated & CALIBRATED_Stick) && RX_Latest[RXChannel_THR] > STICKThrottle_HIGH)
 			{ // if Throttle is high and stick are calibrated
 		
 				if (TCNT1_X_snapshot1==0)  TCNT1_X_snapshot1 = TCNT1_X; // start counting
