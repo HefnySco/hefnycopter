@@ -377,7 +377,7 @@ void _hHomePage()
 	
 	// Write RX Status
 	LCD_SetPos(5, 18);
-	if (RX_Good==false)
+	if (RX_Good != TX_GOOD)
 	{
 		LCD_WriteString_P(strErr);
 	}
@@ -419,26 +419,27 @@ void _hReceiverTest()
 			
 		itoa(RX_Latest[i], sXDeg, 10);
 		LCD_WriteString(sXDeg);
-		LCD_WriteString("    ");
+		LCD_WriteString_P(strSPC4);
 	}			
 	
-	LCD_SetPos(6, 40);
-		
-	if (RX_Good==false)
+	
+	LCD_SetPos(6, 40);	
+	if (TX_FOUND_ERR!=0)
 	{
-		LCD_WriteString_P(strNoSignal);
-	}	
-	else
-	{
-		LCD_WriteString_P("         ");
+		LCD_WriteString_P(strNoSignalFound);
 	}
+	else if (TX_CONNECTED_ERR!=0)	
+	{
+		LCD_WriteString_P(strNoSignalDis);
+	}
+	LCD_WriteString_P(PSTR("signal-ok    "));
 }
 
-
+BOOL bError; 
+	
 void _hStickCentering()
 {
-	char _t[10];
-	BOOL bError = false; 
+	
 	if (IS_INIT)
 	{
 		RX_StickCenterCalibrationInit();
@@ -465,36 +466,37 @@ void _hStickCentering()
 		}
 		
 	}
-	
+	bError = false;
 	RX_StickCenterCalibration();
 	for (uint8_t i = 0; i < RXChannels; i++)
 	{
 		LCD_SetPos(i, 30);
-		utoa(RX_MAX_raw[i], _t, 10);
-		LCD_WriteString(_t);
-		LCD_WriteString(" ");
-		utoa(RX_MIN_raw[i], _t, 10);
-		LCD_WriteString(_t);	
+		utoa(RX_MAX_raw[i], sXDeg, 10);
+		LCD_WriteString(sXDeg);
+		LCD_WriteString_P(PSTR(" "));
+		utoa(RX_MIN_raw[i], sXDeg, 10);
+		LCD_WriteString(sXDeg);	
 		if ((RX_MAX_raw[i]< RX_MIN_raw[i]) || (RX_MIN_raw[i]==0))  // RX_MIN_raw[i]=0 if the Remote is OFF when entering the test
 		{
-			LCD_WriteString_P(PSTR(" err"));	
+			LCD_WriteString(strErr);	
 			bError = TRUE;
 		}
 		else
 		{
-			LCD_WriteString_P(PSTR("    "));	
+			LCD_WriteString_P(strSPC4);	
 		}
 		
 	}		
-	//else if (KEY4)
-		//loadPage(PAGE_MENU);
 }
 
 void _hSensorCalibration()
 {
 
-	if (IS_INIT)
+	NOKEYRETURN
+	
+	if (KEY4)
 	{
+		
 		uint8_t i;
 		for (i=0; i<10;++i)
 		{
@@ -518,10 +520,7 @@ void _hSensorCalibration()
 		Config.Sensor_zero[i] = nResult[i];
 		Save_Config_to_EEPROM();
 		Beeper_Beep(700,1);
-	}
-	
-	if (KEY4)
-	{
+		
 		_mykey |= KEY_INIT;
 	}
 	
@@ -556,12 +555,11 @@ void _hSelfLeveling()
 		{
 			case 0: Config.SelfLevelMode ^=IMU_SelfLevelMode; break;
 			case 1: startEditMode(&(Config.AccGain),0,200,TYPE_UINT8); return ;
-			case 2: startEditMode(&(Config.AccTrimRoll),0,200,TYPE_UINT8); return ;
-			case 3: startEditMode(&(Config.AccTrimPitch),0,200,TYPE_UINT8);	return ;
+			case 2: startEditMode(&(Config.AccTrim),0,200,TYPE_UINT8); return ;
 		}
 	}
 	
-	PageKey(4);
+	PageKey(3);
 	
 	lcdReverse(subpage == 0);
 	if (Config.SelfLevelMode==IMU_SelfLevelMode)
@@ -574,9 +572,7 @@ void _hSelfLeveling()
 	}
 	LCD_WriteStringex (0,80,sXDeg,0==subpage);
 	LCD_WriteValue(1,80,Config.AccGain,3,1==subpage);
-	LCD_WriteValue(2,80,Config.AccTrimRoll,3,2==subpage);
-	LCD_WriteValue(3,80,Config.AccTrimPitch,3,3==subpage);
-	
+	LCD_WriteValue(2,80,Config.AccTrim,3,2==subpage);
 }
 
 int16_t AccTotal;
@@ -661,19 +657,15 @@ void _hDebug()
 }
 void _hFactoryReset()
 {
-	//if (IS_INIT)
-	//{
-		//LCD_SetPos(3, 18);
-		//LCD_WriteString_P(strAreYouSure);
-	//}
-	//else if (KEY4)	// Yes
-	//{
-		//configReset();
-		//configSave();
-		//cli();
-		//wdt_enable(WDTO_15MS);
-		//for(;;);
-	//}
+	if (IS_INIT)
+	{
+		LCD_SetPos(3, 18);
+		LCD_WriteString_P(strAreYouSure);
+	}
+	else if (KEY4)	// Yes
+	{
+		Save_Default_Config_to_EEPROM();
+	}
 }
 
 void Menu_MenuShow()

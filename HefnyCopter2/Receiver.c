@@ -14,6 +14,15 @@
 #include "Include/IO_config.h"
 #include "Include/Receiver.h"
 
+/*
+FailSafe:
+
+	if you open the TX & then close it the RX Throttle signal will be valid even after shutting down TX.
+	if you open the RX and TX is not open all signals will be valid except Throttle.
+*/
+
+
+
 // RX_GOOD How does it work?
 // I checked this behavior on Orange Receivers CH6.
 // When TX remote is turned OFF the only valid signal is THR others are no signals.
@@ -21,6 +30,7 @@
 // I detect the lost signal in the RX_GetReceiverThrottleValue() because it is called less 1/4 times than the other function RX_GetReceiverValue()
 volatile uint16_t RX_raw[RXChannels];
 volatile uint16_t RX_LastValidSignal_timestamp;
+volatile uint16_t RX_LastValidSignal_timestampAux;
 
 #define RX_Div_Factor	16	// div by 16
 
@@ -42,6 +52,8 @@ ISR (RX_COLL_vect)
 			RX[RXChannel_THR] = (0xffff - RX_raw[RXChannel_THR] + TCNT1 );	
 		}
 		
+		RX_LastValidSignal_timestamp = TCNT1_X;
+		RX_Good = TX_CONNECTED_ERR;
 	}
 	
 }
@@ -65,6 +77,10 @@ ISR (RX_ROLL_vect)
 		{
 			RX[RXChannel_AIL] = (0xffff - RX_raw[RXChannel_AIL] + TCNT1 );	
 		}
+		
+		RX_LastValidSignal_timestampAux = TCNT1_X;
+		RX_Good = TX_FOUND_ERR;
+
 		
 	}
 	
@@ -110,9 +126,6 @@ ISR (RX_YAW_vect)
 		{
 			RX[RXChannel_RUD] = (0xffff - RX_raw[RXChannel_RUD] + TCNT1);	
 		}
-		
-		RX_LastValidSignal_timestamp = TCNT1_X;
-		RX_Good = TRUE;
 	}
 }
 
@@ -135,8 +148,7 @@ ISR (RX_AUX_vect)
 			RX[RXChannel_AUX] = (0xffff - RX_raw[RXChannel_AUX] + TCNT1);	
 		}
 		
-		
-
+	
 	}
 }
 
@@ -149,9 +161,12 @@ void RX_Init(void)
 	RX_YAW_DIR   	 	= INPUT;
 	RX_AUX_DIR   	 	= INPUT;
 	
-	RX_Good=false;
+	RX_Good=TX_GOOD;
 	ATOMIC_BLOCK(ATOMIC_FORCEON)
+	{
 		RX_LastValidSignal_timestamp= TCNT1_X;
+		RX_LastValidSignal_timestampAux= TCNT1_X;
+	}		
 }
 
 void RX_StickCenterCalibrationInit(void)
@@ -175,7 +190,7 @@ void RX_StickCenterCalibrationInit(void)
  int16_t RX_GetReceiverValues (uint8_t Channel)
 {
 	int16_t _t;
-	if (RX_Good==false) return 0;
+	if (RX_Good != TX_GOOD) return 0;
 	ATOMIC_BLOCK(ATOMIC_FORCEON)
 		_t = ((int)(RX[Channel] - Config.RX_Mid[Channel])) / RX_Div_Factor;
 
@@ -183,26 +198,34 @@ void RX_StickCenterCalibrationInit(void)
 }
 
 /*
-// Retrives Throttle value [0 - 1000].
-// IMPORTANT: if throttle signal is accidently -or using trim- less than Config.RX_Min[RXChannel_THR] then the returned value will be roll back
-// to 0xffff range which means an agressive Quadcopter action. we avoid this by using a signed int.
+// Retrieves Throttle value [0 - 1000].
+// IMPORTANT: if throttle signal is accidentally -or using trim- less than Config.RX_Min[RXChannel_THR] then the returned value will be roll back
+// to 0xffff range which means an aggressive Quad copter action. we avoid this by using a signed int.
 */
 int16_t RX_GetReceiverThrottleValue ()
 {
-	int16_t _t;
-	if (RX_Good==false) return 0;
+	
+	if (RX_Good != TX_GOOD) return 0;
 	
 	ATOMIC_BLOCK(ATOMIC_FORCEON)
 	{
-		if ((TCNT1_X - RX_LastValidSignal_timestamp) > 50)
+		if ( (TCNT1_X - RX_LastValidSignal_timestamp) > 20)
 		{
-			RX_Good =false;
+			RX_Good =TX_NOT_FOUND;
 			return 0;
-		}
-		_t = ((int)(RX[RXChannel_THR] - Config.RX_Min[RXChannel_THR])) / RX_Div_Factor;
+		}	
+		
+		if ( (TCNT1_X - RX_LastValidSignal_timestampAux) > 20)
+		{
+			RX_Good =TX_DISCONNECTED;
+			return 0;
+		}	
+		
+		
+		iTemp16 = ((int)(RX[RXChannel_THR] - Config.RX_Min[RXChannel_THR])) / RX_Div_Factor;
 	}		
 	
-	return _t;
+	return iTemp16;
 }
  
 void RX_CopyLatestReceiverValues (void)

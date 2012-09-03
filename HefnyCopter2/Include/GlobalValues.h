@@ -68,6 +68,7 @@ uint16_t RX_MAX_raw			[RXChannels];
 uint16_t RX_MIN_raw			[RXChannels];
 
 volatile BOOL RX_Good;
+
 BOOL	IsArmed;
 
 // Motors Signals
@@ -95,6 +96,7 @@ uint16_t Sensors_Latest [8];
 volatile char Result[8]; 
 volatile uint16_t nResult[8];
 uint16_t nTemp16;
+int16_t  iTemp16;
 
 #define CALIBRATED_ALL		3
 #define CALIBRATED_Stick	1
@@ -105,7 +107,7 @@ uint16_t nTemp16;
 #define IMU_SelfLevelMode	1
 typedef struct  
 {
-	uint8_t signature;
+	uint8_t signature;					
 	uint8_t IsCalibrated;
 	uint8_t RX_mode;
 	uint16_t RX_Mid[RXChannels];
@@ -127,8 +129,7 @@ typedef struct
 	uint8_t LVA;
 	//pid_param_t PID_SelfLevel;
 	uint8_t	AccGain;
-	uint8_t AccTrimPitch;
-	uint8_t AccTrimRoll;
+	uint8_t AccTrim;
 	//model_t Mixer;
 } config_t;
 

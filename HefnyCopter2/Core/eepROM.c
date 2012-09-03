@@ -49,8 +49,7 @@ static config_t const defaultConfig PROGMEM =
 	.HeightDampeningLimit = 30,
 	.LVA = 0,
 	.AccGain=0,
-	.AccTrimPitch = 0,
-	.AccTrimRoll = 0,
+	.AccTrim = 0,
 };
 
 
@@ -82,7 +81,7 @@ void Save_Default_Config_to_EEPROM (void)
 	}	
 	
 	// write to eeProm
-	Save_Config_to_EEPROM_Init();
+	Load_Config_from_EEPROM();
 }
 
 void Set_EEPROM_Default_Config(void)
@@ -101,7 +100,7 @@ void Save_Config_to_EEPROM(void)
 }
 
 
-void Save_Config_to_EEPROM_Init(void)
+void Load_Config_from_EEPROM(void)
 {
 	// write to eeProm
 	

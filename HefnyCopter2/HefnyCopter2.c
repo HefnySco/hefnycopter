@@ -183,10 +183,11 @@ void MainLoop(void)
 	
 	// HINT: you can try to skip this if flying to save time for more useful tasks as user cannot access menu when flying
 	if (TCNT_X_snapshot2==0) TCNT_X_snapshot2 = TCNT1_X;
-	else if ( (!IsArmed) && (TCNT1_X- TCNT_X_snapshot2) > 20 )  // TCNT1_X ticks in 32.768us
+	else if ( (!IsArmed) && (TCNT1_X- TCNT_X_snapshot2) > 2 )  // TCNT1_X ticks in 32.768us
 	{
 		Menu_MenuShow();	
 		TCNT_X_snapshot2=0;
+		if (RX_Good != TX_GOOD) return ; // Do nothing all below depends on TX.
 	}		
 	
 	

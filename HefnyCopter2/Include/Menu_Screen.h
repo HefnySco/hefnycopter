@@ -69,9 +69,9 @@ P_STR scrMiscSettings[] =
 
 P_STR scrSelfLeveling[] =
 	"Active:\n"
-	"Gain:\n"
-	"Trim Roll:\n"
-	"Trim Pitch:";
+	"Acc Gain:\n"
+	"Trim:\n";
+	
 
 
 P_STR scrCPPMSettings[] = 
@@ -205,41 +205,36 @@ void _hFactoryReset();
 static const page_t pages[] PROGMEM = {
 /*  0 */	{ _skHOME, _hHomePage, scrHomePage },
 /*  1 */	{ _skMENU, _hMenu},
-/*  2 */	{ _skBACK, _hSelfLeveling, scrSelfLeveling},
-/*  3 */	{ _skBACK, _hReceiverTest, scrReceiverTest},
-/*  4 */	{ _skPAGE, NULL, scrModeSettings},
-/*  5 */	{ _skPAGE, NULL, scrStickScaling},
-/*  6 */	{ _skPAGE, NULL, scrMiscSettings},
-///*  7 */	{ _skPAGE, NULL, scrSelflevelSettings},
-/*  8 */	{ _skBACK, _hSensorTest, scrSensorTest},
-/*  9 */	{ _skCONTINUE, _hSensorCalibration, scrSensorTest},
-/* 12 */	{ _skCONTINUE, _hStickCentering, scrReceiverTest},
+{ _skBACK, _hSelfLeveling, scrSelfLeveling},
+{ _skPAGE, NULL, scrModeSettings},
+{ _skPAGE, NULL, scrMiscSettings},
+{ _skBACK, _hSensorTest, scrSensorTest},
+{ _skBACK, _hReceiverTest, scrReceiverTest},
+{ _skCONTINUE, _hSensorCalibration, scrSensorTest},
+{ _skCONTINUE, _hStickCentering, scrReceiverTest},
 ///* 10 */	{ _skCONTINUE, _hESCCalibration, scrESCCal0},
 ///* 11 */	{ _skPAGE, NULL, scrCPPMSettings},
 ///* 13 */	{ _skPAGE, NULL, scrMixerEditor},
-/* 14 */	{ _skBACKNEXT, _hShowModelLayout},
 ///* 15 */	{ _skMENU, _hLoadModelLayout },
-/* 16 */	{ _skBACK, _hDebug },
-/* 16 */	{ _skCANCELYES, _hFactoryReset },
+{ _skBACK, _hDebug },
+{ _skCANCELYES, _hFactoryReset },
 };
 
  
 
 static const prog_char *lstMenu[] PROGMEM = {
 	strSelflevel,
-	strReceiverTest,
 	strModeSettings,
-	strStickScaling,
 	strMiscSettings,
 	//strSelflevelSettings,
 	strSensorTest,
+	strReceiverTest,
 	strSensorCalibration,
 	strRadioCalibration,
 	//strESCCalibration,
 	//strCPPMSettings,
 	//strMixerEditor,
-	strShowMotorLayout,
-//  strLoadMotorLayout,
+	//strLoadMotorLayout,
 	strDebug,
 	strFactoryReset,
 };
