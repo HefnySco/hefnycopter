@@ -14,6 +14,14 @@
 
 #include "../Include/typedefs.h"
 
+
+#define PAGE_HOME			0
+#define PAGE_MENU			1
+#define PAGE_HOME_ARMED		2
+#define PAGE_SHOW_LAYOUT	14
+
+
+
 P_STR strSAFE[] =	"SAFE";
 P_STR strARMED[] =  "ARMED";
 P_STR strOFF[] =	"OFF";

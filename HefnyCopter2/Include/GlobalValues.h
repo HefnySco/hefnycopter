@@ -39,7 +39,7 @@ char sXDeg[10];
 // Max Collective
 // limits the maximum stick collective (range 80->100  100=Off)
 // this allows gyros to stabilize better when full throttle applied
-#define MAX_COLLECTIVE		180
+#define MAX_COLLECTIVE		800
 // trimming value for motors when generating PWM signals.
 #define MOTORS_HIGH_VALUE	1000  
 #define MOTORS_IDLE_VALUE	40
@@ -77,7 +77,9 @@ uint16_t MotorOut2;
 uint16_t MotorOut3;
 uint16_t MotorOut4;
 
-
+int16_t gyroPitch;
+int16_t gyroRoll;
+int16_t gyroYaw;
 
 
 // TIMERS
@@ -91,12 +93,12 @@ BOOL bResetTCNR1_X;
 
 
 // ADC Values
-volatile uint16_t ADCValues[8];
-uint16_t Sensors_Latest [8];
-volatile char Result[8]; 
+volatile uint16_t Sensors_Latest [8];
+volatile char Result[10]; 
+volatile char Result2[10]; 
 volatile uint16_t nResult[8];
-uint16_t nTemp16;
-int16_t  iTemp16;
+volatile uint16_t nTemp16;
+volatile int16_t  iTemp16;
 
 #define CALIBRATED_ALL		3
 #define CALIBRATED_Stick	1
@@ -105,6 +107,15 @@ int16_t  iTemp16;
 // eeProm data structure
 
 #define IMU_SelfLevelMode	1
+
+
+typedef struct 
+{
+	uint8_t Gain;
+	uint8_t Limit;
+} pid_param_t;
+
+
 typedef struct  
 {
 	uint8_t signature;					
@@ -112,10 +123,8 @@ typedef struct
 	uint8_t RX_mode;
 	uint16_t RX_Mid[RXChannels];
 	uint16_t RX_Min[RXChannels];
-	//uint8_t RX_chmap[RXChannels];
 	uint16_t Sensor_zero[SENSORS_ALL];
-	pid_param_t PID[3];
-	uint8_t SelfLevelMode;
+	pid_param_t GyroParams[2];
 	uint8_t ArmingMode;
 	uint8_t AutoDisarm;
 	uint8_t LinkRollPitch;
@@ -128,6 +137,7 @@ typedef struct
 	uint8_t HeightDampeningLimit;
 	uint8_t LVA;
 	//pid_param_t PID_SelfLevel;
+	uint8_t SelfLevelMode;
 	uint8_t	AccGain;
 	uint8_t AccTrim;
 	//model_t Mixer;

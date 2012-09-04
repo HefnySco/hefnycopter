@@ -11,7 +11,7 @@
 
 void Menu_MenuInit();
 void Menu_MenuShow();
-
+void Menu_LoadPage(uint8_t pageIndex);
 
 
 #endif /* MENU_H_ */

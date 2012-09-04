@@ -23,7 +23,6 @@
 #include "../Include/ADC_PORT.h"
 #include "../Include/Receiver.h"
 #include "../Include/Sensors.h"
-//#include "rx.h"
 #include "../Include/Beeper.h"
 #include "../Include/IMU.h"
 
@@ -40,33 +39,6 @@ typedef struct
 } PROGMEM element_t;
 
 
-// Pointer to menu item function handler.
-typedef void (pageHandler)(void);
-// Menu Item Page Layout Structure
-typedef struct  
-{
-	const char *softkeys;   // softkeys function text  
-	pageHandler *handler;	// function to execute
-	const char *screen;		// screen contents
-} page_t;
-
-typedef struct  
-{
-	uint8_t len;
-	PGM_P (*textSelector)(uint8_t);
-	uint8_t top;
-	uint8_t marked;
-} menu_t;
-
-
-
-typedef struct
-{
-	uint8_t X, Y;
-	void *valuePtr;
-	int16_t loLimit, hiLimit;
-	uint8_t len;
-} edit_element_t;
 
 //////////////////////////////////////////////////////////////////////////
 #include "../Include/menu_text.h"
@@ -102,7 +74,7 @@ static void writeSoftkeys(const char* sk)
 /*
 //	Put screen into CurrentPage ==> MemoryScreen
 */
-void loadPage(uint8_t pageIndex)
+void Menu_LoadPage(uint8_t pageIndex)
 {
 	memcpy_P(&currentPage, &pages[pageIndex], sizeof(currentPage));
 	page = pageIndex;
@@ -276,7 +248,7 @@ uint8_t doMenu(menu_t *menu)
 void _hMenu()
 {
 	if (doMenu(&mnuMain))
-		loadPage(mnuMain.marked + 2);
+		Menu_LoadPage(mnuMain.marked + MENU_START_INDEX);
 }
 
 
@@ -327,7 +299,7 @@ void _hLoadModelLayout()
 	//{
 		//mixerLoadTable(mnuMLayout.marked);
 		//configSave();
-		//loadPage(PAGE_SHOW_LAYOUT);
+		//Menu_LoadPage(PAGE_SHOW_LAYOUT);
 	//}
 }
 
@@ -336,7 +308,7 @@ void _hHomePage()
 	char s[7];
 	if (KEY4)	// MENU
 	{
-		loadPage(PAGE_MENU);
+		Menu_LoadPage(PAGE_MENU);
 		return;
 	}
 	
@@ -367,13 +339,7 @@ void _hHomePage()
 	}
 	// Write Voltage
 	LCD_SetPos(2, 30);
-	nTemp16 = Sensor_GetBattery();
-	utoa(nTemp16 /10,sXDeg,10);
-	LCD_WriteString(sXDeg);
-	LCD_WriteString_P(PSTR("."));
-	utoa(nTemp16 %10,sXDeg,10);
-	LCD_WriteString(sXDeg);
-	LCD_WriteString_P(strSPC3);
+	LCD_WriteString(Sensor_GetBatteryTest());
 	
 	// Write RX Status
 	LCD_SetPos(5, 18);
@@ -386,6 +352,37 @@ void _hHomePage()
 		LCD_WriteString_P(strOK);
 	}
 }
+
+void _hHomeArmed()
+{
+	
+	if (IS_INIT)	
+	{
+		LCD_SelectFont (&font12x16);
+		LCD_SetPos(0,0);
+		LCD_WriteString_P(strARMED);
+		LCD_SelectFont (NULL);
+	}
+	
+	LCD_SetPos(3,18);
+	utoa(MotorOut1,sXDeg,10);
+	LCD_WritePadded(sXDeg,5);
+	
+	
+	LCD_SetPos(3,78);
+	utoa(MotorOut4,sXDeg,10);
+	LCD_WritePadded(sXDeg,5);
+	
+	LCD_SetPos(4,18);
+	utoa(MotorOut2,sXDeg,10);
+	LCD_WritePadded(sXDeg,5);
+	
+	LCD_SetPos(4,78);
+	utoa(MotorOut3,sXDeg,10);
+	LCD_WritePadded(sXDeg,5);
+}
+
+
 
 void _hSensorTest()
 {
@@ -404,7 +401,7 @@ void _hSensorTest()
 	LCD_SetPos(5, 48);
 	LCD_WriteString(Sensors_Acc_Test(ACC_Z_PNUM));
 	LCD_SetPos(6, 48);
-	LCD_WriteString(Sensor_GetBattery());
+	LCD_WriteString(Sensor_GetBatteryTest());
 }
 
 void _hReceiverTest()
@@ -432,7 +429,11 @@ void _hReceiverTest()
 	{
 		LCD_WriteString_P(strNoSignalDis);
 	}
-	LCD_WriteString_P(PSTR("signal-ok    "));
+	else
+	{
+		LCD_WriteString_P(PSTR("signal-ok    "));	
+	}
+	
 }
 
 BOOL bError; 
@@ -531,7 +532,7 @@ void _hESCCalibration()
 	if (ANYKEY)
 	{
 		if (subpage >= length(scrESCCal))
-			loadPage(PAGE_MENU);
+			Menu_LoadPage(PAGE_MENU);
 		else
 		{
 			LCD_Clear();
@@ -678,9 +679,9 @@ void Menu_MenuShow()
 	if (KEY1 && !editMode)	// BACK
 	{
 		if (page > PAGE_MENU) // if any page then go to main menu
-			loadPage(PAGE_MENU);
+			Menu_LoadPage(PAGE_MENU);
 		else if (page == PAGE_MENU)  // if menu page then goto HomePage
-			loadPage(PAGE_HOME);
+			Menu_LoadPage(PAGE_HOME);
 	}
 	
 	LCD_Disable();
@@ -703,8 +704,7 @@ void Menu_MenuShow()
 void Menu_MenuInit()
 {
 	oldPage=0xff;
-	//_mykey |= KEY_INIT;
-	loadPage(PAGE_HOME);
+	Menu_LoadPage(PAGE_HOME);
 }
 
 PGM_P tsmMain(uint8_t index)

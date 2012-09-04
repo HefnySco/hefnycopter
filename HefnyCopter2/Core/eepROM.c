@@ -34,11 +34,7 @@ static config_t const defaultConfig PROGMEM =
 	.Sensor_zero[ACC_X_Index] = 548,
 	.Sensor_zero[ACC_Y_Index] = 548,
 	.Sensor_zero[ACC_Z_Index] = 548,
-	
-	.PID[RXChannel_AIL] = { 50, 100, 25, 20},
-	.PID[RXChannel_ELE] = { 50, 100, 25, 20},
-	.PID[RXChannel_RUD] = { 50,  20, 50, 10},
-	.SelfLevelMode = ON,
+	.SelfLevelMode = IMU_SelfLevelMode,
 	.ArmingMode = ON,
 	.LinkRollPitch = ON,
 	.AutoDisarm = ON,

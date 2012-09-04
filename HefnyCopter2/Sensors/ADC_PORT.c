@@ -18,6 +18,7 @@
 #include "../Include/IO_config.h"
 
 
+volatile uint16_t ADCValues[8];
 
 
 /**

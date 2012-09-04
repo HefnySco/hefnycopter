@@ -142,6 +142,10 @@ int main(void)
 		Loop();
 	}
 	
+	
+	IsArmed = true;
+	Menu_LoadPage (PAGE_HOME_ARMED);
+				
 	while(1)
     {
     	MainLoop();
@@ -183,7 +187,7 @@ void MainLoop(void)
 	
 	// HINT: you can try to skip this if flying to save time for more useful tasks as user cannot access menu when flying
 	if (TCNT_X_snapshot2==0) TCNT_X_snapshot2 = TCNT1_X;
-	else if ( (!IsArmed) && (TCNT1_X- TCNT_X_snapshot2) > 2 )  // TCNT1_X ticks in 32.768us
+	else if ( (TCNT1_X- TCNT_X_snapshot2) > 2 )  // TCNT1_X ticks in 32.768us
 	{
 		Menu_MenuShow();	
 		TCNT_X_snapshot2=0;
@@ -195,9 +199,145 @@ void MainLoop(void)
 	{	// Throttle is LOW
 		// Here you can add code without caring about delays. As there quad is already off and on land.
 		// here we test different positions of sticks to enable arm/disarm, Quad/X-Quad
+		HandleSticksForArming();
 		
+		// Stop motors if Throttle Stick is less than minimum.
+		MotorOut1 = 0;
+		MotorOut2 = 0;
+		MotorOut3 = 0;
+		MotorOut4 = 0;
+	}
+	else
+	{	// Throttle stick is NOT Down
 		
-		if (TCNT1_X_snapshot1==0)  TCNT1_X_snapshot1 = TCNT1_X; // start counting
+		if (IsArmed==false)
+		{  // However we are still DisArmed
+			MotorOut1 = 0;
+			MotorOut2 = 0;
+			MotorOut3 = 0;
+			MotorOut4 = 0;
+			
+			// Sticks as Keyboard --- we are already disarmed to reach here.
+			HandleSticksAsKeys();
+		}
+		else
+		{	// Armed & Throttle Stick > MIN . . . We should Fly now.
+		/*	if (RX_Latest[RXChannel_THR] <( STICKThrottle_ARMING - 20)) // calibrate again before leaving ground to average vibrations.
+			{
+				//CalibrateGyros();
+			}
+		*/
+				
+			
+			MotorOut1 = RX_Latest[RXChannel_THR];
+			MotorOut2 = RX_Latest[RXChannel_THR];
+			MotorOut3 = RX_Latest[RXChannel_THR];
+			MotorOut4 = RX_Latest[RXChannel_THR];		
+	
+			Sensors_ReadAll();
+	
+			/*
+			*
+			*	Stabilization Logic.
+			*	The logic is independent of Quad configuration 
+			*/
+			
+				// calculate PITCH
+				uint8_t _gain = Config.GyroParams[0].Gain;
+				gyroPitch   = Sensors_Latest[GYRO_Y_Index];
+				gyroPitch  *= _gain;
+				if (gyroPitch >  _gain)		gyroPitch = _gain;
+				if (gyroPitch < -_gain)		gyroPitch = -_gain;
+				
+				// calculate ROLL
+				gyroRoll    = Sensors_Latest[GYRO_X_Index];							
+				gyroRoll   *= _gain;
+				if (gyroRoll  >  _gain)		gyroRoll  = _gain;
+				if (gyroRoll  < -_gain)		gyroRoll  = -_gain;
+				
+				
+				// calculate YAW
+				_gain = Config.GyroParams[1].Gain;
+				gyroYaw     = Sensors_Latest[GYRO_Z_Index];
+				gyroYaw	 *= _gain;
+				if (gyroYaw   >  _gain)		gyroYaw   = _gain;
+				if (gyroYaw   < -_gain)		gyroYaw   = -_gain;
+				
+				
+				
+			
+			/*
+			*
+			*	Pilot Control Logic.
+			*	
+			*/
+	
+			if (bXQuadMode==true)
+			{
+							//
+				MotorOut1 += RX_Latest[RXChannel_AIL] ;
+				MotorOut2 += RX_Latest[RXChannel_AIL] ;
+				MotorOut3 -= RX_Latest[RXChannel_AIL] ;
+				MotorOut4 -= RX_Latest[RXChannel_AIL] ;
+				
+				MotorOut1 += RX_Latest[RXChannel_ELE];
+				MotorOut2 -= RX_Latest[RXChannel_ELE];
+				MotorOut3 += RX_Latest[RXChannel_ELE];
+				MotorOut4 -= RX_Latest[RXChannel_ELE];
+				
+				MotorOut1 -= RX_Latest[RXChannel_RUD];
+				MotorOut2 += RX_Latest[RXChannel_RUD];
+				MotorOut3 += RX_Latest[RXChannel_RUD];
+				MotorOut4 -= RX_Latest[RXChannel_RUD];
+			}
+			else
+			{
+				MotorOut2 += RX_Latest[RXChannel_AIL] ;
+				MotorOut3 -= RX_Latest[RXChannel_AIL] ;
+				
+				MotorOut1 += RX_Latest[RXChannel_ELE] ;
+				MotorOut4 -= RX_Latest[RXChannel_ELE] ;
+		
+				MotorOut1 -= RX_Latest[RXChannel_RUD] ;
+				MotorOut2 += RX_Latest[RXChannel_RUD] ;
+				MotorOut3 += RX_Latest[RXChannel_RUD] ;
+				MotorOut4 -= RX_Latest[RXChannel_RUD] ;
+			}
+			
+			
+			// Save motors from turning-off
+			if (MotorOut1<MOTORS_IDLE_VALUE) MotorOut1=MOTORS_IDLE_VALUE;
+			if (MotorOut2<MOTORS_IDLE_VALUE) MotorOut2=MOTORS_IDLE_VALUE;
+			if (MotorOut3<MOTORS_IDLE_VALUE) MotorOut3=MOTORS_IDLE_VALUE;
+			if (MotorOut4<MOTORS_IDLE_VALUE) MotorOut4=MOTORS_IDLE_VALUE;
+			
+			
+		} // End of ARMED & Throttle > Minimum
+				
+			
+	}  // End of Throttle stick is NOT Down [Armed Could be True or not]
+	
+
+	Motor_GenerateOutputSignal();
+	//LCD_SetPos(0,0);
+	//itoa (MotorOut1,sXDeg,10);
+	//LCD_WriteString(sXDeg);
+	if (bResetTCNR1_X==true)
+	{
+		TCNT1_X_snapshot1= 0; // reset timeout
+	}
+	
+	
+}	
+
+
+
+
+
+
+void HandleSticksForArming (void)
+{
+	if (TCNT1_X_snapshot1==0)  TCNT1_X_snapshot1 = TCNT1_X; // start counting
 		
 		/////ReadGainValues(); // keep reading values of POTS here. as we can change the value while quad is armed. but sure it is on land and motors are off.
 		// DisArm Check
@@ -220,14 +360,7 @@ void MainLoop(void)
 			if ( (TCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_LONG_TIME )
 			{
 				IsArmed = true;
-				
-				LCD_Clear();
-				LCD_SelectFont (&font12x16);
-				LCD_SetPos(3, 30);
-				LCD_WriteString_P(strARMED);
-				LCD_SelectFont (NULL);
-				Menu_MenuInit();
-				
+				Menu_LoadPage (PAGE_HOME_ARMED);
 				LED_Orange = ON;
 				LED_FlashOrangeLED (LED_LONG_TOGGLE,4);
 				TCNT1_X_snapshot1 =0; // reset timer
@@ -248,39 +381,30 @@ void MainLoop(void)
 					TCNT1_X_snapshot1 =0; // reset timer
 				}
 			}			
-			else  if ((RX_Latest[RXChannel_AIL]  > STICK_LEFT))
-			{	// QUAD COPTER MODE
-				bResetTCNR1_X = false;
-				if ( (TCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_LONG_TIME )
-				{
-					bXQuadMode = false;
-					LED_FlashOrangeLED (LED_LONG_TOGGLE,4);
-					TCNT1_X_snapshot1 =0; // reset timer
-				}		
+			else 
+			{
+			 if ((RX_Latest[RXChannel_AIL]  > STICK_LEFT))
+				{	// QUAD COPTER MODE
+					bResetTCNR1_X = false;
+					if ( (TCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_LONG_TIME )
+					{
+						bXQuadMode = false;
+						LED_FlashOrangeLED (LED_LONG_TOGGLE,4);
+						TCNT1_X_snapshot1 =0; // reset timer
+					}		
 			
-			} 
-			
+				} 
+			}			
 			
 		}
 	
-		// Stop motors if Throttle Stick is less than minimum.
-		MotorOut1 = 0;
-		MotorOut2 = 0;
-		MotorOut3 = 0;
-		MotorOut4 = 0;
-	}
-	else
-	{	// Throttle stick is NOT Down
-		
-		if (IsArmed==false)
-		{  // However we are still DisArmed
-			MotorOut1 = 0;
-			MotorOut2 = 0;
-			MotorOut3 = 0;
-			MotorOut4 = 0;
-			
-			
-			///////////////// Sticks as Keyboard --- we are already disarmed to reach here.
+}
+
+
+
+void HandleSticksAsKeys (void)
+{
+	
 			if ((Config.IsCalibrated & CALIBRATED_SENSOR) && (Config.IsCalibrated & CALIBRATED_Stick) && RX_Latest[RXChannel_THR] > STICKThrottle_HIGH)
 			{ // if Throttle is high and stick are calibrated
 		
@@ -328,145 +452,5 @@ void MainLoop(void)
 				
 				}		 		
 			}	
-			///////////////// EOF Sticks as Keyboard
-	
-		}
-		else
-		{	// Armed & Throttle Stick > MIN . . . We should Fly now.
-			if (RX_Latest[RXChannel_THR] <( STICKThrottle_ARMING - 20)) // calibrate again before leaving ground to average vibrations.
-			{
-				//CalibrateGyros();
-			}
-				
 			
-			MotorOut1 = RX_Latest[RXChannel_THR];
-			MotorOut2 = RX_Latest[RXChannel_THR];
-			MotorOut3 = RX_Latest[RXChannel_THR];
-			MotorOut4 = RX_Latest[RXChannel_THR];		
-	
-	
-			///////*
-			//////*
-			//////*	Stabilization Logic.
-			//////*	The logic is independent of Quad configuration 
-			//////*/
-			//////
-			//////ReadGyros();
-			//////ReadGainValues();
-			//////
-				//////
-			//////// LIMIT GYRO
-			///////*	if (gyroADC[PITCH]> MAX_GYRO_VALUE)		gyroADC[PITCH] = MAX_GYRO_VALUE;
-			//////if (gyroADC[PITCH]< -MAX_GYRO_VALUE)	gyroADC[PITCH] = -MAX_GYRO_VALUE;
-			//////if (gyroADC[ROLL]> MAX_GYRO_VALUE)		gyroADC[ROLL] = MAX_GYRO_VALUE;
-			//////if (gyroADC[ROLL]< -MAX_GYRO_VALUE)		gyroADC[ROLL] = -MAX_GYRO_VALUE;
-			//////if (gyroADC[YAW]> MAX_GYRO_VALUE)		gyroADC[YAW] = MAX_GYRO_VALUE;
-			//////if (gyroADC[YAW]< -MAX_GYRO_VALUE)		gyroADC[YAW] = -MAX_GYRO_VALUE;
-			//////*/
-				//////// calculate PITCH
-				//////cPITCH   = gyroADC[PITCH];
-				//////cPITCH  *= (GainInADC[PITCH]); //   * PITCH_GAIN_MULTIPLIER);
-				//////cPITCH  /= ADC_GAIN_DIVIDER;
-				//////
-				//////// calculate ROLL
-				//////cROLL    = gyroADC[ROLL];							
-				//////cROLL   *= (GainInADC[PITCH]); // /*GainInADC[ROLL]*/  * ROLL_GAIN_MULTIPLIER);		
-				//////cROLL   /= ADC_GAIN_DIVIDER;	
-				//////
-				//////// calculate YAW
-				//////cYAW     = gyroADC[YAW]; 
-				//////cYAW	 *= GainInADC[YAW] ; //* YAW_GAIN_MULTIPLIER; 
-				//////cYAW    /= ADC_GAIN_DIVIDER;
-				//////cYAW	+= ((GainInADC[ROLL] - MID_POT) >> 5);
-			//////
-			//////if (cPITCH > MAX_GYRO_RESPONSE_VALUE)		cPITCH = MAX_GYRO_RESPONSE_VALUE;
-			//////if (cPITCH < -MAX_GYRO_RESPONSE_VALUE)		cPITCH = -MAX_GYRO_RESPONSE_VALUE;
-			//////if (cROLL  > MAX_GYRO_RESPONSE_VALUE)		cROLL  = MAX_GYRO_RESPONSE_VALUE;
-			//////if (cROLL  < -MAX_GYRO_RESPONSE_VALUE)		cROLL  = -MAX_GYRO_RESPONSE_VALUE;
-			//////if (cYAW   > MAX_GYRO_RESPONSE_VALUE)		cYAW   = MAX_GYRO_RESPONSE_VALUE;
-			//////if (cYAW   < -MAX_GYRO_RESPONSE_VALUE)		cYAW   = -MAX_GYRO_RESPONSE_VALUE;
-				//////
-					//////
-				//////// Add ROLL [chk reverse - add to RX - update motors]
-				//////if (Config.RollGyroDirection == GYRO_REVERSED) cROLL = cROLL * (-1);	
-				//////MotorOut2 -= cROLL;
-				//////MotorOut3 += cROLL;
-		//////
-				//////// Add PITCH [chk reverse - add to RX - update motors]
-				//////if (Config.PitchGyroDirection == GYRO_REVERSED) cPITCH = cPITCH * (-1);	
-				//////MotorOut1 -= cPITCH;
-				//////MotorOut4 += cPITCH;
-		//////
-				//////// Add YAW [chk reverse - add to RX - update motors]
-				//////if (Config.YawGyroDirection== GYRO_REVERSED) cYAW = cYAW * (-1);	
-				//////MotorOut1 += cYAW;
-				//////MotorOut2 -= cYAW;
-				//////MotorOut3 -= cYAW;
-				//////MotorOut4 += cYAW;
-				//////
-				
-			
-			/*
-			*
-			*	Pilot Control Logic.
-			*	
-			*/
-	
-			//if (bXQuadMode==true)
-			//{
-							//
-				//MotorOut1 += RX[RXChannel_AIL] ;
-				//MotorOut2 += RX[RXChannel_AIL] ;
-				//MotorOut3 -= RX[RXChannel_AIL] ;
-				//MotorOut4 -= RX[RXChannel_AIL] ;
-				//
-				//MotorOut1 += RX[RXChannel_ELE];
-				//MotorOut2 -= RX[RXChannel_ELE];
-				//MotorOut3 += RX[RXChannel_ELE];
-				//MotorOut4 -= RX[RXChannel_ELE];
-				//
-				//MotorOut1 -= RX[RXChannel_RUD];
-				//MotorOut2 += RX[RXChannel_RUD];
-				//MotorOut3 += RX[RXChannel_RUD];
-				//MotorOut4 -= RX[RXChannel_RUD];
-			//}
-			//else
-			//{
-				//MotorOut2 += RX[RXChannel_AIL] ;
-				//MotorOut3 -= RX[RXChannel_AIL] ;
-				//
-				//MotorOut1 += RX[RXChannel_ELE] ;
-				//MotorOut4 -= RX[RXChannel_ELE] ;
-		//
-				//MotorOut1 -= RX[RXChannel_RUD] ;
-				//MotorOut2 += RX[RXChannel_RUD] ;
-				//MotorOut3 += RX[RXChannel_RUD] ;
-				//MotorOut4 -= RX[RXChannel_RUD] ;
-			//}
-			
-			
-			// Save motors from turning-off
-			if (MotorOut1<MOTORS_IDLE_VALUE) MotorOut1=MOTORS_IDLE_VALUE;
-			if (MotorOut2<MOTORS_IDLE_VALUE) MotorOut2=MOTORS_IDLE_VALUE;
-			if (MotorOut3<MOTORS_IDLE_VALUE) MotorOut3=MOTORS_IDLE_VALUE;
-			if (MotorOut4<MOTORS_IDLE_VALUE) MotorOut4=MOTORS_IDLE_VALUE;
-			
-			
-		} // End of ARMED & Throttle > Minimum
-				
-			
-	}  // End of Throttle stick is NOT Down [Armed Could be True or not]
-	
-
-	Motor_GenerateOutputSignal();
-	//LCD_SetPos(0,0);
-	//itoa (MotorOut1,sXDeg,10);
-	//LCD_WriteString(sXDeg);
-	if (bResetTCNR1_X==true)
-	{
-		TCNT1_X_snapshot1= 0; // reset timeout
-	}
-	
-	
-}	
-
+}

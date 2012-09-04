@@ -67,13 +67,4 @@ typedef struct
 #define uint8_tswap(a, b) { uint8_t t = a; a = b; b = t; } 
 
 
-typedef struct 
-{
-	uint8_t PGain;
-	uint8_t PLimit;
-	uint8_t IGain;
-	uint8_t ILimit;
-} pid_param_t;
-
-
 #endif

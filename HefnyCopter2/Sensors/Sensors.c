@@ -152,6 +152,18 @@ void Sensors_ReadAll (void)
 	Sensors_Latest[V_BAT_Index] = Sensor_GetBattery();
 }
 
+
+char * Sensor_GetBatteryTest(void)
+{
+		// Write Voltage
+	nTemp16 = Sensor_GetBattery();
+	utoa(nTemp16 /10,Result,10);
+	strcat_P(Result,PSTR("."));
+	utoa(nTemp16 %10,Result2,10);
+	strcat (Result,Result2);
+	return Result;
+}
+
 inline uint16_t  Sensor_GetBattery(void)
 {
 	return ADCPort_Get(V_BAT_PNUM) * 100 / 372;

@@ -13,6 +13,40 @@
 #ifndef MENU_SCREEN_H_
 #define MENU_SCREEN_H_
 
+// Pointer to menu item function handler.
+typedef void (pageHandler)(void);
+
+
+// Menu Item Page Layout Structure
+typedef struct  
+{
+	const char *softkeys;   // softkeys function text  
+	pageHandler *handler;	// function to execute
+	const char *screen;		// screen contents
+} page_t;
+
+typedef struct  
+{
+	uint8_t len;
+	PGM_P (*textSelector)(uint8_t);
+	uint8_t top;
+	uint8_t marked;
+} menu_t;
+
+
+
+typedef struct
+{
+	uint8_t X, Y;
+	void *valuePtr;
+	int16_t loLimit, hiLimit;
+	uint8_t len;
+} edit_element_t;
+
+
+
+
+////////////////////////////////////SCREEN TEXT/////////////////////////////////////
 
 /*P_STR scrPIEditor[] = 
 	"Axis:\n"
@@ -32,6 +66,13 @@ P_STR scrHomePage[] =
 	"RX:    SN:    ST:"
 	;
 	
+P_STR scrHomePageArmed[] = 
+	"\n"
+	"\n"
+	"\n"
+	"M1:       M4:\n"
+	"M2:       M3:\n"
+	;
 P_STR scrReceiverTest[] = 
 	"Ail:\n"
 	"Ele:\n"
@@ -189,8 +230,10 @@ static const prog_char _skEDIT[]      = "CANCEL  DOWN  UP  OK";
 //////////////////////////////////////////////////////////////////////////
 // Menu Structure
 
+#define MENU_START_INDEX 3
 void _hHomePage();
 void _hMenu();
+void _hHomeArmed();
 void _hReceiverTest();
 void _hSelfLeveling();
 void _hSensorTest();
@@ -205,7 +248,8 @@ void _hFactoryReset();
 static const page_t pages[] PROGMEM = {
 /*  0 */	{ _skHOME, _hHomePage, scrHomePage },
 /*  1 */	{ _skMENU, _hMenu},
-{ _skBACK, _hSelfLeveling, scrSelfLeveling},
+/*	2 */	{ _skHOME, _hHomeArmed, scrHomePageArmed},
+{ _skBACK, _hSelfLeveling, scrSelfLeveling},	/// MENU_START_INDEX
 { _skPAGE, NULL, scrModeSettings},
 { _skPAGE, NULL, scrMiscSettings},
 { _skBACK, _hSensorTest, scrSensorTest},
@@ -251,10 +295,6 @@ int16_t editValue, editLoLimit, editHiLimit;
 uint8_t editMode, editValueType;
 uint8_t* editValuePtr;
 
-
-#define PAGE_HOME			0
-#define PAGE_MENU			1
-#define PAGE_SHOW_LAYOUT	14
 
 
 #define TYPE_UINT8		2
