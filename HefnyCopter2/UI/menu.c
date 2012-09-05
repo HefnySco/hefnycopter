@@ -30,6 +30,7 @@
 
 
 static uint8_t oldPage;
+BOOL bValueChanged=false; 
 
 typedef const prog_char screen_t[7][22];
 typedef struct  
@@ -365,20 +366,36 @@ void _hHomeArmed()
 	}
 	
 	LCD_SetPos(3,18);
-	utoa(MotorOut1,sXDeg,10);
+	itoa(MotorOut1,sXDeg,10);
 	LCD_WritePadded(sXDeg,5);
 	
-	
 	LCD_SetPos(3,78);
-	utoa(MotorOut4,sXDeg,10);
+	itoa(MotorOut4,sXDeg,10);
 	LCD_WritePadded(sXDeg,5);
 	
 	LCD_SetPos(4,18);
-	utoa(MotorOut2,sXDeg,10);
+	itoa(MotorOut2,sXDeg,10);
 	LCD_WritePadded(sXDeg,5);
 	
 	LCD_SetPos(4,78);
-	utoa(MotorOut3,sXDeg,10);
+	itoa(MotorOut3,sXDeg,10);
+	LCD_WritePadded(sXDeg,5);
+	
+	
+	LCD_SetPos(5,18);
+	itoa(gyroPitch,sXDeg,10);
+	LCD_WritePadded(sXDeg,5);
+	
+	LCD_SetPos(5,78);
+	itoa(gyroRoll,sXDeg,10);
+	LCD_WritePadded(sXDeg,5);
+	
+	LCD_SetPos(6,18);
+	itoa(accPitch,sXDeg,10);
+	LCD_WritePadded(sXDeg,5);
+	
+	LCD_SetPos(6,78);
+	itoa(accRoll,sXDeg,10);
 	LCD_WritePadded(sXDeg,5);
 }
 
@@ -436,8 +453,9 @@ void _hReceiverTest()
 	
 }
 
+
+
 BOOL bError; 
-	
 void _hStickCentering()
 {
 	
@@ -459,7 +477,6 @@ void _hStickCentering()
 			
 			Config.IsCalibrated= (Config.IsCalibrated | CALIBRATED_Stick);
 			Save_Config_to_EEPROM();
-			Beeper_Beep(700,1);	
 		}
 		else
 		{
@@ -520,7 +537,6 @@ void _hSensorCalibration()
 		for (i=0;i<6;++i)
 		Config.Sensor_zero[i] = nResult[i];
 		Save_Config_to_EEPROM();
-		Beeper_Beep(700,1);
 		
 		_mykey |= KEY_INIT;
 	}
@@ -545,35 +561,96 @@ void _hESCCalibration()
 }
 
 
+
+void _hStabilization()
+{
+	
+	NOKEYRETURN;
+	PageKey(4);
+	
+	if (KEY4)
+	{
+		bValueChanged = true;
+		currentPage.softkeys = _skMENUSAVE;
+		
+		switch (subpage)
+		{
+			case 0: startEditMode(&(Config.GyroParams[0].Gain),0,200,TYPE_UINT8);  return ;
+			case 1: startEditMode(&(Config.GyroParams[0].Limit),0,200,TYPE_UINT8); return ;
+			case 2: startEditMode(&(Config.GyroParams[1].Gain),0,200,TYPE_UINT8);  return ;
+			case 3: startEditMode(&(Config.GyroParams[1].Limit),0,200,TYPE_UINT8); return ;
+		}
+		
+	}
+	
+	if (KEY1)
+	{
+		if (bValueChanged==true)
+		{
+			Save_Config_to_EEPROM();
+			bValueChanged = false;
+			return ;
+		}
+	}
+	
+	
+	
+	
+	
+	
+	LCD_WriteValue(1,80,Config.GyroParams[0].Gain,3,0==subpage);
+	LCD_WriteValue(2,80,Config.GyroParams[0].Limit,3,1==subpage);
+	LCD_WriteValue(3,80,Config.GyroParams[1].Gain,3,2==subpage);
+	LCD_WriteValue(4,80,Config.GyroParams[1].Limit,3,3==subpage);
+}
+
+
+
 void _hSelfLeveling()
 {
 
 	NOKEYRETURN;
+	PageKey(3);
 	
 	if (KEY4)
 	{
+		bValueChanged = true;
+		currentPage.softkeys = _skMENUSAVE;
+		
 		switch (subpage)
 		{
-			case 0: Config.SelfLevelMode ^=IMU_SelfLevelMode; break;
-			case 1: startEditMode(&(Config.AccGain),0,200,TYPE_UINT8); return ;
-			case 2: startEditMode(&(Config.AccTrim),0,200,TYPE_UINT8); return ;
+			case 0: if (Config.SelfLevelMode==IMU_SelfLevelMode) Config.SelfLevelMode=0; else Config.SelfLevelMode=IMU_SelfLevelMode; break;
+			case 1: startEditMode(&(Config.AccGain),0,200,TYPE_UINT8); return ;   // we make return to avoid printing main screen while the editing editing
+			case 2: startEditMode(&(Config.AccLimit),0,200,TYPE_UINT8); return ;
 		}
 	}
+
+		
+	if (KEY1)
+	{
+		if (bValueChanged==true)
+		{
+			Save_Config_to_EEPROM();
+			bValueChanged = false;
+			return ;
+		}
+	}
+
 	
-	PageKey(3);
+	
 	
 	lcdReverse(subpage == 0);
 	if (Config.SelfLevelMode==IMU_SelfLevelMode)
 	{
-		strcpy_P(sXDeg,strNo);
+		strcpy_P(sXDeg,strYes);
 	}
 	else
 	{
-		strcpy_P(sXDeg,strYes);
+		strcpy_P(sXDeg,strNo);
 	}
-	LCD_WriteStringex (0,80,sXDeg,0==subpage);
-	LCD_WriteValue(1,80,Config.AccGain,3,1==subpage);
-	LCD_WriteValue(2,80,Config.AccTrim,3,2==subpage);
+	LCD_WriteStringex (1,80,sXDeg,0==subpage);
+	LCD_WriteValue(2,80,Config.AccGain,3,1==subpage);
+	LCD_WriteValue(3,80,Config.AccLimit,3,2==subpage);
 }
 
 int16_t AccTotal;
@@ -629,7 +706,7 @@ void _hDebug()
 		}	
 	
  
-	CalculateAngles ();
+	IMU_CalculateAngles ();
  
 	int16_t t=ADCPort_Get(ACC_X_PNUM);
 	AccTotal += t -OldAcc ; //Config.Sensor_zero[ACC_X_Index];
@@ -675,14 +752,7 @@ void Menu_MenuShow()
 	
 	_mykey = Keyboard_Read();
 	_mykey = _mykey | _TXKeys;
-	// Throttle is not low to avoid conflict with other Arming/Disarming TX commands
-	if (KEY1 && !editMode)	// BACK
-	{
-		if (page > PAGE_MENU) // if any page then go to main menu
-			Menu_LoadPage(PAGE_MENU);
-		else if (page == PAGE_MENU)  // if menu page then goto HomePage
-			Menu_LoadPage(PAGE_HOME);
-	}
+
 	
 	LCD_Disable();
 	if (oldPage != page)
@@ -695,6 +765,17 @@ void Menu_MenuShow()
 	defaultHandler();
 	LCD_Enable();
 
+	
+	
+	if (KEY1 && !editMode)	// BACK
+	{
+		if (page > PAGE_MENU) // if any page then go to main menu
+			Menu_LoadPage(PAGE_MENU);
+		else if (page == PAGE_MENU)  // if menu page then goto HomePage
+			Menu_LoadPage(PAGE_HOME);
+	}
+	
+	
 	if (KEYPRESS)
 		Beeper_Beep(70,1);
 		

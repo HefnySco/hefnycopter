@@ -16,9 +16,9 @@
 
 
 
-#define aX A3
-#define aY A4
-#define aZ A5
+//#define aX A3
+//#define aY A4
+//#define aZ A5
 
 
 //gyros
@@ -62,11 +62,11 @@ uint16_t dt;
 
 
 
-void CalculateAngles ()
+void IMU_CalculateAngles ()
 {
   //timer = TCNT1;	
-  gyroXadc = ADCPort_Get(GYRO_X_PNUM)/10;
-  gyroXrate = (gyroXadc-Config.Sensor_zero[GYRO_X_Index]) ;//* 1.0323;//(gyroXadc-gryoZeroX)/Sensitivity - in quids              Sensitivity = 0.00333/3.3*1023=1.0323
+  gyroXadc = Sensors_Latest[GYRO_X_Index]/10;
+  gyroXrate = (gyroXadc) ;//* 1.0323;//(gyroXadc-gryoZeroX)/Sensitivity - in quids              Sensitivity = 0.00333/3.3*1023=1.0323
   
   if ((gyroXrate<=1) && (gyroXrate>=-1))
   {
@@ -74,26 +74,26 @@ void CalculateAngles ()
   }
   gyroXangle=gyroXangle+gyroXrate * dtime;//Without any filter
   
-  gyroYadc = ADCPort_Get(GYRO_Y_PNUM);
-  gyroYrate = (gyroYadc-Config.Sensor_zero[GYRO_Y_Index]) ;//* 1.0323;//(gyroYadc-gryoZeroX)/Sensitivity - in quids              Sensitivity = 0.00333/3.3*1023=1.0323
+  gyroYadc = Sensors_Latest[GYRO_Y_Index];
+  gyroYrate = (gyroYadc) ;//* 1.0323;//(gyroYadc-gryoZeroX)/Sensitivity - in quids              Sensitivity = 0.00333/3.3*1023=1.0323
   if ((gyroYrate<=1) && (gyroYrate>=-1))
   {
 	  gyroYrate=0;
   }
   gyroYangle=gyroYangle+gyroYrate;//Without any filter
   
-  gyroZadc = ADCPort_Get(GYRO_Z_PNUM);
-  gyroZrate = (gyroZadc-Config.Sensor_zero[GYRO_Z_Index]);///1.0323;//(gyroZadc-gryoZeroX)/Sensitivity - in quids              Sensitivity = 0.00333/3.3*1023=1.0323
+  gyroZadc = Sensors_Latest[GYRO_Z_Index];
+  gyroZrate = (gyroZadc);///1.0323;//(gyroZadc-gryoZeroX)/Sensitivity - in quids              Sensitivity = 0.00333/3.3*1023=1.0323
   //gyroZangle=gyroZangle+gyroZrate*dtime/1000;//Without any filter
   
-  accXadc = ADCPort_Get(ACC_X_PNUM);
-  accXval = (accXadc-Config.Sensor_zero[ACC_X_Index]);//(accXadc-accZeroX)/Sensitivity - in quids              Sensitivity = 0.33/3.3*1023=102,3
+  accXadc = Sensors_Latest[ACC_X_Index];
+  accXval = (accXadc);//(accXadc-accZeroX)/Sensitivity - in quids              Sensitivity = 0.33/3.3*1023=102,3
   
-  accYadc = ADCPort_Get(ACC_Y_PNUM);
-  accYval = (accYadc-Config.Sensor_zero[ACC_Y_Index]);///102;//(accXadc-accZeroX)/Sensitivity - in quids              Sensitivity = 0.33/3.3*1023=102,3
+  accYadc = Sensors_Latest[ACC_Y_Index];
+  accYval = (accYadc);///102;//(accXadc-accZeroX)/Sensitivity - in quids              Sensitivity = 0.33/3.3*1023=102,3
   
-  accZadc = ADCPort_Get(ACC_Z_PNUM);
-  accZval = (accZadc-Config.Sensor_zero[ACC_Z_Index]);///102;//(accXadc-accZeroX)/Sensitivity - in quids              Sensitivity = 0.33/3.3*1023=102,3
+  accZadc = Sensors_Latest[ACC_Z_Index];
+  accZval = (accZadc);///102;//(accXadc-accZeroX)/Sensitivity - in quids              Sensitivity = 0.33/3.3*1023=102,3
   //accZval++;//1g in horizontal position
   
   //R = sqrt(pow(accXval,2)+pow(accYval,2)+pow(accZval,2));//the force vector
@@ -102,7 +102,7 @@ void CalculateAngles ()
   //accZangle = acos(accZval/R)*RAD_TO_DEG;
  
   
-  CompAngleX = (0.98*(CompAngleX+(gyroXrate)*dt/1000))+(0.02*(accYangle));
+  CompAngleX = (0.6*(CompAngleX+(gyroXrate)*dt/1000))+(0.4*(accYangle));
   CompAngleY = (0.6*(CompAngleY-(gyroYrate)*dt/1000))+(0.4*(accXangle));
  for (int c=0;c<dt;++c)
  {

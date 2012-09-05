@@ -143,8 +143,10 @@ int main(void)
 	}
 	
 	
-	IsArmed = true;
-	Menu_LoadPage (PAGE_HOME_ARMED);
+	// Simulate
+	//IsArmed = true;
+	//Menu_LoadPage (PAGE_HOME_ARMED);
+	
 				
 	while(1)
     {
@@ -182,7 +184,12 @@ void MainLoop(void)
 {
 	
 	RX_CopyLatestReceiverValues();
-		
+	// simulate
+	//RX_Latest[RXChannel_THR]=500;
+	
+	
+	Sensors_ReadAll();
+	
 	bResetTCNR1_X = true;
 	
 	// HINT: you can try to skip this if flying to save time for more useful tasks as user cannot access menu when flying
@@ -234,7 +241,7 @@ void MainLoop(void)
 			MotorOut3 = RX_Latest[RXChannel_THR];
 			MotorOut4 = RX_Latest[RXChannel_THR];		
 	
-			Sensors_ReadAll();
+			
 	
 			/*
 			*
@@ -243,28 +250,62 @@ void MainLoop(void)
 			*/
 			
 				// calculate PITCH
-				uint8_t _gain = Config.GyroParams[0].Gain;
+				int8_t _limit = Config.GyroParams[0].Limit;
+				
 				gyroPitch   = Sensors_Latest[GYRO_Y_Index];
-				gyroPitch  *= _gain;
-				if (gyroPitch >  _gain)		gyroPitch = _gain;
-				if (gyroPitch < -_gain)		gyroPitch = -_gain;
+				gyroPitch  *= Config.GyroParams[0].Gain;
+				if (gyroPitch >  _limit)		gyroPitch = _limit;
+				if (gyroPitch < -_limit)		gyroPitch = -_limit;
+				
 				
 				// calculate ROLL
 				gyroRoll    = Sensors_Latest[GYRO_X_Index];							
-				gyroRoll   *= _gain;
-				if (gyroRoll  >  _gain)		gyroRoll  = _gain;
-				if (gyroRoll  < -_gain)		gyroRoll  = -_gain;
+				gyroRoll   *= Config.GyroParams[0].Gain;
+				if (gyroRoll  >  _limit)		gyroRoll  = _limit;
+				if (gyroRoll  < -_limit)		gyroRoll  = -_limit;
 				
+			
 				
 				// calculate YAW
-				_gain = Config.GyroParams[1].Gain;
+				_limit = Config.GyroParams[1].Limit;
 				gyroYaw     = Sensors_Latest[GYRO_Z_Index];
-				gyroYaw	 *= _gain;
-				if (gyroYaw   >  _gain)		gyroYaw   = _gain;
-				if (gyroYaw   < -_gain)		gyroYaw   = -_gain;
+				gyroYaw	 *= Config.GyroParams[1].Gain;
+				if (gyroYaw   >  _limit)		gyroYaw   = _limit;
+				if (gyroYaw   < -_limit)		gyroYaw   = -_limit;
+				
+			/*
+			*
+			*	Self Leveling
+			*/
+				
+				if (Config.SelfLevelMode == IMU_SelfLevelMode)
+				{
+					_limit = Config.AccLimit;
+						
+					accPitch   = Sensors_Latest[ACC_X_Index];
+					accPitch  *= Config.AccGain;
+					if (accPitch >  _limit)		accPitch = _limit;
+					if (accPitch < -_limit)		accPitch = -_limit;
+					
+					accRoll   = Sensors_Latest[ACC_Y_Index];
+					accRoll  *= Config.AccGain;
+					if (accRoll >  _limit)		accRoll = _limit;
+					if (accRoll < -_limit)		accRoll = -_limit;
+				
+				}
 				
 				
+				MotorOut1 -= gyroPitch + accPitch;
+				MotorOut4 += gyroPitch - accPitch; 
+				MotorOut2 -= gyroRoll  - accRoll;
+				MotorOut3 += gyroRoll  + accRoll;
+				MotorOut1 += gyroYaw;
+				MotorOut4 += gyroYaw;
+				MotorOut2 -= gyroYaw;
+				MotorOut3 -= gyroYaw;
 				
+		
+			
 			
 			/*
 			*
@@ -350,6 +391,8 @@ void HandleSticksForArming (void)
 				LED_Orange = OFF;
 				LED_FlashOrangeLED (LED_LONG_TOGGLE,4);
 				TCNT1_X_snapshot1 =0; // reset timer
+				
+				Menu_LoadPage (PAGE_HOME);
 			}
 		}
 		
@@ -360,10 +403,11 @@ void HandleSticksForArming (void)
 			if ( (TCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_LONG_TIME )
 			{
 				IsArmed = true;
-				Menu_LoadPage (PAGE_HOME_ARMED);
 				LED_Orange = ON;
 				LED_FlashOrangeLED (LED_LONG_TOGGLE,4);
 				TCNT1_X_snapshot1 =0; // reset timer
+				
+				Menu_LoadPage (PAGE_HOME_ARMED);
 			}		
 		}
 		

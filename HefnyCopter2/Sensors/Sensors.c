@@ -141,13 +141,13 @@ void Sensors_Calibrate (void)
 
 void Sensors_ReadAll (void)
 {
-	Sensors_Latest[ACC_X_Index] = ADCPort_Get(ACC_X_PNUM);
-	Sensors_Latest[ACC_Y_Index] = ADCPort_Get(ACC_Y_PNUM);
-	Sensors_Latest[ACC_Z_Index] = ADCPort_Get(ACC_Z_PNUM);
+	Sensors_Latest[ACC_X_Index] = ADCPort_Get(ACC_X_PNUM)-Config.Sensor_zero[ACC_X_Index];
+	Sensors_Latest[ACC_Y_Index] = ADCPort_Get(ACC_Y_PNUM)-Config.Sensor_zero[ACC_Y_Index];
+	Sensors_Latest[ACC_Z_Index] = ADCPort_Get(ACC_Z_PNUM)-Config.Sensor_zero[ACC_Z_Index];
 		
-	Sensors_Latest[GYRO_X_Index] = ADCPort_Get(GYRO_X_PNUM);
-	Sensors_Latest[GYRO_Y_Index] = ADCPort_Get(GYRO_Y_PNUM);
-	Sensors_Latest[GYRO_Z_Index] = ADCPort_Get(GYRO_Z_PNUM);
+	Sensors_Latest[GYRO_X_Index] = ADCPort_Get(GYRO_X_PNUM)-Config.Sensor_zero[GYRO_X_Index];
+	Sensors_Latest[GYRO_Y_Index] = ADCPort_Get(GYRO_Y_PNUM)-Config.Sensor_zero[GYRO_Y_Index];
+	Sensors_Latest[GYRO_Z_Index] = ADCPort_Get(GYRO_Z_PNUM)-Config.Sensor_zero[GYRO_Z_Index];
 	
 	Sensors_Latest[V_BAT_Index] = Sensor_GetBattery();
 }

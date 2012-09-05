@@ -42,7 +42,7 @@ char sXDeg[10];
 #define MAX_COLLECTIVE		800
 // trimming value for motors when generating PWM signals.
 #define MOTORS_HIGH_VALUE	1000  
-#define MOTORS_IDLE_VALUE	40
+#define MOTORS_IDLE_VALUE	50
 // Defines output rate to ESC/Servo
 // either define by setting ESC_RATE (Max is approx 495Hz)
 // uses Timer 1 ticks to control output rate.
@@ -72,14 +72,17 @@ volatile BOOL RX_Good;
 BOOL	IsArmed;
 
 // Motors Signals
-uint16_t MotorOut1;
-uint16_t MotorOut2;
-uint16_t MotorOut3;
-uint16_t MotorOut4;
+int16_t MotorOut1;
+int16_t MotorOut2;
+int16_t MotorOut3;
+int16_t MotorOut4;
 
 int16_t gyroPitch;
 int16_t gyroRoll;
 int16_t gyroYaw;
+
+int16_t accPitch;
+int16_t accRoll;
 
 
 // TIMERS
@@ -93,7 +96,7 @@ BOOL bResetTCNR1_X;
 
 
 // ADC Values
-volatile uint16_t Sensors_Latest [8];
+volatile int16_t Sensors_Latest [8];
 volatile char Result[10]; 
 volatile char Result2[10]; 
 volatile uint16_t nResult[8];
@@ -139,7 +142,7 @@ typedef struct
 	//pid_param_t PID_SelfLevel;
 	uint8_t SelfLevelMode;
 	uint8_t	AccGain;
-	uint8_t AccTrim;
+	uint8_t AccLimit;
 	//model_t Mixer;
 } config_t;
 

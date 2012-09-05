@@ -38,11 +38,13 @@ P_STR strNo[] =		"No ";
 
 // main menu
 //P_STR strPIEditor[] = "PI Editor";
+P_STR strStabilization[]= "Stabilization";
 P_STR strReceiverTest[] = "Receiver Test";
 P_STR strModeSettings[] = "Mode Settings";
 P_STR strStickScaling[] = "Stick Scaling";
 P_STR strRadioCalibration[] = "Stick Centering";
 P_STR strMiscSettings[] = "Misc. Settings";
+
 P_STR strSelflevel[] = "Self Leveling";
 P_STR strSensorTest[] = "Sensor Test";
 P_STR strSensorCalibration[] = "Sensor Calibration";

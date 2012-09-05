@@ -72,7 +72,26 @@ P_STR scrHomePageArmed[] =
 	"\n"
 	"M1:       M4:\n"
 	"M2:       M3:\n"
+	"GX:       GY:\n"
+	"AX:       AY:\n"
 	;
+	
+P_STR scrSelfLeveling[] =
+	"\n"
+	"Active:\n"
+	"Acc Gain:\n"
+	"Acc Limit:\n"
+	;
+	
+	
+P_STR scrStabilization[]=
+	"\n"
+	"P&R Gain:\n"
+	"P&R Limit:\n"
+	"Yaw-Gain:\n"
+	"Yaw-Limit:\n"
+	;
+
 P_STR scrReceiverTest[] = 
 	"Ail:\n"
 	"Ele:\n"
@@ -108,11 +127,6 @@ P_STR scrMiscSettings[] =
 	"Alarm 1/10 volts:\n"
 	"Servo filter:";
 
-P_STR scrSelfLeveling[] =
-	"Active:\n"
-	"Acc Gain:\n"
-	"Trim:\n";
-	
 
 
 P_STR scrCPPMSettings[] = 
@@ -220,6 +234,7 @@ P_STR scrMixerEditor[] =
 // softkeys
 static const prog_char _skHOME[]     = "                 MENU";
 static const prog_char _skMENU[]      = "BACK UP   DOWN ENTER";
+static const prog_char _skMENUSAVE[]  = "SAVE UP   DOWN ENTER";
 static const prog_char _skBACK[]      = "BACK";
 static const prog_char _skCONTINUE[]  = "BACK         CONTINUE";
 static const prog_char _skCANCELYES[] = "NO	             YES";
@@ -234,8 +249,9 @@ static const prog_char _skEDIT[]      = "CANCEL  DOWN  UP  OK";
 void _hHomePage();
 void _hMenu();
 void _hHomeArmed();
-void _hReceiverTest();
+void _hStabilization();
 void _hSelfLeveling();
+void _hReceiverTest();
 void _hSensorTest();
 void _hSensorCalibration();
 void _hESCCalibration();
@@ -246,10 +262,11 @@ void _hDebug();
 void _hFactoryReset();
 
 static const page_t pages[] PROGMEM = {
-/*  0 */	{ _skHOME, _hHomePage, scrHomePage },
-/*  1 */	{ _skMENU, _hMenu},
-/*	2 */	{ _skHOME, _hHomeArmed, scrHomePageArmed},
-{ _skBACK, _hSelfLeveling, scrSelfLeveling},	/// MENU_START_INDEX
+/*  0 */	{ _skHOME, _hHomePage, scrHomePage },		// non-menu item
+/*  1 */	{ _skMENU, _hMenu},							// non-menu item
+/*	2 */	{ _skBACK, _hHomeArmed, scrHomePageArmed},	// non-menu item
+{ _skMENU, _hStabilization, scrStabilization},			// in case of extra adding non menu items  MENU_START_INDEX constant should be updated to indicate the start of the menu
+{ _skMENU, _hSelfLeveling, scrSelfLeveling},	
 { _skPAGE, NULL, scrModeSettings},
 { _skPAGE, NULL, scrMiscSettings},
 { _skBACK, _hSensorTest, scrSensorTest},
@@ -267,6 +284,7 @@ static const page_t pages[] PROGMEM = {
  
 
 static const prog_char *lstMenu[] PROGMEM = {
+	strStabilization,
 	strSelflevel,
 	strModeSettings,
 	strMiscSettings,

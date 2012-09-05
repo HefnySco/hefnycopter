@@ -17,7 +17,7 @@
 float CompAngleX;
 float CompAngleY;
 
-void CalculateAngles ();
+void IMU_CalculateAngles ();
 
 
 
