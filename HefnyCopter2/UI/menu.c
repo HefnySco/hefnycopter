@@ -383,19 +383,19 @@ void _hHomeArmed()
 	
 	
 	LCD_SetPos(5,18);
-	itoa(gyroPitch,sXDeg,10);
-	LCD_WritePadded(sXDeg,5);
-	
-	LCD_SetPos(5,78);
 	itoa(gyroRoll,sXDeg,10);
 	LCD_WritePadded(sXDeg,5);
 	
+	LCD_SetPos(5,78);
+	itoa(gyroPitch,sXDeg,10);
+	LCD_WritePadded(sXDeg,5);
+	
 	LCD_SetPos(6,18);
-	itoa(accPitch,sXDeg,10);
+	itoa(accRoll,sXDeg,10);
 	LCD_WritePadded(sXDeg,5);
 	
 	LCD_SetPos(6,78);
-	itoa(accRoll,sXDeg,10);
+	itoa(accPitch,sXDeg,10);
 	LCD_WritePadded(sXDeg,5);
 }
 
@@ -519,7 +519,7 @@ void _hSensorCalibration()
 		for (i=0; i<10;++i)
 		{
 			Beeper_Beep(70,1);
-			delay_ms (1500); // delay to avoid click vibration.	
+			delay_ms (500); // delay to avoid click vibration.	
 		
 		}
 	
