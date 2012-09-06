@@ -252,13 +252,17 @@ void RX_StickCenterCalibration (void)
 	for (int i=0;i<RXChannels;++i)
 	{
 		tempRX = RX_raw_GetReceiverValues(i);
-		if ( tempRX > RX_MAX_raw[i]) 
+		if (tempRX!=0)
 		{
-			RX_MAX_raw[i] = tempRX;
-		}
-		else if (tempRX < RX_MIN_raw[i]) 
-		{
-			RX_MIN_raw[i] = tempRX;
-		}
+			
+			if ( tempRX > RX_MAX_raw[i]) 
+			{
+				RX_MAX_raw[i] = tempRX;
+			}
+			else if (tempRX < RX_MIN_raw[i]) 
+			{
+				RX_MIN_raw[i] = tempRX;
+			}
+		}		
 	}
 }

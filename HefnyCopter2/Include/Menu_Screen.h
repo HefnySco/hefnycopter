@@ -85,11 +85,12 @@ P_STR scrSelfLeveling[] =
 	
 	
 P_STR scrStabilization[]=
-	"\n"
-	"P&R Gain:\n"
-	"P&R Limit:\n"
-	"Yaw-Gain:\n"
-	"Yaw-Limit:\n"
+	"Gyro Ptch&Roll Scale\n"
+	"min:    max:\n"
+	"min:    max:\n"
+	"Yaw Scaling\n"
+	"min:    max:\n"
+	"min:    max:\n"
 	;
 
 P_STR scrReceiverTest[] = 
@@ -140,16 +141,11 @@ P_STR scrSensorCal0[] =
 	"Place the aircraft on\n"
 	"a level surface and\n"
 	"press CONTINUE.\n"
-	"The FC will then wait\n"
-	"5 sec to let the\n"
-	"aircraft settle down.";
+	;
+	
 P_STR scrSensorCal1[] = 
 	"Calibration failed.\n"
-	"\n"
-	"Make sure the air-\n"
-	"craft is level and\n"
-	"stationary, and try\n"
-	"again.";
+	;
 
 PROGMEM const prog_char* scrSensorCal[] = 
 	{
@@ -318,4 +314,5 @@ uint8_t* editValuePtr;
 #define TYPE_UINT8		2
 #define TYPE_INT8		1
 #define TYPE_INT16		3
+#define TYPE_UINT16		4
 #endif /* MENU_SCREEN_H_ */

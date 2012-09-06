@@ -58,13 +58,6 @@ P_STR strDebug[] = "Debug";
 P_STR strFactoryReset[] = "Factory Reset";
 
 
-
-P_STR strIofPI[] = "I of PI";
-P_STR strSpIsSp[] = " is ";
-
-P_STR strRollAil[] = "Roll (Aileron)";
-P_STR strPitchEle[] = "Pitch (Elevator)";
-P_STR strYawRud[] = "Yaw (Rudder)";
 P_STR strStick[] = "Stick";
 P_STR strAUX[] = "AUX";
 P_STR strESC[] = "ESC";
@@ -79,7 +72,6 @@ P_STR strBack[] = "Back";
 P_STR strForward[] = "Frwrd";
 P_STR strIdle[] = "Idle";
 P_STR strFull[] = "Full";
-P_STR strBattery[] = "Battery:";
 P_STR strError[] = "Error:";
 
 P_STR strRoll[]  = "Roll";
@@ -98,7 +90,6 @@ P_STR strDirSeen[]    = "Direction\nseen from\nabove:";
 P_STR strCW[]		  = "CW";
 P_STR strCCW[]        = "CCW";
 P_STR strALL[]        = "ALL";
-P_STR strUnused[]     = "Unused.";
 
 P_STR strSensorNotCal[] = "No calibration";
 

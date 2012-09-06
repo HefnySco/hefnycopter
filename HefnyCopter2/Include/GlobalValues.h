@@ -84,6 +84,10 @@ int16_t gyroYaw;
 int16_t accPitch;
 int16_t accRoll;
 
+double Pitch_Ratio;
+double Yaw_Ratio;
+
+
 
 // TIMERS
 volatile uint16_t TCNT1_X;				// TCNT1_X click every 0.0032768 sec [1 sec = 305.17578125 TCNT1_X]
@@ -114,8 +118,8 @@ volatile int16_t  iTemp16;
 
 typedef struct 
 {
-	uint8_t Gain;
-	uint8_t Limit;
+	int16_t minSource,maxSource;
+	int16_t minDest,maxDest;
 } pid_param_t;
 
 

@@ -130,8 +130,10 @@ void editModeHandler()
 			*((uint8_t*)editValuePtr) = (uint8_t) editValue;
 		else if (editValueType == TYPE_INT8)
 			*((int8_t*)editValuePtr) = (int8_t) editValue;
-// 		else if (editValueType == TYPE_INT16)
-// 			*(int16_t*)editValuePtr = editValue;
+		else if (editValueType == TYPE_INT16)
+			*(int16_t*)editValuePtr = editValue;
+		else if (editValueType == TYPE_UINT16)
+			*(uint16_t*)editValuePtr = editValue;
 		
 		//Save_Config_to_EEPROM();
 		
@@ -176,8 +178,10 @@ static void startEditMode(void* valuePtr, int16_t loLimit, int16_t hiLimit, uint
 		editValue = *(uint8_t*)valuePtr;
 	else if (valueType == TYPE_INT8)
 		editValue = *(int8_t*)valuePtr;
-// 	else if (valueType == TYPE_INT16)
-// 		editValue = *(int16_t*)valuePtr;
+	else if (valueType == TYPE_INT16)
+ 		editValue = *(int16_t*)valuePtr;
+	else if (valueType == TYPE_UINT16)
+ 		editValue = *(uint16_t*)valuePtr;
 	
 	editLoLimit = loLimit;
 	editHiLimit = hiLimit;
@@ -491,12 +495,12 @@ void _hStickCentering()
 		LCD_SetPos(i, 30);
 		utoa(RX_MAX_raw[i], sXDeg, 10);
 		LCD_WriteString(sXDeg);
-		LCD_WriteString_P(PSTR(" "));
+		LCD_WriteString_P(strSPC1);
 		utoa(RX_MIN_raw[i], sXDeg, 10);
 		LCD_WriteString(sXDeg);	
 		if ((RX_MAX_raw[i]< RX_MIN_raw[i]) || (RX_MIN_raw[i]==0))  // RX_MIN_raw[i]=0 if the Remote is OFF when entering the test
 		{
-			LCD_WriteString(strErr);	
+			LCD_WriteString_P(strErr);	
 			bError = TRUE;
 		}
 		else
@@ -566,7 +570,7 @@ void _hStabilization()
 {
 	
 	NOKEYRETURN;
-	PageKey(4);
+	PageKey(8);
 	
 	if (KEY4)
 	{
@@ -575,10 +579,15 @@ void _hStabilization()
 		
 		switch (subpage)
 		{
-			case 0: startEditMode(&(Config.GyroParams[0].Gain),0,200,TYPE_UINT8);  return ;
-			case 1: startEditMode(&(Config.GyroParams[0].Limit),0,200,TYPE_UINT8); return ;
-			case 2: startEditMode(&(Config.GyroParams[1].Gain),0,200,TYPE_UINT8);  return ;
-			case 3: startEditMode(&(Config.GyroParams[1].Limit),0,200,TYPE_UINT8); return ;
+			case 0: startEditMode(&(Config.GyroParams[0].minSource),0,500,TYPE_UINT16);  return ;
+			case 1: startEditMode(&(Config.GyroParams[0].maxSource),0,500,TYPE_UINT16); return ;
+			case 2: startEditMode(&(Config.GyroParams[0].minDest),0,500,TYPE_UINT16);  return ;
+			case 3: startEditMode(&(Config.GyroParams[0].maxDest),0,500,TYPE_UINT16); return ;
+			case 4: startEditMode(&(Config.GyroParams[1].minSource),0,500,TYPE_UINT16);  return ;
+			case 5: startEditMode(&(Config.GyroParams[1].maxSource),0,500,TYPE_UINT16); return ;
+			case 6: startEditMode(&(Config.GyroParams[1].minDest),0,500,TYPE_UINT16);  return ;
+			case 7: startEditMode(&(Config.GyroParams[1].maxDest),0,500,TYPE_UINT16); return ;
+		
 		}
 		
 	}
@@ -594,14 +603,17 @@ void _hStabilization()
 	}
 	
 	
-	
-	
-	
-	
-	LCD_WriteValue(1,80,Config.GyroParams[0].Gain,3,0==subpage);
-	LCD_WriteValue(2,80,Config.GyroParams[0].Limit,3,1==subpage);
-	LCD_WriteValue(3,80,Config.GyroParams[1].Gain,3,2==subpage);
-	LCD_WriteValue(4,80,Config.GyroParams[1].Limit,3,3==subpage);
+	Pitch_Ratio = ((double)(Config.GyroParams[0].maxDest - Config.GyroParams[0].minDest)/(double)(Config.GyroParams[0].maxSource - Config.GyroParams[0].minSource));
+	Yaw_Ratio = ((double)(Config.GyroParams[1].maxDest - Config.GyroParams[1].minDest)/(double)(Config.GyroParams[1].maxSource - Config.GyroParams[1].minSource));
+		
+	LCD_WriteValue(1,30,Config.GyroParams[0].minSource,3,0==subpage);
+	LCD_WriteValue(1,72,Config.GyroParams[0].maxSource,3,1==subpage);
+	LCD_WriteValue(2,30,Config.GyroParams[0].minDest,3,2==subpage);
+	LCD_WriteValue(2,72,Config.GyroParams[0].maxDest,3,3==subpage);
+	LCD_WriteValue(4,30,Config.GyroParams[1].minSource,3,4==subpage);
+	LCD_WriteValue(4,72,Config.GyroParams[1].maxSource,3,5==subpage);
+	LCD_WriteValue(5,30,Config.GyroParams[1].minDest,3,6==subpage);
+	LCD_WriteValue(5,72,Config.GyroParams[1].maxDest,3,7==subpage);
 }
 
 
