@@ -194,7 +194,7 @@ void MainLoop(void)
 	
 	// HINT: you can try to skip this if flying to save time for more useful tasks as user cannot access menu when flying
 	if (TCNT_X_snapshot2==0) TCNT_X_snapshot2 = TCNT1_X;
-	else if ( (TCNT1_X- TCNT_X_snapshot2) > 2 )  // TCNT1_X ticks in 32.768us
+	else if ( ((TCNT1_X- TCNT_X_snapshot2) > 2) )  // TCNT1_X ticks in 32.768us
 	{
 		Menu_MenuShow();	
 		TCNT_X_snapshot2=0;
@@ -249,11 +249,23 @@ void MainLoop(void)
 			*	The logic is independent of Quad configuration 
 			*/
 			
-				// calculate PITCH
-				int8_t _limit = Config.GyroParams[0].Limit;
-				
+			Config.GyroParams[0].Limit=125;
+			
+			
+			#define GYRO_DEADBAND	2
+			#define GYRO_DIV_FACTOR	32
+			Config.GyroParams[0].Gain = 500;
+			
+			//
+			if ((Sensors_Latest[GYRO_X_Index]< GYRO_DEADBAND ) && (Sensors_Latest[GYRO_X_Index]>- GYRO_DEADBAND )) Sensors_Latest[GYRO_X_Index]=0;
+			if ((Sensors_Latest[GYRO_Y_Index]< GYRO_DEADBAND ) && (Sensors_Latest[GYRO_Y_Index]>- GYRO_DEADBAND )) Sensors_Latest[GYRO_Y_Index]=0;
+			//
+				//// calculate PITCH
+				int16_t _limit = Config.GyroParams[0].Limit;
+				 
 				gyroPitch   = Sensors_Latest[GYRO_Y_Index];
-				gyroPitch  *= Config.GyroParams[0].Gain;
+				gyroPitch  *= Config.GyroParams[0].Gain; 
+				gyroPitch  /= GYRO_DIV_FACTOR;
 				if (gyroPitch >  _limit)		gyroPitch = _limit;
 				if (gyroPitch < -_limit)		gyroPitch = -_limit;
 				
@@ -261,6 +273,7 @@ void MainLoop(void)
 				// calculate ROLL
 				gyroRoll    = Sensors_Latest[GYRO_X_Index];							
 				gyroRoll   *= Config.GyroParams[0].Gain;
+				gyroRoll   /= GYRO_DIV_FACTOR;
 				if (gyroRoll  >  _limit)		gyroRoll  = _limit;
 				if (gyroRoll  < -_limit)		gyroRoll  = -_limit;
 				
@@ -269,7 +282,8 @@ void MainLoop(void)
 				// calculate YAW
 				_limit = Config.GyroParams[1].Limit;
 				gyroYaw     = Sensors_Latest[GYRO_Z_Index];
-				gyroYaw	 *= Config.GyroParams[1].Gain;
+				gyroYaw	   *= Config.GyroParams[1].Gain;
+				gyroYaw	   /= GYRO_DIV_FACTOR;
 				if (gyroYaw   >  _limit)		gyroYaw   = _limit;
 				if (gyroYaw   < -_limit)		gyroYaw   = -_limit;
 				
@@ -294,15 +308,16 @@ void MainLoop(void)
 				
 				}
 				
-				
+				//gyroPitch = gyroPitch * (-1);
+				//gyroRoll  = gyroRoll  * (-1);
 				MotorOut1 -= gyroPitch + accPitch;
 				MotorOut4 += gyroPitch - accPitch; 
 				MotorOut2 -= gyroRoll  - accRoll;
 				MotorOut3 += gyroRoll  + accRoll;
-				MotorOut1 += gyroYaw;
-				MotorOut4 += gyroYaw;
-				MotorOut2 -= gyroYaw;
-				MotorOut3 -= gyroYaw;
+				MotorOut1 -= gyroYaw;
+				MotorOut4 -= gyroYaw;
+				MotorOut2 += gyroYaw;
+				MotorOut3 += gyroYaw;
 				
 		
 			
@@ -333,6 +348,10 @@ void MainLoop(void)
 			}
 			else
 			{
+				RX_Latest[RXChannel_AIL] = RX_Latest[RXChannel_AIL] /5;
+				RX_Latest[RXChannel_ELE] = RX_Latest[RXChannel_ELE] /5;
+				RX_Latest[RXChannel_RUD] = RX_Latest[RXChannel_RUD] /5;
+				
 				MotorOut2 += RX_Latest[RXChannel_AIL] ;
 				MotorOut3 -= RX_Latest[RXChannel_AIL] ;
 				
