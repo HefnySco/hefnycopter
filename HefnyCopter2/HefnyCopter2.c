@@ -268,8 +268,11 @@ void MainLoop(void)
 			*	The logic is independent of Quad configuPitch_Ration 
 			*/
 			IMU_CalculateAngles ();
-			gyroPitch = ScaleSensor (CompAngleY,&(Config.AccParams),Acc_Ratio);
-			gyroRoll =  ScaleSensor (CompAngleX,&(Config.AccParams),Acc_Ratio);
+			double tCompAngleY = CompAngleY * CompAngleY;
+			double tCompAngleX = CompAngleX * CompAngleY;
+			
+			gyroPitch = ScaleSensor (tCompAngleY,&(Config.AccParams),Acc_Ratio);
+			gyroRoll =  ScaleSensor (tCompAngleX,&(Config.AccParams),Acc_Ratio);
 			gyroYaw   = ScaleSensor (Sensors_Latest[GYRO_Z_Index],&(Config.GyroParams[1]),Yaw_Ratio);
 			
 		
@@ -281,8 +284,8 @@ void MainLoop(void)
 				if (Config.SelfLevelMode == IMU_SelfLevelMode)
 				{
 					
-					accPitch  = -ScaleSensor (Sensors_Latest[ACC_X_Index],&(Config.AccParams),Acc_Ratio);
-					accRoll   = -ScaleSensor (Sensors_Latest[ACC_Y_Index],&(Config.AccParams),Acc_Ratio);
+					accPitch  = ScaleSensor (Sensors_Latest[ACC_X_Index],&(Config.AccParams),Acc_Ratio);
+					accRoll   = ScaleSensor (Sensors_Latest[ACC_Y_Index],&(Config.AccParams),Acc_Ratio);
 		
 				
 					//////_limit = Config.AccLimit;

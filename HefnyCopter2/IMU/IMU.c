@@ -70,7 +70,7 @@ void IMU_CalculateAngles ()
   {
 	  gyroXrate=0;
   }
-  gyroXangle=gyroXangle+gyroXrate * dtime;//Without any filter
+  gyroXangle=gyroXangle+gyroXrate;//Without any filter
   
   
   gyroYrate = (Sensors_Latest[GYRO_Y_Index]) ;//* 1.0323;//(gyroYadc-gryoZeroX)/Sensitivity - in quids              Sensitivity = 0.00333/3.3*1023=1.0323
@@ -100,8 +100,8 @@ void IMU_CalculateAngles ()
   //accZangle = acos(accZval/R)*RAD_TO_DEG;
  
   
-  CompAngleX = (0.6*(CompAngleX+(gyroXrate)*dt/1000))+(0.4*(accYangle));
-  CompAngleY = (0.6*(CompAngleY-(gyroYrate)*dt/1000))+(0.4*(accXangle));
+  CompAngleX = (0.8*(CompAngleX+(gyroXrate)*2/1000))-(0.2*(accYangle));
+  CompAngleY = (0.8*(CompAngleY-(gyroYrate)*2/1000))-(0.2*(accXangle));
 } 
 
 
@@ -138,4 +138,27 @@ int16_t ScaleSensor (int16_t SensorValue, pid_param_t *pid_Param, double Ration)
 		}
 	   }	
 			
+}
+
+
+void IMU_PID (void)
+{
+		int16_t term_P, term_I, term_D;	
+		term_P = (RX_Latest[RXChannel_ELE] + Sensors_Latest[GYRO_Y_Index]);
+		
+		term_I= (term_I + term_P) * _I[0];	// Multiply I-term
+		
+		
+		_E[0] = term_P;						// Current Error D-term
+	
+		term_P = term_P  * _P[0];			// Multiply P-term 
+	
+		// Differential = _E[2] - E[3];
+		term_D= (_E[0] - _E[1]) * _D[0];
+	
+		_E[1] = _E[0];
+	
+	
+		gyroPitch = term_P + term_I + term_D;	// P + I + D
+		
 }

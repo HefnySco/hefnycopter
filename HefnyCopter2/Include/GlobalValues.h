@@ -87,6 +87,10 @@ double Pitch_Ratio;
 double Yaw_Ratio;
 double Acc_Ratio;
 
+int16_t _I[3];  // Pitch - YAW
+int16_t _P[3];
+int16_t _D[3];
+int16_t _Error [6];
 
 
 // TIMERS
