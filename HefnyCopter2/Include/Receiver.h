@@ -12,7 +12,7 @@
 
 //extern int16_t RX[RX_CHANNELS];
 //extern uint16_t RX_raw[RX_CHANNELS];
-extern uint8_t RX_good;
+uint8_t RX_Good;
 
 #define RX_MODE_PWM		0
 #define RX_MODE_CPPM	1

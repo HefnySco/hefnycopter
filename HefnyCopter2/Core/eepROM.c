@@ -27,8 +27,8 @@ static config_t const defaultConfig PROGMEM =
 	.signature = HEFNYCOPTER2_SIGNATURE,
 	.IsCalibrated=0,
 	.MixerIndex = 0,
-	.GyroParams[0]= {1,200},	// pitch roll gyro.
-	.GyroParams[1]= {1,200},	// Yaw gyro
+	.GyroParams[0]= {1,300,1,100},	// pitch roll gyro.
+	.GyroParams[1]= {1,300,1,100},	// Yaw gyro
 	.RX_mode = 0, //RX_MODE_CPPM,
 	.Sensor_zero[GYRO_X_Index] = 548,
 	.Sensor_zero[GYRO_Y_Index] = 548,
@@ -46,8 +46,7 @@ static config_t const defaultConfig PROGMEM =
 	.HeightDampening = 0,
 	.HeightDampeningLimit = 30,
 	.LVA = 0,
-	.AccGain=0,
-	.AccLimit = 0,
+	.AccParams ={1,50,1,50},
 };
 
 

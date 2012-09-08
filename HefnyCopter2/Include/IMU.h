@@ -18,7 +18,8 @@ float CompAngleX;
 float CompAngleY;
 
 void IMU_CalculateAngles ();
-
-
+double 	y;
+			
+int16_t ScaleSensor (int16_t SensorValue, pid_param_t *pid_Param);
 
 #endif /* IMU_H_ */

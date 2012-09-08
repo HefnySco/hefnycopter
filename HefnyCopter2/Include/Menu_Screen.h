@@ -79,8 +79,8 @@ P_STR scrHomePageArmed[] =
 P_STR scrSelfLeveling[] =
 	"\n"
 	"Active:\n"
-	"Acc Gain:\n"
-	"Acc Limit:\n"
+	"min:    max:\n"
+	"min:    max:\n"
 	;
 	
 	
@@ -260,7 +260,7 @@ void _hFactoryReset();
 static const page_t pages[] PROGMEM = {
 /*  0 */	{ _skHOME, _hHomePage, scrHomePage },		// non-menu item
 /*  1 */	{ _skMENU, _hMenu},							// non-menu item
-/*	2 */	{ _skBACK, _hHomeArmed, scrHomePageArmed},	// non-menu item
+/*	2 */	{ _skHOME, _hHomeArmed, scrHomePageArmed},	// non-menu item
 { _skMENU, _hStabilization, scrStabilization},			// in case of extra adding non menu items  MENU_START_INDEX constant should be updated to indicate the start of the menu
 { _skMENU, _hSelfLeveling, scrSelfLeveling},	
 { _skPAGE, NULL, scrModeSettings},

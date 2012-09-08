@@ -13,6 +13,11 @@
 // KeyBoard
 uint8_t _mykey;
 uint8_t _TXKeys;
+uint8_t _keyrepeat;
+#define KEYBOARD_REPEAT		1
+#define KEYBOARD_NO_REPEAT	0
+
+
 #define KEY_INIT	1
 #define KEY_REFRESH	2
 #define IS_INIT			(_mykey & KEY_INIT)
@@ -31,6 +36,7 @@ uint8_t _TXKeys;
 #define KEY_2		_BV(KEY_S2_BIT_PNUM	)
 #define KEY_3		_BV(KEY_S3_BIT_PNUM	)
 #define KEY_4		_BV(KEY_S4_BIT_PNUM	)
+
 
 #define ALLKEYS		(KEY_1 | KEY_2 | KEY_3 | KEY_4)
 

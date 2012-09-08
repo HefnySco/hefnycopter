@@ -87,7 +87,7 @@ void IMU_CalculateAngles ()
   //gyroZangle=gyroZangle+gyroZrate*dtime/1000;//Without any filter
   
   accXadc = Sensors_Latest[ACC_X_Index];
-  accXval = (accXadc);//(accXadc-accZeroX)/Sensitivity - in quids              Sensitivity = 0.33/3.3*1023=102,3
+  accXval = (accXadc);//(accXadc-accZeroX)/Sensitivity - in quids					  Sensitivity = 0.33/3.3*1023=102,3
   
   accYadc = Sensors_Latest[ACC_Y_Index];
   accYval = (accYadc);///102;//(accXadc-accZeroX)/Sensitivity - in quids              Sensitivity = 0.33/3.3*1023=102,3
@@ -110,4 +110,36 @@ void IMU_CalculateAngles ()
   }  
  // utoa(compAngleX,sXDeg,10);
  
+}
+
+
+int16_t ScaleSensor (int16_t SensorValue, pid_param_t *pid_Param)
+{
+	
+			if ((SensorValue < pid_Param->minSource ) && (SensorValue>- pid_Param->minSource))
+			{
+				return  0;
+			}	
+			else
+			{
+				if ((SensorValue> pid_Param->maxSource)) 
+				{
+					return pid_Param->maxDest;
+				}
+				else if ((SensorValue<- pid_Param->maxSource))
+				{
+					return -pid_Param->maxDest;
+				}
+				else if (SensorValue > 0) // positive sign
+				{
+					y = Pitch_Ratio  * (double)(SensorValue - pid_Param->minSource) + pid_Param->minDest;
+					return (int16_t) y;
+				}
+				else if (SensorValue < 0) // negative sign
+				{
+					y = Pitch_Ratio  * (double)(SensorValue + pid_Param->minSource) - pid_Param->minDest;
+					 return (int16_t) y;
+				}
+		    }	
+			
 }

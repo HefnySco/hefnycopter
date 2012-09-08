@@ -134,52 +134,25 @@ int main(void)
 {
 	
 	Setup();
-	
-	
+			
+			//Config.AccParams.minDest=2;
+			//Config.AccParams.maxDest=30;
+			//Config.AccParams.minSource=2;
+			//Config.AccParams.maxSource=20;
+	//
+			//Config.GyroParams[0].minSource=20;
+			//Config.GyroParams[0].maxSource=500;
+			//Config.GyroParams[0].minDest=20;
+			//Config.GyroParams[0].maxDest=100;
+		//
 			 Pitch_Ratio = ((double)(Config.GyroParams[0].maxDest - Config.GyroParams[0].minDest)/(double)(Config.GyroParams[0].maxSource - Config.GyroParams[0].minSource));
 			 Yaw_Ratio = ((double)(Config.GyroParams[1].maxDest - Config.GyroParams[1].minDest)/(double)(Config.GyroParams[1].maxSource - Config.GyroParams[1].minSource));
-			 
+			 Acc_Ratio = ((double)(Config.AccParams.maxDest - Config.AccParams.minDest)/(double)(Config.AccParams.maxSource - Config.AccParams.minSource));
 			
-			//////Config.GyroParams[0].minSource=20;
-			//////Config.GyroParams[0].maxSource=500;
-			//////Config.GyroParams[0].minDest=20;
-			//////Config.GyroParams[0].maxDest=100;
-			//////
-			//////Config.GyroParams[1].minSource=1;
-			//////Config.GyroParams[1].maxSource=500;
-			//////Config.GyroParams[1].minDest=0;
-			//////Config.GyroParams[1].maxDest=125;
-				//////////
-			//////double 	y;
-			//////double Pitch_Ratio = ((double)(Config.GyroParams[0].maxDest - Config.GyroParams[0].minDest)/(double)(Config.GyroParams[0].maxSource - Config.GyroParams[0].minSource));
-		//////
-			//////if ((Sensors_Latest[GYRO_Y_Index]< Config.GyroParams[0].minSource ) && (Sensors_Latest[GYRO_Y_Index]>- Config.GyroParams[0].minSource))
-			//////{
-				//////gyroPitch =0;
-			//////}
-			//////else
-			//////{
-				//////if ((Sensors_Latest[GYRO_Y_Index]> Config.GyroParams[0].maxSource)) 
-				//////{
-					//////gyroPitch =Config.GyroParams[0].maxDest;
-				//////}
-				//////else if ((Sensors_Latest[GYRO_Y_Index]<- Config.GyroParams[0].maxSource))
-				//////{
-					//////gyroPitch =-Config.GyroParams[0].maxDest;
-				//////}
-				//////else if (Sensors_Latest[GYRO_Y_Index]>0) // positive sign
-				//////{
-					//////y = Pitch_Ratio  * (double)(Sensors_Latest[GYRO_Y_Index] - Config.GyroParams[0].minSource) + Config.GyroParams[0].minDest;
-					//////gyroPitch =(int16_t) y;
-				//////}
-				//////else if (Sensors_Latest[GYRO_Y_Index] < 0) // negative sign
-				//////{
-					//////y = Pitch_Ratio  * (double)(Sensors_Latest[GYRO_Y_Index] + Config.GyroParams[0].minSource) - Config.GyroParams[0].minDest;
-					//////gyroPitch =(int16_t) y;
-				//////}
-			//////}			
 			
-			////
+		
+			
+			
 	while ((!(Config.IsCalibrated & CALIBRATED_SENSOR)) || (!(Config.IsCalibrated & CALIBRATED_Stick)))
 	{
 		Loop();
@@ -239,8 +212,9 @@ void MainLoop(void)
 	{
 		Menu_MenuShow();	
 		TCNT_X_snapshot2=0;
-		if (RX_Good != TX_GOOD) return ; // Do nothing all below depends on TX.
 	}		
+	
+	if (RX_Good != TX_GOOD) return ; // Do nothing all below depends on TX.
 	
 	
 	if (RX_Latest[RXChannel_THR] < STICKThrottle_ARMING) 
@@ -269,12 +243,15 @@ void MainLoop(void)
 			HandleSticksAsKeys();
 		}
 		else
-		{	// Armed & Throttle Stick > MIN . . . We should Fly now.
-		/*	if (RX_Latest[RXChannel_THR] <( STICKThrottle_ARMING - 20)) // calibrate again before leaving ground to average vibPitch_Rations.
+		{	
+			// Armed & Throttle Stick > MIN . . . We should Fly now.
+			if (RX_Latest[RXChannel_THR] <( STICKThrottle_ARMING - 20)) // calibrate again before leaving ground to average vibPitch_Rations.
 			{
-				//CalibrateGyros();
+				Config.Sensor_zero[GYRO_X_Index] = (Config.Sensor_zero[GYRO_X_Index] + ADCPort_Get(GYRO_X_PNUM))/2;
+				Config.Sensor_zero[GYRO_Y_Index] = (Config.Sensor_zero[GYRO_Y_Index] + ADCPort_Get(GYRO_Y_PNUM))/2;
+			
 			}
-		*/
+		
 				
 			
 			MotorOut1 = RX_Latest[RXChannel_THR];
@@ -289,123 +266,11 @@ void MainLoop(void)
 			*	Stabilization Logic.
 			*	The logic is independent of Quad configuPitch_Ration 
 			*/
+			gyroPitch = ScaleSensor (Sensors_Latest[GYRO_Y_Index],&(Config.GyroParams[0]));
+			gyroRoll  = ScaleSensor (Sensors_Latest[GYRO_X_Index],&(Config.GyroParams[0]));
+			gyroYaw   = ScaleSensor (Sensors_Latest[GYRO_Z_Index],&(Config.GyroParams[1]));
 		
-			double 	y;
-			
-			if ((Sensors_Latest[GYRO_Y_Index]< Config.GyroParams[0].minSource ) && (Sensors_Latest[GYRO_Y_Index]>- Config.GyroParams[0].minSource))
-			{
-				gyroPitch =0;
-			}
-			else
-			{
-				if ((Sensors_Latest[GYRO_Y_Index]> Config.GyroParams[0].maxSource)) 
-				{
-					gyroPitch =Config.GyroParams[0].maxDest;
-				}
-				else if ((Sensors_Latest[GYRO_Y_Index]<- Config.GyroParams[0].maxSource))
-				{
-					gyroPitch =-Config.GyroParams[0].maxDest;
-				}
-				else if (Sensors_Latest[GYRO_Y_Index] > 0) // positive sign
-				{
-					y = Pitch_Ratio  * (double)(Sensors_Latest[GYRO_Y_Index] - Config.GyroParams[0].minSource) + Config.GyroParams[0].minDest;
-					gyroPitch =(int16_t) y;
-				}
-				else if (Sensors_Latest[GYRO_Y_Index] < 0) // negative sign
-				{
-					y = Pitch_Ratio  * (double)(Sensors_Latest[GYRO_Y_Index] + Config.GyroParams[0].minSource) - Config.GyroParams[0].minDest;
-					gyroPitch =(int16_t) y;
-				}
-			}			
 		
-			if ((Sensors_Latest[GYRO_X_Index]< Config.GyroParams[0].minSource ) && (Sensors_Latest[GYRO_X_Index]>- Config.GyroParams[0].minSource))
-			{
-				gyroRoll =0;
-			}	
-			else
-			{
-				if ((Sensors_Latest[GYRO_X_Index]> Config.GyroParams[0].maxSource)) 
-				{
-					gyroRoll =Config.GyroParams[0].maxDest;
-				}
-				else if ((Sensors_Latest[GYRO_X_Index]<- Config.GyroParams[0].maxSource))
-				{
-					gyroRoll =-Config.GyroParams[0].maxDest;
-				}
-				else if (Sensors_Latest[GYRO_X_Index] > 0) // positive sign
-				{
-					y = Pitch_Ratio  * (double)(Sensors_Latest[GYRO_X_Index] - Config.GyroParams[0].minSource) + Config.GyroParams[0].minDest;
-					gyroRoll =(int16_t) y;
-				}
-				else if (Sensors_Latest[GYRO_X_Index] < 0) // negative sign
-				{
-					y = Pitch_Ratio  * (double)(Sensors_Latest[GYRO_X_Index] + Config.GyroParams[0].minSource) - Config.GyroParams[0].minDest;
-					gyroRoll =(int16_t) y;
-				}
-		    }	
-			
-			if ((Sensors_Latest[GYRO_Z_Index]< Config.GyroParams[1].minSource ) && (Sensors_Latest[GYRO_Z_Index]>- Config.GyroParams[1].minSource))
-			{
-				gyroYaw =0;
-			}	
-			else
-			{
-				if ((Sensors_Latest[GYRO_Z_Index]> Config.GyroParams[1].maxSource)) 
-				{
-					gyroYaw =Config.GyroParams[1].maxDest;
-				}
-				else if ((Sensors_Latest[GYRO_Z_Index]<- Config.GyroParams[1].maxSource))
-				{
-					gyroYaw =-Config.GyroParams[1].maxDest;
-				}
-				else if (Sensors_Latest[GYRO_Z_Index] > 0) // positive sign
-				{
-					y = Yaw_Ratio    * (double)(Sensors_Latest[GYRO_Z_Index] - Config.GyroParams[1].minSource) + Config.GyroParams[1].minDest;
-					gyroYaw =(int16_t) y;
-				}
-				else if (Sensors_Latest[GYRO_Z_Index] < 0) // negative sign
-				{
-					y = Yaw_Ratio  * (double)(Sensors_Latest[GYRO_Z_Index] + Config.GyroParams[1].minSource) - Config.GyroParams[1].minDest;
-					gyroYaw =(int16_t) y;
-				}			
-			}		 
-		
-			int16_t _limit ;
-			
-			
-			
-			//
-			//if ((Sensors_Latest[GYRO_X_Index]< GYRO_DEADBAND ) && (Sensors_Latest[GYRO_X_Index]>- GYRO_DEADBAND )) Sensors_Latest[GYRO_X_Index]=0;
-			//if ((Sensors_Latest[GYRO_Y_Index]< GYRO_DEADBAND ) && (Sensors_Latest[GYRO_Y_Index]>- GYRO_DEADBAND )) Sensors_Latest[GYRO_Y_Index]=0;
-			//if ((Sensors_Latest[GYRO_Z_Index]< GYRO_DEADBAND ) && (Sensors_Latest[GYRO_Z_Index]>- GYRO_DEADBAND )) Sensors_Latest[GYRO_Z_Index]=0;
-			//
-				//// calculate PITCH
-				//////_limit = Config.GyroParams[0].Limit;
-				 
-				//////gyroPitch   = Sensors_Latest[GYRO_Y_Index];
-				//////gyroPitch  *= Config.GyroParams[0].Gain; 
-				//////gyroPitch  /= GYRO_DIV_FACTOR;
-				//////if (gyroPitch >  _limit)		gyroPitch = _limit;
-				//////if (gyroPitch < -_limit)		gyroPitch = -_limit;
-				//////
-				//////
-				//////// calculate ROLL
-				//////gyroRoll    = Sensors_Latest[GYRO_X_Index];							
-				//////gyroRoll   *= Config.GyroParams[0].Gain;
-				//////gyroRoll   /= GYRO_DIV_FACTOR;
-				//////if (gyroRoll  >  _limit)		gyroRoll  = _limit;
-				//////if (gyroRoll  < -_limit)		gyroRoll  = -_limit;
-				//////
-			//////
-				//////
-				//////// calculate YAW
-				//////_limit = Config.GyroParams[1].Limit;
-				//////gyroYaw     = Sensors_Latest[GYRO_Z_Index];
-				//////gyroYaw	   *= Config.GyroParams[1].Gain;
-				//////gyroYaw	   /= GYRO_DIV_FACTOR;
-				//////if (gyroYaw   >  _limit)		gyroYaw   = _limit;
-				//////if (gyroYaw   < -_limit)		gyroYaw   = -_limit;
-				
 			/*
 			*
 			*	Self Leveling
@@ -413,17 +278,22 @@ void MainLoop(void)
 				
 				if (Config.SelfLevelMode == IMU_SelfLevelMode)
 				{
-					_limit = Config.AccLimit;
-						
-					accPitch   = Sensors_Latest[ACC_X_Index];
-					accPitch  *= Config.AccGain;
-					if (accPitch >  _limit)		accPitch = _limit;
-					if (accPitch < -_limit)		accPitch = -_limit;
 					
-					accRoll   = Sensors_Latest[ACC_Y_Index];
-					accRoll  *= Config.AccGain;
-					if (accRoll >  _limit)		accRoll = _limit;
-					if (accRoll < -_limit)		accRoll = -_limit;
+					gyroRoll  = ScaleSensor (Sensors_Latest[ACC_X_Index],&(Config.AccParams));
+					gyroYaw   = ScaleSensor (Sensors_Latest[ACC_Y_Index],&(Config.AccParams));
+		
+				
+					//////_limit = Config.AccLimit;
+						//////
+					//////accPitch   = Sensors_Latest[ACC_X_Index];
+					//////accPitch  *= Config.AccGain;
+					//////if (accPitch >  _limit)		accPitch = _limit;
+					//////if (accPitch < -_limit)		accPitch = -_limit;
+					//////
+					//////accRoll   = Sensors_Latest[ACC_Y_Index];
+					//////accRoll  *= Config.AccGain;
+					//////if (accRoll >  _limit)		accRoll = _limit;
+					//////if (accRoll < -_limit)		accRoll = -_limit;
 				
 				}
 				
@@ -431,8 +301,8 @@ void MainLoop(void)
 				//gyroRoll  = gyroRoll  * (-1);
 				MotorOut1 -= gyroPitch + accPitch;
 				MotorOut4 += gyroPitch - accPitch; 
-				MotorOut2 -= gyroRoll  - accRoll;
-				MotorOut3 += gyroRoll  + accRoll;
+				MotorOut2 -= gyroRoll  + accRoll;
+				MotorOut3 += gyroRoll  - accRoll;
 				MotorOut1 += gyroYaw;
 				MotorOut4 += gyroYaw;
 				MotorOut2 -= gyroYaw;
@@ -446,6 +316,11 @@ void MainLoop(void)
 			*	Pilot Control Logic.
 			*	
 			*/
+	
+			RX_Latest[RXChannel_AIL] = RX_Latest[RXChannel_AIL] /4;
+			RX_Latest[RXChannel_ELE] = RX_Latest[RXChannel_ELE] /4;
+			RX_Latest[RXChannel_RUD] = RX_Latest[RXChannel_RUD] /4;
+			
 	
 			if (bXQuadMode==true)
 			{
@@ -467,9 +342,6 @@ void MainLoop(void)
 			}
 			else
 			{
-				RX_Latest[RXChannel_AIL] = RX_Latest[RXChannel_AIL] /3;
-				RX_Latest[RXChannel_ELE] = RX_Latest[RXChannel_ELE] /3;
-				RX_Latest[RXChannel_RUD] = RX_Latest[RXChannel_RUD] /3;
 				
 				MotorOut2 += RX_Latest[RXChannel_AIL] ;
 				MotorOut3 -= RX_Latest[RXChannel_AIL] ;

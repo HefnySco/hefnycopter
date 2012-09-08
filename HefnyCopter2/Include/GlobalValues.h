@@ -67,7 +67,6 @@ volatile int16_t  RX_Latest [RXChannels];   // the actual RX values that are use
 uint16_t RX_MAX_raw			[RXChannels];
 uint16_t RX_MIN_raw			[RXChannels];
 
-volatile BOOL RX_Good;
 
 BOOL	IsArmed;
 
@@ -86,6 +85,7 @@ int16_t accRoll;
 
 double Pitch_Ratio;
 double Yaw_Ratio;
+double Acc_Ratio;
 
 
 
@@ -145,8 +145,7 @@ typedef struct
 	uint8_t LVA;
 	//pid_param_t PID_SelfLevel;
 	uint8_t SelfLevelMode;
-	uint8_t	AccGain;
-	uint8_t AccLimit;
+	pid_param_t AccParams;
 	//model_t Mixer;
 } config_t;
 

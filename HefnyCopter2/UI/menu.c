@@ -145,13 +145,36 @@ void editModeHandler()
 	{
 		if (KEY2)	// DOWN?
 		{
-			if (editValue > editLoLimit)
-				editValue--;
+			
+				if (_keyrepeat == KEYBOARD_REPEAT)
+				{
+					editValue-=10;
+				}
+				else
+				{
+					editValue--;	
+				}
+				
+				if (editValue < editLoLimit)				
+				{
+					editValue = editLoLimit;
+				}
 		}
 		else if (KEY3)	// UP?
 		{
-			if (editValue < editHiLimit)
-				editValue++;
+				if (_keyrepeat == KEYBOARD_REPEAT)
+				{
+					editValue+=10;
+				}
+				else
+				{
+					editValue++;	
+				}
+				
+				if (editValue > editHiLimit)
+				{
+					editValue=editHiLimit;
+				}					
 		}
 		else if (KEY1)	// CLR?
 		{
@@ -310,12 +333,6 @@ void _hLoadModelLayout()
 
 void _hHomePage()
 {
-	char s[7];
-	if (KEY4)	// MENU
-	{
-		Menu_LoadPage(PAGE_MENU);
-		return;
-	}
 	
 	if (IS_INIT)
 	{
@@ -342,6 +359,13 @@ void _hHomePage()
 		}
 		
 	}
+	
+	if (KEY4)	// MENU
+	{
+		Menu_LoadPage(PAGE_MENU);
+		return;
+	}
+	
 	// Write Voltage
 	LCD_SetPos(2, 30);
 	LCD_WriteString(Sensor_GetBatteryTest());
@@ -368,6 +392,14 @@ void _hHomeArmed()
 		LCD_WriteString_P(strARMED);
 		LCD_SelectFont (NULL);
 	}
+	
+	
+	if (KEY4)	// MENU
+	{
+		Menu_LoadPage(PAGE_MENU);
+		return;
+	}
+	
 	
 	LCD_SetPos(3,18);
 	itoa(MotorOut1,sXDeg,10);
@@ -607,13 +639,13 @@ void _hStabilization()
 	Yaw_Ratio = ((double)(Config.GyroParams[1].maxDest - Config.GyroParams[1].minDest)/(double)(Config.GyroParams[1].maxSource - Config.GyroParams[1].minSource));
 		
 	LCD_WriteValue(1,30,Config.GyroParams[0].minSource,3,0==subpage);
-	LCD_WriteValue(1,72,Config.GyroParams[0].maxSource,3,1==subpage);
+	LCD_WriteValue(1,78,Config.GyroParams[0].maxSource,3,1==subpage);
 	LCD_WriteValue(2,30,Config.GyroParams[0].minDest,3,2==subpage);
-	LCD_WriteValue(2,72,Config.GyroParams[0].maxDest,3,3==subpage);
+	LCD_WriteValue(2,78,Config.GyroParams[0].maxDest,3,3==subpage);
 	LCD_WriteValue(4,30,Config.GyroParams[1].minSource,3,4==subpage);
-	LCD_WriteValue(4,72,Config.GyroParams[1].maxSource,3,5==subpage);
+	LCD_WriteValue(4,78,Config.GyroParams[1].maxSource,3,5==subpage);
 	LCD_WriteValue(5,30,Config.GyroParams[1].minDest,3,6==subpage);
-	LCD_WriteValue(5,72,Config.GyroParams[1].maxDest,3,7==subpage);
+	LCD_WriteValue(5,78,Config.GyroParams[1].maxDest,3,7==subpage);
 }
 
 
@@ -622,7 +654,7 @@ void _hSelfLeveling()
 {
 
 	NOKEYRETURN;
-	PageKey(3);
+	PageKey(5);
 	
 	if (KEY4)
 	{
@@ -632,8 +664,11 @@ void _hSelfLeveling()
 		switch (subpage)
 		{
 			case 0: if (Config.SelfLevelMode==IMU_SelfLevelMode) Config.SelfLevelMode=0; else Config.SelfLevelMode=IMU_SelfLevelMode; break;
-			case 1: startEditMode(&(Config.AccGain),0,200,TYPE_UINT8); return ;   // we make return to avoid printing main screen while the editing editing
-			case 2: startEditMode(&(Config.AccLimit),0,200,TYPE_UINT8); return ;
+			case 1: startEditMode(&(Config.AccParams.minSource),0,500,TYPE_UINT16);  return ;
+			case 2: startEditMode(&(Config.AccParams.maxSource),0,500,TYPE_UINT16); return ;
+			case 3: startEditMode(&(Config.AccParams.minDest),0,500,TYPE_UINT16);  return ;
+			case 4: startEditMode(&(Config.AccParams.maxDest),0,500,TYPE_UINT16); return ;
+		
 		}
 	}
 
@@ -661,8 +696,14 @@ void _hSelfLeveling()
 		strcpy_P(sXDeg,strNo);
 	}
 	LCD_WriteStringex (1,80,sXDeg,0==subpage);
-	LCD_WriteValue(2,80,Config.AccGain,3,1==subpage);
-	LCD_WriteValue(3,80,Config.AccLimit,3,2==subpage);
+	LCD_WriteValue(2,30,Config.AccParams.minSource,3,1==subpage);
+	LCD_WriteValue(2,78,Config.AccParams.maxSource,3,2==subpage);
+	LCD_WriteValue(3,30,Config.AccParams.minDest,3,3==subpage);
+	LCD_WriteValue(3,78,Config.AccParams.maxDest,3,4==subpage);
+	
+	
+	Acc_Ratio = ((double)(Config.AccParams.maxDest - Config.AccParams.minDest)/(double)(Config.AccParams.maxSource - Config.AccParams.minSource));
+			
 }
 
 int16_t AccTotal;
@@ -784,7 +825,16 @@ void Menu_MenuShow()
 		if (page > PAGE_MENU) // if any page then go to main menu
 			Menu_LoadPage(PAGE_MENU);
 		else if (page == PAGE_MENU)  // if menu page then goto HomePage
-			Menu_LoadPage(PAGE_HOME);
+			{
+				if (IsArmed == true)
+				{
+					Menu_LoadPage(PAGE_HOME_ARMED);
+				}
+				else
+				{
+					Menu_LoadPage(PAGE_HOME);
+				}
+			}							
 	}
 	
 	
