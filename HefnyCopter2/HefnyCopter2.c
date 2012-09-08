@@ -30,6 +30,7 @@
 #include "Include/eepROM.h"
 #include "Include/fonts.h"
 #include "Include/Menu_Text.h"
+#include "Include/IMU.h"
 
 /*
 
@@ -266,10 +267,11 @@ void MainLoop(void)
 			*	Stabilization Logic.
 			*	The logic is independent of Quad configuPitch_Ration 
 			*/
-			gyroPitch = ScaleSensor (Sensors_Latest[GYRO_Y_Index],&(Config.GyroParams[0]));
-			gyroRoll  = ScaleSensor (Sensors_Latest[GYRO_X_Index],&(Config.GyroParams[0]));
-			gyroYaw   = ScaleSensor (Sensors_Latest[GYRO_Z_Index],&(Config.GyroParams[1]));
-		
+			IMU_CalculateAngles ();
+			gyroPitch = ScaleSensor (CompAngleY,&(Config.AccParams),Acc_Ratio);
+			gyroRoll =  ScaleSensor (CompAngleX,&(Config.AccParams),Acc_Ratio);
+			gyroYaw   = ScaleSensor (Sensors_Latest[GYRO_Z_Index],&(Config.GyroParams[1]),Yaw_Ratio);
+			
 		
 			/*
 			*
@@ -279,8 +281,8 @@ void MainLoop(void)
 				if (Config.SelfLevelMode == IMU_SelfLevelMode)
 				{
 					
-					gyroRoll  = ScaleSensor (Sensors_Latest[ACC_X_Index],&(Config.AccParams));
-					gyroYaw   = ScaleSensor (Sensors_Latest[ACC_Y_Index],&(Config.AccParams));
+					accPitch  = -ScaleSensor (Sensors_Latest[ACC_X_Index],&(Config.AccParams),Acc_Ratio);
+					accRoll   = -ScaleSensor (Sensors_Latest[ACC_Y_Index],&(Config.AccParams),Acc_Ratio);
 		
 				
 					//////_limit = Config.AccLimit;

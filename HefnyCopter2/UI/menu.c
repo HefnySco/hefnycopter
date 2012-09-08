@@ -635,9 +635,6 @@ void _hStabilization()
 	}
 	
 	
-	Pitch_Ratio = ((double)(Config.GyroParams[0].maxDest - Config.GyroParams[0].minDest)/(double)(Config.GyroParams[0].maxSource - Config.GyroParams[0].minSource));
-	Yaw_Ratio = ((double)(Config.GyroParams[1].maxDest - Config.GyroParams[1].minDest)/(double)(Config.GyroParams[1].maxSource - Config.GyroParams[1].minSource));
-		
 	LCD_WriteValue(1,30,Config.GyroParams[0].minSource,3,0==subpage);
 	LCD_WriteValue(1,78,Config.GyroParams[0].maxSource,3,1==subpage);
 	LCD_WriteValue(2,30,Config.GyroParams[0].minDest,3,2==subpage);
@@ -646,6 +643,10 @@ void _hStabilization()
 	LCD_WriteValue(4,78,Config.GyroParams[1].maxSource,3,5==subpage);
 	LCD_WriteValue(5,30,Config.GyroParams[1].minDest,3,6==subpage);
 	LCD_WriteValue(5,78,Config.GyroParams[1].maxDest,3,7==subpage);
+	
+	Pitch_Ratio = ((double)(Config.GyroParams[0].maxDest - Config.GyroParams[0].minDest)/(double)(Config.GyroParams[0].maxSource - Config.GyroParams[0].minSource));
+	Yaw_Ratio = ((double)(Config.GyroParams[1].maxDest - Config.GyroParams[1].minDest)/(double)(Config.GyroParams[1].maxSource - Config.GyroParams[1].minSource));
+	
 }
 
 
@@ -759,31 +760,31 @@ void _hDebug()
 		}	
 	
  
-	IMU_CalculateAngles ();
- 
+		 
 	int16_t t=ADCPort_Get(ACC_X_PNUM);
 	AccTotal += t -OldAcc ; //Config.Sensor_zero[ACC_X_Index];
 	OldAcc = t;
-
 	utoa(AccTotal, sXDeg,10);
 
-	LCD_SetPos(1,48);
+	IMU_CalculateAngles ();
+	dtostrf( CompAngleY, 4, 2, sXDeg);
+	LCD_SetPos(3,48);
 	strcat_P(sXDeg,strSPC3);
-	LCD_WriteString(sXDeg);	
- 
- 	dtostrf( CompAngleX, 3, 4, sXDeg);
-
+	LCD_WriteString(sXDeg);
+	
+	gyroPitch= CompAngleY*10; //ScaleSensor ((CompAngleY*10),&(Config.AccParams));
+	itoa( gyroPitch, sXDeg,10);
 	LCD_SetPos(4,48);
 	strcat_P(sXDeg,strSPC3);
 	LCD_WriteString(sXDeg);
+	
+	gyroPitch= ScaleSensor (gyroPitch,&(Config.AccParams),Acc_Ratio);
 
-	dtostrf( CompAngleY, 3, 4, sXDeg);
+	itoa( gyroPitch, sXDeg,10);
 	LCD_SetPos(5,48);
 	strcat_P(sXDeg,strSPC3);
-
 	LCD_WriteString(sXDeg);
-	LCD_WriteString_P(strSPC4);
-
+	
 	}
 }
 void _hFactoryReset()

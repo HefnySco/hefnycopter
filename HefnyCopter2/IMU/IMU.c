@@ -16,17 +16,12 @@
 
 
 
-//#define aX A3
-//#define aY A4
-//#define aZ A5
-
 
 //gyros
-float gyroXadc;
+
 float gyroXrate;
 float gyroXangle;
 
-float gyroYadc;
 float gyroYrate;
 float gyroYangle;
 
@@ -61,12 +56,15 @@ double dtime=0;
 uint16_t dt;
 
 
+/*
+* Positive ANgles are to LEFT & TOP
+* inspired by [http://www.starlino.com/imu_guide.html]
+*/
 
 void IMU_CalculateAngles ()
 {
   //timer = TCNT1;	
-  gyroXadc = Sensors_Latest[GYRO_X_Index]/10;
-  gyroXrate = (gyroXadc) ;//* 1.0323;//(gyroXadc-gryoZeroX)/Sensitivity - in quids              Sensitivity = 0.00333/3.3*1023=1.0323
+  gyroXrate = (Sensors_Latest[GYRO_X_Index]/10) ;//* 1.0323;//(gyroXadc-gryoZeroX)/Sensitivity - in quids              Sensitivity = 0.00333/3.3*1023=1.0323
   
   if ((gyroXrate<=1) && (gyroXrate>=-1))
   {
@@ -74,8 +72,8 @@ void IMU_CalculateAngles ()
   }
   gyroXangle=gyroXangle+gyroXrate * dtime;//Without any filter
   
-  gyroYadc = Sensors_Latest[GYRO_Y_Index];
-  gyroYrate = (gyroYadc) ;//* 1.0323;//(gyroYadc-gryoZeroX)/Sensitivity - in quids              Sensitivity = 0.00333/3.3*1023=1.0323
+  
+  gyroYrate = (Sensors_Latest[GYRO_Y_Index]) ;//* 1.0323;//(gyroYadc-gryoZeroX)/Sensitivity - in quids              Sensitivity = 0.00333/3.3*1023=1.0323
   if ((gyroYrate<=1) && (gyroYrate>=-1))
   {
 	  gyroYrate=0;
@@ -104,42 +102,40 @@ void IMU_CalculateAngles ()
   
   CompAngleX = (0.6*(CompAngleX+(gyroXrate)*dt/1000))+(0.4*(accYangle));
   CompAngleY = (0.6*(CompAngleY-(gyroYrate)*dt/1000))+(0.4*(accXangle));
- for (int c=0;c<dt;++c)
- {
-   delay_ms(1);
-  }  
- // utoa(compAngleX,sXDeg,10);
- 
-}
+} 
 
 
-int16_t ScaleSensor (int16_t SensorValue, pid_param_t *pid_Param)
+/*
+*  Positive Angles are to Right & Bottom.
+*/
+
+int16_t ScaleSensor (int16_t SensorValue, pid_param_t *pid_Param, double Ration)
 {
 	
-			if ((SensorValue < pid_Param->minSource ) && (SensorValue>- pid_Param->minSource))
-			{
-				return  0;
-			}	
-			else
-			{
-				if ((SensorValue> pid_Param->maxSource)) 
-				{
-					return pid_Param->maxDest;
-				}
-				else if ((SensorValue<- pid_Param->maxSource))
-				{
-					return -pid_Param->maxDest;
-				}
-				else if (SensorValue > 0) // positive sign
-				{
-					y = Pitch_Ratio  * (double)(SensorValue - pid_Param->minSource) + pid_Param->minDest;
-					return (int16_t) y;
-				}
-				else if (SensorValue < 0) // negative sign
-				{
-					y = Pitch_Ratio  * (double)(SensorValue + pid_Param->minSource) - pid_Param->minDest;
-					 return (int16_t) y;
-				}
-		    }	
+	if ((SensorValue < pid_Param->minSource ) && (SensorValue>- pid_Param->minSource))
+	{
+		return  0;
+	}	
+	else
+	{
+		if ((SensorValue> pid_Param->maxSource)) 
+		{
+			return pid_Param->maxDest;
+		}
+		else if ((SensorValue<- pid_Param->maxSource))
+		{
+			return -pid_Param->maxDest;
+		}
+		else if (SensorValue > 0) // positive sign
+		{
+			y = Ration  * (double)(SensorValue - pid_Param->minSource) + pid_Param->minDest;
+			return (int16_t) y;
+		}
+		else if (SensorValue < 0) // negative sign
+		{
+			y = Ration  * (double)(SensorValue + pid_Param->minSource) - pid_Param->minDest;
+			 return (int16_t) y;
+		}
+	   }	
 			
 }
