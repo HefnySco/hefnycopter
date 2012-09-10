@@ -89,7 +89,7 @@ double Acc_Ratio;
 
 int16_t _Error [6]; // PITCH [0,1] - ROLL [2,3] - YAW [4,5]
 
-double term_P[3], term_I[3], term_D[3];	
+int16_t term_P[3], term_I[3], term_D[3];	
 
 // TIMERS
 volatile uint16_t TCNT1_X;				// TCNT1_X click every 0.0032768 sec [1 sec = 305.17578125 TCNT1_X]

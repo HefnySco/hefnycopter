@@ -615,7 +615,7 @@ void _hStabilization()
 			case 1: startEditMode(&(Config.GyroParams[0]._PLimit),0,500,TYPE_UINT16); return ;
 			case 2: startEditMode(&(Config.GyroParams[0]._I),0,500,TYPE_UINT16);  return ;
 			case 3: startEditMode(&(Config.GyroParams[0]._ILimit),0,500,TYPE_UINT16); return ;
-			case 4: startEditMode(&(Config.GyroParams[1]._P),0,500,TYPE_UINT16);  return ;
+			case 4: startEditMode(&(Config.GyroParams[0]._D),0,500,TYPE_UINT16);  return ;
 			case 5: startEditMode(&(Config.GyroParams[1]._PLimit),0,500,TYPE_UINT16); return ;
 			case 6: startEditMode(&(Config.GyroParams[1]._I),0,500,TYPE_UINT16);  return ;
 			case 7: startEditMode(&(Config.GyroParams[1]._ILimit),0,500,TYPE_UINT16); return ;
@@ -639,10 +639,10 @@ void _hStabilization()
 	LCD_WriteValue(1,78,Config.GyroParams[0]._PLimit,3,1==subpage);
 	LCD_WriteValue(2,30,Config.GyroParams[0]._I,3,2==subpage);
 	LCD_WriteValue(2,78,Config.GyroParams[0]._ILimit,3,3==subpage);
-	LCD_WriteValue(4,30,Config.GyroParams[1]._P,3,0==subpage);
-	LCD_WriteValue(4,78,Config.GyroParams[1]._PLimit,3,1==subpage);
-	LCD_WriteValue(5,30,Config.GyroParams[1]._I,3,2==subpage);
-	LCD_WriteValue(5,78,Config.GyroParams[1]._ILimit,3,3==subpage);
+	LCD_WriteValue(4,30,Config.GyroParams[0]._D,3,4==subpage);
+	LCD_WriteValue(4,78,Config.GyroParams[1]._PLimit,3,5==subpage);
+	LCD_WriteValue(5,30,Config.GyroParams[1]._I,3,6==subpage);
+	LCD_WriteValue(5,78,Config.GyroParams[1]._ILimit,3,7==subpage);
 	
 	//Pitch_Ratio = ((double)(Config.GyroParams[0].maxDest - Config.GyroParams[0].minDest)/(double)(Config.GyroParams[0].maxSource - Config.GyroParams[0].minSource));
 	//Yaw_Ratio = ((double)(Config.GyroParams[1].maxDest - Config.GyroParams[1].minDest)/(double)(Config.GyroParams[1].maxSource - Config.GyroParams[1].minSource));
