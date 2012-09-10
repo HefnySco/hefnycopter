@@ -161,7 +161,8 @@ void RX_Init(void)
 	RX_YAW_DIR   	 	= INPUT;
 	RX_AUX_DIR   	 	= INPUT;
 	
-	RX_Good=TX_GOOD;
+	RX_Good =TX_NOT_FOUND;
+	
 	ATOMIC_BLOCK(ATOMIC_FORCEON)
 	{
 		RX_LastValidSignal_timestamp= TCNT1_X;
