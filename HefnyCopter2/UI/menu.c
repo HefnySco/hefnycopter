@@ -611,14 +611,14 @@ void _hStabilization()
 		
 		switch (subpage)
 		{
-			case 0: startEditMode(&(Config.GyroParams[0].minSource),0,500,TYPE_UINT16);  return ;
-			case 1: startEditMode(&(Config.GyroParams[0].maxSource),0,500,TYPE_UINT16); return ;
-			case 2: startEditMode(&(Config.GyroParams[0].minDest),0,500,TYPE_UINT16);  return ;
-			case 3: startEditMode(&(Config.GyroParams[0].maxDest),0,500,TYPE_UINT16); return ;
-			case 4: startEditMode(&(Config.GyroParams[1].minSource),0,500,TYPE_UINT16);  return ;
-			case 5: startEditMode(&(Config.GyroParams[1].maxSource),0,500,TYPE_UINT16); return ;
-			case 6: startEditMode(&(Config.GyroParams[1].minDest),0,500,TYPE_UINT16);  return ;
-			case 7: startEditMode(&(Config.GyroParams[1].maxDest),0,500,TYPE_UINT16); return ;
+			case 0: startEditMode(&(Config.GyroParams[0]._P),0,500,TYPE_UINT16);  return ;
+			case 1: startEditMode(&(Config.GyroParams[0]._PLimit),0,500,TYPE_UINT16); return ;
+			case 2: startEditMode(&(Config.GyroParams[0]._I),0,500,TYPE_UINT16);  return ;
+			case 3: startEditMode(&(Config.GyroParams[0]._ILimit),0,500,TYPE_UINT16); return ;
+			case 4: startEditMode(&(Config.GyroParams[1]._P),0,500,TYPE_UINT16);  return ;
+			case 5: startEditMode(&(Config.GyroParams[1]._PLimit),0,500,TYPE_UINT16); return ;
+			case 6: startEditMode(&(Config.GyroParams[1]._I),0,500,TYPE_UINT16);  return ;
+			case 7: startEditMode(&(Config.GyroParams[1]._ILimit),0,500,TYPE_UINT16); return ;
 		
 		}
 		
@@ -635,17 +635,19 @@ void _hStabilization()
 	}
 	
 	
-	LCD_WriteValue(1,30,Config.GyroParams[0].minSource,3,0==subpage);
-	LCD_WriteValue(1,78,Config.GyroParams[0].maxSource,3,1==subpage);
-	LCD_WriteValue(2,30,Config.GyroParams[0].minDest,3,2==subpage);
-	LCD_WriteValue(2,78,Config.GyroParams[0].maxDest,3,3==subpage);
-	LCD_WriteValue(4,30,Config.GyroParams[1].minSource,3,4==subpage);
-	LCD_WriteValue(4,78,Config.GyroParams[1].maxSource,3,5==subpage);
-	LCD_WriteValue(5,30,Config.GyroParams[1].minDest,3,6==subpage);
-	LCD_WriteValue(5,78,Config.GyroParams[1].maxDest,3,7==subpage);
+	LCD_WriteValue(1,30,Config.GyroParams[0]._P,3,0==subpage);
+	LCD_WriteValue(1,78,Config.GyroParams[0]._PLimit,3,1==subpage);
+	LCD_WriteValue(2,30,Config.GyroParams[0]._I,3,2==subpage);
+	LCD_WriteValue(2,78,Config.GyroParams[0]._ILimit,3,3==subpage);
+	LCD_WriteValue(4,30,Config.GyroParams[1]._P,3,0==subpage);
+	LCD_WriteValue(4,78,Config.GyroParams[1]._PLimit,3,1==subpage);
+	LCD_WriteValue(5,30,Config.GyroParams[1]._I,3,2==subpage);
+	LCD_WriteValue(5,78,Config.GyroParams[1]._ILimit,3,3==subpage);
 	
-	Pitch_Ratio = ((double)(Config.GyroParams[0].maxDest - Config.GyroParams[0].minDest)/(double)(Config.GyroParams[0].maxSource - Config.GyroParams[0].minSource));
-	Yaw_Ratio = ((double)(Config.GyroParams[1].maxDest - Config.GyroParams[1].minDest)/(double)(Config.GyroParams[1].maxSource - Config.GyroParams[1].minSource));
+	//Pitch_Ratio = ((double)(Config.GyroParams[0].maxDest - Config.GyroParams[0].minDest)/(double)(Config.GyroParams[0].maxSource - Config.GyroParams[0].minSource));
+	//Yaw_Ratio = ((double)(Config.GyroParams[1].maxDest - Config.GyroParams[1].minDest)/(double)(Config.GyroParams[1].maxSource - Config.GyroParams[1].minSource));
+	
+	
 	
 }
 
@@ -654,7 +656,7 @@ void _hStabilization()
 void _hSelfLeveling()
 {
 
-	NOKEYRETURN;
+	/*NOKEYRETURN;
 	PageKey(5);
 	
 	if (KEY4)
@@ -704,7 +706,7 @@ void _hSelfLeveling()
 	
 	
 	Acc_Ratio = ((double)(Config.AccParams.maxDest - Config.AccParams.minDest)/(double)(Config.AccParams.maxSource - Config.AccParams.minSource));
-			
+		*/	
 }
 
 int16_t AccTotal;
@@ -725,15 +727,15 @@ void _hDebug()
 		//dt=150;
 		LCD_Clear();
 		LCD_SetPos(1,6);
-		LCD_WriteString_P(PSTR("LX")); // A Rate
+		LCD_WriteString_P(PSTR("GY")); // A Rate
 		LCD_SetPos(2,6);
-		LCD_WriteString_P(PSTR("AD")); // A Deg
+		LCD_WriteString_P(PSTR("P")); // A Deg
 		LCD_SetPos(3,6);
-		LCD_WriteString_P(PSTR("GV")); 
+		LCD_WriteString_P(PSTR("D")); 
 		LCD_SetPos(4,6);
-		LCD_WriteString_P(PSTR("GD"));
+		LCD_WriteString_P(PSTR("I"));
 		LCD_SetPos(5,6);
-		LCD_WriteString_P(PSTR("D"));
+		LCD_WriteString_P(PSTR("Gyro"));
 		LCD_SetPos(6,6);
 		LCD_WriteString_P(PSTR("Time"));
 	
@@ -759,8 +761,36 @@ void _hDebug()
 			CompAngleY=0;
 		}	
 	
- 
-		 
+	IMU_PID();
+	
+	itoa( Sensors_Latest[GYRO_Y_Index], sXDeg,10);
+	LCD_SetPos(1,48);
+	strcat_P(sXDeg,strSPC3);
+	LCD_WriteString(sXDeg);
+	
+	itoa( term_P[0], sXDeg,10);
+	LCD_SetPos(2,48);
+	strcat_P(sXDeg,strSPC3);
+	LCD_WriteString(sXDeg);
+	
+	itoa( term_D[0], sXDeg,10);
+	LCD_SetPos(3,48);
+	strcat_P(sXDeg,strSPC3);
+	LCD_WriteString(sXDeg);
+	
+	itoa( term_I[0], sXDeg,10);
+	LCD_SetPos(4,48);
+	strcat_P(sXDeg,strSPC3);
+	LCD_WriteString(sXDeg);
+	
+	
+	itoa( gyroPitch, sXDeg,10);
+	LCD_SetPos(5,48);
+	strcat_P(sXDeg,strSPC3);
+	LCD_WriteString(sXDeg);
+	
+	
+/*		 
 	int16_t t=ADCPort_Get(ACC_X_PNUM);
 	AccTotal += t -OldAcc ; //Config.Sensor_zero[ACC_X_Index];
 	OldAcc = t;
@@ -784,7 +814,7 @@ void _hDebug()
 	LCD_SetPos(5,48);
 	strcat_P(sXDeg,strSPC3);
 	LCD_WriteString(sXDeg);
-	
+*/
 	}
 }
 void _hFactoryReset()

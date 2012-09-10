@@ -146,9 +146,9 @@ int main(void)
 			//Config.GyroParams[0].minDest=20;
 			//Config.GyroParams[0].maxDest=100;
 		//
-			 Pitch_Ratio = ((double)(Config.GyroParams[0].maxDest - Config.GyroParams[0].minDest)/(double)(Config.GyroParams[0].maxSource - Config.GyroParams[0].minSource));
-			 Yaw_Ratio = ((double)(Config.GyroParams[1].maxDest - Config.GyroParams[1].minDest)/(double)(Config.GyroParams[1].maxSource - Config.GyroParams[1].minSource));
-			 Acc_Ratio = ((double)(Config.AccParams.maxDest - Config.AccParams.minDest)/(double)(Config.AccParams.maxSource - Config.AccParams.minSource));
+			 //Pitch_Ratio = ((double)(Config.GyroParams[0].maxDest - Config.GyroParams[0].minDest)/(double)(Config.GyroParams[0].maxSource - Config.GyroParams[0].minSource));
+			 //Yaw_Ratio = ((double)(Config.GyroParams[1].maxDest - Config.GyroParams[1].minDest)/(double)(Config.GyroParams[1].maxSource - Config.GyroParams[1].minSource));
+			 //Acc_Ratio = ((double)(Config.AccParams.maxDest - Config.AccParams.minDest)/(double)(Config.AccParams.maxSource - Config.AccParams.minSource));
 			
 			
 		
@@ -229,6 +229,10 @@ void MainLoop(void)
 		MotorOut2 = 0;
 		MotorOut3 = 0;
 		MotorOut4 = 0;
+		
+		term_I[0]=0;
+		term_I[1]=0;
+		term_I[2]=0;
 	}
 	else
 	{	// Throttle stick is NOT Down
@@ -267,13 +271,14 @@ void MainLoop(void)
 			*	Stabilization Logic.
 			*	The logic is independent of Quad configuPitch_Ration 
 			*/
-			IMU_CalculateAngles ();
-			double tCompAngleY = CompAngleY * CompAngleY;
-			double tCompAngleX = CompAngleX * CompAngleY;
+			IMU_PID();
+			//IMU_CalculateAngles ();
+			//double tCompAngleY = CompAngleY * CompAngleY;
+			//double tCompAngleX = CompAngleX * CompAngleY;
 			
-			gyroPitch = ScaleSensor (tCompAngleY,&(Config.AccParams),Acc_Ratio);
-			gyroRoll =  ScaleSensor (tCompAngleX,&(Config.AccParams),Acc_Ratio);
-			gyroYaw   = ScaleSensor (Sensors_Latest[GYRO_Z_Index],&(Config.GyroParams[1]),Yaw_Ratio);
+			//gyroPitch = ScaleSensor (tCompAngleY,&(Config.AccParams),Acc_Ratio);
+			//gyroRoll =  ScaleSensor (tCompAngleX,&(Config.AccParams),Acc_Ratio);
+			//gyroYaw   = ScaleSensor (Sensors_Latest[GYRO_Z_Index],&(Config.GyroParams[1]),Yaw_Ratio);
 			
 		
 			/*

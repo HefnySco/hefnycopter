@@ -20,15 +20,35 @@
 #include "../Include/GlobalValues.h"
 #include "../Include/eepROM.h"
 
+ /*
+ PI
+ PG:50
+ PLimit:100
+ IGain:25
+ ILimit:50
  
+ YAW:
+ PG:50
+ PLimit:20
+ IGain:50
+ ILimit:10
+ 
+ 
+ Stick Scaling:
+ R:30
+ P:30
+ Y:50
+ Thr:90
+ 
+ */
 
 static config_t const defaultConfig PROGMEM = 
 {
 	.signature = HEFNYCOPTER2_SIGNATURE,
 	.IsCalibrated=0,
 	.MixerIndex = 0,
-	.GyroParams[0]= {1,300,1,100},	// pitch roll gyro.
-	.GyroParams[1]= {1,300,1,100},	// Yaw gyro
+	.GyroParams[0]= {50,100,25,100,0},	// pitch roll gyro.
+	.GyroParams[1]= {50,20,50,10,0},	// Yaw gyro
 	.RX_mode = 0, //RX_MODE_CPPM,
 	.Sensor_zero[GYRO_X_Index] = 548,
 	.Sensor_zero[GYRO_Y_Index] = 548,
@@ -40,7 +60,7 @@ static config_t const defaultConfig PROGMEM =
 	.ArmingMode = ON,
 	.LinkRollPitch = ON,
 	.AutoDisarm = ON,
-	.StickScaling = { 30, 30, 50, 90},
+	.StickScaling = { 30, 30, 50, 90}, // P.R.Y.T
 	.MinThrottle = 10,
 	.LCDContrast = 32,
 	.HeightDampening = 0,

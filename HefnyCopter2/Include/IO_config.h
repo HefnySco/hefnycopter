@@ -24,18 +24,7 @@
 #define LCD_A0_BIT	7
 #define LCD_SCL_BIT	4
 #define LCD_SDA_BIT	1
-/*
-#define LCD_CS1					REGISTER_BIT(LCD_PORT,LCD_CS_BIT)
-#define LCD_CS1_DIR				REGISTER_BIT(LCD_DDR,LCD_CS_BIT)
-#define LCD_RES					REGISTER_BIT(LCD_PORT,LCD_RST_BIT)
-#define LCD_RES_DIR				REGISTER_BIT(LCD_DDR,LCD_RST_BIT)
-#define LCD_A0					REGISTER_BIT(LCD_PORT,LCD_A0_BIT)
-#define LCD_A0_DIR				REGISTER_BIT(LCD_DDR,LCD_A0_BIT)
-#define LCD_SClK				REGISTER_BIT(LCD_PORT,LCD_SCL_BIT)
-#define LCD_SClK_DIR			REGISTER_BIT(LCD_DDR,LCD_SCL_BIT)
-#define LCD_SI					REGISTER_BIT(LCD_PORT,LCD_SDA_BIT)
-#define LCD_SI_DIR				REGISTER_BIT(LCD_DDR,LCD_SDA_BIT)
-*/
+
 #define LCD_CS					_REG_BIT(LCD_PORT, LCD_CS_BIT)
 #define LCD_RST					_REG_BIT(LCD_PORT, LCD_RST_BIT)
 #define LCD_A0					_REG_BIT(LCD_PORT, LCD_A0_BIT)
@@ -88,7 +77,10 @@
 #define PWM_CAL_RANGE		100
 #define PPM_SYNC_LENGTH		3000
 
-/*
+#define ORIGINAL_INPUT_CABLES
+
+#ifdef ORIGINAL_INPUT_CABLES
+
 #define RX_ROLL_vect		INT1_vect
 #define RX_ROLL    			REGISTER_BIT(PIND,3)	
 #define RX_ROLL_DIR   		REGISTER_BIT(DDRD,3)
@@ -109,8 +101,9 @@
 #define RX_AUX_vect			PCINT1_vect
 #define RX_AUX    			REGISTER_BIT(PINB,0)    
 #define RX_AUX_DIR   		REGISTER_BIT(DDRB,0) //pb0
-*/
 
+
+#else
 
 // Reduced cables configurations:
 #define RX_ROLL_vect		INT0_vect
@@ -135,6 +128,7 @@
 #define RX_AUX_DIR   		REGISTER_BIT(DDRB,0) //pb0
 
 
+#endif
 
 // Index for RX[] variable
 #define RXChannel_AIL			0

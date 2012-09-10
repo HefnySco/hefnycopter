@@ -87,11 +87,9 @@ double Pitch_Ratio;
 double Yaw_Ratio;
 double Acc_Ratio;
 
-int16_t _I[3];  // Pitch - YAW
-int16_t _P[3];
-int16_t _D[3];
-int16_t _Error [6];
+int16_t _Error [6]; // PITCH [0,1] - ROLL [2,3] - YAW [4,5]
 
+double term_P[3], term_I[3], term_D[3];	
 
 // TIMERS
 volatile uint16_t TCNT1_X;				// TCNT1_X click every 0.0032768 sec [1 sec = 305.17578125 TCNT1_X]
@@ -122,8 +120,9 @@ volatile int16_t  iTemp16;
 
 typedef struct 
 {
-	int16_t minSource,maxSource;
-	int16_t minDest,maxDest;
+	//int16_t minSource,maxSource;
+	//int16_t minDest,maxDest;
+	int16_t _P,_PLimit, _I, _ILimit, _D
 } pid_param_t;
 
 
