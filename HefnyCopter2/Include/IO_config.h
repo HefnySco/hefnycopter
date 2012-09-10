@@ -13,7 +13,7 @@
 #include "typedefs.h"
 
 
-#define HEFNYCOPTER2_SIGNATURE 0xff
+#define HEFNYCOPTER2_SIGNATURE 0xfe
 
 ///////////// LCD
 #define LCD_PORT	PORTD

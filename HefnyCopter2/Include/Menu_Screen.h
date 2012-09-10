@@ -85,12 +85,10 @@ P_STR scrSelfLeveling[] =
 	
 	
 P_STR scrStabilization[]=
-	"Gyro Ptch&Roll Scale\n"
+	"\n"
 	"P:      Lim:\n"
 	"I:      Lim:\n"
-	"Yaw Scaling\n"
-	"P:      Lim:\n"
-	"I:      Lim:\n"
+	"D:      Lim:\n"
 	;
 
 P_STR scrReceiverTest[] = 
