@@ -614,12 +614,12 @@ void _hStabilization()
 		switch (subpage)
 		{
 			case 0: if (subindex==0) subindex=1; else subindex=0; break;
-			case 1: startEditMode(&(Config.GyroParams[subindex]._P),0,500,TYPE_UINT16); return ;
-			case 2: startEditMode(&(Config.GyroParams[subindex]._PLimit),0,500,TYPE_UINT16); return ;
-			case 3: startEditMode(&(Config.GyroParams[subindex]._I),0,500,TYPE_UINT16);  return ;
-			case 4: startEditMode(&(Config.GyroParams[subindex]._ILimit),0,500,TYPE_UINT16); return ;
-			case 5: startEditMode(&(Config.GyroParams[subindex]._D),-500,500,TYPE_UINT16);  return ; // negative D
-			case 6: startEditMode(&(Config.GyroParams[subindex]._DLimit),0,500,TYPE_UINT16); return ;
+			case 1: startEditMode(&(Config.GyroParams[subindex]._P),0,500,TYPE_INT16); return ;
+			case 2: startEditMode(&(Config.GyroParams[subindex]._PLimit),0,500,TYPE_INT16); return ;
+			case 3: startEditMode(&(Config.GyroParams[subindex]._I),0,500,TYPE_INT16);  return ;
+			case 4: startEditMode(&(Config.GyroParams[subindex]._ILimit),0,500,TYPE_INT16); return ;
+			case 5: startEditMode(&(Config.GyroParams[subindex]._D),-500,500,TYPE_INT16);  return ; // negative D
+			case 6: startEditMode(&(Config.GyroParams[subindex]._DLimit),0,500,TYPE_INT16); return ;
 		}
 		
 	}
