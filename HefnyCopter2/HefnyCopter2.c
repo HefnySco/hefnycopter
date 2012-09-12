@@ -208,13 +208,18 @@ void MainLoop(void)
 	bResetTCNR1_X = true;
 	
 	// HINT: you can try to skip this if flying to save time for more useful tasks as user cannot access menu when flying
-	if (TCNT_X_snapshot2==0) TCNT_X_snapshot2 = TCNT1_X;
-	else if ( ((TCNT1_X- TCNT_X_snapshot2) > 2) )  // TCNT1_X ticks in 32.768us
+	if (!IsArmed)
 	{
-		Menu_MenuShow();	
-		TCNT_X_snapshot2=0;
-	}		
+		
 	
+		if (TCNT_X_snapshot2==0) TCNT_X_snapshot2 = TCNT1_X;
+		else if ( ((TCNT1_X- TCNT_X_snapshot2) > 2) )  // TCNT1_X ticks in 32.768us
+		{
+			Menu_MenuShow();	
+			TCNT_X_snapshot2=0;
+		}		
+	
+	}	
 	if (RX_Good != TX_GOOD) return ; // Do nothing all below depends on TX.
 	
 	

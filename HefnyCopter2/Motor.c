@@ -63,7 +63,7 @@ void Motor_GenerateOutputSignal(void)
 	// TCNT1 tick is 50ns & TCNT2 tick is 3.2us and TCNT2_X ticks every 819.2 us.
 	
 	
-	PMW_Pulse_Interval = (PWM_LOW_PULSE_INTERVAL - ( ElapsedTCNT2 * 409)); // 3276= Tick time of TCNT2_X in us
+	PMW_Pulse_Interval = (PWM_LOW_PULSE_INTERVAL - ( ElapsedTCNT2 * 390)); // 409 3276= Tick time of TCNT2_X in us
 	while (PMW_Pulse_Interval > 0)
 	{
 			TCNT2 =0;

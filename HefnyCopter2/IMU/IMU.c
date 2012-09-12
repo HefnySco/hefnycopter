@@ -153,60 +153,59 @@ void IMU_PID (void)
 		
 		
 		// PITCH
-		term_P[0] = (Sensors_Latest[GYRO_Y_Index]); // - (RX_Latest[RXChannel_ELE] >> 3) );
+		term_P[0] = (Sensors_Latest[GYRO_Y_Index]) ; // - (RX_Latest[RXChannel_ELE] >> 3) );
 		
-		term_I[0]= term_I[0] + (term_P[0]  * Config.GyroParams[0]._I);	// Multiply I-term
-		term_I[0] = term_I[0] >> 3;
-		_Error[0] = term_P[0];						// Current Error D-term
-		term_P[0] = term_P[0]  * Config.GyroParams[0]._P;			// Multiply P-term 
+		term_I[0] = term_I[0] + ((term_P[0] >>3)  * Config.GyroParams[0]._I);	// Multiply I-term
+		_Error[0] = term_P[0];													// Current Error D-term
+		term_P[0] = term_P[0]  * Config.GyroParams[0]._P;						// Multiply P-term 
 		// Differential = _Error[2] - E[3];
 		term_D[0]= (_Error[0] - _Error[1])* Config.GyroParams[0]._D;
-		term_D[0]= Limiter(term_D[0], Config.GyroParams[0]._DLimit);
 		_Error[1] = _Error[0];
 		
 		//term_D[0]
 		term_I[0]= Limiter(term_I[0], Config.GyroParams[0]._ILimit);
 		term_P[0]= Limiter(term_P[0], Config.GyroParams[0]._PLimit);
-		
+	    term_D[0]= Limiter(term_D[0], Config.GyroParams[0]._DLimit);
+	
 		gyroPitch = term_P[0] + term_I[0] + term_D[0];	// P + I + D
-		gyroPitch = gyroPitch >> 1;
+		gyroPitch = gyroPitch >> 3;
 		gyroPitch = Limiter(gyroPitch,(int16_t)250);
 		
 		// ROLL
-		term_P[1] = (Sensors_Latest[GYRO_X_Index]); // - (RX_Latest[RXChannel_AIL]  >> 3));
+		term_P[1] = (Sensors_Latest[GYRO_X_Index]) ; // - (RX_Latest[RXChannel_AIL]  >> 3));
 		
-		term_I[1] = term_I[1] + (term_P[1] * Config.GyroParams[0]._I);	// Multiply I-term
-		term_I[1] = term_I[1] >> 3;
+		term_I[1] = term_I[1] + ((term_P[1] >>3 ) * Config.GyroParams[0]._I);	// Multiply I-term
+
 		_Error[2] = term_P[1];						// Current Error D-term
 		term_P[1] = term_P[1]  * Config.GyroParams[0]._P;			// Multiply P-term 
 		// Differential = _Error[2] - E[3];
 		term_D[1]= (_Error[2] - _Error[3]) * Config.GyroParams[0]._D;
-		term_D[1]= Limiter(term_D[1], Config.GyroParams[0]._DLimit);
 		_Error[3] = _Error[2];
 	
 		term_I[1]= Limiter(term_I[1], Config.GyroParams[0]._ILimit);
 		term_P[1]= Limiter(term_P[1], Config.GyroParams[0]._PLimit);
+		term_D[1]= Limiter(term_D[1], Config.GyroParams[0]._DLimit);
 		
 		gyroRoll = term_P[1] + term_I[1] + term_D[1];	// P + I + D
-		gyroRoll = gyroRoll >> 1; 
+		gyroRoll = gyroRoll >> 3; 
 		gyroRoll = Limiter(gyroRoll,(int16_t)250);
 		
 		// YAW
-		term_P[2] = (Sensors_Latest[GYRO_Z_Index]);// - (RX_Latest[RXChannel_RUD] >> 3));
+		term_P[2] = (Sensors_Latest[GYRO_Z_Index]) ;// - (RX_Latest[RXChannel_RUD] >> 3));
 		
-		term_I[2]= term_I[2] + (term_P[2] * Config.GyroParams[1]._I);	// Multiply I-term
-		term_I[2] = term_I[2] >> 3;
+		term_I[2]= term_I[2] + ((term_P[2] >> 3) * Config.GyroParams[1]._I);	// Multiply I-term
+
 		_Error[4] = term_P[2];						// Current Error D-term
 		term_P[2] = term_P[2]  * Config.GyroParams[1]._P;			// Multiply P-term 
 		// Differential = _Error[2] - E[3];
 		term_D[2]= (_Error[4] - _Error[5]) * Config.GyroParams[1]._D;
-		term_D[2]= Limiter(term_D[2], Config.GyroParams[1]._DLimit);
 		_Error[5] = _Error[4];
 	
 		term_I[2]= Limiter(term_I[2], Config.GyroParams[1]._ILimit);
 		term_P[2]= Limiter(term_P[2], Config.GyroParams[1]._PLimit);
+		term_D[2]= Limiter(term_D[2], Config.GyroParams[1]._DLimit);
 		
 		gyroYaw = term_P[2] + term_I[2] + term_D[2];	// P + I + D
-		gyroYaw = gyroYaw >>1;
+		gyroYaw = gyroYaw >> 3;
 		gyroYaw = Limiter(gyroYaw,(int16_t)250);
 }
