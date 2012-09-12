@@ -330,9 +330,9 @@ void MainLoop(void)
 			*	
 			*/
 	
-			RX_Latest[RXChannel_AIL] = RX_Latest[RXChannel_AIL] /4;
-			RX_Latest[RXChannel_ELE] = RX_Latest[RXChannel_ELE] /4;
-			RX_Latest[RXChannel_RUD] = RX_Latest[RXChannel_RUD] /4;
+			RX_Latest[RXChannel_AIL] = RX_Latest[RXChannel_AIL] >> 1;
+			RX_Latest[RXChannel_ELE] = RX_Latest[RXChannel_ELE] >> 1;
+			RX_Latest[RXChannel_RUD] = RX_Latest[RXChannel_RUD] >> 1;
 			
 	
 			if (bXQuadMode==true)

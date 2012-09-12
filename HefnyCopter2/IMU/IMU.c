@@ -168,8 +168,8 @@ void IMU_PID (void)
 	    term_D[0]= Limiter(term_D[0], Config.GyroParams[0]._DLimit);
 	
 		gyroPitch = term_P[0] + term_I[0] + term_D[0];	// P + I + D
-		gyroPitch = gyroPitch >> 3;
-		gyroPitch = Limiter(gyroPitch,(int16_t)250);
+		gyroPitch = gyroPitch >> 2;
+		gyroPitch = Limiter(gyroPitch,(int16_t)300);
 		
 		// ROLL
 		term_P[1] = (Sensors_Latest[GYRO_X_Index]) ; // - (RX_Latest[RXChannel_AIL]  >> 3));
@@ -187,8 +187,8 @@ void IMU_PID (void)
 		term_D[1]= Limiter(term_D[1], Config.GyroParams[0]._DLimit);
 		
 		gyroRoll = term_P[1] + term_I[1] + term_D[1];	// P + I + D
-		gyroRoll = gyroRoll >> 3; 
-		gyroRoll = Limiter(gyroRoll,(int16_t)250);
+		gyroRoll = gyroRoll >> 2; 
+		gyroRoll = Limiter(gyroRoll,(int16_t)300);
 		
 		// YAW
 		term_P[2] = (Sensors_Latest[GYRO_Z_Index]) ;// - (RX_Latest[RXChannel_RUD] >> 3));
@@ -206,6 +206,6 @@ void IMU_PID (void)
 		term_D[2]= Limiter(term_D[2], Config.GyroParams[1]._DLimit);
 		
 		gyroYaw = term_P[2] + term_I[2] + term_D[2];	// P + I + D
-		gyroYaw = gyroYaw >> 3;
-		gyroYaw = Limiter(gyroYaw,(int16_t)250);
+		gyroYaw = gyroYaw >> 2;
+		gyroYaw = Limiter(gyroYaw,(int16_t)300);
 }
