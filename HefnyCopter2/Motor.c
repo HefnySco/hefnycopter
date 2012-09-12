@@ -63,7 +63,7 @@ void Motor_GenerateOutputSignal(void)
 	// TCNT1 tick is 50ns & TCNT2 tick is 3.2us and TCNT2_X ticks every 819.2 us.
 	
 	
-	PMW_Pulse_Interval = (PWM_LOW_PULSE_INTERVAL - ( ElapsedTCNT2 * 390)); // 409 3276= Tick time of TCNT2_X in us
+	PMW_Pulse_Interval = (PWM_LOW_PULSE_INTERVAL - ( ElapsedTCNT2 * 409)); // 409 
 	while (PMW_Pulse_Interval > 0)
 	{
 			TCNT2 =0;
@@ -78,6 +78,7 @@ void Motor_GenerateOutputSignal(void)
 				while (TCNT2 < 5); //=8us
 				PMW_Pulse_Interval -=8;
 			}
+			
 	}
 	
 	
@@ -108,13 +109,6 @@ void Motor_GenerateOutputSignal(void)
 	M3 = 1;
 	M4 = 1;
 
-	
-	// Measure period of ESC rate from here
-    ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
-    {
-      MotorStartTCNT = TCNT2_X;
-    }
-	
 	// Minimum pulse we want to make is 1ms, max is 2ms
 	PMW_Pulse_Interval = BASE_PULSE;
 	while (PMW_Pulse_Interval > 0)
@@ -145,6 +139,13 @@ void Motor_GenerateOutputSignal(void)
 		if (i>=m4) M4 = 0;
 		
 	}
+	
+	// Measure period of ESC rate from here
+    ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+    {
+      MotorStartTCNT = TCNT2_X;
+    }
+	
 	
  }
  

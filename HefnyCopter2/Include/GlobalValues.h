@@ -42,16 +42,16 @@ char sXDeg[10];
 #define MAX_COLLECTIVE		800
 // trimming value for motors when generating PWM signals.
 #define MOTORS_HIGH_VALUE	1000  
-#define MOTORS_IDLE_VALUE	50
+#define MOTORS_IDLE_VALUE	100
 // Defines output rate to ESC/Servo
 // either define by setting ESC_RATE (Max is approx 495Hz)
 // uses Timer 1 ticks to control output rate.
-#define ESC_RATE 50	// in Hz
+#define ESC_RATE 250	// in Hz
 //#define ESC_RATE 400	// in Hz (at SINGLE_COPTER and DUAL_COPTER)
 //#define ESC_RATE 450	// in Hz
 //#define ESC_RATE 495	// in Hz
 #define PWM_LOW_PULSE_INTERVAL 1000000 / ESC_RATE // time in ms for a delay.
-#define BASE_PULSE				1000   //  :: I reduced it from 1120 to 1104 as trimming.
+#define BASE_PULSE				950 //1000   //  :: I reduced it from 1120 to 1104 as trimming.
 
 
 
