@@ -769,7 +769,7 @@ void _hDebug()
 			//gyroYangle=0;
 			CompAngleY=0;
 		}	
-	
+	IMU_CalculateAngles();
 	IMU_PID();
 	
 	itoa( Sensors_Latest[GYRO_Y_Index], sXDeg,10);
@@ -782,7 +782,7 @@ void _hDebug()
 	strcat_P(sXDeg,strSPC3);
 	LCD_WriteString(sXDeg);
 	
-	itoa( term_D[0], sXDeg,10);
+	itoa(CompAngleY, sXDeg,10);
 	LCD_SetPos(3,48);
 	strcat_P(sXDeg,strSPC3);
 	LCD_WriteString(sXDeg);

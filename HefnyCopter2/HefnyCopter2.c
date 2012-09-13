@@ -203,6 +203,7 @@ void MainLoop(void)
 	RX_CopyLatestReceiverValues();
 	// simulate
 	//RX_Latest[RXChannel_THR]=500;
+
 	Sensors_ReadAll();
 	
 	bResetTCNR1_X = true;
@@ -274,6 +275,7 @@ void MainLoop(void)
 			*	Stabilization Logic.
 			*	The logic is independent of Quad configuPitch_Ration 
 			*/
+			IMU_CalculateAngles();
 			IMU_PID();
 			//IMU_CalculateAngles ();
 			//double tCompAngleY = CompAngleY * CompAngleY;

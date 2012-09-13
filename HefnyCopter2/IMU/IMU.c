@@ -100,8 +100,8 @@ void IMU_CalculateAngles ()
   //accZangle = acos(accZval/R)*RAD_TO_DEG;
  
   
-  CompAngleX = (0.8*(CompAngleX+(gyroXrate)*2/1000))-(0.2*(accYangle));
-  CompAngleY = (0.8*(CompAngleY-(gyroYrate)*2/1000))-(0.2*(accXangle));
+  CompAngleX = (0.6*(CompAngleX+(gyroXrate)*2/1000))-(0.4*(accYangle));
+  CompAngleY = (0.6*(CompAngleY-(gyroYrate)*2/1000))-(0.4*(accXangle));
 } 
 
 
@@ -153,9 +153,10 @@ void IMU_PID (void)
 		
 		
 		// PITCH
-		term_P[0] = (Sensors_Latest[GYRO_Y_Index]) ; // - (RX_Latest[RXChannel_ELE] >> 3) );
+		if ((Sensors_Latest[GYRO_Y_Index]>=-1) && (Sensors_Latest[GYRO_Y_Index]<=1)) {Sensors_Latest[GYRO_Y_Index]=0;}
+		term_P[0] = (Sensors_Latest[GYRO_Y_Index]);// + CompAngleY; // - (RX_Latest[RXChannel_ELE] >> 3) );
 		
-		term_I[0] = term_I[0] + ((term_P[0] >>3)  * Config.GyroParams[0]._I);	// Multiply I-term
+		term_I[0] = -CompAngleY * Config.GyroParams[0]._I; //term_I[0] + ((term_P[0] >>3)  * Config.GyroParams[0]._I);	// Multiply I-term
 		_Error[0] = term_P[0];													// Current Error D-term
 		term_P[0] = term_P[0]  * Config.GyroParams[0]._P;						// Multiply P-term 
 		// Differential = _Error[2] - E[3];
@@ -172,9 +173,11 @@ void IMU_PID (void)
 		gyroPitch = Limiter(gyroPitch,(int16_t)300);
 		
 		// ROLL
-		term_P[1] = (Sensors_Latest[GYRO_X_Index]) ; // - (RX_Latest[RXChannel_AIL]  >> 3));
 		
-		term_I[1] = term_I[1] + ((term_P[1] >>3 ) * Config.GyroParams[0]._I);	// Multiply I-term
+		if ((Sensors_Latest[GYRO_X_Index]>=-1) && (Sensors_Latest[GYRO_X_Index]<=1)) {Sensors_Latest[GYRO_X_Index]=0;}
+		term_P[1] = (Sensors_Latest[GYRO_X_Index]); // -CompAngleX; // - (RX_Latest[RXChannel_AIL]  >> 3));
+		
+		term_I[1] = -CompAngleX * Config.GyroParams[0]._I; //term_I[1] + ((term_P[1] >>3 ) * Config.GyroParams[0]._I);	// Multiply I-term
 
 		_Error[2] = term_P[1];						// Current Error D-term
 		term_P[1] = term_P[1]  * Config.GyroParams[0]._P;			// Multiply P-term 
