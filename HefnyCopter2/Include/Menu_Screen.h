@@ -58,7 +58,7 @@ typedef struct
 */
 
 P_STR scrHomePage[] = 
-	"HefnyCopter v0.2\n"
+	"HefnyCopter v0.3\n"
 	"\n"
 	"Batt:\n"
 	"\n"

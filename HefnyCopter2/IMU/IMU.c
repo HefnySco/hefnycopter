@@ -72,15 +72,15 @@ void IMU_Kalman (void)
  	accPitch  = Sensors_GetAccAngle(ACC_X_Index);       // in Quids  [0,765]
 	gyroPitch = Sensors_GetGyroRate(GYRO_Y_Index);		// in Quids/seconds
     gyroPitch = Kalman_Calculate(0,accPitch, gyroPitch,Sensors_dt);      // calculate filtered Angle
-	gyroPitch = P2D_Calculate(PID_Terms[0],gyroPitch ,gyroPitch );
+	gyroPitch = P2D_Calculate(PID_Terms[0],gyroPitch ,  RX_Latest[RXChannel_ELE], gyroPitch );
 
 	accRoll   = Sensors_GetAccAngle(ACC_Y_Index);       // in Quids
 	gyroRoll  = Sensors_GetGyroRate(GYRO_X_Index);		// in Quids/seconds
     gyroRoll  = Kalman_Calculate(1,accRoll, gyroRoll, Sensors_dt);      // calculate filtered Angle
-	gyroRoll = P2D_Calculate(PID_Terms[0],gyroRoll ,gyroRoll );
+	gyroRoll = P2D_Calculate(PID_Terms[0],gyroRoll ,  RX_Latest[RXChannel_AIL], gyroRoll );
 
 	
-	gyroYaw = P2D_Calculate(PID_Terms[2],Sensors_Latest[GYRO_Z_Index],0.0);
+	gyroYaw = P2D_Calculate(PID_Terms[2],Sensors_Latest[GYRO_Z_Index],  RX_Latest[RXChannel_RUD], 0.0);
 	
 }
 
@@ -89,10 +89,10 @@ void IMU_P2D (void)
 		IMU_CalculateAngles();
 		
 		// PITCH
-		gyroPitch = P2D_Calculate(PID_Terms[0],Sensors_Latest[GYRO_Y_Index],CompAngleX);
+		gyroPitch = P2D_Calculate(PID_Terms[0],Sensors_Latest[GYRO_Y_Index], RX_Latest[RXChannel_ELE], CompAngleX);
 		// ROLL
-		gyroRoll = P2D_Calculate(PID_Terms[1],Sensors_Latest[GYRO_X_Index],CompAngleY);
+		gyroRoll = P2D_Calculate(PID_Terms[1],Sensors_Latest[GYRO_X_Index], RX_Latest[RXChannel_AIL], CompAngleY);
 		// YAW
-		gyroYaw = P2D_Calculate(PID_Terms[2],Sensors_Latest[GYRO_Z_Index],0.0);
+		gyroYaw = P2D_Calculate(PID_Terms[2],Sensors_Latest[GYRO_Z_Index], -RX_Latest[RXChannel_RUD],0.0);
 		
 }

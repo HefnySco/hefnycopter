@@ -319,44 +319,45 @@ void MainLoop(void)
 			*	
 			*/
 	
-			RX_Latest[RXChannel_AIL] = (RX_Latest[RXChannel_AIL] * 3) >> 2;
-			RX_Latest[RXChannel_ELE] = (RX_Latest[RXChannel_ELE] * 3) >> 2;
-			RX_Latest[RXChannel_RUD] = (RX_Latest[RXChannel_RUD] * 3) >> 2;
+			
+			//RX_Latest[RXChannel_AIL] = (RX_Latest[RXChannel_AIL] * 3) >> 2;
+			//RX_Latest[RXChannel_ELE] = (RX_Latest[RXChannel_ELE] * 3) >> 2;
+			//RX_Latest[RXChannel_RUD] = (RX_Latest[RXChannel_RUD] * 3) >> 2;
 			
 	
-			if (bXQuadMode==true)
-			{
-							//
-				MotorOut1 += RX_Latest[RXChannel_AIL] ;
-				MotorOut2 += RX_Latest[RXChannel_AIL] ;
-				MotorOut3 -= RX_Latest[RXChannel_AIL] ;
-				MotorOut4 -= RX_Latest[RXChannel_AIL] ;
-				
-				MotorOut1 += RX_Latest[RXChannel_ELE];
-				MotorOut2 -= RX_Latest[RXChannel_ELE];
-				MotorOut3 += RX_Latest[RXChannel_ELE];
-				MotorOut4 -= RX_Latest[RXChannel_ELE];
-				
-				MotorOut1 -= RX_Latest[RXChannel_RUD];
-				MotorOut2 += RX_Latest[RXChannel_RUD];
-				MotorOut3 += RX_Latest[RXChannel_RUD];
-				MotorOut4 -= RX_Latest[RXChannel_RUD];
-			}
-			else
-			{
-				
-				MotorOut2 += RX_Latest[RXChannel_AIL] ;
-				MotorOut3 -= RX_Latest[RXChannel_AIL] ;
-				
-				MotorOut1 += RX_Latest[RXChannel_ELE] ;
-				MotorOut4 -= RX_Latest[RXChannel_ELE] ;
-		
-				MotorOut1 -= RX_Latest[RXChannel_RUD] ;
-				MotorOut2 += RX_Latest[RXChannel_RUD] ;
-				MotorOut3 += RX_Latest[RXChannel_RUD] ;
-				MotorOut4 -= RX_Latest[RXChannel_RUD] ;
-			}
-			
+			//if (bXQuadMode==true)
+			//{
+							////
+				//MotorOut1 += RX_Latest[RXChannel_AIL] ;
+				//MotorOut2 += RX_Latest[RXChannel_AIL] ;
+				//MotorOut3 -= RX_Latest[RXChannel_AIL] ;
+				//MotorOut4 -= RX_Latest[RXChannel_AIL] ;
+				//
+				//MotorOut1 += RX_Latest[RXChannel_ELE];
+				//MotorOut2 -= RX_Latest[RXChannel_ELE];
+				//MotorOut3 += RX_Latest[RXChannel_ELE];
+				//MotorOut4 -= RX_Latest[RXChannel_ELE];
+				//
+				//MotorOut1 -= RX_Latest[RXChannel_RUD];
+				//MotorOut2 += RX_Latest[RXChannel_RUD];
+				//MotorOut3 += RX_Latest[RXChannel_RUD];
+				//MotorOut4 -= RX_Latest[RXChannel_RUD];
+			//}
+			//else
+			//{
+				//
+				//MotorOut2 += RX_Latest[RXChannel_AIL] ;
+				//MotorOut3 -= RX_Latest[RXChannel_AIL] ;
+				//
+				//MotorOut1 += RX_Latest[RXChannel_ELE] ;
+				//MotorOut4 -= RX_Latest[RXChannel_ELE] ;
+		//
+				//MotorOut1 -= RX_Latest[RXChannel_RUD] ;
+				//MotorOut2 += RX_Latest[RXChannel_RUD] ;
+				//MotorOut3 += RX_Latest[RXChannel_RUD] ;
+				//MotorOut4 -= RX_Latest[RXChannel_RUD] ;
+			//}
+			//
 			
 			// Save motors from turning-off
 			if (MotorOut1<MOTORS_IDLE_VALUE) MotorOut1=MOTORS_IDLE_VALUE;
