@@ -83,13 +83,30 @@ int16_t gyroYaw;
 int16_t accPitch;
 int16_t accRoll;
 
+
+
 double Pitch_Ratio;
 double Yaw_Ratio;
 double Acc_Ratio;
 
-int16_t _Error [3]; // PITCH [0] - ROLL [1] - YAW [2]
+typedef struct 
+{
+	//int16_t minSource,maxSource;
+	//int16_t minDest,maxDest;
+	int16_t _P,_PLimit, _I, _ILimit, _D, _DLimit
+} pid_param_t;
 
-int16_t term_P[3], term_I[3], term_D[3];	
+
+
+typedef struct 
+{
+	//int16_t minSource,maxSource;
+	//int16_t minDest,maxDest;
+	int16_t P,I,D,Error
+} pid_terms_t;
+
+
+pid_terms_t PID_Terms[3]; // PITCH [0] - ROLL [1] - YAW [2]
 
 // TIMERS
 volatile uint16_t TCNT1_X;				// TCNT1_X click every 0.0032768 sec [1 sec = 305.17578125 TCNT1_X]
@@ -108,7 +125,7 @@ volatile char Result[10];
 volatile char Result2[10]; 
 volatile uint16_t nResult[8];
 volatile uint16_t nTemp16;
-volatile int16_t  iTemp16;
+
 
 #define CALIBRATED_ALL		3
 #define CALIBRATED_Stick	1
@@ -119,12 +136,6 @@ volatile int16_t  iTemp16;
 #define IMU_SelfLevelMode	1
 
 
-typedef struct 
-{
-	//int16_t minSource,maxSource;
-	//int16_t minDest,maxDest;
-	int16_t _P,_PLimit, _I, _ILimit, _D, _DLimit
-} pid_param_t;
 
 
 typedef struct  

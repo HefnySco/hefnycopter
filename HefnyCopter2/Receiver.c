@@ -14,6 +14,8 @@
 #include "Include/IO_config.h"
 #include "Include/Receiver.h"
 
+volatile int16_t  iTemp16; // used by Receiver intrrupts
+
 /*
 FailSafe:
 

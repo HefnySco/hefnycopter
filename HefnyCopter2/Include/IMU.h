@@ -16,10 +16,11 @@
 
 float CompAngleX;
 float CompAngleY;
+float CompAngleZ;
 
 
 
 void IMU_Kalman (void);
 void IMU_CalculateAngles (void);
-void IMU_PID (void);
+void IMU_P2D (void);
 #endif /* IMU_H_ */

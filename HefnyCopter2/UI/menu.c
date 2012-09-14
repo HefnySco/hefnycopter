@@ -777,24 +777,30 @@ void _hDebug()
 			CompAngleY=0;
 		}	
 	//IMU_CalculateAngles();
-	//IMU_PID();
+	//IMU_P2D();
 	IMU_Kalman();
-	itoa( Sensors_Latest[GYRO_Y_Index], sXDeg,10);
+	IMU_CalculateAngles();
+	
+	itoa( Sensors_GetGyroRate(GYRO_Y_Index), sXDeg,10);
+	//itoa( Sensors_Latest[GYRO_Y_Index], sXDeg,10);
 	LCD_SetPos(1,48);
 	strcat_P(sXDeg,strSPC3);
 	LCD_WriteString(sXDeg);
 	
-	itoa( term_P[0], sXDeg,10);
+	
+	
+	itoa( Sensors_GetAccAngle(ACC_X_Index), sXDeg,10);
+	//itoa( term_P[0], sXDeg,10);
 	LCD_SetPos(2,48);
 	strcat_P(sXDeg,strSPC3);
 	LCD_WriteString(sXDeg);
 	
-	itoa(CompAngleY, sXDeg,10);
+	itoa(CompAngleX, sXDeg,10);
 	LCD_SetPos(3,48);
 	strcat_P(sXDeg,strSPC3);
 	LCD_WriteString(sXDeg);
 	
-	itoa( term_I[0], sXDeg,10);
+	itoa( accPitch , sXDeg,10);//itoa( term_I[0], sXDeg,10);
 	LCD_SetPos(4,48);
 	strcat_P(sXDeg,strSPC3);
 	LCD_WriteString(sXDeg);
@@ -805,6 +811,10 @@ void _hDebug()
 	strcat_P(sXDeg,strSPC3);
 	LCD_WriteString(sXDeg);
 	
+	itoa( TCNT1_X_GlobalTimer, sXDeg,10);
+	LCD_SetPos(5,48);
+	strcat_P(sXDeg,strSPC3);
+	LCD_WriteString(sXDeg);
 	
 /*		 
 	int16_t t=ADCPort_Get(ACC_X_PNUM);

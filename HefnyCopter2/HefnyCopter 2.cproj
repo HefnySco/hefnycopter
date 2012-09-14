@@ -110,6 +110,9 @@
     <Compile Include="HefnyCopter2.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="IMU\PID.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="IMU\IMU.c">
       <SubType>compile</SubType>
     </Compile>
@@ -141,6 +144,9 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Include\Math.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Include\PID.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Include\Sensors.h">

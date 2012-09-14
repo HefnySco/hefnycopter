@@ -11,7 +11,7 @@
 
 
 
-  float kalmanCalculate(int8_t index, float newAngle, float newRate,uint16_t looptime);
+  float Kalman_Calculate(int8_t index, float newAngle, float newRate,uint16_t looptime);
    
 
 

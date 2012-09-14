@@ -70,8 +70,8 @@ int Sensors_GetAccAngle(int8_t Acc_Index) {
   return arctan2(-Sensors_Latest[ACC_Z_Index], -Sensors_Latest[Acc_Index]) + 256;    // in Quid: 1024/(2*PI))
 }
 
-int Sensors_GetGyroRate(int8_t Gyro_Index) {                                             // ARef=3.3V, Gyro sensitivity=2mV/(deg/sec)
-  return (int)(Sensors_Latest[Gyro_Index] * 4.583333333);                 // in quid/sec:(1024/360)/1024 * 3.3/0.002)
+int Sensors_GetGyroRate(int8_t Gyro_Index) {                                         // ARef=3.3V, Gyro sensitivity=2mV/(deg/sec)
+  return (int)(Sensors_Latest[Gyro_Index] * 4.583333333);							// in quid/sec:(1024/360)/1024 * 3.3/0.002)
 }
 
 /*
@@ -79,13 +79,14 @@ int Sensors_GetGyroRate(int8_t Gyro_Index) {                                    
 */
 void Sensors_Calibrate (void)
 {
-//	memset(&nResult,1,14);
 	BOOL LEDOLD = LED_Orange;
 	int i;
 	for (i=0;i<6;++i)
 	{
 		nResult [i]=0;
 	}
+	
+	// check: http://www.x-firm.com/?page_id=191
 	
 	for (int i=0;i<25;++i)
 	{
@@ -95,7 +96,7 @@ void Sensors_Calibrate (void)
 		
 		nResult[GYRO_X_Index] += ADCPort_Get(GYRO_X_PNUM);
 		nResult[GYRO_Y_Index] += ADCPort_Get(GYRO_Y_PNUM);
-		nResult[GYRO_Z_Index] += ADCPort_Get(GYRO_Z_PNUM);
+		nResult[GYRO_Z_Index] += ADCPort_Get(GYRO_Z_PNUM); 
 		
 		_delay_ms(10);
 		LED_Orange =~LED_Orange;
@@ -107,6 +108,8 @@ void Sensors_Calibrate (void)
 	{
 		nResult[i] /=25;
 	}	
+	
+	nResult[ACC_Z_Index]-=100; // Sensor: horizontal, upward
 }
 
 void Sensors_ReadAll (void)

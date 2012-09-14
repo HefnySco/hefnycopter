@@ -234,9 +234,9 @@ void MainLoop(void)
 		MotorOut3 = 0;
 		MotorOut4 = 0;
 		
-		term_I[0]=0;
-		term_I[1]=0;
-		term_I[2]=0;
+		PID_Terms[0].I=0;
+		PID_Terms[1].I=0;
+		PID_Terms[2].I=0;
 	}
 	else
 	{	// Throttle stick is NOT Down
@@ -276,8 +276,7 @@ void MainLoop(void)
 			*	Stabilization Logic.
 			*	The logic is independent of Quad configuPitch_Ration 
 			*/
-			IMU_CalculateAngles();
-			IMU_PID();
+			IMU_P2D();
 			//IMU_CalculateAngles ();
 			//double tCompAngleY = CompAngleY * CompAngleY;
 			//double tCompAngleX = CompAngleX * CompAngleY;

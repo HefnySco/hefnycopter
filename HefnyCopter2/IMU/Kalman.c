@@ -30,8 +30,8 @@
  /*
  * URL: http://www.x-firm.com/?page_id=191
  */
-  float kalmanCalculate(int8_t index, float newAngle, float newRate,uint16_t looptime) {
-    dtKalman [index]= (float)(looptime)/10000; //time in 100us
+  float Kalman_Calculate(int8_t index, float newAngle, float newRate,uint16_t looptime) {
+    dtKalman [index]= (float)((looptime)/10000); //time in 100us
     x_angle[index] += dtKalman[index] * (newRate - x_bias[index]);
     P_00[index] +=  - dtKalman[index] * (P_10[index] + P_01[index]) + Q_angle[index] * dtKalman[index];
     P_01[index] +=  - dtKalman[index] * P_11[index];
