@@ -151,8 +151,6 @@ int main(void)
 			 //Acc_Ratio = ((double)(Config.AccParams.maxDest - Config.AccParams.minDest)/(double)(Config.AccParams.maxSource - Config.AccParams.minSource));
 			
 			
-		
-			
 			
 	while ((!(Config.IsCalibrated & CALIBRATED_SENSOR)) || (!(Config.IsCalibrated & CALIBRATED_Stick)))
 	{
@@ -205,7 +203,7 @@ void MainLoop(void)
 	//RX_Latest[RXChannel_THR]=500;
 
 	Sensors_ReadAll();
-	
+	IMU_Kalman();
 	bResetTCNR1_X = true;
 	
 	// HINT: you can try to skip this if flying to save time for more useful tasks as user cannot access menu when flying
@@ -276,7 +274,7 @@ void MainLoop(void)
 			*	Stabilization Logic.
 			*	The logic is independent of Quad configuPitch_Ration 
 			*/
-			IMU_P2D();
+			
 			//IMU_CalculateAngles ();
 			//double tCompAngleY = CompAngleY * CompAngleY;
 			//double tCompAngleX = CompAngleX * CompAngleY;
@@ -293,27 +291,12 @@ void MainLoop(void)
 				
 				if (Config.SelfLevelMode == IMU_SelfLevelMode)
 				{
+					IMU_Kalman();
+				}
+				else
+				{
 					
-					//accPitch  = ScaleSensor (Sensors_Latest[ACC_X_Index],&(Config.AccParams),Acc_Ratio);
-					//accRoll   = ScaleSensor (Sensors_Latest[ACC_Y_Index],&(Config.AccParams),Acc_Ratio);
-		
-				
-					//////_limit = Config.AccLimit;
-						//////
-					//////accPitch   = Sensors_Latest[ACC_X_Index];
-					//////accPitch  *= Config.AccGain;
-					//////if (accPitch >  _limit)		accPitch = _limit;
-					//////if (accPitch < -_limit)		accPitch = -_limit;
-					//////
-					//////accRoll   = Sensors_Latest[ACC_Y_Index];
-					//////accRoll  *= Config.AccGain;
-					//////if (accRoll >  _limit)		accRoll = _limit;
-					//////if (accRoll < -_limit)		accRoll = -_limit;
-				
-					//MotorOut1 += accPitch;
-					//MotorOut4 -= accPitch; 
-					//MotorOut2 += accRoll;
-					//MotorOut3 -= accRoll;
+					IMU_P2D();
 				}
 				
 				//gyroPitch = gyroPitch * (-1);

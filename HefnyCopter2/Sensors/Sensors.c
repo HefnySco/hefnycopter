@@ -7,6 +7,7 @@
 
 
 #include <avr/io.h> 
+#include <util/atomic.h>
 #include <avr/pgmspace.h>
 #include <avr/delay.h>
 
@@ -112,8 +113,15 @@ void Sensors_Calibrate (void)
 	nResult[ACC_Z_Index]-=100; // Sensor: horizontal, upward
 }
 
+uint16_t LastLoopTime[2];
+
 void Sensors_ReadAll (void)
 {
+   ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+   {
+	LastLoopTime[0] = TCNT1;
+   }   
+
 	Sensors_Latest[ACC_X_Index] = ADCPort_Get(ACC_X_PNUM)-Config.Sensor_zero[ACC_X_Index];
 	Sensors_Latest[ACC_Y_Index] = ADCPort_Get(ACC_Y_PNUM)-Config.Sensor_zero[ACC_Y_Index];
 	Sensors_Latest[ACC_Z_Index] = ADCPort_Get(ACC_Z_PNUM)-Config.Sensor_zero[ACC_Z_Index];
@@ -123,6 +131,14 @@ void Sensors_ReadAll (void)
 	Sensors_Latest[GYRO_Z_Index] = ADCPort_Get(GYRO_Z_PNUM)-Config.Sensor_zero[GYRO_Z_Index];
 	
 	Sensors_Latest[V_BAT_Index] = Sensor_GetBattery();
+	
+	// Handle the odd case where the TCNT1 rolls over and LastLoopTime[0] < LastLoopTime[1]
+	if (LastLoopTime[0] > LastLoopTime[1])
+		Sensors_dt = LastLoopTime[0] - LastLoopTime[1];
+	else 
+		Sensors_dt = (0xffff - LastLoopTime[1]) + LastLoopTime[0] ;
+		
+	LastLoopTime[1] = LastLoopTime[0]; // in 100 us unit
 }
 
 

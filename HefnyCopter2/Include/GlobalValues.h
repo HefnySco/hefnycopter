@@ -70,6 +70,8 @@ uint16_t RX_MIN_raw			[RXChannels];
 
 BOOL	IsArmed;
 
+uint16_t Sensors_dt; // time in 100us between sensors reading
+
 // Motors Signals
 int16_t MotorOut1;
 int16_t MotorOut2;
@@ -84,7 +86,23 @@ int16_t accPitch;
 int16_t accRoll;
 
 
+///////////////////////////////////////////////////
+// Intermediate results for IMU_CalculateAngles
+//gyros
+	float gyroXrate;
+	float gyroYrate;
+	float gyroZrate;
 
+	//accelerometers
+	float accXangle;
+	float accYangle;
+	float accZangle;
+///////////////////////////////////////////////////
+
+	
+	
+
+// USed for Scaling
 double Pitch_Ratio;
 double Yaw_Ratio;
 double Acc_Ratio;

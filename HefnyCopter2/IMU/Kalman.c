@@ -14,29 +14,28 @@
 #include "../Include/GlobalValues.h"
 #include "../Include/Kalman.h"
 
-
 // --- Kalman filter module  ----------------------------------------------------------------------------
 
-    float Q_angle[2]  =  {0.001,0.001}; //0.001
-    float Q_gyro[2]   =  {0.003,0.003};  //0.003
-    float R_angle[2]  =  {0.003,0.03};  //0.03
+double Q_angle[2]	=  {0.001,0.001}; //0.001
+double Q_gyro[2]		=  {0.003,0.003};  //0.003
+double R_angle[2]	=  {0.03,0.03};  //0.03
 
-    float x_angle[2] = {0,0};
-    float x_bias[2] = {0,0};
-    float P_00[2] = {0,0}, P_01[2] = {0,0}, P_10[2] = {0,0}, P_11[2] = {0,0};
-    float dtKalman[2], yKalman[2], SKalman[2];
-    float K_0[2], K_1[2];
+double x_angle[2]	= {0,0};
+double x_bias[2]		= {0,0};
+double P_00[2] = {0,0}, P_01[2] = {0,0}, P_10[2] = {0,0}, P_11[2] = {0,0};
+double dtKalman[2], yKalman[2], SKalman[2];
+double K_0[2], K_1[2];
 
  /*
  * URL: http://www.x-firm.com/?page_id=191
  */
-  float Kalman_Calculate(int8_t index, float newAngle, float newRate,uint16_t looptime) {
-    dtKalman [index]= (float)((looptime)/10000); //time in 100us
+  int16_t Kalman_Calculate(int8_t index, int16_t newAngle, int16_t newRate,uint16_t looptime) {
+    dtKalman [index]= (double)((looptime)/10000); //time in 100us
     x_angle[index] += dtKalman[index] * (newRate - x_bias[index]);
     P_00[index] +=  - dtKalman[index] * (P_10[index] + P_01[index]) + Q_angle[index] * dtKalman[index];
     P_01[index] +=  - dtKalman[index] * P_11[index];
     P_10[index] +=  - dtKalman[index] * P_11[index];
-    P_11[index] +=  + Q_gyro[index] * dtKalman[index];
+    P_11[index] +=  (Q_gyro[index] * dtKalman[index]);
 
     yKalman[index] = newAngle - x_angle[index];
     SKalman[index] = P_00[index] + R_angle[index];
@@ -50,6 +49,6 @@
     P_10[index] -= K_1[index] * P_00[index];
     P_11[index] -= K_1[index] * P_01[index];
 
-    return x_angle[index];
+    return (uint16_t) (x_angle[index]);
   }
   
