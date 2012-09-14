@@ -258,6 +258,7 @@ void MainLoop(void)
 			{
 				Config.Sensor_zero[GYRO_X_Index] = (Config.Sensor_zero[GYRO_X_Index] + ADCPort_Get(GYRO_X_PNUM))/2;
 				Config.Sensor_zero[GYRO_Y_Index] = (Config.Sensor_zero[GYRO_Y_Index] + ADCPort_Get(GYRO_Y_PNUM))/2;
+				Config.Sensor_zero[GYRO_Z_Index] = (Config.Sensor_zero[GYRO_Z_Index] + ADCPort_Get(GYRO_Z_PNUM))/2;
 			
 			}
 		
@@ -294,8 +295,8 @@ void MainLoop(void)
 				if (Config.SelfLevelMode == IMU_SelfLevelMode)
 				{
 					
-					accPitch  = ScaleSensor (Sensors_Latest[ACC_X_Index],&(Config.AccParams),Acc_Ratio);
-					accRoll   = ScaleSensor (Sensors_Latest[ACC_Y_Index],&(Config.AccParams),Acc_Ratio);
+					//accPitch  = ScaleSensor (Sensors_Latest[ACC_X_Index],&(Config.AccParams),Acc_Ratio);
+					//accRoll   = ScaleSensor (Sensors_Latest[ACC_Y_Index],&(Config.AccParams),Acc_Ratio);
 		
 				
 					//////_limit = Config.AccLimit;
@@ -310,14 +311,18 @@ void MainLoop(void)
 					//////if (accRoll >  _limit)		accRoll = _limit;
 					//////if (accRoll < -_limit)		accRoll = -_limit;
 				
+					//MotorOut1 += accPitch;
+					//MotorOut4 -= accPitch; 
+					//MotorOut2 += accRoll;
+					//MotorOut3 -= accRoll;
 				}
 				
 				//gyroPitch = gyroPitch * (-1);
 				//gyroRoll  = gyroRoll  * (-1);
-				MotorOut1 -= gyroPitch + accPitch;
-				MotorOut4 += gyroPitch - accPitch; 
-				MotorOut2 -= gyroRoll  + accRoll;
-				MotorOut3 += gyroRoll  - accRoll;
+				MotorOut1 -= gyroPitch ;
+				MotorOut4 += gyroPitch ; 
+				MotorOut2 -= gyroRoll  ;
+				MotorOut3 += gyroRoll  ;
 				MotorOut1 += gyroYaw;
 				MotorOut4 += gyroYaw;
 				MotorOut2 -= gyroYaw;
@@ -332,9 +337,9 @@ void MainLoop(void)
 			*	
 			*/
 	
-			RX_Latest[RXChannel_AIL] = RX_Latest[RXChannel_AIL] >> 1;
-			RX_Latest[RXChannel_ELE] = RX_Latest[RXChannel_ELE] >> 1;
-			RX_Latest[RXChannel_RUD] = RX_Latest[RXChannel_RUD] >> 1;
+			RX_Latest[RXChannel_AIL] = (RX_Latest[RXChannel_AIL] * 3) >> 2;
+			RX_Latest[RXChannel_ELE] = (RX_Latest[RXChannel_ELE] * 3) >> 2;
+			RX_Latest[RXChannel_RUD] = (RX_Latest[RXChannel_RUD] * 3) >> 2;
 			
 	
 			if (bXQuadMode==true)
@@ -385,9 +390,7 @@ void MainLoop(void)
 	
 
 	Motor_GenerateOutputSignal();
-	//LCD_SetPos(0,0);
-	//itoa (MotorOut1,sXDeg,10);
-	//LCD_WriteString(sXDeg);
+	
 	if (bResetTCNR1_X==true)
 	{
 		TCNT1_X_snapshot1= 0; // reset timeout

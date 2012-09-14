@@ -87,7 +87,7 @@ double Pitch_Ratio;
 double Yaw_Ratio;
 double Acc_Ratio;
 
-int16_t _Error [6]; // PITCH [0,1] - ROLL [2,3] - YAW [4,5]
+int16_t _Error [3]; // PITCH [0] - ROLL [1] - YAW [2]
 
 int16_t term_P[3], term_I[3], term_D[3];	
 
@@ -97,6 +97,7 @@ volatile uint16_t TCNT2_X;				// TCNT2  overflows every  3.2us x 0xff = 0.000819
 //volatile uint16_t OCR0A_X;
 uint16_t TCNT1_X_snapshot1;
 uint16_t TCNT_X_snapshot2;
+uint16_t TCNT1_X_GlobalTimer;
 BOOL bResetTCNR1_X;
 
 

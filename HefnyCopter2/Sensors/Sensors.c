@@ -21,11 +21,6 @@
 
 
 
-//limits for sensor testing
-#define AccLowLimit			450
-#define AccHighLimit		850
-#define GyroLowLimit		500		
-#define GyroHighLimit		630
 
 
 P_STR strOK[] ="OK";
@@ -46,42 +41,18 @@ void Sensors_Init(void)
 
 
 
-
-char *Sensors_Gyro_Test(uint8_t channel)
-{
-	static uint16_t reading;
-	
-	reading = ADCPort_Get(channel);
-	  
-	utoa (reading,Result,10);
-	
-	if ((reading  > GyroLowLimit)  
-	 || (reading  < GyroHighLimit))
-	{
-		strcpy (&Result[3],&strOK);  
-	}
-	else
-	{
-		strcpy (&Result[3],&strFail);  
-	}
-	  
-	return Result;
-}
-
-
 /*
 // This function Test if sensors are working OK or not.
 */
-char *Sensors_Acc_Test(uint8_t channel)
+char *Sensors_Test(uint8_t channel, uint16_t LowLimit ,uint16_t HighLimit)
 {
-	
 	
 	nResult[channel] = ADCPort_Get(channel);
 	  
 	utoa (nResult[channel],Result,10);
 	
-	if ((nResult[channel]  > AccLowLimit)  
-	 || (nResult[channel]  < AccHighLimit))
+	if ((nResult[channel]  > LowLimit)  
+	 || (nResult[channel]  < HighLimit))
 	{
 		strcpy (&Result[3],strOK);  
 	}
@@ -94,14 +65,13 @@ char *Sensors_Acc_Test(uint8_t channel)
 }
 
 
-void CalibrateGyro (void)
-{
-	
+  
+int Sensors_GetAccAngle(int8_t Acc_Index) {
+  return arctan2(-Sensors_Latest[ACC_Z_Index], -Sensors_Latest[Acc_Index]) + 256;    // in Quid: 1024/(2*PI))
 }
 
-void CalibrateAcc (void)
-{
-	
+int Sensors_GetGyroRate(int8_t Gyro_Index) {                                             // ARef=3.3V, Gyro sensitivity=2mV/(deg/sec)
+  return (int)(Sensors_Latest[Gyro_Index] * 4.583333333);                 // in quid/sec:(1024/360)/1024 * 3.3/0.002)
 }
 
 /*

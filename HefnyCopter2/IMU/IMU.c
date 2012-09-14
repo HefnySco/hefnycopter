@@ -12,7 +12,9 @@
 
 #include "../Include/typedefs.h"
 #include "../Include/GlobalValues.h"
+#include "../Include/Math.h"
 #include "../Include/IMU.h"
+
 
 
 
@@ -109,59 +111,35 @@ void IMU_CalculateAngles ()
 *  Positive Angles are to Right & Bottom.
 */
 
-int16_t ScaleSensor (int16_t SensorValue, pid_param_t *pid_Param, double Ration)
-{
-	/*
-	if ((SensorValue < pid_Param->minSource ) && (SensorValue>- pid_Param->minSource))
-	{
-		return  0;
-	}	
-	else
-	{
-		if ((SensorValue> pid_Param->maxSource)) 
-		{
-			return pid_Param->maxDest;
-		}
-		else if ((SensorValue<- pid_Param->maxSource))
-		{
-			return -pid_Param->maxDest;
-		}
-		else if (SensorValue > 0) // positive sign
-		{
-			y = Ration  * (double)(SensorValue - pid_Param->minSource) + pid_Param->minDest;
-			return (int16_t) y;
-		}
-		else if (SensorValue < 0) // negative sign
-		{
-			y = Ration  * (double)(SensorValue + pid_Param->minSource) - pid_Param->minDest;
-			 return (int16_t) y;
-		}
-	   }	
-		*/
-	return 0;	
-}
 
 
-int16_t Limiter (int16_t Value, int16_t Limit)
+uint16_t LastLoopTime;
+void IMU_Kalman (void)
 {
-	if (Value > Limit) return Limit;
-	if (Value < -Limit) return -Limit;
+	int ACC_angle = Sensors_GetAccAngle(ACC_X_Index);                                           // in Quids
+	int GYRO_rate = Sensors_GetGyroRate(GYRO_Y_Index);												// in Quids/seconds
+    gyroPitch = kalmanCalculate(0,ACC_angle, GYRO_rate, LastLoopTime - TCNT1_X_GlobalTimer);      // calculate filtered Angle
+
+	ACC_angle = Sensors_GetAccAngle(ACC_Y_Index);                                           // in Quids
+	GYRO_rate = Sensors_GetGyroRate(GYRO_X_Index);												// in Quids/seconds
+    gyroRoll = kalmanCalculate(0,ACC_angle, GYRO_rate, LastLoopTime - TCNT1_X_GlobalTimer);      // calculate filtered Angle
+
+	LastLoopTime = TCNT1_X_GlobalTimer; // in 100 us unit
+	
 }
 
 void IMU_PID (void)
 {
-		
-		
 		// PITCH
 		if ((Sensors_Latest[GYRO_Y_Index]>=-1) && (Sensors_Latest[GYRO_Y_Index]<=1)) {Sensors_Latest[GYRO_Y_Index]=0;}
 		term_P[0] = (Sensors_Latest[GYRO_Y_Index]);// + CompAngleY; // - (RX_Latest[RXChannel_ELE] >> 3) );
-		
+
 		term_I[0] = -CompAngleY * Config.GyroParams[0]._I; //term_I[0] + ((term_P[0] >>3)  * Config.GyroParams[0]._I);	// Multiply I-term
-		_Error[0] = term_P[0];													// Current Error D-term
+														// Current Error D-term
+		// Differential = New - E[0];
+		term_D[0]= (term_P[0] - _Error[0])* Config.GyroParams[0]._D;
+		_Error[0] = term_P[0];	
 		term_P[0] = term_P[0]  * Config.GyroParams[0]._P;						// Multiply P-term 
-		// Differential = _Error[2] - E[3];
-		term_D[0]= (_Error[0] - _Error[1])* Config.GyroParams[0]._D;
-		_Error[1] = _Error[0];
 		
 		//term_D[0]
 		term_I[0]= Limiter(term_I[0], Config.GyroParams[0]._ILimit);
@@ -179,11 +157,10 @@ void IMU_PID (void)
 		
 		term_I[1] = -CompAngleX * Config.GyroParams[0]._I; //term_I[1] + ((term_P[1] >>3 ) * Config.GyroParams[0]._I);	// Multiply I-term
 
-		_Error[2] = term_P[1];						// Current Error D-term
+		// Differential = NEW - E[1];
+		term_D[1]= (term_P[1] - _Error[1]) * Config.GyroParams[0]._D;
+		_Error[1] = term_P[1];						// Current Error D-term
 		term_P[1] = term_P[1]  * Config.GyroParams[0]._P;			// Multiply P-term 
-		// Differential = _Error[2] - E[3];
-		term_D[1]= (_Error[2] - _Error[3]) * Config.GyroParams[0]._D;
-		_Error[3] = _Error[2];
 	
 		term_I[1]= Limiter(term_I[1], Config.GyroParams[0]._ILimit);
 		term_P[1]= Limiter(term_P[1], Config.GyroParams[0]._PLimit);
@@ -194,16 +171,16 @@ void IMU_PID (void)
 		gyroRoll = Limiter(gyroRoll,(int16_t)300);
 		
 		// YAW
+		if ((Sensors_Latest[GYRO_Z_Index]>=-1) && (Sensors_Latest[GYRO_Z_Index]<=1)) {Sensors_Latest[GYRO_Z_Index]=0;}
 		term_P[2] = (Sensors_Latest[GYRO_Z_Index]) ;// - (RX_Latest[RXChannel_RUD] >> 3));
 		
 		term_I[2]= term_I[2] + ((term_P[2] >> 3) * Config.GyroParams[1]._I);	// Multiply I-term
 
-		_Error[4] = term_P[2];						// Current Error D-term
+		// Differential = NEW - E[2];
+		term_D[2]= (term_P[2] - _Error[2]) * Config.GyroParams[1]._D;
+		_Error[2] = term_P[2];										// Current Error D-term
 		term_P[2] = term_P[2]  * Config.GyroParams[1]._P;			// Multiply P-term 
-		// Differential = _Error[2] - E[3];
-		term_D[2]= (_Error[4] - _Error[5]) * Config.GyroParams[1]._D;
-		_Error[5] = _Error[4];
-	
+		
 		term_I[2]= Limiter(term_I[2], Config.GyroParams[1]._ILimit);
 		term_P[2]= Limiter(term_P[2], Config.GyroParams[1]._PLimit);
 		term_D[2]= Limiter(term_D[2], Config.GyroParams[1]._DLimit);

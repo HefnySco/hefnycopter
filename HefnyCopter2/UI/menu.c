@@ -440,19 +440,26 @@ void _hHomeArmed()
 void _hSensorTest()
 {
 	
+	//limits for sensor testing
+	#define AccLowLimit			450
+	#define AccHighLimit		850
+	#define GyroLowLimit		500		
+	#define GyroHighLimit		630
+
+	
 	LCD_SetPos(0, 48);
-	LCD_WriteString(Sensors_Gyro_Test(GYRO_X_PNUM));
+	LCD_WriteString(Sensors_Test(GYRO_X_PNUM,GyroLowLimit,GyroHighLimit));
 	LCD_SetPos(1, 48);
-	LCD_WriteString(Sensors_Gyro_Test(GYRO_Y_PNUM));
+	LCD_WriteString(Sensors_Test(GYRO_Y_PNUM,GyroLowLimit,GyroHighLimit));
 	LCD_SetPos(2, 48);
-	LCD_WriteString(Sensors_Gyro_Test(GYRO_Z_PNUM));
+	LCD_WriteString(Sensors_Test(GYRO_Z_PNUM,GyroLowLimit,GyroHighLimit));
 	
 	LCD_SetPos(3, 48);
-	LCD_WriteString(Sensors_Acc_Test(ACC_X_PNUM));
+	LCD_WriteString(Sensors_Test(ACC_X_PNUM,AccLowLimit,AccHighLimit));
 	LCD_SetPos(4, 48);
-	LCD_WriteString(Sensors_Acc_Test(ACC_Y_PNUM));
+	LCD_WriteString(Sensors_Test(ACC_Y_PNUM,AccLowLimit,AccHighLimit));
 	LCD_SetPos(5, 48);
-	LCD_WriteString(Sensors_Acc_Test(ACC_Z_PNUM));
+	LCD_WriteString(Sensors_Test(ACC_Z_PNUM,AccLowLimit,AccHighLimit));
 	LCD_SetPos(6, 48);
 	LCD_WriteString(Sensor_GetBatteryTest());
 }
@@ -769,9 +776,9 @@ void _hDebug()
 			//gyroYangle=0;
 			CompAngleY=0;
 		}	
-	IMU_CalculateAngles();
-	IMU_PID();
-	
+	//IMU_CalculateAngles();
+	//IMU_PID();
+	IMU_Kalman();
 	itoa( Sensors_Latest[GYRO_Y_Index], sXDeg,10);
 	LCD_SetPos(1,48);
 	strcat_P(sXDeg,strSPC3);

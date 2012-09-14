@@ -17,9 +17,9 @@
 float CompAngleX;
 float CompAngleY;
 
-void IMU_CalculateAngles ();
-double 	y;
-			
-int16_t ScaleSensor (int16_t SensorValue, pid_param_t *pid_Param, double Ration);
+
+
+void IMU_Kalman (void);
+void IMU_CalculateAngles (void);
 void IMU_PID (void);
 #endif /* IMU_H_ */
