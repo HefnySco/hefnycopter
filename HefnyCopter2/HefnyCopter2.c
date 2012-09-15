@@ -134,6 +134,7 @@ void Setup (void)
 int main(void)
 {
 	
+	
 	Setup();
 			
 			//Config.AccParams.minDest=2;
@@ -173,7 +174,7 @@ int main(void)
 
 
 BOOL bXQuadMode;
-
+uint16_t TCNT_X_snapshotAutoDisarm;
 
 /*
 	We are in this loop because the system is not calibrated.
@@ -201,27 +202,37 @@ void MainLoop(void)
 	RX_CopyLatestReceiverValues();
 	// simulate
 	//RX_Latest[RXChannel_THR]=500;
-
+    ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+    {
+      CurrentTCNT1_X = TCNT1_X;
+    }
 	Sensors_ReadAll();
-	IMU_Kalman();
+	IMU_P2D();
 	bResetTCNR1_X = true;
+	
+  
 	
 	// HINT: you can try to skip this if flying to save time for more useful tasks as user cannot access menu when flying
 		
 	
-		if (TCNT_X_snapshot2==0) TCNT_X_snapshot2 = TCNT1_X;
-		else if ( ((TCNT1_X- TCNT_X_snapshot2) > 2) )  // TCNT1_X ticks in 32.768us
+		if (TCNT_X_snapshot2==0) TCNT_X_snapshot2 = CurrentTCNT1_X;
+		else if ( ((CurrentTCNT1_X- TCNT_X_snapshot2) > 2) )  // TCNT1_X ticks in 32.768us
 		{
 			Menu_MenuShow();	
 			TCNT_X_snapshot2=0;
 		}		
 	
-		
-	if (RX_Good != TX_GOOD) return ; // Do nothing all below depends on TX.
+	Config.AutoDisarm=1;
 	
+	if (RX_Good != TX_GOOD) 
+	{
+		return ; // Do nothing all below depends on TX.
+	}	
 	
 	if (RX_Latest[RXChannel_THR] < STICKThrottle_ARMING) 
-	{	// Throttle is LOW
+	{	
+		
+		// Throttle is LOW
 		// Here you can add code without caring about delays. As there quad is already off and on land.
 		// here we test different positions of sticks to enable arm/disarm, Quad/X-Quad
 		HandleSticksForArming();
@@ -251,15 +262,18 @@ void MainLoop(void)
 		}
 		else
 		{	
-			// Armed & Throttle Stick > MIN . . . We should Fly now.
-			if (RX_Latest[RXChannel_THR] <( STICKThrottle_ARMING - 20)) // calibrate again before leaving ground to average vibPitch_Rations.
-			{
-				Config.Sensor_zero[GYRO_X_Index] = (Config.Sensor_zero[GYRO_X_Index] + ADCPort_Get(GYRO_X_PNUM))/2;
-				Config.Sensor_zero[GYRO_Y_Index] = (Config.Sensor_zero[GYRO_Y_Index] + ADCPort_Get(GYRO_Y_PNUM))/2;
-				Config.Sensor_zero[GYRO_Z_Index] = (Config.Sensor_zero[GYRO_Z_Index] + ADCPort_Get(GYRO_Z_PNUM))/2;
 			
-			}
-		
+			TCNT_X_snapshotAutoDisarm =0; // ZERO [user may disarm then fly slowly..in this case the qud will disarm once he turned off the stick...because the counter counts once the quad is armed..e.g. if it takes n sec to disarm automatically..user took n-1 sec keeping the stick low after arming then it will take 1 sec to disarm again after lowing the stick under STICKThrottle_ARMING
+			
+			// Armed & Throttle Stick > MIN . . . We should Fly now.
+			//////if (RX_Latest[RXChannel_THR] <( STICKThrottle_ARMING - 20)) // calibrate again before leaving ground to average vibPitch_Rations.
+			//////{
+				//////Config.Sensor_zero[GYRO_X_Index] = (Config.Sensor_zero[GYRO_X_Index] + ADCPort_Get(GYRO_X_PNUM))/2;
+				//////Config.Sensor_zero[GYRO_Y_Index] = (Config.Sensor_zero[GYRO_Y_Index] + ADCPort_Get(GYRO_Y_PNUM))/2;
+				//////Config.Sensor_zero[GYRO_Z_Index] = (Config.Sensor_zero[GYRO_Z_Index] + ADCPort_Get(GYRO_Z_PNUM))/2;
+			//////
+			//////}
+		//////
 				
 			
 			MotorOut1 = RX_Latest[RXChannel_THR];
@@ -289,6 +303,7 @@ void MainLoop(void)
 			*	Self Leveling
 			*/
 				
+				/*
 				if (Config.SelfLevelMode == IMU_SelfLevelMode)
 				{
 					IMU_Kalman();
@@ -298,7 +313,7 @@ void MainLoop(void)
 					
 					IMU_P2D();
 				}
-				
+				*/
 				//gyroPitch = gyroPitch * (-1);
 				//gyroRoll  = gyroRoll  * (-1);
 				MotorOut1 -= gyroPitch ;
@@ -320,44 +335,44 @@ void MainLoop(void)
 			*/
 	
 			
-			//RX_Latest[RXChannel_AIL] = (RX_Latest[RXChannel_AIL] * 3) >> 2;
-			//RX_Latest[RXChannel_ELE] = (RX_Latest[RXChannel_ELE] * 3) >> 2;
-			//RX_Latest[RXChannel_RUD] = (RX_Latest[RXChannel_RUD] * 3) >> 2;
+			RX_Latest[RXChannel_AIL] = (RX_Latest[RXChannel_AIL] * 3) / 5 ;
+			RX_Latest[RXChannel_ELE] = (RX_Latest[RXChannel_ELE] * 3) / 5;
+			RX_Latest[RXChannel_RUD] = (RX_Latest[RXChannel_RUD] * 3) / 5 ;
 			
 	
-			//if (bXQuadMode==true)
-			//{
-							////
-				//MotorOut1 += RX_Latest[RXChannel_AIL] ;
-				//MotorOut2 += RX_Latest[RXChannel_AIL] ;
-				//MotorOut3 -= RX_Latest[RXChannel_AIL] ;
-				//MotorOut4 -= RX_Latest[RXChannel_AIL] ;
-				//
-				//MotorOut1 += RX_Latest[RXChannel_ELE];
-				//MotorOut2 -= RX_Latest[RXChannel_ELE];
-				//MotorOut3 += RX_Latest[RXChannel_ELE];
-				//MotorOut4 -= RX_Latest[RXChannel_ELE];
-				//
-				//MotorOut1 -= RX_Latest[RXChannel_RUD];
-				//MotorOut2 += RX_Latest[RXChannel_RUD];
-				//MotorOut3 += RX_Latest[RXChannel_RUD];
-				//MotorOut4 -= RX_Latest[RXChannel_RUD];
-			//}
-			//else
-			//{
-				//
-				//MotorOut2 += RX_Latest[RXChannel_AIL] ;
-				//MotorOut3 -= RX_Latest[RXChannel_AIL] ;
-				//
-				//MotorOut1 += RX_Latest[RXChannel_ELE] ;
-				//MotorOut4 -= RX_Latest[RXChannel_ELE] ;
-		//
-				//MotorOut1 -= RX_Latest[RXChannel_RUD] ;
-				//MotorOut2 += RX_Latest[RXChannel_RUD] ;
-				//MotorOut3 += RX_Latest[RXChannel_RUD] ;
-				//MotorOut4 -= RX_Latest[RXChannel_RUD] ;
-			//}
-			//
+			if (bXQuadMode==true)
+			{
+							
+				MotorOut1 += RX_Latest[RXChannel_AIL] ;
+				MotorOut2 += RX_Latest[RXChannel_AIL] ;
+				MotorOut3 -= RX_Latest[RXChannel_AIL] ;
+				MotorOut4 -= RX_Latest[RXChannel_AIL] ;
+				
+				MotorOut1 += RX_Latest[RXChannel_ELE];
+				MotorOut2 -= RX_Latest[RXChannel_ELE];
+				MotorOut3 += RX_Latest[RXChannel_ELE];
+				MotorOut4 -= RX_Latest[RXChannel_ELE];
+				
+				MotorOut1 -= RX_Latest[RXChannel_RUD];
+				MotorOut2 += RX_Latest[RXChannel_RUD];
+				MotorOut3 += RX_Latest[RXChannel_RUD];
+				MotorOut4 -= RX_Latest[RXChannel_RUD];
+			}
+			else
+			{
+				
+				MotorOut2 += RX_Latest[RXChannel_AIL] ;
+				MotorOut3 -= RX_Latest[RXChannel_AIL] ;
+				
+				MotorOut1 += RX_Latest[RXChannel_ELE] ;
+				MotorOut4 -= RX_Latest[RXChannel_ELE] ;
+		
+				MotorOut1 -= RX_Latest[RXChannel_RUD] ;
+				MotorOut2 += RX_Latest[RXChannel_RUD] ;
+				MotorOut3 += RX_Latest[RXChannel_RUD] ;
+				MotorOut4 -= RX_Latest[RXChannel_RUD] ;
+			}
+			
 			
 			// Save motors from turning-off
 			if (MotorOut1<MOTORS_IDLE_VALUE) MotorOut1=MOTORS_IDLE_VALUE;
@@ -385,51 +400,79 @@ void MainLoop(void)
 
 
 
+void Disarm (void)
+{
+	IsArmed = false;
+	LED_Orange = OFF;
+	LED_FlashOrangeLED (LED_LONG_TOGGLE,4);
+
+	TCNT1_X_snapshot1 =0; // reset timer
+					
+	Menu_LoadPage (PAGE_HOME);
+}
+
+
+void Arm (void)
+{
+	IsArmed = true;
+	LED_Orange = ON;
+	LED_FlashOrangeLED (LED_LONG_TOGGLE,4);
+
+	TCNT1_X_snapshot1 =0; // reset timer
+	TCNT_X_snapshotAutoDisarm=0;				
+	Menu_LoadPage (PAGE_HOME_ARMED);
+}
+
 
 
 void HandleSticksForArming (void)
 {
-	if (TCNT1_X_snapshot1==0)  TCNT1_X_snapshot1 = TCNT1_X; // start counting
+	if (TCNT1_X_snapshot1==0)  TCNT1_X_snapshot1 = CurrentTCNT1_X; // start counting
 		
 		/////ReadGainValues(); // keep reading values of POTS here. as we can change the value while quad is armed. but sure it is on land and motors are off.
 		// DisArm Check
-		if ((IsArmed == true) && (RX_Latest[RXChannel_RUD] < STICK_RIGHT))
+		if (IsArmed == true) 
 		{
-			bResetTCNR1_X  = false;
-			if ( (TCNT1_X - TCNT1_X_snapshot1) > STICKPOSITION_LONG_TIME )
-			{
-				IsArmed = false;
-				LED_Orange = OFF;
-				LED_FlashOrangeLED (LED_LONG_TOGGLE,4);
-				TCNT1_X_snapshot1 =0; // reset timer
-				
-				Menu_LoadPage (PAGE_HOME);
+			if (RX_Latest[RXChannel_RUD] < STICK_RIGHT)
+			{ // Check DisArming manually.
+				bResetTCNR1_X  = false;
+				if ( (CurrentTCNT1_X - TCNT1_X_snapshot1) > STICKPOSITION_LONG_TIME )
+				{
+					Disarm();
+					return ;
+				}
 			}
-		}
+			
+			if (Config.AutoDisarm==1)
+			{ // check auto disArm
+				if (TCNT_X_snapshotAutoDisarm==0) TCNT_X_snapshotAutoDisarm = CurrentTCNT1_X;
+				if ((CurrentTCNT1_X - TCNT_X_snapshotAutoDisarm) > DISARM_TIME)
+				{
+					Disarm();
+					return ;
+				}
+			}
+			
+		}			
 		
-		// Arm Check
-		if ((IsArmed == false) && (RX_Latest[RXChannel_RUD] > STICK_LEFT))
+		if (IsArmed == false) 
 		{
-			bResetTCNR1_X = false;
-			if ( (TCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_LONG_TIME )
-			{
-				IsArmed = true;
-				LED_Orange = ON;
-				LED_FlashOrangeLED (LED_LONG_TOGGLE,4);
-				TCNT1_X_snapshot1 =0; // reset timer
-				
-				Menu_LoadPage (PAGE_HOME_ARMED);
-			}		
-		}
+			if (RX_Latest[RXChannel_RUD] > STICK_LEFT)
+			{	// Armin Check
+				bResetTCNR1_X = false;
+				if ( (CurrentTCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_LONG_TIME )
+				{
+					Arm();
+					return ;
+				}
+			}					
 		
-		// Change Mode
-		if (IsArmed==false)
-		{	//set modes Quad , X-Quad
+			//set modes Quad , X-Quad
 		
-			if (RX_Latest[RXChannel_AIL]  < STICK_RIGHT)
+			if (RX_Latest[RXChannel_AIL]  > STICK_LEFT)
 			{// X-QUAD MODE
 				bResetTCNR1_X = false;
-				if ( (TCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_LONG_TIME )
+				if ( (CurrentTCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_LONG_TIME )
 				{
 					bXQuadMode = true;
 					LED_FlashOrangeLED (LED_LONG_TOGGLE,8);
@@ -438,10 +481,10 @@ void HandleSticksForArming (void)
 			}			
 			else 
 			{
-			 if ((RX_Latest[RXChannel_AIL]  > STICK_LEFT))
+			 if ((RX_Latest[RXChannel_AIL]  < STICK_RIGHT))
 				{	// QUAD COPTER MODE
 					bResetTCNR1_X = false;
-					if ( (TCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_LONG_TIME )
+					if ( (CurrentTCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_LONG_TIME )
 					{
 						bXQuadMode = false;
 						LED_FlashOrangeLED (LED_LONG_TOGGLE,4);
@@ -463,12 +506,12 @@ void HandleSticksAsKeys (void)
 			if ((Config.IsCalibrated & CALIBRATED_SENSOR) && (Config.IsCalibrated & CALIBRATED_Stick) && RX_Latest[RXChannel_THR] > STICKThrottle_HIGH)
 			{ // if Throttle is high and stick are calibrated
 		
-				if (TCNT1_X_snapshot1==0)  TCNT1_X_snapshot1 = TCNT1_X; // start counting
+				if (TCNT1_X_snapshot1==0)  TCNT1_X_snapshot1 = CurrentTCNT1_X; // start counting
 				
 	 			if ((RX_Latest[RXChannel_ELE]) > STICK_LEFT) 
 				{
 					bResetTCNR1_X = false;
-					if ( (TCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_SHORT_TIME )
+					if ( (CurrentTCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_SHORT_TIME )
 					{
 						_TXKeys = KEY_3;
 						TCNT1_X_snapshot1 =0; // reset timer
@@ -478,7 +521,7 @@ void HandleSticksAsKeys (void)
 				else if ((RX_Latest[RXChannel_ELE]) < STICK_RIGHT) 
 				{
 					bResetTCNR1_X = false;
-					if ( (TCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_SHORT_TIME )
+					if ( (CurrentTCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_SHORT_TIME )
 					{
 						_TXKeys = KEY_2;
 						TCNT1_X_snapshot1 =0; // reset timer
@@ -489,7 +532,7 @@ void HandleSticksAsKeys (void)
 				if ((RX_Latest[RXChannel_AIL]) > STICK_LEFT) 
 				{
 					bResetTCNR1_X = false;
-					if ( (TCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_SHORT_TIME )
+					if ( (CurrentTCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_SHORT_TIME )
 					{
 						_TXKeys = KEY_4;
 						TCNT1_X_snapshot1 =0; // reset timer
@@ -499,7 +542,7 @@ void HandleSticksAsKeys (void)
 				else if ((RX_Latest[RXChannel_AIL]) < STICK_RIGHT) 
 				{
 					bResetTCNR1_X = false;
-					if ( (TCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_SHORT_TIME )
+					if ( (CurrentTCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_SHORT_TIME )
 					{
 						_TXKeys = KEY_1;
 						TCNT1_X_snapshot1 =0; // reset timer

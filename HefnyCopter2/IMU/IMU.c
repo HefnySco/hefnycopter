@@ -33,28 +33,17 @@
 void IMU_CalculateAngles ()
 {
   //timer = TCNT1;	
-  gyroXrate = (Sensors_Latest[GYRO_X_Index]/10) ;//* 1.0323;//(gyroXadc-gryoZeroX)/Sensitivity - in quids              Sensitivity = 0.00333/3.3*1023=1.0323
-  
-  if ((gyroXrate<=1) && (gyroXrate>=-1))
-  {
-	  gyroXrate=0;
-  }
-  
-  
+  gyroXrate = (Sensors_Latest[GYRO_X_Index]) ;//* 1.0323;//(gyroXadc-gryoZeroX)/Sensitivity - in quids              Sensitivity = 0.00333/3.3*1023=1.0323
   gyroYrate = (Sensors_Latest[GYRO_Y_Index]) ;//* 1.0323;//(gyroYadc-gryoZeroX)/Sensitivity - in quids              Sensitivity = 0.00333/3.3*1023=1.0323
-  if ((gyroYrate<=1) && (gyroYrate>=-1))
-  {
-	  gyroYrate=0;
-  }
-
+ 
   accXangle = Sensors_Latest[ACC_X_Index] * 2.08; // output in degree  [ 0 to 314]
   accYangle = Sensors_Latest[ACC_Y_Index] * 2.08; 
   accZangle = Sensors_Latest[ACC_Z_Index] * 2.08; // maximum value means horizontal [in steady state]
  
   
-  CompAngleX = (0.6*(CompAngleX+(gyroXrate)*Sensors_dt * 0.0032))-(0.4*(accYangle));  // 0.0032 is imperical value based on comparing gyroYangle with accXangle
-  CompAngleY = (0.6*(CompAngleY-(gyroYrate)*Sensors_dt * 0.0032))-(0.4*(accXangle));
-  CompAngleZ = (0.6*(CompAngleZ-(gyroZrate)*Sensors_dt * 0.0032))-(0.4*(accZangle));
+  CompAngleX = (0.6*(CompAngleX+(gyroXrate)*Sensors_dt  / 10000 ))-(0.4*(accYangle));  // 0.0032 is imperical value based on comparing gyroYangle with accXangle
+  CompAngleY = (0.6*(CompAngleY-(gyroYrate)*Sensors_dt  / 10000 ))-(0.4*(accXangle));
+  CompAngleZ = (0.6*(CompAngleZ-(gyroZrate)*Sensors_dt  / 10000 ))-(0.4*(accZangle));
   
   
 } 
@@ -72,15 +61,15 @@ void IMU_Kalman (void)
  	accPitch  = Sensors_GetAccAngle(ACC_X_Index);       // in Quids  [0,765]
 	gyroPitch = Sensors_GetGyroRate(GYRO_Y_Index);		// in Quids/seconds
     gyroPitch = Kalman_Calculate(0,accPitch, gyroPitch,Sensors_dt);      // calculate filtered Angle
-	gyroPitch = P2D_Calculate(PID_Terms[0],gyroPitch ,  RX_Latest[RXChannel_ELE], gyroPitch );
+	gyroPitch = P2D_Calculate(Config.GyroParams[0],PID_Terms[0],gyroPitch ,  RX_Latest[RXChannel_ELE], gyroPitch );
 
 	accRoll   = Sensors_GetAccAngle(ACC_Y_Index);       // in Quids
 	gyroRoll  = Sensors_GetGyroRate(GYRO_X_Index);		// in Quids/seconds
     gyroRoll  = Kalman_Calculate(1,accRoll, gyroRoll, Sensors_dt);      // calculate filtered Angle
-	gyroRoll = P2D_Calculate(PID_Terms[0],gyroRoll ,  RX_Latest[RXChannel_AIL], gyroRoll );
+	gyroRoll = P2D_Calculate(Config.GyroParams[0],PID_Terms[1],gyroRoll ,  RX_Latest[RXChannel_AIL], gyroRoll );
 
 	
-	gyroYaw = P2D_Calculate(PID_Terms[2],Sensors_Latest[GYRO_Z_Index],  RX_Latest[RXChannel_RUD], 0.0);
+	gyroYaw = P2D_Calculate(Config.GyroParams[1],PID_Terms[2],Sensors_Latest[GYRO_Z_Index],  RX_Latest[RXChannel_RUD], 0.0);
 	
 }
 
@@ -89,10 +78,10 @@ void IMU_P2D (void)
 		IMU_CalculateAngles();
 		
 		// PITCH
-		gyroPitch = P2D_Calculate(PID_Terms[0],Sensors_Latest[GYRO_Y_Index], RX_Latest[RXChannel_ELE], CompAngleX);
+		gyroPitch = P2D_Calculate(Config.GyroParams[0], PID_Terms[0],Sensors_Latest[GYRO_Y_Index], RX_Latest[RXChannel_ELE], (Sensors_Latest[ACC_Y_Index]>>1));
 		// ROLL
-		gyroRoll = P2D_Calculate(PID_Terms[1],Sensors_Latest[GYRO_X_Index], RX_Latest[RXChannel_AIL], CompAngleY);
+		gyroRoll = P2D_Calculate(Config.GyroParams[0], PID_Terms[1],Sensors_Latest[GYRO_X_Index], RX_Latest[RXChannel_AIL], (Sensors_Latest[ACC_X_Index]>>1));
 		// YAW
-		gyroYaw = P2D_Calculate(PID_Terms[2],Sensors_Latest[GYRO_Z_Index], -RX_Latest[RXChannel_RUD],0.0);
+		gyroYaw = P2D_Calculate(Config.GyroParams[1], PID_Terms[2],Sensors_Latest[GYRO_Z_Index], RX_Latest[RXChannel_RUD],0.0);
 		
 }

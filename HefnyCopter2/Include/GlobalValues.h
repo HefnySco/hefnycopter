@@ -36,6 +36,7 @@ char sXDeg[10];
 #define STICKThrottle_ARMING		50	//  the total range is from [ 0, 1000]
 #define STICKPOSITION_LONG_TIME		305  // minimum time duration for stick to accept a command.
 #define STICKPOSITION_SHORT_TIME	80
+#define DISARM_TIME					10000
 // Max Collective
 // limits the maximum stick collective (range 80->100  100=Off)
 // this allows gyros to stabilize better when full throttle applied
@@ -127,6 +128,7 @@ typedef struct
 pid_terms_t PID_Terms[3]; // PITCH [0] - ROLL [1] - YAW [2]
 
 // TIMERS
+uint16_t CurrentTCNT1_X;				// equal to TCNT1_X value -- read every loop entry [it provide a safe read for TCNT1_X... it is updated only @ start of the loop
 volatile uint16_t TCNT1_X;				// TCNT1_X click every 0.0032768 sec [1 sec = 305.17578125 TCNT1_X]
 volatile uint16_t TCNT2_X;				// TCNT2  overflows every  3.2us x 0xff = 0.0008192 sec,  TCNT2_X value tick every 819.2 us and overflow every 53.6870912 sec
 //volatile uint16_t OCR0A_X;

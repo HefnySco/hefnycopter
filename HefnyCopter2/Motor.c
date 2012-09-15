@@ -30,7 +30,7 @@ int16_t	PMW_Pulse_Interval = PWM_LOW_PULSE_INTERVAL;
 
 
 volatile uint16_t i;
-uint16_t MotorStartTCNT, ElapsedTCNT1, ElapsedTCNT2, CurrentTCNT1,CurrentTCNT2;
+uint16_t MotorStartTCNT, ElapsedTCNT2, CurrentTCNT2;
 volatile uint16_t m1,m2,m3,m4;
 	
 uint16_t tempTCNT1;

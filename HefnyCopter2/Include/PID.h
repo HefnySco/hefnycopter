@@ -10,7 +10,7 @@
 #define PID_H_
 
 
+int16_t P2D_Calculate (pid_param_t PID_Params, pid_terms_t PID_Term, int16_t  Gyro_Value, int16_t HumanStick, int16_t CompAngle);
 
-int16_t P2D_Calculate (pid_terms_t PID_Term, double  Gyro_Value, int16_t HumanStick, double CompAngle);
 
 #endif /* PID_H_ */

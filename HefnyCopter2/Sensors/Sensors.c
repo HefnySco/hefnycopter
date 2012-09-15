@@ -71,8 +71,10 @@ int Sensors_GetAccAngle(int8_t Acc_Index) {
   return arctan2(-Sensors_Latest[ACC_Z_Index], -Sensors_Latest[Acc_Index]) + 256;    // in Quid: 1024/(2*PI))
 }
 
-int Sensors_GetGyroRate(int8_t Gyro_Index) {                                         // ARef=3.3V, Gyro sensitivity=2mV/(deg/sec)
-  return (int)(Sensors_Latest[Gyro_Index] * 4.583333333);							// in quid/sec:(1024/360)/1024 * 3.3/0.002)
+int16_t Sensors_GetGyroRate(int8_t Gyro_Index) {
+	int16_t t= Sensors_Latest[Gyro_Index];	                                            // ARef=3.3V, Gyro sensitivity=2mV/(deg/sec)
+	if ((t<=1) && (t>=-1)) t=0;
+  return (int16_t)(t * 4.583333333);							// in quid/sec:(1024/360)/1024 * 3.3/0.002)
 }
 
 /*
@@ -113,15 +115,22 @@ void Sensors_Calibrate (void)
 	nResult[ACC_Z_Index]-=100; // Sensor: horizontal, upward
 }
 
-uint16_t LastLoopTime[2];
+uint32_t LastLoopTime[2];
 
 void Sensors_ReadAll (void)
 {
+   uint16_t TX,TX1;
+   uint16_t *T;
    ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
    {
-	LastLoopTime[0] = TCNT1;
+		TX= TCNT1;
+		TX1= TCNT1_X;
    }   
 
+	T = &LastLoopTime[0];
+	T[0]= TX;
+	T[1]= TX1;
+	
 	Sensors_Latest[ACC_X_Index] = ADCPort_Get(ACC_X_PNUM)-Config.Sensor_zero[ACC_X_Index];
 	Sensors_Latest[ACC_Y_Index] = ADCPort_Get(ACC_Y_PNUM)-Config.Sensor_zero[ACC_Y_Index];
 	Sensors_Latest[ACC_Z_Index] = ADCPort_Get(ACC_Z_PNUM)-Config.Sensor_zero[ACC_Z_Index];
@@ -133,7 +142,7 @@ void Sensors_ReadAll (void)
 	Sensors_Latest[V_BAT_Index] = Sensor_GetBattery();
 	
 	// Handle the odd case where the TCNT1 rolls over and LastLoopTime[0] < LastLoopTime[1]
-	if (LastLoopTime[0] > LastLoopTime[1])
+	if (LastLoopTime[0] > LastLoopTime)
 		Sensors_dt = LastLoopTime[0] - LastLoopTime[1];
 	else 
 		Sensors_dt = (0xffff - LastLoopTime[1]) + LastLoopTime[0] ;
