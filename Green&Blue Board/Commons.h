@@ -34,10 +34,6 @@
 // Reducing the value by one doubles the sensitivity.
 // Increasing the value by one halves the sensitivity.
 
-#define StickScaleRoll	 11 //2048	//2^11
-#define StickScalePitch	 11 //2048	//2^11
-#define StickScaleYaw	 11 //2048	//2^11
-
 #define StickDivFactor	4	// 2^(StickDivFactor)
 
 // This one determines the maximum Yaw command applied, in percent.
@@ -93,7 +89,6 @@ volatile int16_t		gyroZero[3];					// Used for calibrating Gyros on ground
 volatile uint16_t		GainInADC[3];
 //volatile int8_t			GainIn[3];
 volatile uint16_t		vBat;
-#define UC_ADC_MAX 1023				// Used to invert ADC reading. Do not change.
 
 
 /* Enumerations */
