@@ -78,9 +78,9 @@ void IMU_P2D (void)
 		IMU_CalculateAngles();
 		
 		// PITCH
-		gyroPitch = P2D_Calculate(Config.GyroParams[0], PID_Terms[0],Sensors_Latest[GYRO_Y_Index], RX_Latest[RXChannel_ELE], (Sensors_Latest[ACC_Y_Index]>>1));
+		gyroPitch = P2D_Calculate(Config.GyroParams[0], PID_Terms[0],Sensors_Latest[GYRO_Y_Index], RX_Latest[RXChannel_ELE], (Sensors_Latest[ACC_Y_Index]));
 		// ROLL
-		gyroRoll = P2D_Calculate(Config.GyroParams[0], PID_Terms[1],Sensors_Latest[GYRO_X_Index], RX_Latest[RXChannel_AIL], (Sensors_Latest[ACC_X_Index]>>1));
+		gyroRoll = P2D_Calculate(Config.GyroParams[0], PID_Terms[1],Sensors_Latest[GYRO_X_Index], RX_Latest[RXChannel_AIL], (Sensors_Latest[ACC_X_Index]));
 		// YAW
 		gyroYaw = P2D_Calculate(Config.GyroParams[1], PID_Terms[2],Sensors_Latest[GYRO_Z_Index], RX_Latest[RXChannel_RUD],0.0);
 		

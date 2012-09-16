@@ -793,12 +793,12 @@ void _hDebug()
 	strcat_P(sXDeg,strSPC3);
 	LCD_WriteString(sXDeg);
 	
-	itoa(CompAngleY, sXDeg,10);
+	itoa((Sensors_Latest[ACC_X_Index]), sXDeg,10);
 	LCD_SetPos(3,48);
 	strcat_P(sXDeg,strSPC3);
 	LCD_WriteString(sXDeg);
 	
-	itoa( CompAngleX, sXDeg,10);//itoa( term_I[0], sXDeg,10);
+	itoa( (Sensors_Latest[ACC_Y_Index]), sXDeg,10);//itoa( term_I[0], sXDeg,10);
 	LCD_SetPos(4,48);
 	strcat_P(sXDeg,strSPC3);
 	LCD_WriteString(sXDeg);
