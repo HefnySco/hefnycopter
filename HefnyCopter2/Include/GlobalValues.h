@@ -36,6 +36,7 @@ char sXDeg[10];
 #define STICKThrottle_ARMING		50	//  the total range is from [ 0, 1000]
 #define STICKPOSITION_LONG_TIME		305  // minimum time duration for stick to accept a command.
 #define STICKPOSITION_SHORT_TIME	80
+#define STICK_DEADBAND				15
 #define DISARM_TIME					10000
 // Max Collective
 // limits the maximum stick collective (range 80->100  100=Off)
@@ -121,7 +122,7 @@ typedef struct
 {
 	//int16_t minSource,maxSource;
 	//int16_t minDest,maxDest;
-	int16_t P,I,D,Error
+	double P,I,D,Error
 } pid_terms_t;
 
 
@@ -134,7 +135,8 @@ volatile uint16_t TCNT2_X;				// TCNT2  overflows every  3.2us x 0xff = 0.000819
 //volatile uint16_t OCR0A_X;
 uint16_t TCNT1_X_snapshot1;
 uint16_t TCNT_X_snapshot2;
-uint16_t TCNT1_X_GlobalTimer;
+uint16_t TCNT_X_snapshotAutoDisarm;
+//uint16_t TCNT1_X_GlobalTimer;
 BOOL bResetTCNR1_X;
 
 
@@ -155,9 +157,10 @@ volatile uint16_t nTemp16;
 
 #define IMU_SelfLevelMode	1
 
-
-
-
+#define ESCCalibration_ON	1
+#define ESCCalibration_OFF	0
+#define QuadFlyingMode_PLUS 0
+#define QuadFlyingMode_X	1
 typedef struct  
 {
 	uint8_t signature;					
@@ -169,11 +172,11 @@ typedef struct
 	pid_param_t GyroParams[2];
 	uint8_t ArmingMode;
 	uint8_t AutoDisarm;
-	uint8_t LinkRollPitch;
+	uint8_t IsESCCalibration;
 	uint8_t ReceiverMode;
 	uint8_t MixerIndex;
 	uint8_t StickScaling[4];
-	uint8_t MinThrottle;
+	uint8_t QuadFlyingMode;
 	uint8_t LCDContrast;
 	uint8_t HeightDampening;
 	uint8_t HeightDampeningLimit;

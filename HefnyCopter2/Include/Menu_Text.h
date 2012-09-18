@@ -14,11 +14,11 @@
 
 #include "../Include/typedefs.h"
 
-
-#define PAGE_HOME			0
-#define PAGE_MENU			1
-#define PAGE_HOME_ARMED		2
-#define PAGE_SHOW_LAYOUT	14
+#define PAGE_HOME				0
+#define PAGE_MENU				1
+#define PAGE_HOME_ARMED			2
+#define PAGE_ESC_CALIBRATION	3
+#define PAGE_SHOW_LAYOUT		14
 
 
 
@@ -49,7 +49,7 @@ P_STR strSelflevel[] = "Self Leveling";
 P_STR strSensorTest[] = "Sensor Test";
 P_STR strSensorCalibration[] = "Sensor Calibration";
 //P_STR strCPPMSettings[] = "CPPM Settings";
-//P_STR strESCCalibration[] = "ESC Calibration";
+P_STR strESCCalibration[] = "ESC Calibration";
 
 P_STR strMixerEditor[] = "Mixer Editor";
 P_STR strShowMotorLayout[] = "Show Model Layout";

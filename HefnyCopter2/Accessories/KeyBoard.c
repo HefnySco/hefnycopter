@@ -10,6 +10,7 @@
 
 #include <avr/io.h> 
 #include "../Include/typedefs.h"
+#include "../Include/GlobalValues.h"
 #include "../Include/IO_config.h"
 #include "../Include/KeyBoard.h"
 #include "../Include/Timer.h"
@@ -37,13 +38,15 @@ uint8_t Keyboard_Read()
 	_keyrepeat = KEYBOARD_NO_REPEAT;
 	if (keys !=0) // if any key pressed even repeated.
 	{
+		if (IsArmed==true) Disarm(); // this is for your own safety.
+		
 		if ((lastKeys!=keys))
 		{	// Reset Timer if not the same key.
 			TCNT_X_snapshot3 = TCNT1_X+300;
 		}
 		else
 		{	// Count to measure the key press duration.
-			if ((TCNT_X_snapshot3 < TCNT1_X))
+			if ((TCNT_X_snapshot3 < TCNT1_X)) // some racing condition might happen here but not a problem we  dont need an atomic read for UI btn click.
 			{
 				_keyrepeat = KEYBOARD_REPEAT;
 				return keys; // re-press keys and set the repeated flag for more GUI handling.

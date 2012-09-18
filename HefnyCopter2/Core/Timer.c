@@ -27,7 +27,7 @@ ISR(TIMER1_OVF_vect)
 {
 	
 	TCNT1_X++; // click every 0.0032768 sec [1 sec = 305.17578125 TCNT1_X] overflows every 214.7483648 sec = 3.579 min
-	TCNT1_X_GlobalTimer +=32;  // 0.0032768
+	//TCNT1_X_GlobalTimer +=32;  // 0.0032768
 }
 
 

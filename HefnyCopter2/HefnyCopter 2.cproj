@@ -83,6 +83,9 @@
     <Compile Include="Accessories\Misc.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Arming.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Core\eepROM.c">
       <SubType>compile</SubType>
     </Compile>
@@ -185,10 +188,16 @@
     <Compile Include="Include\Receiver.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Include\Arming.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Include\Timer.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Include\typedefs.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Include\version.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Math\Math.c">

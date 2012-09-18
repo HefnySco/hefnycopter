@@ -27,8 +27,6 @@
 #include "../Include/IMU.h"
 
 
-
-
 static uint8_t oldPage;
 BOOL bValueChanged=false; 
 
@@ -336,7 +334,8 @@ void _hHomePage()
 	
 	if (IS_INIT)
 	{
-		
+		LCD_SetPos(0,0);
+		LCD_WriteString_P(strVersionInfo);
 		LCD_SetPos(5, 60);
 		if (!(Config.IsCalibrated & CALIBRATED_SENSOR)) 
 		{
@@ -380,6 +379,21 @@ void _hHomePage()
 	{
 		LCD_WriteString_P(strOK);
 	}
+	
+	// Flying Mode
+	LCD_SetPos (6,0);
+	LCD_SelectFont (&font12x16);
+	if (Config.QuadFlyingMode==QuadFlyingMode_PLUS)
+	{
+		LCD_WriteString_P(PSTR ("+"));
+	}
+	else
+	{
+		LCD_WriteString_P(PSTR ("X"));
+	}
+	//lcdReverse(true)
+	//lcdReverse(false);
+	LCD_SelectFont (NULL);
 }
 
 void _hHomeArmed()
@@ -436,6 +450,41 @@ void _hHomeArmed()
 }
 
 
+void _hHomeArmedESC (void)
+{
+	
+	if (IS_INIT)	
+	{
+		LCD_SelectFont (&font12x16);
+		LCD_SetPos(0,0);
+		LCD_WriteString_P(strARMED);
+		LCD_SelectFont (NULL);
+	}
+	
+	if (KEY4)
+	{
+		//reset ESC Calibration mode.
+		Config.IsESCCalibration=ESCCalibration_OFF;
+		Save_Config_to_EEPROM();
+	}
+	
+	LCD_SetPos(3,18);
+	itoa(MotorOut1,sXDeg,10);
+	LCD_WritePadded(sXDeg,5);
+	
+	LCD_SetPos(3,78);
+	itoa(MotorOut4,sXDeg,10);
+	LCD_WritePadded(sXDeg,5);
+	
+	LCD_SetPos(4,18);
+	itoa(MotorOut2,sXDeg,10);
+	LCD_WritePadded(sXDeg,5);
+	
+	LCD_SetPos(4,78);
+	itoa(MotorOut3,sXDeg,10);
+	LCD_WritePadded(sXDeg,5);
+	
+}
 
 void _hSensorTest()
 {
@@ -553,12 +602,11 @@ void _hStickCentering()
 void _hSensorCalibration()
 {
 
-	NOKEYRETURN
-	
+	uint8_t i;
+		
 	if (KEY4)
 	{
 		
-		uint8_t i;
 		for (i=0; i<10;++i)
 		{
 			Beeper_Beep(70,1);
@@ -568,38 +616,38 @@ void _hSensorCalibration()
 	
 		Sensors_Calibrate ();
 		
-		for (i=0; i<6;++i)
-		{ // order is aligned with ACC_X_Index & GYRO_X_Index
-			LCD_SetPos(i, 48);	
-			utoa(nResult[i],Result,10);
-			LCD_WriteString(&Result);
-		}	
-		
-
 		Config.IsCalibrated = (Config.IsCalibrated | CALIBRATED_SENSOR);
 		for (i=0;i<6;++i)
 		Config.Sensor_zero[i] = nResult[i];
 		Save_Config_to_EEPROM();
 		
-		_mykey |= KEY_INIT;
+		//_mykey |= KEY_INIT;
 	}
+	
+	
+	for (i=0; i<6;++i)
+	{ // order is aligned with ACC_X_Index & GYRO_X_Index
+		LCD_SetPos(i, 48);
+		itoa(Sensors_Latest[i],Result,10);
+		LCD_WriteString(&Result);
+		LCD_WriteSpace(5);
+	}	
 	
 }
 
 void _hESCCalibration()
 {
-	if (ANYKEY)
+	NOKEYRETURN
+	
+	if (KEY4)
 	{
-		if (subpage >= length(scrESCCal))
-			Menu_LoadPage(PAGE_MENU);
-		else
+		if ((Config.IsCalibrated & CALIBRATED_SENSOR) && (Config.IsCalibrated & CALIBRATED_Stick))
 		{
-			LCD_Clear();
-			PGM_P s = (PGM_P)pgm_read_word(&scrESCCal[subpage]);
-			LCD_WriteString_P(s);
-			writeSoftkeys(NULL);
-			subpage++;
-		}		
+			Config.IsESCCalibration=ESCCalibration_ON;
+			Save_Config_to_EEPROM();
+			while (true); // loop forever	
+		}
+				
 	}
 }
 
@@ -785,26 +833,25 @@ void _hDebug()
 	strcat_P(sXDeg,strSPC3);
 	LCD_WriteString(sXDeg);
 	
-	
-	
-	itoa( Sensors_Latest[GYRO_X_Index], sXDeg,10);
+	itoa( CompAngleY, sXDeg,10);
 	//itoa( term_P[0], sXDeg,10);
 	LCD_SetPos(2,48);
 	strcat_P(sXDeg,strSPC3);
 	LCD_WriteString(sXDeg);
 	
-	itoa((Sensors_Latest[ACC_X_Index]), sXDeg,10);
+	
+	itoa((Sensors_Latest[ACC_X_Index] * 2.08), sXDeg,10);
 	LCD_SetPos(3,48);
 	strcat_P(sXDeg,strSPC3);
 	LCD_WriteString(sXDeg);
 	
-	itoa( (Sensors_Latest[ACC_Y_Index]), sXDeg,10);//itoa( term_I[0], sXDeg,10);
+	itoa( CompAngleX, sXDeg,10);//itoa( term_I[0], sXDeg,10);
 	LCD_SetPos(4,48);
 	strcat_P(sXDeg,strSPC3);
 	LCD_WriteString(sXDeg);
 	
 	
-	itoa( gyroPitch, sXDeg,10);//itoa( term_I[0], sXDeg,10);
+	itoa( Sensors_Latest[ACC_Y_Index] * 2.08, sXDeg,10);//itoa( term_I[0], sXDeg,10);
 	LCD_SetPos(5,48);
 	strcat_P(sXDeg,strSPC3);
 	LCD_WriteString(sXDeg);

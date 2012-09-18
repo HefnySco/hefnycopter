@@ -73,7 +73,7 @@ int Sensors_GetAccAngle(int8_t Acc_Index) {
 
 int16_t Sensors_GetGyroRate(int8_t Gyro_Index) {
 	int16_t t= Sensors_Latest[Gyro_Index];	                                            // ARef=3.3V, Gyro sensitivity=2mV/(deg/sec)
-	if ((t<=1) && (t>=-1)) t=0;
+	if ((t<=1) && (t>=-1)) return 0;
   return (int16_t)(t * 4.583333333);							// in quid/sec:(1024/360)/1024 * 3.3/0.002)
 }
 
@@ -164,5 +164,6 @@ char * Sensor_GetBatteryTest(void)
 
 inline uint16_t  Sensor_GetBattery(void)
 {
+	 // because the V_BAT is connected to a voltage divider R1 & R2
 	return ADCPort_Get(V_BAT_PNUM) * 100 / 372;
 } 

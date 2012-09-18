@@ -37,6 +37,7 @@ int16_t Limiter (int16_t Value, int16_t Limit)
 {
 	if (Value > Limit) return Limit;
 	if (Value < -Limit) return -Limit;
+	return Value;
 }
 
 

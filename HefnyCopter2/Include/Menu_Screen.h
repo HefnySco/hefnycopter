@@ -13,6 +13,8 @@
 #ifndef MENU_SCREEN_H_
 #define MENU_SCREEN_H_
 
+#include "../Include/Version.h"
+
 // Pointer to menu item function handler.
 typedef void (pageHandler)(void);
 
@@ -58,7 +60,7 @@ typedef struct
 */
 
 P_STR scrHomePage[] = 
-	"HefnyCopter v0.3\n"
+	"\n"
 	"\n"
 	"Batt:\n"
 	"\n"
@@ -75,6 +77,16 @@ P_STR scrHomePageArmed[] =
 	"GX:       GY:\n"
 	"AX:       AY:\n"
 	;
+
+
+P_STR scrHomePageArmedESCCalibration[] = 
+	"\n"
+	"\n"
+	"\n"
+	"M1:       M4:\n"
+	"M2:       M3:\n"
+	;
+
 	
 P_STR scrSelfLeveling[] =
 	"\n"
@@ -134,77 +146,25 @@ P_STR scrCPPMSettings[] =
 	"Yaw (Rud):\n"
 	"Throttle:\n"
 	"Aux:";
-	
-P_STR scrSensorCal0[] = 
-	"Place the aircraft on\n"
-	"a level surface and\n"
-	"press CONTINUE.\n"
-	;
-	
-P_STR scrSensorCal1[] = 
-	"Calibration failed.\n"
-	;
 
-PROGMEM const prog_char* scrSensorCal[] = 
-	{
-		scrSensorCal0, 
-		scrSensorCal1
-	};
 
 P_STR scrESCCal0[] = 
-	"1 TAKE OFF THE\n"
-	"  PROPELLERS!!\n"
-	"2 Check the throttle\n"
-	"  direction in the\n"
-	"  receiver test menu.\n"
-	"  Reverse if\n"
-	"  necessary.";
-P_STR scrESCCal1[] = 
-	"3 Memorize the rest\n"
-	"  of the instructions\n"
-	"  because the next\n"
-	"  step is to turn off\n"
-	"  the power.\n"
-	"4 Turn off the power.\n"
-	"5 Turn on the radio.";
-P_STR scrESCCal2[] = 
-	"6 Set the throttle to\n"
-	"  full.\n"
-	"7 Press down button\n"
-	"  1 and 4 and keep\n"
-	"  them down until the\n"
-	"  last step.\n"
-	"8 Turn on power.";	
-P_STR scrESCCal3[] = 
-	"9 Wait for the ESCs\n"
-	"  full-throttle cali-\n"
-	"  bration sound.\n"
-	"10 Set the throttle\n"
-	"  to idle.\n"
-	"11 Wait for the idle";		
-P_STR scrESCCal4[] = 
-	"  calibration sound.\n"
-	"12 Release the\n"
-	"  buttons.\n"
-	"13 Check if the mot-\n"
-	"  ors start at the\n"
-	"  same time. If not,\n"
-	"  adjust the";	
-P_STR scrESCCal5[] = 
-	"  'Minimum throttle'\n"
-	"  in the 'Misc. Set-\n"
-	"  tings menu.\n"
+	"-TAKE OFF PROPELLERS!!\n"
+	"-Press continue\n"
+	"-Turn Off Quadcopter.\n"
 	"\n"
-	"  You are now done!";
-
+	"-Quad will started\n"
+	"in ARMED TAKECARE state\n";
+	
+P_STR scrESCCal1[] = 
+	"Press Continue after calibration.\n"
+	"\n"
+	"unplug battery.\n";
+	
 PROGMEM const prog_char* scrESCCal[] = 
 	{
 		scrESCCal0,
-		scrESCCal1,
-		scrESCCal2,
-		scrESCCal3,
-		scrESCCal4,
-		scrESCCal5,
+		scrESCCal1
 	};
 
 /*P_STR scrRadioCal0[] = 
@@ -236,13 +196,16 @@ static const prog_char _skPAGE[]      = "BACK PREV NEXT CHANGE";
 static const prog_char _skBACKNEXT[]  = "BACK NEXT";
 static const prog_char _skCANCEL[]    = "CANCEL";
 static const prog_char _skEDIT[]      = "CANCEL  DOWN  UP  OK";
+static const prog_char _skSAVE[]      = "                DONE";
+
 //////////////////////////////////////////////////////////////////////////
 // Menu Structure
 
-#define MENU_START_INDEX 3
+#define MENU_START_INDEX 4
 void _hHomePage();
 void _hMenu();
 void _hHomeArmed();
+void _hHomeArmedESC();
 void _hStabilization();
 void _hSelfLeveling();
 void _hReceiverTest();
@@ -259,6 +222,7 @@ static const page_t pages[] PROGMEM = {
 /*  0 */	{ _skHOME, _hHomePage, scrHomePage },		// non-menu item
 /*  1 */	{ _skMENU, _hMenu},							// non-menu item
 /*	2 */	{ _skHOME, _hHomeArmed, scrHomePageArmed},	// non-menu item
+/*	3 */	{ _skSAVE, _hHomeArmedESC, scrHomePageArmedESCCalibration},	// non-menu item
 { _skMENU, _hStabilization, scrStabilization},			// in case of extra adding non menu items  MENU_START_INDEX constant should be updated to indicate the start of the menu
 { _skMENU, _hSelfLeveling, scrSelfLeveling},	
 { _skPAGE, NULL, scrModeSettings},
@@ -267,7 +231,7 @@ static const page_t pages[] PROGMEM = {
 { _skBACK, _hReceiverTest, scrReceiverTest},
 { _skCONTINUE, _hSensorCalibration, scrSensorTest},
 { _skCONTINUE, _hStickCentering, scrReceiverTest},
-///* 10 */	{ _skCONTINUE, _hESCCalibration, scrESCCal0},
+{ _skCONTINUE, _hESCCalibration, scrESCCal0},
 ///* 11 */	{ _skPAGE, NULL, scrCPPMSettings},
 ///* 13 */	{ _skPAGE, NULL, scrMixerEditor},
 ///* 15 */	{ _skMENU, _hLoadModelLayout },
@@ -287,7 +251,7 @@ static const prog_char *lstMenu[] PROGMEM = {
 	strReceiverTest,
 	strSensorCalibration,
 	strRadioCalibration,
-	//strESCCalibration,
+	strESCCalibration,
 	//strCPPMSettings,
 	//strMixerEditor,
 	//strLoadMotorLayout,

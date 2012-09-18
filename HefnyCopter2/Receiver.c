@@ -242,6 +242,7 @@ void RX_CopyLatestReceiverValues (void)
 		else
 		{
 			RX_Latest[i]= RX_GetReceiverValues(i);	 
+			if ((RX_Latest[i]<STICK_DEADBAND) && (RX_Latest[i]>-STICK_DEADBAND)) RX_Latest[i]=0;
 		}
 		
 	}		

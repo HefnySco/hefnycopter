@@ -13,6 +13,7 @@
 #include <avr/wdt.h>
 #include <util/atomic.h>
 
+
 #include "Include/GlobalValues.h"
 #include "Include/HefnyCopter2.h"
 #include "Include/IO_config.h"
@@ -31,7 +32,8 @@
 #include "Include/fonts.h"
 #include "Include/Menu_Text.h"
 #include "Include/IMU.h"
-
+#include "Include/Math.h"
+#include "Include/Arming.h"
 /*
 
 Quad
@@ -64,8 +66,6 @@ Quad-X
 
 */
 
-static const prog_char versionNum[] = "Version 0.1";
-static const prog_char versionAuthor[] = "HefnyCopter2";
 
 
 
@@ -119,11 +119,6 @@ void Setup (void)
 	LCD_Init();
 	LCD_Clear();
 	
-	LCD_SetPos(1, 0);
-	LCD_WriteString_P(versionNum);
-	LCD_SetPos(3, 0);
-	LCD_WriteString_P(versionAuthor);
-	
 	sei();
 	
 	delay_ms(20);
@@ -134,8 +129,8 @@ void Setup (void)
 int main(void)
 {
 	
-	
 	Setup();
+	Config.QuadFlyingMode = QuadFlyingMode_PLUS; 
 			
 			//Config.AccParams.minDest=2;
 			//Config.AccParams.maxDest=30;
@@ -151,8 +146,18 @@ int main(void)
 			 //Yaw_Ratio = ((double)(Config.GyroParams[1].maxDest - Config.GyroParams[1].minDest)/(double)(Config.GyroParams[1].maxSource - Config.GyroParams[1].minSource));
 			 //Acc_Ratio = ((double)(Config.AccParams.maxDest - Config.AccParams.minDest)/(double)(Config.AccParams.maxSource - Config.AccParams.minSource));
 			
-			
-			
+	while (Config.IsESCCalibration==ESCCalibration_ON)		
+	{
+		Beeper_Beep(100,2);
+		
+		Menu_LoadPage(PAGE_ESC_CALIBRATION);
+		while (1)
+		{  // loop forever
+			LoopESCCalibration();
+			Loop();
+		}
+	}			
+
 	while ((!(Config.IsCalibrated & CALIBRATED_SENSOR)) || (!(Config.IsCalibrated & CALIBRATED_Stick)))
 	{
 		Loop();
@@ -171,10 +176,19 @@ int main(void)
 }
 
 
+void LoopESCCalibration (void)
+{
+	RX_CopyLatestReceiverValues();
+	
+	MotorOut1 = RX_Latest[RXChannel_THR];
+	MotorOut2 = RX_Latest[RXChannel_THR];
+	MotorOut3 = RX_Latest[RXChannel_THR];
+	MotorOut4 = RX_Latest[RXChannel_THR];		
 
+	Motor_GenerateOutputSignal();
+	
+}
 
-BOOL bXQuadMode;
-uint16_t TCNT_X_snapshotAutoDisarm;
 
 /*
 	We are in this loop because the system is not calibrated.
@@ -266,13 +280,15 @@ void MainLoop(void)
 			TCNT_X_snapshotAutoDisarm =0; // ZERO [user may disarm then fly slowly..in this case the qud will disarm once he turned off the stick...because the counter counts once the quad is armed..e.g. if it takes n sec to disarm automatically..user took n-1 sec keeping the stick low after arming then it will take 1 sec to disarm again after lowing the stick under STICKThrottle_ARMING
 			
 			// Armed & Throttle Stick > MIN . . . We should Fly now.
-			//////if (RX_Latest[RXChannel_THR] <( STICKThrottle_ARMING - 20)) // calibrate again before leaving ground to average vibPitch_Rations.
-			//////{
-				//////Config.Sensor_zero[GYRO_X_Index] = (Config.Sensor_zero[GYRO_X_Index] + ADCPort_Get(GYRO_X_PNUM))/2;
-				//////Config.Sensor_zero[GYRO_Y_Index] = (Config.Sensor_zero[GYRO_Y_Index] + ADCPort_Get(GYRO_Y_PNUM))/2;
-				//////Config.Sensor_zero[GYRO_Z_Index] = (Config.Sensor_zero[GYRO_Z_Index] + ADCPort_Get(GYRO_Z_PNUM))/2;
-			//////
-			//////}
+			if (RX_Latest[RXChannel_THR] <( STICKThrottle_ARMING + 80)) // calibrate again before leaving ground to average vibPitch_Rations.
+			{
+				Config.Sensor_zero[GYRO_X_Index] = (Config.Sensor_zero[GYRO_X_Index] + ADCPort_Get(GYRO_X_PNUM))/2;
+				Config.Sensor_zero[GYRO_Y_Index] = (Config.Sensor_zero[GYRO_Y_Index] + ADCPort_Get(GYRO_Y_PNUM))/2;
+				Config.Sensor_zero[GYRO_Z_Index] = (Config.Sensor_zero[GYRO_Z_Index] + ADCPort_Get(GYRO_Z_PNUM))/2;
+				Config.Sensor_zero[ACC_X_Index] = (Config.Sensor_zero[ACC_X_Index] + ADCPort_Get(ACC_X_PNUM))/2;
+				Config.Sensor_zero[ACC_Y_Index] = (Config.Sensor_zero[ACC_Y_Index] + ADCPort_Get(ACC_Y_PNUM))/2;
+				
+			}
 		//////
 				
 			
@@ -340,7 +356,7 @@ void MainLoop(void)
 			RX_Latest[RXChannel_RUD] = (RX_Latest[RXChannel_RUD] * 3) / 5 ;
 			
 	
-			if (bXQuadMode==true)
+			if (Config.QuadFlyingMode==QuadFlyingMode_X)
 			{
 							
 				MotorOut1 += RX_Latest[RXChannel_AIL] ;
@@ -400,29 +416,6 @@ void MainLoop(void)
 
 
 
-void Disarm (void)
-{
-	IsArmed = false;
-	LED_Orange = OFF;
-	LED_FlashOrangeLED (LED_LONG_TOGGLE,4);
-
-	TCNT1_X_snapshot1 =0; // reset timer
-					
-	Menu_LoadPage (PAGE_HOME);
-}
-
-
-void Arm (void)
-{
-	IsArmed = true;
-	LED_Orange = ON;
-	LED_FlashOrangeLED (LED_LONG_TOGGLE,4);
-
-	TCNT1_X_snapshot1 =0; // reset timer
-	TCNT_X_snapshotAutoDisarm=0;				
-	Menu_LoadPage (PAGE_HOME_ARMED);
-}
-
 
 
 void HandleSticksForArming (void)
@@ -474,7 +467,7 @@ void HandleSticksForArming (void)
 				bResetTCNR1_X = false;
 				if ( (CurrentTCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_LONG_TIME )
 				{
-					bXQuadMode = true;
+					Config.QuadFlyingMode=QuadFlyingMode_X;
 					LED_FlashOrangeLED (LED_LONG_TOGGLE,8);
 					TCNT1_X_snapshot1 =0; // reset timer
 				}
@@ -486,7 +479,7 @@ void HandleSticksForArming (void)
 					bResetTCNR1_X = false;
 					if ( (CurrentTCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_LONG_TIME )
 					{
-						bXQuadMode = false;
+						Config.QuadFlyingMode=QuadFlyingMode_PLUS;
 						LED_FlashOrangeLED (LED_LONG_TOGGLE,4);
 						TCNT1_X_snapshot1 =0; // reset timer
 					}		
