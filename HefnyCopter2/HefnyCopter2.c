@@ -132,17 +132,7 @@ int main(void)
 	Setup();
 	Config.QuadFlyingMode = QuadFlyingMode_PLUS; 
 			
-			//Config.AccParams.minDest=2;
-			//Config.AccParams.maxDest=30;
-			//Config.AccParams.minSource=2;
-			//Config.AccParams.maxSource=20;
-	//
-			//Config.GyroParams[0].minSource=20;
-			//Config.GyroParams[0].maxSource=500;
-			//Config.GyroParams[0].minDest=20;
-			//Config.GyroParams[0].maxDest=100;
-		//
-			 //Pitch_Ratio = ((double)(Config.GyroParams[0].maxDest - Config.GyroParams[0].minDest)/(double)(Config.GyroParams[0].maxSource - Config.GyroParams[0].minSource));
+				 //Pitch_Ratio = ((double)(Config.GyroParams[0].maxDest - Config.GyroParams[0].minDest)/(double)(Config.GyroParams[0].maxSource - Config.GyroParams[0].minSource));
 			 //Yaw_Ratio = ((double)(Config.GyroParams[1].maxDest - Config.GyroParams[1].minDest)/(double)(Config.GyroParams[1].maxSource - Config.GyroParams[1].minSource));
 			 //Acc_Ratio = ((double)(Config.AccParams.maxDest - Config.AccParams.minDest)/(double)(Config.AccParams.maxSource - Config.AccParams.minSource));
 			
@@ -285,8 +275,8 @@ void MainLoop(void)
 				Config.Sensor_zero[GYRO_X_Index] = (Config.Sensor_zero[GYRO_X_Index] + ADCPort_Get(GYRO_X_PNUM))/2;
 				Config.Sensor_zero[GYRO_Y_Index] = (Config.Sensor_zero[GYRO_Y_Index] + ADCPort_Get(GYRO_Y_PNUM))/2;
 				Config.Sensor_zero[GYRO_Z_Index] = (Config.Sensor_zero[GYRO_Z_Index] + ADCPort_Get(GYRO_Z_PNUM))/2;
-				Config.Sensor_zero[ACC_X_Index] = (Config.Sensor_zero[ACC_X_Index] + ADCPort_Get(ACC_X_PNUM))/2;
-				Config.Sensor_zero[ACC_Y_Index] = (Config.Sensor_zero[ACC_Y_Index] + ADCPort_Get(ACC_Y_PNUM))/2;
+				Config.Sensor_zero[ACC_X_Index]  = (Config.Sensor_zero[ACC_X_Index] + ADCPort_Get(ACC_X_PNUM))/2;
+				Config.Sensor_zero[ACC_Y_Index]  = (Config.Sensor_zero[ACC_Y_Index] + ADCPort_Get(ACC_Y_PNUM))/2;
 				
 			}
 		//////
