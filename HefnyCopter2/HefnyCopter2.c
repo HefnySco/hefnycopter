@@ -270,15 +270,19 @@ void MainLoop(void)
 			TCNT_X_snapshotAutoDisarm =0; // ZERO [user may disarm then fly slowly..in this case the qud will disarm once he turned off the stick...because the counter counts once the quad is armed..e.g. if it takes n sec to disarm automatically..user took n-1 sec keeping the stick low after arming then it will take 1 sec to disarm again after lowing the stick under STICKThrottle_ARMING
 			
 			// Armed & Throttle Stick > MIN . . . We should Fly now.
-			if (RX_Latest[RXChannel_THR] <( STICKThrottle_ARMING + 80)) // calibrate again before leaving ground to average vibPitch_Rations.
-			{
-				Config.Sensor_zero[GYRO_X_Index] = (Config.Sensor_zero[GYRO_X_Index] + ADCPort_Get(GYRO_X_PNUM))/2;
-				Config.Sensor_zero[GYRO_Y_Index] = (Config.Sensor_zero[GYRO_Y_Index] + ADCPort_Get(GYRO_Y_PNUM))/2;
-				Config.Sensor_zero[GYRO_Z_Index] = (Config.Sensor_zero[GYRO_Z_Index] + ADCPort_Get(GYRO_Z_PNUM))/2;
-				Config.Sensor_zero[ACC_X_Index]  = (Config.Sensor_zero[ACC_X_Index] + ADCPort_Get(ACC_X_PNUM))/2;
-				Config.Sensor_zero[ACC_Y_Index]  = (Config.Sensor_zero[ACC_Y_Index] + ADCPort_Get(ACC_Y_PNUM))/2;
-				
-			}
+			
+			/*
+			This code is good, however if you take-off from a non-flat ground then quad will try to bend similar to ground...as it took it as a calibration point.
+			*/
+			////if (RX_Latest[RXChannel_THR] <( STICKThrottle_ARMING + 80)) // calibrate again before leaving ground to average vibPitch_Rations.
+			////{
+				////Config.Sensor_zero[GYRO_X_Index] = (Config.Sensor_zero[GYRO_X_Index] + ADCPort_Get(GYRO_X_PNUM))/2;
+				////Config.Sensor_zero[GYRO_Y_Index] = (Config.Sensor_zero[GYRO_Y_Index] + ADCPort_Get(GYRO_Y_PNUM))/2;
+				////Config.Sensor_zero[GYRO_Z_Index] = (Config.Sensor_zero[GYRO_Z_Index] + ADCPort_Get(GYRO_Z_PNUM))/2;
+				////Config.Sensor_zero[ACC_X_Index]  = (Config.Sensor_zero[ACC_X_Index] + ADCPort_Get(ACC_X_PNUM))/2;
+				////Config.Sensor_zero[ACC_Y_Index]  = (Config.Sensor_zero[ACC_Y_Index] + ADCPort_Get(ACC_Y_PNUM))/2;
+				////
+			////}
 		//////
 				
 			

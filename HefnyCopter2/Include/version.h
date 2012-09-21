@@ -38,6 +38,7 @@ version 0.4
 ToDO:
 version 0.5
 * Disable StickLanguage while setting receiver range [important]
+* Add Timout for Disarm
 * Move voltage port to default (ADC0) connected to VCC by default to free ADC1
 * Motor Layout
 * Store Quadcopter Flying Modes in eeprom using menu.
@@ -47,6 +48,8 @@ version 0.6
 * Enable reduced RX cable configuration...should be implemented through mixer + text renaming for signals.
 * Enhanced Receiver Test menu.... show left & right words next to controls.
 
+version 0.7
+* Self Landing when battery is weak.
 
 */
 
