@@ -34,6 +34,9 @@
 #include "Include/IMU.h"
 #include "Include/Math.h"
 #include "Include/Arming.h"
+#include "Include/UART.h"
+
+
 /*
 
 Quad
@@ -79,10 +82,10 @@ void Setup (void)
 	M2_DIR = OUTPUT;
 	M3_DIR = OUTPUT;
 	M4_DIR = OUTPUT;
-	M5_DIR = OUTPUT;
-	M6_DIR = OUTPUT;
-	M7_DIR = OUTPUT;
-	M8_DIR = OUTPUT;
+	//M5_DIR = OUTPUT;
+	//M6_DIR = OUTPUT;
+	//M7_DIR = OUTPUT;
+	//M8_DIR = OUTPUT;
 	
 	Buzzer_DIR = OUTPUT;
 	LED_Orange_DIR = OUTPUT;
@@ -98,7 +101,7 @@ void Setup (void)
 	TCCR1B = 0;
 	TCCR1C = 0;
 	
-	
+#ifdef PRIMARY_INPUT_RX
 	// enable interrupts
 	EICRA  = _BV(ISC00) | _BV(ISC10) | _BV(ISC20);	// any edge on INT0, INT1 and INT2
 	EIMSK  = _BV(INT0)  | _BV(INT1)  | _BV(INT2);	// enable interrupt for INT0, INT1 and INT2
@@ -108,6 +111,23 @@ void Setup (void)
 	PCMSK1 = _BV(PCINT8);							// enable PCINT8 (AUX) -> PCI1
 	PCMSK3 = _BV(PCINT24);							// enable PCINT24 (THR) -> PCI3
 	PCIFR  = _BV(PCIF1) | _BV(PCIF3);				// clear interrupts
+#endif
+#ifdef SECONDARY_INPUT_RX
+/*
+PCINT16 - PC0 - OUTPUT 6
+PCINT17 - PC1 - OUTPUT 5 
+PCINT21 - PC5 - OUTPUT 7
+PCINT23 - PC7 - OUTPUT 8 
+*/
+	
+	PCICR |= _BV(PCIE1)   | _BV(PCIE2);															// enable PCI1 and PCI2
+	PCMSK1 = _BV(PCINT8);																		// enable PCINT8 (AUX) -> PCI1
+	PCMSK2 = _BV(PCINT16) | _BV(PCINT17) | _BV(PCINT21) |_BV(PCINT23);							// enable PCINT24 (THR) -> PCI3
+	PCIFR  = _BV(PCIF1)   | _BV(PCIF2);															// clear interrupts
+
+	UART_Init(20);
+#endif
+
 
 	ADCPort_Init();
 	Sensors_Init();
@@ -135,7 +155,24 @@ int main(void)
 				 //Pitch_Ratio = ((double)(Config.GyroParams[0].maxDest - Config.GyroParams[0].minDest)/(double)(Config.GyroParams[0].maxSource - Config.GyroParams[0].minSource));
 			 //Yaw_Ratio = ((double)(Config.GyroParams[1].maxDest - Config.GyroParams[1].minDest)/(double)(Config.GyroParams[1].maxSource - Config.GyroParams[1].minSource));
 			 //Acc_Ratio = ((double)(Config.AccParams.maxDest - Config.AccParams.minDest)/(double)(Config.AccParams.maxSource - Config.AccParams.minSource));
-			
+	//////while (1)
+	//////{
+		//////send_byte('1');
+		//////send_byte('2');
+		//////send_byte('3');
+		//////send_byte('4');
+		//////send_byte('5');
+		//////send_byte('6');
+		//////send_byte('7');
+		//////send_byte('8');
+		//////
+		//////delay_ms(10);
+	//////}
+	//////
+	
+	DataPtr = (uint8_t *) (&Sensors_Latest);
+	DataCounter=0;
+	
 	while (Config.IsESCCalibration==ESCCalibration_ON)		
 	{
 		Beeper_Beep(100,2);
@@ -214,8 +251,15 @@ void MainLoop(void)
 	IMU_P2D();
 	bResetTCNR1_X = true;
 	
-  
 	
+	Send_Data(DataPtr,2);
+	DataPtr+=2;
+	DataCounter+=1;
+	if (DataCounter==6)
+	{
+		DataCounter=0;
+		DataPtr-=12;
+	}	
 	// HINT: you can try to skip this if flying to save time for more useful tasks as user cannot access menu when flying
 		
 	
