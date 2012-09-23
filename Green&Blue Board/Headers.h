@@ -22,6 +22,7 @@ void eeprom_write_byte_changed( uint8_t *  addr, uint8_t value );
 void eeprom_write_block_changes( const uint8_t * src, void * dest, size_t size );
 
 void RxGetChannels(void);
+
 void Init_ADC(void);
 void delay_us(uint8_t time);
 void delay_ms(uint16_t time);

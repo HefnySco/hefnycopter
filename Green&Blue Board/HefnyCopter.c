@@ -64,7 +64,8 @@
 //		* Timing correction after connecting output to an oscilloscopes to check exact signal timing. [BASE_PULSE= 1104 / 16  instead of 1120 / 16]
 // 0.61
 //		* Config signature is read incorrectly so the program always overwrites the config and saves the default one with each restart.
-
+// 0.62
+//		* Fixing Reverse Gyro bug because of stick scaling.
 
 #define QUAD_COPTER
 /*
@@ -507,6 +508,7 @@ void RxGetChannels(void)
 	RxInYaw = (RxChannel >> StickDivFactor);				//     "
 	
 }
+
 
 
 
