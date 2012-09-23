@@ -30,23 +30,36 @@ FailSafe:
 // When TX remote is turned OFF the only valid signal is THR others are no signals.
 // so I monitor a dead signal on any of RX except THR this could be any one... I chose YAW.... 
 // I detect the lost signal in the RX_GetReceiverThrottleValue() because it is called less 1/4 times than the other function RX_GetReceiverValue()
-volatile uint16_t RX_raw[RXChannels];
-volatile uint16_t RX_LastValidSignal_timestamp;
-volatile uint16_t RX_LastValidSignal_timestampAux;
+volatile uint16_t RX_raw[2][RXChannels];
+volatile uint16_t RX1_LastValidSignal_timestamp;
+volatile uint16_t RX1_LastValidSignal_timestampAux;
+volatile uint16_t RX2_LastValidSignal_timestamp;
+volatile uint16_t RX2_LastValidSignal_timestampAux;
 
 #define RX_Div_Factor	16	// div by 16
 
 
-
-void CalculateSignalLength(uint8_t ChannelIndex)
+void CalculateSignalLength1(uint8_t ChannelIndex)
 {
-	if (TCNT1 > RX_raw[ChannelIndex] )
+	if (TCNT1 > RX_raw[0][ChannelIndex] )
 	{
-		RX_raw[ChannelIndex] = TCNT1 - RX_raw[ChannelIndex] ;	
+		RX[0][ChannelIndex] = TCNT1 - RX_raw[0][ChannelIndex] ;	
 	}
 	else
 	{
-		RX[ChannelIndex] = (0xffff - RX_raw[ChannelIndex] + TCNT1 );	
+		RX[0][ChannelIndex] = (0xffff - RX_raw[0][ChannelIndex] + TCNT1 );	
+	}
+		
+}
+void CalculateSignalLength2(uint8_t ChannelIndex)
+{
+	if (TCNT1 > RX_raw[1][ChannelIndex] )
+	{
+		RX[1][ChannelIndex] = TCNT1 - RX_raw[1][ChannelIndex] ;	
+	}
+	else
+	{
+		RX[1][ChannelIndex] = (0xffff - RX_raw[1][ChannelIndex] + TCNT1 );	
 	}
 		
 }
@@ -56,58 +69,57 @@ void CalculateSignalLength(uint8_t ChannelIndex)
  uint8_t OldPortCValue;
 
 __attribute__ ((section(".lowtext")))
-ISR (RX_ALL_vect)
+ISR (RX2_ALL_vect)
 {
 	uint8_t Changes = PINC ^ OldPortCValue;
 	OldPortCValue = PINC;
-	LED_Orange = ~LED_Orange;
 	
-	if ((Changes & RX_ROLL_PIN)!=0)
+	if ((Changes & RX2_ROLL_PIN)!=0)
 	{
-		if (RX_ROLL)
+		if (RX2_ROLL)
 		{
-			RX_raw[RXChannel_AIL]=TCNT1;
+			RX_raw[1][RXChannel_AIL]=TCNT1;
 		}
 		else
 		{
-			CalculateSignalLength (RXChannel_AIL);
-			RX_LastValidSignal_timestampAux = TCNT1_X;
+			CalculateSignalLength2 (RXChannel_AIL);
+			RX2_LastValidSignal_timestampAux = TCNT1_X;
 			RX_Good = TX_FOUND_ERR;
 		}	
 	}
-	if ((Changes & RX_PITCH_PIN)!=0)
+	if ((Changes & RX2_PITCH_PIN)!=0)
 	{
-		if (RX_PITCH)
+		if (RX2_PITCH)
 		{
-			RX_raw[RXChannel_ELE]=TCNT1;
+			RX_raw[1][RXChannel_ELE]=TCNT1;
 		}
 		else
 		{
-			CalculateSignalLength (RXChannel_ELE);
+			CalculateSignalLength2 (RXChannel_ELE);
 		}	
 	}
-	if ((Changes & RX_COLL_PIN)!=0)
+	if ((Changes & RX2_COLL_PIN)!=0)
 	{
-		if (RX_COLL)
+		if (RX2_COLL)
 		{
-			RX_raw[RXChannel_THR]=TCNT1;
+			RX_raw[1][RXChannel_THR]=TCNT1;
 		}
 		else
 		{
-			CalculateSignalLength (RXChannel_THR);
-			RX_LastValidSignal_timestamp = TCNT1_X;
+			CalculateSignalLength2 (RXChannel_THR);
+			RX2_LastValidSignal_timestamp = TCNT1_X;
 			RX_Good = TX_CONNECTED_ERR;
 		}	
 	}
-	if ((Changes & RX_YAW_PIN) !=0)
+	if ((Changes & RX2_YAW_PIN) !=0)
 	{
-		if (RX_YAW)
+		if (RX2_YAW)
 		{
-			RX_raw[RXChannel_RUD]=TCNT1;
+			RX_raw[1][RXChannel_RUD]=TCNT1;
 		}
 		else
 		{
-			CalculateSignalLength (RXChannel_RUD);
+			CalculateSignalLength2 (RXChannel_RUD);
 			
 		}	
 	}
@@ -118,17 +130,17 @@ ISR (RX_ALL_vect)
 #ifdef PRIMARY_INPUT_RX
 
 __attribute__ ((section(".lowtext")))
-ISR (RX_COLL_vect)
+ISR (RX1_COLL_vect)
 {
-	if (RX_COLL)
+	if (RX1_COLL)
 	{
-		RX_raw[RXChannel_THR]=TCNT1;
+		RX_raw[0][RXChannel_THR]=TCNT1;
 	}
 	else
 	{
-		CalculateSignalLength(RXChannel_THR);
+		CalculateSignalLength1(RXChannel_THR);
 		
-		RX_LastValidSignal_timestamp = TCNT1_X;
+		RX1_LastValidSignal_timestamp = TCNT1_X;
 		RX_Good = TX_CONNECTED_ERR;
 	}
 	
@@ -137,17 +149,17 @@ ISR (RX_COLL_vect)
 
 
 __attribute__ ((section(".lowtext")))
-ISR (RX_ROLL_vect)
+ISR (RX1_ROLL_vect)
 {
-	if (RX_ROLL)
+	if (RX1_ROLL)
 	{
-		RX_raw[RXChannel_AIL]=TCNT1;
+		RX_raw[0][RXChannel_AIL]=TCNT1;
 	}
 	else
 	{
-		CalculateSignalLength(RXChannel_AIL);
+		CalculateSignalLength1(RXChannel_AIL);
 		
-		RX_LastValidSignal_timestampAux = TCNT1_X;
+		RX1_LastValidSignal_timestampAux = TCNT1_X;
 		RX_Good = TX_FOUND_ERR;
 
 		
@@ -157,29 +169,29 @@ ISR (RX_ROLL_vect)
 
 
 __attribute__ ((section(".lowtext")))
-ISR (RX_PITCH_vect)
+ISR (RX1_PITCH_vect)
 {
-	if (RX_PITCH)
+	if (RX1_PITCH)
 	{
-		RX_raw[RXChannel_ELE]=TCNT1;
+		RX_raw[0][RXChannel_ELE]=TCNT1;
 	}
 	else
 	{
-		CalculateSignalLength(RXChannel_ELE);
+		CalculateSignalLength1(RXChannel_ELE);
 	}
 }
 
 
 __attribute__ ((section(".lowtext")))
-ISR (RX_YAW_vect)
+ISR (RX1_YAW_vect)
 {
-	if (RX_YAW)
+	if (RX1_YAW)
 	{
-		RX_raw[RXChannel_RUD]=TCNT1;
+		RX_raw[0][RXChannel_RUD]=TCNT1;
 	}
 	else
 	{
-		CalculateSignalLength(RXChannel_RUD);
+		CalculateSignalLength1(RXChannel_RUD);
 	}
 }
 #endif
@@ -187,13 +199,16 @@ ISR (RX_YAW_vect)
 __attribute__ ((section(".lowtext")))
 ISR (RX_AUX_vect)
 {
+	// There is only ONE AUX PORT - usually assigned to Secondary RX 
 	if (RX_AUX)
 	{
-		RX_raw[RXChannel_AUX]=TCNT1;
+		RX_raw[1][RXChannel_AUX]=TCNT1;
+		//RX_raw[0][RXChannel_AUX]=TCNT1;
 	}
 	else
 	{
-		CalculateSignalLength(RXChannel_AUX);
+		CalculateSignalLength2(RXChannel_AUX);
+		RX[0][RXChannel_AUX]=RX[1][RXChannel_AUX];
 	}
 }
 
@@ -201,19 +216,65 @@ ISR (RX_AUX_vect)
 void RX_Init(void)
 {
 	
-	RX_ROLL_DIR 		= INPUT;
-	RX_PITCH_DIR 		= INPUT;
-	RX_COLL_DIR   		= INPUT;
-	RX_YAW_DIR   	 	= INPUT;
 	RX_AUX_DIR   	 	= INPUT;
+	
+	#ifdef PRIMARY_INPUT_RX
+
+	ActiveRXIndex=0;
+
+	RX1_ROLL_DIR 		= INPUT;
+	RX1_PITCH_DIR 		= INPUT;
+	RX1_COLL_DIR   		= INPUT;
+	RX1_YAW_DIR   	 	= INPUT;
+
+	// enable interrupts
+	EICRA  = _BV(ISC00) | _BV(ISC10) | _BV(ISC20);	// any edge on INT0, INT1 and INT2
+	EIMSK  = _BV(INT0)  | _BV(INT1)  | _BV(INT2);	// enable interrupt for INT0, INT1 and INT2
+	EIFR   = _BV(INTF0) | _BV(INTF1) | _BV(INTF2);	// clear interrupts
+		
+	PCICR  |= _BV(PCIE1) | _BV(PCIE3);				// enable PCI1 and PCI3
+	PCMSK1 |= _BV(PCINT8);							// enable PCINT8 (AUX) -> PCI1
+	PCMSK3 |= _BV(PCINT24);							// enable PCINT24 (THR) -> PCI3
+	PCIFR  |= _BV(PCIF1) | _BV(PCIF3);
+	
+	#endif
+	
+	#ifdef SECONDARY_INPUT_RX
+
+	ActiveRXIndex=1;
+	
+	RX2_ROLL_DIR 		= INPUT;
+	RX2_PITCH_DIR 		= INPUT;
+	RX2_COLL_DIR   		= INPUT;
+	RX2_YAW_DIR   	 	= INPUT;
+	
+	/*
+	PCINT16 - PC0 - OUTPUT 6
+	PCINT17 - PC1 - OUTPUT 5 
+	PCINT21 - PC5 - OUTPUT 7
+	PCINT23 - PC7 - OUTPUT 8 
+	*/
+	PCICR  |= _BV(PCIE1)   | _BV(PCIE2);															// enable PCI1 and PCI2
+	PCMSK1 |= _BV(PCINT8);																		// enable PCINT8 (AUX) -> PCI1
+	PCMSK2 |= _BV(PCINT16) | _BV(PCINT17) | _BV(PCINT21) |_BV(PCINT23);							// enable PCINT24 (THR) -> PCI3
+	PCIFR  |= _BV(PCIF1)   | _BV(PCIF2);															// clear interrupts
+
+
+	#endif
+	
+
+		
 	
 	RX_Good =TX_NOT_FOUND;
 	
 	ATOMIC_BLOCK(ATOMIC_FORCEON)
 	{
-		RX_LastValidSignal_timestamp= TCNT1_X;
-		RX_LastValidSignal_timestampAux= TCNT1_X;
-	}		
+		RX1_LastValidSignal_timestamp= TCNT1_X;
+		RX1_LastValidSignal_timestampAux= TCNT1_X;
+	}	
+	
+	RX2_LastValidSignal_timestamp= RX2_LastValidSignal_timestamp;
+	RX2_LastValidSignal_timestampAux= RX2_LastValidSignal_timestampAux;	
 }
 
 void RX_StickCenterCalibrationInit(void)
@@ -230,16 +291,16 @@ void RX_StickCenterCalibrationInit(void)
 {
 	uint16_t _t;
 	ATOMIC_BLOCK(ATOMIC_FORCEON)
-		_t = RX[Channel];
+		_t = RX[ActiveRXIndex][Channel];
 	return _t;
 }
 
- int16_t RX_GetReceiverValues (uint8_t Channel)
+ int16_t RX_GetReceiverValues (uint8_t RXIndex,uint8_t Channel)
 {
 	int16_t _t;
 	//////if (RX_Good != TX_GOOD) return 0;
 	ATOMIC_BLOCK(ATOMIC_FORCEON)
-		_t = ((int)(RX[Channel] - Config.RX_Mid[Channel])) / RX_Div_Factor;
+		_t = ((int)(RX[RXIndex][Channel] - Config.RX_Mid[Channel])) / RX_Div_Factor;
 
 	return _t;
 }
@@ -249,27 +310,44 @@ void RX_StickCenterCalibrationInit(void)
 // IMPORTANT: if throttle signal is accidentally -or using trim- less than Config.RX_Min[RXChannel_THR] then the returned value will be roll back
 // to 0xffff range which means an aggressive Quad copter action. we avoid this by using a signed int.
 */
-int16_t RX_GetReceiverThrottleValue ()
+int16_t RX_GetReceiverThrottleValue (uint8_t RXIndex)
 {
 	
 	///if (RX_Good != TX_GOOD) return 0;
 	
 	ATOMIC_BLOCK(ATOMIC_FORCEON)
 	{
-		if ( (TCNT1_X - RX_LastValidSignal_timestamp) > 20)
+		if (ActiveRXIndex==0)
 		{
-			RX_Good =TX_NOT_FOUND;
-			return 0;
-		}	
+			if ( (TCNT1_X - RX1_LastValidSignal_timestamp) > 20)
+			{
+				RX_Good =TX_NOT_FOUND;
+				return 0;
+			}	
 		
-		if ( (TCNT1_X - RX_LastValidSignal_timestampAux) > 20)
+			if ( (TCNT1_X - RX1_LastValidSignal_timestampAux) > 20)
+			{
+				RX_Good =TX_DISCONNECTED;
+				return 0;
+			}
+		}	
+		if (ActiveRXIndex==1)
 		{
-			RX_Good =TX_DISCONNECTED;
-			return 0;
-		}	
+			if ( (TCNT1_X - RX2_LastValidSignal_timestamp) > 20)
+			{
+				RX_Good =TX_NOT_FOUND;
+				return 0;
+			}	
+		
+			if ( (TCNT1_X - RX2_LastValidSignal_timestampAux) > 20)
+			{
+				RX_Good =TX_DISCONNECTED;
+				return 0;
+			}
+		}			
 		
 		
-		iTemp16 = ((int)(RX[RXChannel_THR] - Config.RX_Min[RXChannel_THR])) / RX_Div_Factor;
+		iTemp16 = ((int)(RX[RXIndex][RXChannel_THR] - Config.RX_Min[RXChannel_THR])) / RX_Div_Factor;
 	}		
 	
 	return iTemp16;
@@ -277,20 +355,22 @@ int16_t RX_GetReceiverThrottleValue ()
  
 void RX_CopyLatestReceiverValues (void)
 {
-	for (int i=0;i<RXChannels;++i)
+	for (int ch=0;ch<2;++ch)
 	{
-		if (i == RXChannel_THR)
+		for (int i=0;i<RXChannels;++i)
 		{
-			RX_Latest[i]= RX_GetReceiverThrottleValue(i);	 
-		}
-		else
-		{
-			RX_Latest[i]= RX_GetReceiverValues(i);	 
-			if ((RX_Latest[i]<STICK_DEADBAND) && (RX_Latest[i]>-STICK_DEADBAND)) RX_Latest[i]=0;
-		}
-		
-	}		
-	
+			if (i == RXChannel_THR)
+			{
+				RX_Latest[ch][i]= RX_GetReceiverThrottleValue(ch);	 
+			}
+			else
+			{
+				RX_Latest[ch][i]= RX_GetReceiverValues(ch,i);	 
+				if ((RX_Latest[ch][i]<STICK_DEADBAND) && (RX_Latest[ch][i]>-STICK_DEADBAND)) RX_Latest[ch][i]=0;
+			}
+		}	
+	}
+				
 }
 
 void RX_StickCenterCalibration (void)

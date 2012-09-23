@@ -102,28 +102,9 @@ void Setup (void)
 	TCCR1C = 0;
 	
 #ifdef PRIMARY_INPUT_RX
-	// enable interrupts
-	EICRA  = _BV(ISC00) | _BV(ISC10) | _BV(ISC20);	// any edge on INT0, INT1 and INT2
-	EIMSK  = _BV(INT0)  | _BV(INT1)  | _BV(INT2);	// enable interrupt for INT0, INT1 and INT2
-	EIFR   = _BV(INTF0) | _BV(INTF1) | _BV(INTF2);	// clear interrupts
-		
-	PCICR |= _BV(PCIE1) | _BV(PCIE3);				// enable PCI1 and PCI3
-	PCMSK1 = _BV(PCINT8);							// enable PCINT8 (AUX) -> PCI1
-	PCMSK3 = _BV(PCINT24);							// enable PCINT24 (THR) -> PCI3
-	PCIFR  = _BV(PCIF1) | _BV(PCIF3);				// clear interrupts
+				// clear interrupts
 #endif
 #ifdef SECONDARY_INPUT_RX
-/*
-PCINT16 - PC0 - OUTPUT 6
-PCINT17 - PC1 - OUTPUT 5 
-PCINT21 - PC5 - OUTPUT 7
-PCINT23 - PC7 - OUTPUT 8 
-*/
-	
-	PCICR |= _BV(PCIE1)   | _BV(PCIE2);															// enable PCI1 and PCI2
-	PCMSK1 = _BV(PCINT8);																		// enable PCINT8 (AUX) -> PCI1
-	PCMSK2 = _BV(PCINT16) | _BV(PCINT17) | _BV(PCINT21) |_BV(PCINT23);							// enable PCINT24 (THR) -> PCI3
-	PCIFR  = _BV(PCIF1)   | _BV(PCIF2);															// clear interrupts
 
 	UART_Init(20);
 #endif
@@ -241,6 +222,8 @@ void MainLoop(void)
 {
 	
 	RX_CopyLatestReceiverValues();
+	RX_Snapshot[RXChannel_THR] = RX_Latest[ActiveRXIndex][RXChannel_THR];
+		
 	// simulate
 	//RX_Latest[RXChannel_THR]=500;
     ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
@@ -277,7 +260,7 @@ void MainLoop(void)
 		return ; // Do nothing all below depends on TX.
 	}	
 	
-	if (RX_Latest[RXChannel_THR] < STICKThrottle_ARMING) 
+	if (RX_Snapshot[RXChannel_THR] < STICKThrottle_ARMING) 
 	{	
 		
 		// Throttle is LOW
@@ -329,11 +312,14 @@ void MainLoop(void)
 			////}
 		//////
 				
+			RX_Snapshot[RXChannel_AIL] = (RX_Latest[ActiveRXIndex][RXChannel_AIL] * 3) / 5 ;
+			RX_Snapshot[RXChannel_ELE] = (RX_Latest[ActiveRXIndex][RXChannel_ELE] * 3) / 5;
+			RX_Snapshot[RXChannel_RUD] = (RX_Latest[ActiveRXIndex][RXChannel_RUD] * 3) / 5 ;
 			
-			MotorOut1 = RX_Latest[RXChannel_THR];
-			MotorOut2 = RX_Latest[RXChannel_THR];
-			MotorOut3 = RX_Latest[RXChannel_THR];
-			MotorOut4 = RX_Latest[RXChannel_THR];		
+			MotorOut1 = RX_Snapshot[RXChannel_THR];
+			MotorOut2 = RX_Snapshot[RXChannel_THR];
+			MotorOut3 = RX_Snapshot[RXChannel_THR];
+			MotorOut4 = RX_Snapshot[RXChannel_THR];		
 	
 			
 	
@@ -389,42 +375,39 @@ void MainLoop(void)
 			*/
 	
 			
-			RX_Latest[RXChannel_AIL] = (RX_Latest[RXChannel_AIL] * 3) / 5 ;
-			RX_Latest[RXChannel_ELE] = (RX_Latest[RXChannel_ELE] * 3) / 5;
-			RX_Latest[RXChannel_RUD] = (RX_Latest[RXChannel_RUD] * 3) / 5 ;
 			
 	
 			if (Config.QuadFlyingMode==QuadFlyingMode_X)
 			{
 							
-				MotorOut1 += RX_Latest[RXChannel_AIL] ;
-				MotorOut2 += RX_Latest[RXChannel_AIL] ;
-				MotorOut3 -= RX_Latest[RXChannel_AIL] ;
-				MotorOut4 -= RX_Latest[RXChannel_AIL] ;
+				MotorOut1 += RX_Snapshot[RXChannel_AIL] ;
+				MotorOut2 += RX_Snapshot[RXChannel_AIL] ;
+				MotorOut3 -= RX_Snapshot[RXChannel_AIL] ;
+				MotorOut4 -= RX_Snapshot[RXChannel_AIL] ;
 				
-				MotorOut1 += RX_Latest[RXChannel_ELE];
-				MotorOut2 -= RX_Latest[RXChannel_ELE];
-				MotorOut3 += RX_Latest[RXChannel_ELE];
-				MotorOut4 -= RX_Latest[RXChannel_ELE];
+				MotorOut1 += RX_Snapshot[RXChannel_ELE];
+				MotorOut2 -= RX_Snapshot[RXChannel_ELE];
+				MotorOut3 += RX_Snapshot[RXChannel_ELE];
+				MotorOut4 -= RX_Snapshot[RXChannel_ELE];
 				
-				MotorOut1 -= RX_Latest[RXChannel_RUD];
-				MotorOut2 += RX_Latest[RXChannel_RUD];
-				MotorOut3 += RX_Latest[RXChannel_RUD];
-				MotorOut4 -= RX_Latest[RXChannel_RUD];
+				MotorOut1 -= RX_Snapshot[RXChannel_RUD];
+				MotorOut2 += RX_Snapshot[RXChannel_RUD];
+				MotorOut3 += RX_Snapshot[RXChannel_RUD];
+				MotorOut4 -= RX_Snapshot[RXChannel_RUD];
 			}
 			else
 			{
 				
-				MotorOut2 += RX_Latest[RXChannel_AIL] ;
-				MotorOut3 -= RX_Latest[RXChannel_AIL] ;
+				MotorOut2 += RX_Snapshot[RXChannel_AIL] ;
+				MotorOut3 -= RX_Snapshot[RXChannel_AIL] ;
 				
-				MotorOut1 += RX_Latest[RXChannel_ELE] ;
-				MotorOut4 -= RX_Latest[RXChannel_ELE] ;
+				MotorOut1 += RX_Snapshot[RXChannel_ELE] ;
+				MotorOut4 -= RX_Snapshot[RXChannel_ELE] ;
 		
-				MotorOut1 -= RX_Latest[RXChannel_RUD] ;
-				MotorOut2 += RX_Latest[RXChannel_RUD] ;
-				MotorOut3 += RX_Latest[RXChannel_RUD] ;
-				MotorOut4 -= RX_Latest[RXChannel_RUD] ;
+				MotorOut1 -= RX_Snapshot[RXChannel_RUD] ;
+				MotorOut2 += RX_Snapshot[RXChannel_RUD] ;
+				MotorOut3 += RX_Snapshot[RXChannel_RUD] ;
+				MotorOut4 -= RX_Snapshot[RXChannel_RUD] ;
 			}
 			
 			
@@ -464,7 +447,7 @@ void HandleSticksForArming (void)
 		// DisArm Check
 		if (IsArmed == true) 
 		{
-			if (RX_Latest[RXChannel_RUD] < STICK_RIGHT)
+			if (RX_Latest[ActiveRXIndex][RXChannel_RUD] < STICK_RIGHT)
 			{ // Check DisArming manually.
 				bResetTCNR1_X  = false;
 				if ( (CurrentTCNT1_X - TCNT1_X_snapshot1) > STICKPOSITION_LONG_TIME )
@@ -488,7 +471,7 @@ void HandleSticksForArming (void)
 		
 		if (IsArmed == false) 
 		{
-			if (RX_Latest[RXChannel_RUD] > STICK_LEFT)
+			if (RX_Latest[ActiveRXIndex][RXChannel_RUD] > STICK_LEFT)
 			{	// Armin Check
 				bResetTCNR1_X = false;
 				if ( (CurrentTCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_LONG_TIME )
@@ -500,7 +483,7 @@ void HandleSticksForArming (void)
 		
 			//set modes Quad , X-Quad
 		
-			if (RX_Latest[RXChannel_AIL]  > STICK_LEFT)
+			if (RX_Latest[ActiveRXIndex][RXChannel_AIL]  > STICK_LEFT)
 			{// X-QUAD MODE
 				bResetTCNR1_X = false;
 				if ( (CurrentTCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_LONG_TIME )
@@ -512,7 +495,7 @@ void HandleSticksForArming (void)
 			}			
 			else 
 			{
-			 if ((RX_Latest[RXChannel_AIL]  < STICK_RIGHT))
+			 if ((RX_Latest[ActiveRXIndex][RXChannel_AIL]  < STICK_RIGHT))
 				{	// QUAD COPTER MODE
 					bResetTCNR1_X = false;
 					if ( (CurrentTCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_LONG_TIME )
@@ -534,12 +517,12 @@ void HandleSticksForArming (void)
 void HandleSticksAsKeys (void)
 {
 	
-			if ((Config.IsCalibrated & CALIBRATED_SENSOR) && (Config.IsCalibrated & CALIBRATED_Stick) && RX_Latest[RXChannel_THR] > STICKThrottle_HIGH)
+			if ((Config.IsCalibrated & CALIBRATED_SENSOR) && (Config.IsCalibrated & CALIBRATED_Stick) && RX_Snapshot[RXChannel_THR] > STICKThrottle_HIGH)
 			{ // if Throttle is high and stick are calibrated
 		
 				if (TCNT1_X_snapshot1==0)  TCNT1_X_snapshot1 = CurrentTCNT1_X; // start counting
 				
-	 			if ((RX_Latest[RXChannel_ELE]) > STICK_LEFT) 
+	 			if ((RX_Latest[ActiveRXIndex][RXChannel_ELE]) > STICK_LEFT) 
 				{
 					bResetTCNR1_X = false;
 					if ( (CurrentTCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_SHORT_TIME )
@@ -549,7 +532,7 @@ void HandleSticksAsKeys (void)
 					}		
 				
 				}
-				else if ((RX_Latest[RXChannel_ELE]) < STICK_RIGHT) 
+				else if ((RX_Latest[ActiveRXIndex][RXChannel_ELE]) < STICK_RIGHT) 
 				{
 					bResetTCNR1_X = false;
 					if ( (CurrentTCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_SHORT_TIME )
@@ -560,7 +543,7 @@ void HandleSticksAsKeys (void)
 				
 				}		 	 
 				
-				if ((RX_Latest[RXChannel_AIL]) > STICK_LEFT) 
+				if ((RX_Latest[ActiveRXIndex][RXChannel_AIL]) > STICK_LEFT) 
 				{
 					bResetTCNR1_X = false;
 					if ( (CurrentTCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_SHORT_TIME )
@@ -570,7 +553,7 @@ void HandleSticksAsKeys (void)
 					}		
 				
 				}
-				else if ((RX_Latest[RXChannel_AIL]) < STICK_RIGHT) 
+				else if ((RX_Latest[ActiveRXIndex][RXChannel_AIL]) < STICK_RIGHT) 
 				{
 					bResetTCNR1_X = false;
 					if ( (CurrentTCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_SHORT_TIME )

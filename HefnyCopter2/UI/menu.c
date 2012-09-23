@@ -521,11 +521,12 @@ void _hReceiverTest()
 		
 	for (uint8_t i = 0; i < RXChannels; i++)
 	{
-		LCD_SetPos(i, 40);
+		LCD_SetPos(i+1, 24);
 			
-		itoa(RX_Latest[i], sXDeg, 10);
-		LCD_WriteString(sXDeg);
-		LCD_WriteString_P(strSPC4);
+		//itoa(RX_Latest[ActiveRXIndex][i], sXDeg, 10);
+		LCD_WriteValue(i+1,36,RX_Latest[0][i],5,(ActiveRXIndex!=0));
+		LCD_WriteValue(i+1,84,RX_Latest[1][i],5,(ActiveRXIndex!=1));
+		
 	}			
 	
 	

@@ -104,6 +104,7 @@ P_STR scrStabilization[]=
 	;
 
 P_STR scrReceiverTest[] = 
+	" CH   RX-1    RX-2\n"
 	"Ail:\n"
 	"Ele:\n"
 	"Rud:\n"
@@ -123,13 +124,13 @@ P_STR scrModeSettings[] =
 	"Auto Disarm:"
 	;
 
-P_STR scrStickScaling[] = 
-	"Stick Scaling\n"
-	"\n"
-	"Roll (Ail):\n"
-	"Pitch (Ele):\n"
-	"Yaw (Rud):\n"
-	"Throttle:";
+//P_STR scrStickScaling[] = 
+	//"Stick Scaling\n"
+	//"\n"
+	//"Roll (Ail):\n"
+	//"Pitch (Ele):\n"
+	//"Yaw (Rud):\n"
+	//"Throttle:";
 
 P_STR scrMiscSettings[] = 
 	"Minimum throttle:\n"

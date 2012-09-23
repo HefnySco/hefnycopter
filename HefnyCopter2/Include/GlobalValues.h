@@ -28,7 +28,7 @@ char sXDeg[10];
 
  
 
-
+////////////////// STICK READINGS
 // Stick Arming - enable this line to enable Stick arming
 #define STICK_LEFT				 400	//  the total range is from [-500, 500]
 #define STICK_RIGHT				-400	
@@ -38,6 +38,9 @@ char sXDeg[10];
 #define STICKPOSITION_SHORT_TIME	80
 #define STICK_DEADBAND				15
 #define DISARM_TIME					10000
+///////////////// EOD STICK READINGS
+
+
 // Max Collective
 // limits the maximum stick collective (range 80->100  100=Off)
 // this allows gyros to stabilize better when full throttle applied
@@ -62,12 +65,13 @@ char sXDeg[10];
 ////////////////////////////// Variables Section
 
 // Receiver Signal Values
-
-volatile uint16_t RX        [RXChannels];
-volatile int16_t  RX_Latest [RXChannels];   // the actual RX values that are used for calculations.
+volatile uint8_t ActiveRXIndex;			// 0: primary rx, 1: secondary rx, 3: buddy mode [primary & secondary] 
+volatile uint16_t RX       [2][RXChannels];
+volatile int16_t  RX_Latest[2][RXChannels];   // the actual RX values that are used for calculations.
+int16_t			  RX_Snapshot [RXChannels];
 // used for calibration...not initialized... true values are in Config in case IsCalibrated & Stick = True.
-uint16_t RX_MAX_raw			[RXChannels];
-uint16_t RX_MIN_raw			[RXChannels];
+uint16_t RX_MAX_raw			  [RXChannels];
+uint16_t RX_MIN_raw			  [RXChannels];
 
 
 BOOL	IsArmed;

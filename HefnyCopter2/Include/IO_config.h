@@ -79,7 +79,7 @@
 
 //#define ORIGINAL_INPUT_CABLES		// use original input pins with normal wiring    [AIL-ELE-THR-RUD-AUD]
 #define PRIMARY_INPUT_RX			// use original input pins but with smart wiring [THR-ALI-ELE-RUD-AUX]
-//#define SECONDARY_INPUT_RX		// use Motor [5-6-7-8] as input smart wiring     [THR-ALI-ELE-RUD-AUX]
+#define SECONDARY_INPUT_RX			// use Motor [5-6-7-8] as input smart wiring     [RUD - ELE - ALI - THR ] AUX is the same standard pin
 
 #ifdef SECONDARY_INPUT_RX
 /*
@@ -89,85 +89,74 @@ PCINT21 - PC5 - OUTPUT 7
 PCINT23 - PC7 - OUTPUT 8 
 */
 
-#define RX_ALL_vect			PCINT2_vect
-//#define RX_ROLL_vect		PCINT2_vect
-#define RX_ROLL_PIN			0b00100000
-#define RX_ROLL    			REGISTER_BIT(PINC,5)
-#define RX_ROLL_DIR   		REGISTER_BIT(DDRC,5)
+#define RX2_ALL_vect			PCINT2_vect
+#define RX2_ROLL_PIN			0b00100000
+#define RX2_ROLL    			REGISTER_BIT(PINC,5)
+#define RX2_ROLL_DIR   			REGISTER_BIT(DDRC,5)
 
-//#define RX_PITCH_vect		PCINT2_vect
-#define RX_PITCH_PIN		0b00000001
-#define RX_PITCH    		REGISTER_BIT(PINC,0)
-#define RX_PITCH_DIR   		REGISTER_BIT(DDRC,0)
+#define RX2_PITCH_PIN			0b00000001
+#define RX2_PITCH    			REGISTER_BIT(PINC,0)
+#define RX2_PITCH_DIR   		REGISTER_BIT(DDRC,0)
 
-//#define RX_COLL_vect		PCINT2_vect
-#define RX_COLL_PIN			0b10000000
-#define RX_COLL    			REGISTER_BIT(PINC,7)
-#define RX_COLL_DIR   		REGISTER_BIT(DDRC,7) 
+#define RX2_COLL_PIN			0b10000000
+#define RX2_COLL    			REGISTER_BIT(PINC,7)
+#define RX2_COLL_DIR   			REGISTER_BIT(DDRC,7) 
 
-//#define RX_YAW_vect		PCINT2_vect
-#define RX_YAW_PIN			0b00000010
-#define RX_YAW    			REGISTER_BIT(PINC,1)
-#define RX_YAW_DIR   		REGISTER_BIT(DDRC,1)
+#define RX2_YAW_PIN				0b00000010
+#define RX2_YAW    				REGISTER_BIT(PINC,1)
+#define RX2_YAW_DIR   			REGISTER_BIT(DDRC,1)
 
-
-#define RX_AUX_vect			PCINT1_vect
-#define RX_AUX    			REGISTER_BIT(PINB,0)    
-#define RX_AUX_DIR   		REGISTER_BIT(DDRB,0) //pb0
 
 #endif
 
 #ifdef PRIMARY_INPUT_RX
 #ifdef ORIGINAL_INPUT_CABLES
 
-#define RX_ROLL_vect		INT1_vect
-#define RX_ROLL    			REGISTER_BIT(PIND,3)	
-#define RX_ROLL_DIR   		REGISTER_BIT(DDRD,3)
+#define RX1_ROLL_vect		INT1_vect
+#define RX1_ROLL    		REGISTER_BIT(PIND,3)	
+#define RX1_ROLL_DIR   		REGISTER_BIT(DDRD,3)
 
-#define RX_PITCH_vect		INT0_vect
-#define RX_PITCH    		REGISTER_BIT(PIND,2)	
-#define RX_PITCH_DIR   		REGISTER_BIT(DDRD,2)
+#define RX1_PITCH_vect		INT0_vect
+#define RX1_PITCH    		REGISTER_BIT(PIND,2)	
+#define RX1_PITCH_DIR   	REGISTER_BIT(DDRD,2)
 
-#define RX_COLL_vect		PCINT3_vect
-#define RX_COLL    			REGISTER_BIT(PIND,0)	
-#define RX_COLL_DIR   		REGISTER_BIT(DDRD,0) //pd0
+#define RX1_COLL_vect		PCINT3_vect
+#define RX1_COLL    		REGISTER_BIT(PIND,0)	
+#define RX1_COLL_DIR   		REGISTER_BIT(DDRD,0) //pd0
 
-#define RX_YAW_vect			INT2_vect
-#define RX_YAW    			REGISTER_BIT(PINB,2)    
-#define RX_YAW_DIR   		REGISTER_BIT(DDRB,2)
+#define RX1_YAW_vect		INT2_vect
+#define RX1_YAW    			REGISTER_BIT(PINB,2)    
+#define RX1_YAW_DIR   		REGISTER_BIT(DDRB,2)
 
 
-#define RX_AUX_vect			PCINT1_vect
-#define RX_AUX    			REGISTER_BIT(PINB,0)    
-#define RX_AUX_DIR   		REGISTER_BIT(DDRB,0) //pb0
 
 
 #else
 
 // Reduced cables configurations:
-#define RX_ROLL_vect		INT0_vect
-#define RX_ROLL    			REGISTER_BIT(PIND,2)	
-#define RX_ROLL_DIR   		REGISTER_BIT(DDRD,2)
+#define RX1_ROLL_vect		INT0_vect
+#define RX1_ROLL    		REGISTER_BIT(PIND,2)	
+#define RX1_ROLL_DIR   		REGISTER_BIT(DDRD,2)
 
-#define RX_PITCH_vect		PCINT3_vect
-#define RX_PITCH    		REGISTER_BIT(PIND,0)	
-#define RX_PITCH_DIR   		REGISTER_BIT(DDRD,0)
+#define RX1_PITCH_vect		PCINT3_vect
+#define RX1_PITCH    		REGISTER_BIT(PIND,0)	
+#define RX1_PITCH_DIR   	REGISTER_BIT(DDRD,0)
 
-#define RX_COLL_vect		INT1_vect
-#define RX_COLL    			REGISTER_BIT(PIND,3)	
-#define RX_COLL_DIR   		REGISTER_BIT(DDRD,3) //pd0
+#define RX1_COLL_vect		INT1_vect
+#define RX1_COLL    		REGISTER_BIT(PIND,3)	
+#define RX1_COLL_DIR   		REGISTER_BIT(DDRD,3) //pd0
 
-#define RX_YAW_vect			INT2_vect
-#define RX_YAW    			REGISTER_BIT(PINB,2)    
-#define RX_YAW_DIR   		REGISTER_BIT(DDRB,2)
+#define RX1_YAW_vect		INT2_vect
+#define RX1_YAW    			REGISTER_BIT(PINB,2)    
+#define RX1_YAW_DIR   		REGISTER_BIT(DDRB,2)
 
+#endif   //ORIGINAL_INPUT_CABLES
+#endif  //PRIMARY_INPUT_RX
 
 #define RX_AUX_vect			PCINT1_vect
 #define RX_AUX    			REGISTER_BIT(PINB,0)    
 #define RX_AUX_DIR   		REGISTER_BIT(DDRB,0) //pb0
 
-#endif   //ORIGINAL_INPUT_CABLES
-#endif  //PRIMARY_INPUT_RX
 
 
 // Index for RX[] variable

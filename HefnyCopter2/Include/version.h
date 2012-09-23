@@ -10,7 +10,7 @@
 #define VERSION_H_
 
 
-static const prog_char strVersionInfo[] = "HefnyCopter2 v0.4";
+static const prog_char strVersionInfo[] = "HefnyCopter2 v0.45";
 
 /*
 version 0.1
@@ -34,6 +34,12 @@ version 0.4
 * Quadcopter Flying Modes:
 	- display configuration on homepage.
 * Disarm Quad when playing with Menu if Armed.
+
+version 0.45
+* Smart Wiring - you can use short cable connection or normal connection [ORIGINAL_INPUT_CABLES/PRIMARY_INPUT_RX]
+* Use Motor5,6,7,8 as RX2 Input. This releases UART1 for another use, or can use parallel RX for training. [SECONDARY_INPUT_RX]
+*
+
 
 ToDO:
 version 0.5
