@@ -175,37 +175,37 @@ void GyroRevereing (void)
 		{
 			RxGetChannels();
 
-			if ((RxInRoll << StickDivFactor) < STICK_LEFT) {	// normal(left)
+			if ((RxInRoll ) < STICK_LEFT) {	// normal(left)
 				Config.RollGyroDirection = GYRO_NORMAL;
 				Save_Config_to_EEPROM();
 				delay_ms(200);
 				FlashLED (LED_LONG_TOGGLE,2);
 				delay_ms(500);
-			} else if ((RxInRoll << StickDivFactor )> STICK_RIGHT) {	// reverse(right)
+			} else if ((RxInRoll )> STICK_RIGHT) {	// reverse(right)
 				Config.RollGyroDirection = GYRO_REVERSED;
 				Save_Config_to_EEPROM();
 				delay_ms(200);
 				FlashLED (LED_LONG_TOGGLE,3);
 				delay_ms(500);
-			} else if ((RxInPitch << StickDivFactor)< STICK_LEFT) { // normal(up)
+			} else if ((RxInPitch  )< STICK_LEFT) { // normal(up)
 				Config.PitchGyroDirection = GYRO_NORMAL;
 				Save_Config_to_EEPROM();
 				delay_ms(200);
 				FlashLED (LED_LONG_TOGGLE,4);
 				delay_ms(500);
-			} else if ((RxInPitch << StickDivFactor)> STICK_RIGHT) { // reverse(down)
+			} else if ((RxInPitch  )> STICK_RIGHT) { // reverse(down)
 				Config.PitchGyroDirection = GYRO_REVERSED;
 				Save_Config_to_EEPROM();
 				delay_ms(200);
 				FlashLED (LED_LONG_TOGGLE,5);
 				delay_ms(500);
-			} else if ((RxInYaw << StickDivFactor)> STICK_RIGHT) { // normal(left)
+			} else if ((RxInYaw  )> STICK_RIGHT) { // normal(left)
 				Config.YawGyroDirection = GYRO_NORMAL;
 				Save_Config_to_EEPROM();
 				delay_ms(200);
 				FlashLED (LED_LONG_TOGGLE,6);
 				delay_ms(500);
-			} else if ((RxInYaw << StickDivFactor)< STICK_LEFT ) { // reverse(right)
+			} else if ((RxInYaw  )< STICK_LEFT ) { // reverse(right)
 				Config.YawGyroDirection = GYRO_REVERSED;
 				Save_Config_to_EEPROM();
 				delay_ms(200);

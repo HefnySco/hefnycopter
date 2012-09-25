@@ -46,7 +46,7 @@
 		
 // Stick Arming - enable this line to enable Stick arming
 #define STICK_LEFT  -20 //-100
-#define STICK_RIGHT  20 //100
+#define STICK_RIGHT 20 //100
 #define STICKThrottle_ARMING 10
 #define STICKPOSITION_MIN	 16  // minimum time duration for stick to accept a command.
 // Max Collective

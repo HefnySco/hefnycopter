@@ -66,7 +66,8 @@
 //		* Config signature is read incorrectly so the program always overwrites the config and saves the default one with each restart.
 // 0.62
 //		* Fixing Reverse Gyro bug because of stick scaling.
-
+// 0.63
+//		* Better range for sticks
 #define QUAD_COPTER
 /*
 
