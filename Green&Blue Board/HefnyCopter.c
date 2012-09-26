@@ -68,6 +68,9 @@
 //		* Fixing Reverse Gyro bug because of stick scaling.
 // 0.63
 //		* Better range for sticks
+// 0.64
+//		* change GainInADC to signed integer.
+
 #define QUAD_COPTER
 /*
 

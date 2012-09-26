@@ -86,7 +86,7 @@ volatile int16_t		gyroADC_updated[3];
 volatile int16_t		gyroZero[3];					// Used for calibrating Gyros on ground
 
 // POTS
-volatile uint16_t		GainInADC[3];
+volatile int16_t		GainInADC[3];
 //volatile int8_t			GainIn[3];
 volatile uint16_t		vBat;
 
