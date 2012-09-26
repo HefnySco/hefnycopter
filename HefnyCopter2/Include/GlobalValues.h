@@ -66,14 +66,15 @@ char sXDeg[10];
 
 // Receiver Signal Values
 volatile uint8_t ActiveRXIndex;			// 0: primary rx, 1: secondary rx, 3: buddy mode [primary & secondary] 
-volatile uint16_t RX       [2][RXChannels];
-volatile int16_t  RX_Latest[2][RXChannels];   // the actual RX values that are used for calculations.
-int16_t			  RX_Snapshot [RXChannels];
+volatile uint16_t RX          [2][RXChannels];
+volatile int16_t  RX_Latest   [2][RXChannels];   // the actual RX values that are used for calculations.
+int16_t			  RX_Snapshot    [RXChannels];
 // used for calibration...not initialized... true values are in Config in case IsCalibrated & Stick = True.
-uint16_t RX_MAX_raw			  [RXChannels];
-uint16_t RX_MIN_raw			  [RXChannels];
+uint16_t RX_MAX_raw			  [2][RXChannels];
+uint16_t RX_MIN_raw			  [2][RXChannels];
 
 
+BOOL	UIEnableStickCommands;
 BOOL	IsArmed;
 
 uint16_t Sensors_dt; // time in 100us between sensors reading
@@ -153,14 +154,17 @@ volatile uint16_t nResult[8];
 volatile uint16_t nTemp16;
 
 
-#define CALIBRATED_ALL		3
-#define CALIBRATED_Stick	1
-#define CALIBRATED_SENSOR	2
+#define CALIBRATED_ALL				7
+#define CALIBRATED_Stick_ALL		3
+#define CALIBRATED_Stick_PRIMARY	1
+#define CALIBRATED_Stick_SECONDARY	2
+#define CALIBRATED_SENSOR			4
 
 // eeProm data structure
 
 #define IMU_SelfLevelMode	1
-
+#define RX_mode_UARTMode	0xff
+#define RX_mode_BuddyMode	0x00
 #define ESCCalibration_ON	1
 #define ESCCalibration_OFF	0
 #define QuadFlyingMode_PLUS 0
@@ -169,9 +173,9 @@ typedef struct
 {
 	uint8_t signature;					
 	uint8_t IsCalibrated;
-	uint8_t RX_mode;
-	uint16_t RX_Mid[RXChannels];
-	uint16_t RX_Min[RXChannels];
+	uint8_t RX_mode;			// 01 [Secondary RX only and PD are used of UART"PD2-PD3"]  02[Buddy mode both Primary & Secondary RX are used]
+	uint16_t RX_Mid[2][RXChannels];
+	uint16_t RX_Min[2][RXChannels];
 	uint16_t Sensor_zero[SENSORS_ALL];
 	pid_param_t GyroParams[2];
 	uint8_t ArmingMode;
@@ -188,6 +192,7 @@ typedef struct
 	//pid_param_t PID_SelfLevel;
 	uint8_t SelfLevelMode;
 	pid_param_t AccParams;
+	uint8_t VoltageAlarm;		//0 = 0ff
 	//model_t Mixer;
 } config_t;
 

@@ -46,6 +46,7 @@ static config_t const defaultConfig PROGMEM =
 {
 	.signature = HEFNYCOPTER2_SIGNATURE,
 	.IsCalibrated=0,
+	.RX_mode=RX_mode_UARTMode,
 	.MixerIndex = 0,
 	.GyroParams[0]= {13,210,-2,50,10,100},	// pitch roll gyro.
 	.GyroParams[1]= {70,100,0,0,0,0},	// Yaw gyro
@@ -57,7 +58,7 @@ static config_t const defaultConfig PROGMEM =
 	.Sensor_zero[ACC_Y_Index] = 548,
 	.Sensor_zero[ACC_Z_Index] = 548,
 	.SelfLevelMode = IMU_SelfLevelMode,
-	.AutoDisarm = ON,
+	.AutoDisarm = 0,  // no auto disarm
 	.StickScaling = { 30, 30, 50, 90}, // P.R.Y.T
 	.QuadFlyingMode = QuadFlyingMode_PLUS,
 	.LCDContrast = 32,
@@ -65,6 +66,7 @@ static config_t const defaultConfig PROGMEM =
 	.HeightDampeningLimit = 30,
 	.LVA = 0,
 	.AccParams ={1,50,1,50},
+	.VoltageAlarm=0, // off	
 };
 
 
@@ -91,12 +93,14 @@ void Save_Default_Config_to_EEPROM (void)
 	// Init values.
 	for (uint8_t i = 0; i < RXChannels; i++)
 	{
-		Config.RX_Mid[i] = PWM_MID;
-		Config.RX_Min[i] = PWM_LOW;
+		Config.RX_Mid[0][i] = PWM_MID;
+		Config.RX_Min[0][i] = PWM_LOW;
+		Config.RX_Mid[1][i] = PWM_MID;
+		Config.RX_Min[1][i] = PWM_LOW;
 	}	
 	
 	// write to eeProm
-	Load_Config_from_EEPROM();
+	Save_Config_to_EEPROM();
 }
 
 void Set_EEPROM_Default_Config(void)

@@ -74,9 +74,13 @@ Quad-X
 
 void Setup (void)
 {
+
+	Initial_EEPROM_Config_Load();
+	
+	Config.RX_mode=RX_mode_BuddyMode;
+	Config.QuadFlyingMode = QuadFlyingMode_PLUS;
+	
 	RX_Init();
-
-
 	// Motors
 	M1_DIR = OUTPUT;
 	M2_DIR = OUTPUT;
@@ -94,7 +98,7 @@ void Setup (void)
 	// Sensors
 	V_BAT  = INPUT;
 	
-	Initial_EEPROM_Config_Load();
+	
 	
 	// Timers
 	TCCR1A = 0;	//Set timer 1 to run at 2.5MHz
@@ -104,7 +108,7 @@ void Setup (void)
 #ifdef PRIMARY_INPUT_RX
 				// clear interrupts
 #endif
-#ifdef SECONDARY_INPUT_RX
+#ifdef UART_ENABLED
 
 	UART_Init(20);
 #endif
@@ -129,10 +133,12 @@ void Setup (void)
 
 int main(void)
 {
-	
+	// Stick Commands are only available for Secondary Receiver and when Stick is calibrated.
+	UIEnableStickCommands=false;  
 	Setup();
-	Config.QuadFlyingMode = QuadFlyingMode_PLUS; 
-			
+	
+	 
+		
 				 //Pitch_Ratio = ((double)(Config.GyroParams[0].maxDest - Config.GyroParams[0].minDest)/(double)(Config.GyroParams[0].maxSource - Config.GyroParams[0].minSource));
 			 //Yaw_Ratio = ((double)(Config.GyroParams[1].maxDest - Config.GyroParams[1].minDest)/(double)(Config.GyroParams[1].maxSource - Config.GyroParams[1].minSource));
 			 //Acc_Ratio = ((double)(Config.AccParams.maxDest - Config.AccParams.minDest)/(double)(Config.AccParams.maxSource - Config.AccParams.minSource));
@@ -166,7 +172,10 @@ int main(void)
 		}
 	}			
 
-	while ((!(Config.IsCalibrated & CALIBRATED_SENSOR)) || (!(Config.IsCalibrated & CALIBRATED_Stick)))
+	// Never go to MainLoop "fly loop" unless Sensors & RX is calibrated.
+	// This loop to protect against any bug that might make the quad start or KB stick click
+	// as in this case crash is a must.
+	while (!(Config.IsCalibrated & CALIBRATED_SENSOR) || !(Config.IsCalibrated & CALIBRATED_Stick_SECONDARY))
 	{
 		Loop();
 	}
@@ -204,6 +213,7 @@ void LoopESCCalibration (void)
 */
 void Loop(void)
 {
+	RX_CopyLatestReceiverValues();
 	
 	if (TCNT_X_snapshot2==0) TCNT_X_snapshot2 = TCNT2_X;
 	if ( (TCNT2_X- TCNT_X_snapshot2) > LCD_RefreashRate )  
@@ -223,39 +233,68 @@ void MainLoop(void)
 	
 	RX_CopyLatestReceiverValues();
 	RX_Snapshot[RXChannel_THR] = RX_Latest[ActiveRXIndex][RXChannel_THR];
-		
+	Sensors_ReadAll();	
+	
+	if (Config.VoltageAlarm > 0)
+	{
+		if (Sensors_Latest[V_BAT_Index] < Config.VoltageAlarm)
+		{
+			Buzzer = ON;
+		}
+		else
+		{
+			Buzzer = OFF;
+		}
+	}	
 	// simulate
 	//RX_Latest[RXChannel_THR]=500;
     ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
     {
       CurrentTCNT1_X = TCNT1_X;
     }
-	Sensors_ReadAll();
-	IMU_P2D();
+
+	IMU_P2D(); 
 	bResetTCNR1_X = true;
 	
-	
-	Send_Data(DataPtr,2);
-	DataPtr+=2;
-	DataCounter+=1;
-	if (DataCounter==6)
+	if (Config.RX_mode==RX_mode_UARTMode)
 	{
-		DataCounter=0;
-		DataPtr-=12;
-	}	
-	// HINT: you can try to skip this if flying to save time for more useful tasks as user cannot access menu when flying
+		Send_Data(DataPtr,2);
+		DataPtr+=2;
+		DataCounter+=1;
+		if (DataCounter==6)
+		{
+			DataCounter=0;
+			DataPtr-=12;
+		}
+	}
+	else
+	{
+		if (IS_TX2_GOOD)
+		{
+			if (RX_Latest[1/*Always read from Secondary*/][RXChannel_AUX] < STICK_RIGHT)
+			{
+				ActiveRXIndex = 0;		// use Primary RX
+			}
+			else
+			{
+				ActiveRXIndex = 1;		// use Secondary RX
+			}
+		}			
+	}			
+	
 		
 	
-		if (TCNT_X_snapshot2==0) TCNT_X_snapshot2 = CurrentTCNT1_X;
-		else if ( ((CurrentTCNT1_X- TCNT_X_snapshot2) > 2) )  // TCNT1_X ticks in 32.768us
-		{
-			Menu_MenuShow();	
-			TCNT_X_snapshot2=0;
-		}		
+	// HINT: you can try to skip this if flying to save time for more useful tasks as user cannot access menu when flying
+	if (TCNT_X_snapshot2==0) TCNT_X_snapshot2 = CurrentTCNT1_X;
+	else if ( ((CurrentTCNT1_X- TCNT_X_snapshot2) > 2) )  // TCNT1_X ticks in 32.768us
+	{
+		Menu_MenuShow();	
+		TCNT_X_snapshot2=0;
+	}		
 	
 	Config.AutoDisarm=1;
 	
-	if (RX_Good != TX_GOOD) 
+	if ((!IS_TX2_GOOD)) 
 	{
 		return ; // Do nothing all below depends on TX.
 	}	
@@ -438,9 +477,11 @@ void MainLoop(void)
 
 
 
-
+// This function is never called if there is a calibration issue.
 void HandleSticksForArming (void)
 {
+	if ((UIEnableStickCommands==false) || (ActiveRXIndex!=1) || (!IS_TX2_GOOD)) return ; // you cannot use Primary to Arm and Disarm
+	
 	if (TCNT1_X_snapshot1==0)  TCNT1_X_snapshot1 = CurrentTCNT1_X; // start counting
 		
 		/////ReadGainValues(); // keep reading values of POTS here. as we can change the value while quad is armed. but sure it is on land and motors are off.
@@ -513,12 +554,14 @@ void HandleSticksForArming (void)
 }
 
 
-
+// This function is never called if there is a calibration issue.
 void HandleSticksAsKeys (void)
 {
+		if ((UIEnableStickCommands==false) || (ActiveRXIndex!=1) || (!IS_TX2_GOOD))  return ; // you cannot use Primary as keys
+
 	
-			if ((Config.IsCalibrated & CALIBRATED_SENSOR) && (Config.IsCalibrated & CALIBRATED_Stick) && RX_Snapshot[RXChannel_THR] > STICKThrottle_HIGH)
-			{ // if Throttle is high and stick are calibrated
+		if (RX_Snapshot[RXChannel_THR] > STICKThrottle_HIGH)
+		{ // if Throttle is high and stick are calibrated
 		
 				if (TCNT1_X_snapshot1==0)  TCNT1_X_snapshot1 = CurrentTCNT1_X; // start counting
 				

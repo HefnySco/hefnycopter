@@ -165,5 +165,5 @@ char * Sensor_GetBatteryTest(void)
 inline uint16_t  Sensor_GetBattery(void)
 {
 	 // because the V_BAT is connected to a voltage divider R1 & R2
-	return ADCPort_Get(V_BAT_PNUM) * 100 / 372;
+	return ADCPort_Get(V_BAT_PNUM) * BAT_VOLT_RATIO;
 } 

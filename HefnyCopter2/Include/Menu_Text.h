@@ -90,7 +90,9 @@ P_STR strDirSeen[]    = "Direction\nseen from\nabove:";
 P_STR strCW[]		  = "CW";
 P_STR strCCW[]        = "CCW";
 P_STR strALL[]        = "ALL";
-
+P_STR  str1[]	      = "1";
+P_STR  str2[]	      = "2";
+P_STR  strX[]	      = "X";
 P_STR strSensorNotCal[] = "No calibration";
 
 #endif /* MENU_TEXT_H_ */

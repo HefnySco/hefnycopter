@@ -9,6 +9,8 @@
 #ifndef SENSOR_H_
 #define SENSOR_H_
 
+#define BAT_VOLT_RATIO	100/372
+
 #include "ADC_PORT.h"
 
 		void Sensors_Init(void);

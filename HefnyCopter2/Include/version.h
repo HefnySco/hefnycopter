@@ -38,7 +38,12 @@ version 0.4
 version 0.45
 * Smart Wiring - you can use short cable connection or normal connection [ORIGINAL_INPUT_CABLES/PRIMARY_INPUT_RX]
 * Use Motor5,6,7,8 as RX2 Input. This releases UART1 for another use, or can use parallel RX for training. [SECONDARY_INPUT_RX]
-*
+* -Buddy System. You can use two receivers at the same time and switch between them using AUX.
+* -Compile for XBEE
+* -Disable switch actions when entering Stick related menus.
+* Disable switch actions when sticks are not calibrated.
+* Only Secondary RX can have sticks-button.
+* Add Voltage Monitor Alram + menu in misc.
 
 
 ToDO:

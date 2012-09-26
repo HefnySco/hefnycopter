@@ -83,8 +83,9 @@ ISR (RX2_ALL_vect)
 		else
 		{
 			CalculateSignalLength2 (RXChannel_AIL);
+			
 			RX2_LastValidSignal_timestampAux = TCNT1_X;
-			RX_Good = TX_FOUND_ERR;
+			RX_Good = TX2_FOUND_ERR;  // CLR bit 6 ---  Status = OK
 		}	
 	}
 	if ((Changes & RX2_PITCH_PIN)!=0)
@@ -108,7 +109,7 @@ ISR (RX2_ALL_vect)
 		{
 			CalculateSignalLength2 (RXChannel_THR);
 			RX2_LastValidSignal_timestamp = TCNT1_X;
-			RX_Good = TX_CONNECTED_ERR;
+			RX_Good = TX2_CONNECTED_ERR;  // CLR bit 5 ---  Status = OK
 		}	
 	}
 	if ((Changes & RX2_YAW_PIN) !=0)
@@ -127,6 +128,8 @@ ISR (RX2_ALL_vect)
 }
 #endif
 
+//#ifdef BUDDY_CONFIG
+
 #ifdef PRIMARY_INPUT_RX
 
 __attribute__ ((section(".lowtext")))
@@ -141,7 +144,7 @@ ISR (RX1_COLL_vect)
 		CalculateSignalLength1(RXChannel_THR);
 		
 		RX1_LastValidSignal_timestamp = TCNT1_X;
-		RX_Good = TX_CONNECTED_ERR;
+		RX_Good = TX1_CONNECTED_ERR;		// CLR bit 0 ---  Status = OK
 	}
 	
 }
@@ -160,7 +163,7 @@ ISR (RX1_ROLL_vect)
 		CalculateSignalLength1(RXChannel_AIL);
 		
 		RX1_LastValidSignal_timestampAux = TCNT1_X;
-		RX_Good = TX_FOUND_ERR;
+		RX_Good = TX1_FOUND_ERR;			// CLR bit 1 ---  Status = OK
 
 		
 	}
@@ -194,7 +197,9 @@ ISR (RX1_YAW_vect)
 		CalculateSignalLength1(RXChannel_RUD);
 	}
 }
+//#endif
 #endif
+
 
 __attribute__ ((section(".lowtext")))
 ISR (RX_AUX_vect)
@@ -217,29 +222,34 @@ void RX_Init(void)
 {
 	
 	RX_AUX_DIR   	 	= INPUT;
+
+#ifdef PRIMARY_INPUT_RX
+
+	if (Config.RX_mode==RX_mode_BuddyMode)
+	{
 	
-	#ifdef PRIMARY_INPUT_RX
+		ActiveRXIndex=0;
 
-	ActiveRXIndex=0;
+		RX1_ROLL_DIR 		= INPUT;
+		RX1_PITCH_DIR 		= INPUT;
+		RX1_COLL_DIR   		= INPUT;
+		RX1_YAW_DIR   	 	= INPUT;
 
-	RX1_ROLL_DIR 		= INPUT;
-	RX1_PITCH_DIR 		= INPUT;
-	RX1_COLL_DIR   		= INPUT;
-	RX1_YAW_DIR   	 	= INPUT;
-
-	// enable interrupts
-	EICRA  = _BV(ISC00) | _BV(ISC10) | _BV(ISC20);	// any edge on INT0, INT1 and INT2
-	EIMSK  = _BV(INT0)  | _BV(INT1)  | _BV(INT2);	// enable interrupt for INT0, INT1 and INT2
-	EIFR   = _BV(INTF0) | _BV(INTF1) | _BV(INTF2);	// clear interrupts
+		// enable interrupts
+		EICRA  = _BV(ISC00) | _BV(ISC10) | _BV(ISC20);	// any edge on INT0, INT1 and INT2
+		EIMSK  = _BV(INT0)  | _BV(INT1)  | _BV(INT2);	// enable interrupt for INT0, INT1 and INT2
+		EIFR   = _BV(INTF0) | _BV(INTF1) | _BV(INTF2);	// clear interrupts
 		
-	PCICR  |= _BV(PCIE1) | _BV(PCIE3);				// enable PCI1 and PCI3
-	PCMSK1 |= _BV(PCINT8);							// enable PCINT8 (AUX) -> PCI1
-	PCMSK3 |= _BV(PCINT24);							// enable PCINT24 (THR) -> PCI3
-	PCIFR  |= _BV(PCIF1) | _BV(PCIF3);
+		PCICR  |= _BV(PCIE1) | _BV(PCIE3);				// enable PCI1 and PCI3
+		PCMSK1 |= _BV(PCINT8);							// enable PCINT8 (AUX) -> PCI1
+		PCMSK3 |= _BV(PCINT24);							// enable PCINT24 (THR) -> PCI3
+		PCIFR  |= _BV(PCIF1) | _BV(PCIF3);
+	}
+		
+#endif
+
 	
-	#endif
-	
-	#ifdef SECONDARY_INPUT_RX
+#ifdef SECONDARY_INPUT_RX
 
 	ActiveRXIndex=1;
 	
@@ -254,18 +264,19 @@ void RX_Init(void)
 	PCINT21 - PC5 - OUTPUT 7
 	PCINT23 - PC7 - OUTPUT 8 
 	*/
-	PCICR  |= _BV(PCIE1)   | _BV(PCIE2);															// enable PCI1 and PCI2
+	PCICR  |= _BV(PCIE1)   | _BV(PCIE2);														// enable PCI1 and PCI2
 	PCMSK1 |= _BV(PCINT8);																		// enable PCINT8 (AUX) -> PCI1
 	PCMSK2 |= _BV(PCINT16) | _BV(PCINT17) | _BV(PCINT21) |_BV(PCINT23);							// enable PCINT24 (THR) -> PCI3
-	PCIFR  |= _BV(PCIF1)   | _BV(PCIF2);															// clear interrupts
+	PCIFR  |= _BV(PCIF1)   | _BV(PCIF2);														// clear interrupts
 
 
-	#endif
+#endif
 	
 
 		
 	
-	RX_Good =TX_NOT_FOUND;
+	RX_Good =TX1_NOT_FOUND;
+	RX_Good =TX2_NOT_FOUND;
 	
 	ATOMIC_BLOCK(ATOMIC_FORCEON)
 	{
@@ -277,21 +288,11 @@ void RX_Init(void)
 	RX2_LastValidSignal_timestampAux= RX2_LastValidSignal_timestampAux;	
 }
 
-void RX_StickCenterCalibrationInit(void)
-{
-	for (int i=0; i<RXChannels; ++i)
-	{
-		RX_MAX_raw[i]=0;
-		RX_MIN_raw[i]=0xfffe;
-	}
-}
-
-
-  uint16_t RX_raw_GetReceiverValues (uint8_t Channel)
+  uint16_t RX_raw_GetReceiverValues (uint8_t RXIndex, uint8_t Channel)
 {
 	uint16_t _t;
 	ATOMIC_BLOCK(ATOMIC_FORCEON)
-		_t = RX[ActiveRXIndex][Channel];
+		_t = RX[RXIndex][Channel];
 	return _t;
 }
 
@@ -300,7 +301,7 @@ void RX_StickCenterCalibrationInit(void)
 	int16_t _t;
 	//////if (RX_Good != TX_GOOD) return 0;
 	ATOMIC_BLOCK(ATOMIC_FORCEON)
-		_t = ((int)(RX[RXIndex][Channel] - Config.RX_Mid[Channel])) / RX_Div_Factor;
+		_t = ((int)(RX[RXIndex][Channel] - Config.RX_Mid[RXIndex][Channel])) / RX_Div_Factor;
 
 	return _t;
 }
@@ -317,37 +318,37 @@ int16_t RX_GetReceiverThrottleValue (uint8_t RXIndex)
 	
 	ATOMIC_BLOCK(ATOMIC_FORCEON)
 	{
-		if (ActiveRXIndex==0)
+		if (RXIndex==0)
 		{
 			if ( (TCNT1_X - RX1_LastValidSignal_timestamp) > 20)
 			{
-				RX_Good =TX_NOT_FOUND;
+				RX_Good =TX1_NOT_FOUND;
 				return 0;
 			}	
 		
 			if ( (TCNT1_X - RX1_LastValidSignal_timestampAux) > 20)
 			{
-				RX_Good =TX_DISCONNECTED;
+				RX_Good =TX1_DISCONNECTED;
 				return 0;
 			}
 		}	
-		if (ActiveRXIndex==1)
+		if (RXIndex==1)
 		{
 			if ( (TCNT1_X - RX2_LastValidSignal_timestamp) > 20)
 			{
-				RX_Good =TX_NOT_FOUND;
+				RX_Good =TX2_NOT_FOUND;
 				return 0;
 			}	
 		
 			if ( (TCNT1_X - RX2_LastValidSignal_timestampAux) > 20)
 			{
-				RX_Good =TX_DISCONNECTED;
+				RX_Good =TX2_DISCONNECTED;
 				return 0;
 			}
 		}			
 		
 		
-		iTemp16 = ((int)(RX[RXIndex][RXChannel_THR] - Config.RX_Min[RXChannel_THR])) / RX_Div_Factor;
+		iTemp16 = ((int)(RX[RXIndex][RXChannel_THR] - Config.RX_Min[RXIndex][RXChannel_THR])) / RX_Div_Factor;
 	}		
 	
 	return iTemp16;
@@ -373,24 +374,35 @@ void RX_CopyLatestReceiverValues (void)
 				
 }
 
-void RX_StickCenterCalibration (void)
+
+void RX_StickCenterCalibrationInit(uint8_t RXIndex)
+{
+	for (int i=0; i<RXChannels; ++i)
+	{
+		RX_MAX_raw[RXIndex][i]=0;
+		RX_MIN_raw[RXIndex][i]=0xfffe;
+	}
+}
+
+
+void RX_StickCenterCalibration (uint8_t RXIndex)
 {
 	
 	uint16_t tempRX;
 	for (int i=0;i<RXChannels;++i)
 	{
-		tempRX = RX_raw_GetReceiverValues(i);
+		tempRX = RX_raw_GetReceiverValues(RXIndex,i);
 		if (tempRX!=0)
 		{
 			
-			if ( tempRX > RX_MAX_raw[i]) 
+			if ( tempRX > RX_MAX_raw[RXIndex][i]) 
 			{
-				RX_MAX_raw[i] = tempRX;
+				RX_MAX_raw[RXIndex][i] = tempRX;
 			}
-			else if (tempRX < RX_MIN_raw[i]) 
+			else if (tempRX < RX_MIN_raw[RXIndex][i]) 
 			{
-				RX_MIN_raw[i] = tempRX;
+				RX_MIN_raw[RXIndex][i] = tempRX;
 			}
-		}		
-	}
+		}
+	}				
 }

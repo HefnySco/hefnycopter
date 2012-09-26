@@ -77,6 +77,7 @@
 #define PWM_CAL_RANGE		100
 #define PPM_SYNC_LENGTH		3000
 
+//#define UART_ENABLED
 //#define ORIGINAL_INPUT_CABLES		// use original input pins with normal wiring    [AIL-ELE-THR-RUD-AUD]
 #define PRIMARY_INPUT_RX			// use original input pins but with smart wiring [THR-ALI-ELE-RUD-AUX]
 #define SECONDARY_INPUT_RX			// use Motor [5-6-7-8] as input smart wiring     [RUD - ELE - ALI - THR ] AUX is the same standard pin
@@ -127,9 +128,6 @@ PCINT23 - PC7 - OUTPUT 8
 #define RX1_YAW_vect		INT2_vect
 #define RX1_YAW    			REGISTER_BIT(PINB,2)    
 #define RX1_YAW_DIR   		REGISTER_BIT(DDRB,2)
-
-
-
 
 #else
 

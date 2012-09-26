@@ -43,9 +43,43 @@ typedef struct
 #include "../Include/menu_text.h"
 #include "../Include/menu_screen.h"
 
+void _helper_DisplayBiStateText(uint8_t Row, uint8_t Col, PGM_P strTrue, PGM_P strFalse, bool Condition )
+{
+
+		LCD_SetPos(Row, Col);
+		if (Condition==true) 
+		{
+			LCD_WriteString_P(strTrue);
+		}
+		else
+		{
+			LCD_WriteString_P(strFalse);
+		}	
+}
 
 
+void _helper_SaveinEEPROM_ifChanged()
+{
+	if (bValueChanged==true)
+		{
+			Save_Config_to_EEPROM();
+			bValueChanged = false;
+			return ;
+	}
+}
 
+void _helper_DisplayRXStatus(uint8_t Row)
+{
+	// Write RX Status
+	lcdReverse((ActiveRXIndex!=0));
+	_helper_DisplayBiStateText(Row,18,str1,strX,IS_TX1_GOOD);
+	
+	lcdReverse((ActiveRXIndex!=1));
+	_helper_DisplayBiStateText(Row,30,str2,strX,IS_TX2_GOOD);
+	
+	lcdReverse(false);
+	
+}
 
 
 static void writeList(const element_t list[], uint8_t len)
@@ -129,9 +163,9 @@ void editModeHandler()
 		else if (editValueType == TYPE_INT8)
 			*((int8_t*)editValuePtr) = (int8_t) editValue;
 		else if (editValueType == TYPE_INT16)
-			*(int16_t*)editValuePtr = editValue;
+			*(int16_t*)editValuePtr = (int16_t) editValue;
 		else if (editValueType == TYPE_UINT16)
-			*(uint16_t*)editValuePtr = editValue;
+			*(uint16_t*)editValuePtr =(uint16_t) editValue;
 		
 		//Save_Config_to_EEPROM();
 		
@@ -221,6 +255,7 @@ static void startEditMode(void* valuePtr, int16_t loLimit, int16_t hiLimit, uint
 */
 uint8_t doMenu(menu_t *menu)
 {
+	
 	if (!_mykey) return 0;
 	
 	// key handling
@@ -334,28 +369,16 @@ void _hHomePage()
 	
 	if (IS_INIT)
 	{
+		// Version
 		LCD_SetPos(0,0);
 		LCD_WriteString_P(strVersionInfo);
-		LCD_SetPos(5, 60);
-		if (!(Config.IsCalibrated & CALIBRATED_SENSOR)) 
-		{
-			LCD_WriteString_P(strErr);
-		}
-		else
-		{
-			LCD_WriteString_P(strOK);
-		}
-		LCD_SetPos(5, 102);
-		if (!(Config.IsCalibrated & CALIBRATED_Stick)) 
-		{
-			
-			LCD_WriteString_P(strErr);
-		}
-		else
-		{
-			
-			LCD_WriteString_P(strOK);
-		}
+		// Sensors
+		_helper_DisplayBiStateText(5, 60, strOK, strErr, (Config.IsCalibrated & CALIBRATED_SENSOR));
+		
+		//Stick Centering & Calibration
+		_helper_DisplayBiStateText(5, 102, str1, strX, (Config.IsCalibrated & CALIBRATED_Stick_PRIMARY));
+		
+		_helper_DisplayBiStateText(5, 114, str2, strX, (Config.IsCalibrated & CALIBRATED_Stick_SECONDARY));
 		
 	}
 	
@@ -369,18 +392,10 @@ void _hHomePage()
 	LCD_SetPos(2, 30);
 	LCD_WriteString(Sensor_GetBatteryTest());
 	
-	// Write RX Status
-	LCD_SetPos(5, 18);
-	if (RX_Good != TX_GOOD)
-	{
-		LCD_WriteString_P(strErr);
-	}
-	else
-	{
-		LCD_WriteString_P(strOK);
-	}
+	_helper_DisplayRXStatus(5);
 	
-	// Flying Mode
+		
+	///////// Flying Mode
 	LCD_SetPos (6,0);
 	LCD_SelectFont (&font12x16);
 	if (Config.QuadFlyingMode==QuadFlyingMode_PLUS)
@@ -391,9 +406,10 @@ void _hHomePage()
 	{
 		LCD_WriteString_P(PSTR ("X"));
 	}
-	//lcdReverse(true)
-	//lcdReverse(false);
 	LCD_SelectFont (NULL);
+	///////
+	UIEnableStickCommands=true;
+	
 }
 
 void _hHomeArmed()
@@ -515,6 +531,7 @@ void _hSensorTest()
 
 void _hReceiverTest()
 {
+	UIEnableStickCommands=false; // you cannot use sticks here. for arming or as buttons.
 	
 	RX_CopyLatestReceiverValues();
 		
@@ -524,25 +541,13 @@ void _hReceiverTest()
 		LCD_SetPos(i+1, 24);
 			
 		//itoa(RX_Latest[ActiveRXIndex][i], sXDeg, 10);
-		LCD_WriteValue(i+1,36,RX_Latest[0][i],5,(ActiveRXIndex!=0));
-		LCD_WriteValue(i+1,84,RX_Latest[1][i],5,(ActiveRXIndex!=1));
+		LCD_WriteValue(i+1,36,RX_Latest[0][i],5,(!IS_TX1_GOOD));
+		LCD_WriteValue(i+1,84,RX_Latest[1][i],5,(!IS_TX2_GOOD));
 		
 	}			
 	
 	
-	LCD_SetPos(6, 40);	
-	if (TX_FOUND_ERR!=0)
-	{
-		LCD_WriteString_P(strNoSignalFound);
-	}
-	else if (TX_CONNECTED_ERR!=0)	
-	{
-		LCD_WriteString_P(strNoSignalDis);
-	}
-	else
-	{
-		LCD_WriteString_P(PSTR("signal-ok    "));	
-	}
+	_helper_DisplayRXStatus(6);
 	
 }
 
@@ -551,10 +556,12 @@ void _hReceiverTest()
 BOOL bError; 
 void _hStickCentering()
 {
+	UIEnableStickCommands=false; // you cannot use sticks here. for arming or as buttons.
 	
 	if (IS_INIT)
 	{
-		RX_StickCenterCalibrationInit();
+		RX_StickCenterCalibrationInit(ActiveRXIndex);
+		LCD_WriteString_Pex(0,0,strSPC1,18,false); // clear the header
 	}
 	
 	if (KEY4)
@@ -564,11 +571,12 @@ void _hStickCentering()
 			// Save config
 			for (uint8_t i = 0; i < RXChannels; i++)
 			{
-					Config.RX_Mid[i] = (RX_MAX_raw[i]+RX_MIN_raw[i])/2;
-					Config.RX_Min[i] = RX_MIN_raw[i];
+				Config.RX_Mid[ActiveRXIndex][i] = (RX_MAX_raw[ActiveRXIndex][i]+RX_MIN_raw[ActiveRXIndex][i])/2;
+				Config.RX_Min[ActiveRXIndex][i] = RX_MIN_raw[ActiveRXIndex][i];
+				
 			}		
 			
-			Config.IsCalibrated= (Config.IsCalibrated | CALIBRATED_Stick);
+			Config.IsCalibrated= (Config.IsCalibrated | (1 << ActiveRXIndex));	// either 0b00000001 or 0b00000010
 			Save_Config_to_EEPROM();
 		}
 		else
@@ -578,26 +586,35 @@ void _hStickCentering()
 		
 	}
 	bError = false;
-	RX_StickCenterCalibration();
+	RX_StickCenterCalibration(ActiveRXIndex);
 	for (uint8_t i = 0; i < RXChannels; i++)
 	{
-		LCD_SetPos(i, 30);
-		utoa(RX_MAX_raw[i], sXDeg, 10);
+		LCD_SetPos(i+1, 30);
+		utoa(RX_MAX_raw[ActiveRXIndex][i], sXDeg, 10);
 		LCD_WriteString(sXDeg);
 		LCD_WriteString_P(strSPC1);
-		utoa(RX_MIN_raw[i], sXDeg, 10);
-		LCD_WriteString(sXDeg);	
-		if ((RX_MAX_raw[i]< RX_MIN_raw[i]) || (RX_MIN_raw[i]==0))  // RX_MIN_raw[i]=0 if the Remote is OFF when entering the test
+		utoa(RX_MIN_raw[ActiveRXIndex][i], sXDeg, 10);
+		LCD_WriteString(sXDeg);
+		if ((ActiveRXIndex==0) && (i == RXChannel_AUX))
 		{
-			LCD_WriteString_P(strErr);	
-			bError = TRUE;
+			LCD_WriteString_P(PSTR("NA"));
 		}
 		else
 		{
-			LCD_WriteString_P(strSPC4);	
-		}
-		
-	}		
+			if ((RX_MAX_raw[ActiveRXIndex][i]< RX_MIN_raw[ActiveRXIndex][i]) || (RX_MIN_raw[ActiveRXIndex][i]==0))  // RX_MIN_raw[i]=0 if the Remote is OFF when entering the test
+			{
+				LCD_WriteString_P(strErr);	
+				bError = TRUE;
+			}
+			else
+			{
+				LCD_WriteString_P(strSPC4);	
+			}
+		}	
+	}
+	
+
+	_helper_DisplayRXStatus(6);
 }
 
 void _hSensorCalibration()
@@ -642,7 +659,7 @@ void _hESCCalibration()
 	
 	if (KEY4)
 	{
-		if ((Config.IsCalibrated & CALIBRATED_SENSOR) && (Config.IsCalibrated & CALIBRATED_Stick))
+		if ((Config.IsCalibrated & CALIBRATED_SENSOR) && ((Config.IsCalibrated & CALIBRATED_Stick_SECONDARY)==CALIBRATED_Stick_SECONDARY))
 		{
 			Config.IsESCCalibration=ESCCalibration_ON;
 			Save_Config_to_EEPROM();
@@ -650,8 +667,46 @@ void _hESCCalibration()
 		}
 				
 	}
+	
 }
 
+void _hMiscSettings()
+{
+	NOKEYRETURN;
+	PageKey(3);
+	
+		
+	if (KEY4)
+	{
+		bValueChanged = true;
+		currentPage.softkeys = _skMENUSAVE;
+		
+		switch (subpage)
+		{
+			case 0: Config.RX_mode=~Config.RX_mode; break;
+			case 1: startEditMode(&(Config.AutoDisarm),0,10,TYPE_UINT8); return ;
+			case 2: startEditMode(&(Config.VoltageAlarm),0,100,TYPE_UINT8);  return ;
+		}
+		
+	}
+	
+	if (KEY1)
+	{
+		_helper_SaveinEEPROM_ifChanged();
+	}
+	
+	if (Config.RX_mode == RX_mode_BuddyMode)
+	{
+		LCD_WriteString_Pex(0,84,PSTR("Buddy"),5,(subpage==0));
+	}
+	else
+	{
+		LCD_WriteString_Pex(0,84,PSTR("UART "),5,0==subpage);
+	}
+	LCD_WriteValue(1,84,Config.AutoDisarm,3,1==subpage);
+	LCD_WriteValue(2,84,Config.VoltageAlarm,3,2==subpage);
+		
+}
 
 /*
 * check : http://code.google.com/p/ardupirates/wiki/PID_Setting_SuperStable_Code
@@ -678,16 +733,12 @@ void _hStabilization()
 			case 6: startEditMode(&(Config.GyroParams[subindex]._DLimit),0,500,TYPE_INT16); return ;
 		}
 		
+		
 	}
 	
 	if (KEY1)
 	{
-		if (bValueChanged==true)
-		{
-			Save_Config_to_EEPROM();
-			bValueChanged = false;
-			return ;
-		}
+		_helper_SaveinEEPROM_ifChanged();
 	}
 	
 	lcdReverse(subpage == 0);
@@ -706,8 +757,6 @@ void _hStabilization()
 	LCD_WriteValue(2,78,Config.GyroParams[subindex]._ILimit,3,4==subpage);
 	LCD_WriteValue(3,30,Config.GyroParams[subindex]._D,3,5==subpage);
 	LCD_WriteValue(3,78,Config.GyroParams[subindex]._DLimit,3,6==subpage);
-	//LCD_WriteValue(5,30,Config.GyroParams[0]._I,3,6==subpage);
-	//LCD_WriteValue(5,78,Config.GyroParams[1]._ILimit,3,7==subpage);
 	
 	//Pitch_Ratio = ((double)(Config.GyroParams[0].maxDest - Config.GyroParams[0].minDest)/(double)(Config.GyroParams[0].maxSource - Config.GyroParams[0].minSource));
 	//Yaw_Ratio = ((double)(Config.GyroParams[1].maxDest - Config.GyroParams[1].minDest)/(double)(Config.GyroParams[1].maxSource - Config.GyroParams[1].minSource));
@@ -902,6 +951,8 @@ void _hFactoryReset()
 	else if (KEY4)	// Yes
 	{
 		Save_Default_Config_to_EEPROM();
+		//RST_CTRL
+		while(1); // Loop for reset
 	}
 }
 

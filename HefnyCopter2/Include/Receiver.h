@@ -25,19 +25,26 @@ uint8_t RX_Good;
 
 */
 
-#define TX_GOOD					  0x0
-#define TX_NOT_FOUND			 (RX_Good | 0b00000001)
-#define TX_DISCONNECTED			 (RX_Good | 0b00000010)
-#define TX_CONNECTED_ERR		 (RX_Good & 0b00000010) // should equal to ZERO
-#define TX_FOUND_ERR			 (RX_Good & 0b00000001) // should equal to ZERO
+#define IS_TX1_GOOD					((RX_Good & 0b00001111)==0) 
+#define TX1_NOT_FOUND				(RX_Good  | 0b00000001)
+#define TX1_DISCONNECTED			(RX_Good  | 0b00000010)
+#define TX1_CONNECTED_ERR			(RX_Good  & 0b11110010) // should equal to ZERO
+#define TX1_FOUND_ERR				(RX_Good  & 0b11110001) // should equal to ZERO
 
-void rxInit(uint8_t mode);
-void RX_StickCenterCalibrationInit(void);
+#define IS_TX2_GOOD					((RX_Good & 0b11110000)==0) 
+#define TX2_NOT_FOUND				(RX_Good  | 0b00010000)
+#define TX2_DISCONNECTED			(RX_Good  | 0b00100000)
+#define TX2_CONNECTED_ERR			(RX_Good  & 0b00101111) // should equal to ZERO
+#define TX2_FOUND_ERR				(RX_Good  & 0b00011111) // should equal to ZERO
+
+
+void rxInit							(uint8_t mode);
+void RX_StickCenterCalibrationInit	(uint8_t RXIndex);
+void RX_StickCenterCalibration		(uint8_t RXIndex);
 int16_t RX_GetReceiverThrottleValue (uint8_t RXIndex);
-int16_t RX_GetReceiverValues (uint8_t RXIndex,uint8_t Channel);
-uint16_t RX_raw_GetReceiverValues (uint8_t Channel);
-void RX_StickCenterCalibration(void);
-void RX_CopyLatestReceiverValues (void);
+int16_t RX_GetReceiverValues		(uint8_t RXIndex,uint8_t Channel);
+uint16_t RX_raw_GetReceiverValues	(uint8_t RXIndex, uint8_t Channel);
+void RX_CopyLatestReceiverValues	(void);
 
 
 

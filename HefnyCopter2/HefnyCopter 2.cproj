@@ -67,6 +67,31 @@
       </AvrGcc>
     </ToolchainSettings>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'HefnyCopter2-Debug Buddy' ">
+    <ToolchainSettings>
+      <AvrGcc>
+  <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
+  <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
+  <avrgcc.compiler.symbols.DefSymbols>
+    <ListValues>
+      <Value>BUDDY_CONFIG</Value>
+    </ListValues>
+  </avrgcc.compiler.symbols.DefSymbols>
+  <avrgcc.compiler.optimization.level>Optimize (-O1)</avrgcc.compiler.optimization.level>
+  <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
+  <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
+  <avrgcc.compiler.optimization.DebugLevel>Maximum (-g3)</avrgcc.compiler.optimization.DebugLevel>
+  <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
+  <avrgcc.linker.libraries.Libraries>
+    <ListValues>
+      <Value>m</Value>
+    </ListValues>
+  </avrgcc.linker.libraries.Libraries>
+  <avrgcc.assembler.debugging.DebugLevel>Default (-Wa,-g)</avrgcc.assembler.debugging.DebugLevel>
+</AvrGcc>
+    </ToolchainSettings>
+    <OutputPath>bin\HefnyCopter2-Debug Buddy\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="Accessories\Beeper.c">
       <SubType>compile</SubType>
@@ -96,9 +121,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="GFX\font12x16.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="GFX\font4x6.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="GFX\font6x8.c">
