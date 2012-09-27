@@ -43,7 +43,7 @@ version 0.45
 * -Disable switch actions when entering Stick related menus.
 * Disable switch actions when sticks are not calibrated.
 * Only Secondary RX can have sticks-button.
-* Add Voltage Monitor Alram + menu in misc.
+* Add Voltage Monitor Alarm + menu in misc.
 
 
 ToDO:

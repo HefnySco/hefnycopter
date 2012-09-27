@@ -46,7 +46,7 @@ static config_t const defaultConfig PROGMEM =
 {
 	.signature = HEFNYCOPTER2_SIGNATURE,
 	.IsCalibrated=0,
-	.RX_mode=RX_mode_UARTMode,
+	.RX_mode=RX_mode_BuddyMode,
 	.MixerIndex = 0,
 	.GyroParams[0]= {13,210,-2,50,10,100},	// pitch roll gyro.
 	.GyroParams[1]= {70,100,0,0,0,0},	// Yaw gyro

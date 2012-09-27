@@ -77,7 +77,7 @@ void Setup (void)
 
 	Initial_EEPROM_Config_Load();
 	
-	Config.RX_mode=RX_mode_BuddyMode;
+	//Config.RX_mode=RX_mode_BuddyMode;
 	Config.QuadFlyingMode = QuadFlyingMode_PLUS;
 	
 	RX_Init();
@@ -108,10 +108,11 @@ void Setup (void)
 #ifdef PRIMARY_INPUT_RX
 				// clear interrupts
 #endif
-#ifdef UART_ENABLED
+//#ifdef UART_ENABLED
 
 	UART_Init(20);
-#endif
+
+//#endif
 
 
 	ADCPort_Init();
@@ -258,17 +259,22 @@ void MainLoop(void)
 	
 	if (Config.RX_mode==RX_mode_UARTMode)
 	{
-		Send_Data(DataPtr,2);
-		DataPtr+=2;
-		DataCounter+=1;
-		if (DataCounter==6)
-		{
-			DataCounter=0;
-			DataPtr-=12;
-		}
+		LED_Orange=~LED_Orange;
+		Send_Data("S",1);
+		
+		/*Sensors_Latest[0]=1;//0xff;
+		Sensors_Latest[1]=2;//-127;
+		Sensors_Latest[2]=0xff00;
+		Sensors_Latest[3]=0xf00f;
+		Sensors_Latest[4]=4;
+		Sensors_Latest[5]=5;
+		*/
+		Send_Data(Sensors_Latest,16);
+		Send_Data("E",1);
 	}
-	else
-	{
+	
+	if (Config.RX_mode==RX_mode_BuddyMode)
+	{   // in Buddy mode AUX channel is used for instance switching.
 		if (IS_TX2_GOOD)
 		{
 			if (RX_Latest[1/*Always read from Secondary*/][RXChannel_AUX] < STICK_RIGHT)
@@ -292,12 +298,14 @@ void MainLoop(void)
 		TCNT_X_snapshot2=0;
 	}		
 	
-	Config.AutoDisarm=1;
+
+
 	
 	if ((!IS_TX2_GOOD)) 
 	{
 		return ; // Do nothing all below depends on TX.
 	}	
+	
 	
 	if (RX_Snapshot[RXChannel_THR] < STICKThrottle_ARMING) 
 	{	
@@ -413,9 +421,6 @@ void MainLoop(void)
 			*	
 			*/
 	
-			
-			
-	
 			if (Config.QuadFlyingMode==QuadFlyingMode_X)
 			{
 							
@@ -498,10 +503,10 @@ void HandleSticksForArming (void)
 				}
 			}
 			
-			if (Config.AutoDisarm==1)
+			if (Config.AutoDisarm!=0)
 			{ // check auto disArm
 				if (TCNT_X_snapshotAutoDisarm==0) TCNT_X_snapshotAutoDisarm = CurrentTCNT1_X;
-				if ((CurrentTCNT1_X - TCNT_X_snapshotAutoDisarm) > DISARM_TIME)
+				if ((CurrentTCNT1_X - TCNT_X_snapshotAutoDisarm) > (DISARM_TIME * Config.AutoDisarm))
 				{
 					Disarm();
 					return ;

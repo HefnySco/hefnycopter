@@ -255,6 +255,7 @@ static void startEditMode(void* valuePtr, int16_t loLimit, int16_t hiLimit, uint
 */
 uint8_t doMenu(menu_t *menu)
 {
+	UIEnableStickCommands=true;
 	
 	if (!_mykey) return 0;
 	

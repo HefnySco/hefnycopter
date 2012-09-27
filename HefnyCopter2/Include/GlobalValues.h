@@ -37,7 +37,7 @@ char sXDeg[10];
 #define STICKPOSITION_LONG_TIME		305  // minimum time duration for stick to accept a command.
 #define STICKPOSITION_SHORT_TIME	80
 #define STICK_DEADBAND				15
-#define DISARM_TIME					10000
+#define DISARM_TIME					1000
 ///////////////// EOD STICK READINGS
 
 
@@ -147,7 +147,18 @@ BOOL bResetTCNR1_X;
 
 
 // ADC Values
+// Order is aligned with Menu Screens
+#define ACC_X_Index			3
+#define ACC_Y_Index			4
+#define ACC_Z_Index			5
+#define GYRO_X_Index		0
+#define GYRO_Y_Index		1
+#define GYRO_Z_Index		2
+#define V_BAT_Index			6
+#define SENSORS_ALL			7
 volatile int16_t Sensors_Latest [8];
+
+// TEMP
 volatile char Result[10]; 
 volatile char Result2[10]; 
 volatile uint16_t nResult[8];

@@ -133,7 +133,7 @@ PCINT23 - PC7 - OUTPUT 8
 
 // Reduced cables configurations:
 #define RX1_ROLL_vect		INT0_vect
-#define RX1_ROLL    		REGISTER_BIT(PIND,2)	
+#define RX1_ROLL    		REGISTER_BIT(PIND,2)  // RXD1	
 #define RX1_ROLL_DIR   		REGISTER_BIT(DDRD,2)
 
 #define RX1_PITCH_vect		PCINT3_vect
@@ -141,7 +141,7 @@ PCINT23 - PC7 - OUTPUT 8
 #define RX1_PITCH_DIR   	REGISTER_BIT(DDRD,0)
 
 #define RX1_COLL_vect		INT1_vect
-#define RX1_COLL    		REGISTER_BIT(PIND,3)	
+#define RX1_COLL    		REGISTER_BIT(PIND,3) // TXD1	
 #define RX1_COLL_DIR   		REGISTER_BIT(DDRD,3) //pd0
 
 #define RX1_YAW_vect		INT2_vect
@@ -183,15 +183,7 @@ PCINT23 - PC7 - OUTPUT 8
 #define GYRO_Z_PNUM			2
 #define V_BAT_PNUM			3
 
-// Order is aligned with Menu Screens
-#define ACC_X_Index			3
-#define ACC_Y_Index			4
-#define ACC_Z_Index			5
-#define GYRO_X_Index		0
-#define GYRO_Y_Index		1
-#define GYRO_Z_Index		2
-#define V_BAT_Index			6
-#define SENSORS_ALL			7
+
 
 ///////////// Motors
 #define M1		  				REGISTER_BIT(PORTC,6)
