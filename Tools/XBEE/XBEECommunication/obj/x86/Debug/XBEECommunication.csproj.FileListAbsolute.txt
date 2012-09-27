@@ -1,0 +1,9 @@
+D:\HefnyProjects\XBEE\XBEECommunication\bin\Debug\XBEECommunication.exe
+D:\HefnyProjects\XBEE\XBEECommunication\bin\Debug\XBEECommunication.pdb
+D:\HefnyProjects\XBEE\XBEECommunication\obj\x86\Debug\ResolveAssemblyReference.cache
+D:\HefnyProjects\XBEE\XBEECommunication\obj\x86\Debug\XBEECommunication.Properties.Resources.resources
+D:\HefnyProjects\XBEE\XBEECommunication\obj\x86\Debug\GenerateResource.read.1.tlog
+D:\HefnyProjects\XBEE\XBEECommunication\obj\x86\Debug\GenerateResource.write.1.tlog
+D:\HefnyProjects\XBEE\XBEECommunication\obj\x86\Debug\XBEECommunication.exe
+D:\HefnyProjects\XBEE\XBEECommunication\obj\x86\Debug\XBEECommunication.pdb
+D:\HefnyProjects\XBEE\XBEECommunication\obj\x86\Debug\XBEECommunication.MainForm.resources
