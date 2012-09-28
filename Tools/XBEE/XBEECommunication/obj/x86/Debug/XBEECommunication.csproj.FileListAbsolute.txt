@@ -7,3 +7,12 @@ D:\HefnyProjects\XBEE\XBEECommunication\obj\x86\Debug\GenerateResource.write.1.t
 D:\HefnyProjects\XBEE\XBEECommunication\obj\x86\Debug\XBEECommunication.exe
 D:\HefnyProjects\XBEE\XBEECommunication\obj\x86\Debug\XBEECommunication.pdb
 D:\HefnyProjects\XBEE\XBEECommunication\obj\x86\Debug\XBEECommunication.MainForm.resources
+E:\Hefny Projects\QUADCode\HefnyCopter\trunk\Tools\XBEE\XBEECommunication\obj\x86\Debug\XBEECommunication.exe
+E:\Hefny Projects\QUADCode\HefnyCopter\trunk\Tools\XBEE\XBEECommunication\obj\x86\Debug\XBEECommunication.pdb
+E:\Hefny Projects\QUADCode\HefnyCopter\trunk\Tools\XBEE\XBEECommunication\bin\Debug\XBEECommunication.exe
+E:\Hefny Projects\QUADCode\HefnyCopter\trunk\Tools\XBEE\XBEECommunication\bin\Debug\XBEECommunication.pdb
+E:\Hefny Projects\QUADCode\HefnyCopter\trunk\Tools\XBEE\XBEECommunication\obj\x86\Debug\ResolveAssemblyReference.cache
+E:\Hefny Projects\QUADCode\HefnyCopter\trunk\Tools\XBEE\XBEECommunication\obj\x86\Debug\XBEECommunication.MainForm.resources
+E:\Hefny Projects\QUADCode\HefnyCopter\trunk\Tools\XBEE\XBEECommunication\obj\x86\Debug\XBEECommunication.Properties.Resources.resources
+E:\Hefny Projects\QUADCode\HefnyCopter\trunk\Tools\XBEE\XBEECommunication\obj\x86\Debug\GenerateResource.read.1.tlog
+E:\Hefny Projects\QUADCode\HefnyCopter\trunk\Tools\XBEE\XBEECommunication\obj\x86\Debug\GenerateResource.write.1.tlog

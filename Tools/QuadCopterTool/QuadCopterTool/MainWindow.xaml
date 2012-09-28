@@ -1,0 +1,26 @@
+﻿<Window x:Class="QuadCopterTool.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="421" Width="528" Loaded="Window_Loaded" xmlns:my="clr-namespace:QuadCopterTool" xmlns:my1="clr-namespace:QuadCopterTool.Controls">
+    <Grid>
+        <TabControl HorizontalAlignment="Stretch" Name="tabControl1" VerticalAlignment="Stretch" >
+            <TabItem Header="Communication" Name="tabConnection" ForceCursor="True">
+                <Grid>
+                    <ComboBox Height="23" HorizontalAlignment="Left" Margin="75,22,0,0" Name="cmbCOMPorts" VerticalAlignment="Top" Width="205" />
+                    <Button Content="Connect" Height="23" HorizontalAlignment="Left" Margin="305,22,0,0" Name="btnConnect" VerticalAlignment="Top" Width="75" Click="btnConnect_Click" />
+                    <Label Content="COM Port" Height="28" HorizontalAlignment="Left" Margin="6,17,0,0" Name="label1" VerticalAlignment="Top" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="Data" Name="tabItem1">
+                <Grid Height="277" Width="488">
+                    <my:CtrlPosition Height="156" HorizontalAlignment="Left" Margin="356,18,0,0" x:Name="ctrlGyro" VerticalAlignment="Top" Width="120" Title="Gyro"></my:CtrlPosition>
+                    <my:CtrlPosition x:Name="ctrlACC" Margin="57,18,318,105" Title="Acc"></my:CtrlPosition>
+                    <my1:CtrlMeterMiddle Height="156" Margin="15,18,0,0" x:Name="meterAccZ" VerticalAlignment="Top" MaxValue="500" CurrentValue="-400" HorizontalAlignment="Left" Width="36" MinValue="-500" ></my1:CtrlMeterMiddle>
+                    <my1:CtrlMeterMiddle CurrentValue="10" Height="154" MaxValue="500" x:Name="meterGyroX" Width="31" Margin="260,18,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" MinValue="-500" />
+                    <my1:CtrlMeterMiddle CurrentValue="10" Height="156" Margin="310,18,0,0" MaxValue="500" x:Name="meterGyroY" VerticalAlignment="Top" HorizontalAlignment="Left" Width="31" MinValue="-500" />
+                    
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>

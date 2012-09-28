@@ -1,0 +1,24 @@
+﻿<Canvas x:Class="QuadCopterTool.Controls.Meter"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="101" d:DesignWidth="91" SizeChanged="Canvas_SizeChanged" Background="#FFC4BDBD">
+    <Grid Loaded="Grid_Loaded" Height="101" Width="91" Name="MainGrid">
+        <Rectangle Name="rectangle1" Stretch="Fill">
+            <Rectangle.Fill>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FF2626D4" Offset="1" />
+                    <GradientStop Color="Red" Offset="0" />
+                    <GradientStop Color="#FFF8B016" Offset="0.523" />
+                    <GradientStop Color="#FFFA820E" Offset="0.32" />
+                </LinearGradientBrush>
+            </Rectangle.Fill>
+        </Rectangle>
+        <Rectangle HorizontalAlignment="Stretch" Name="rectangle2" Stroke="Black" VerticalAlignment="Stretch" StrokeThickness="2"/>
+        <Rectangle Height="55" HorizontalAlignment="Stretch" Name="rectangleValue" Stroke="Black" VerticalAlignment="Top" Fill="DimGray" />
+        <Label Content="0000" Height="22" Margin="0,0,0,6" Name="lblValue" VerticalAlignment="Bottom" FontSize="10" FontStyle="Oblique" FontWeight="Bold" Foreground="White" HorizontalContentAlignment="Center" />
+    </Grid>
+    
+</Canvas>
