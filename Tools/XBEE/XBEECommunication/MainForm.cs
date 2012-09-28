@@ -26,7 +26,7 @@ namespace XBEECommunication
 
         protected void ClosePort()
         {
-
+            mFile.Close();
             if (XBEEPort.IsOpen == true)
             {
                 XBEEPort.Close();
@@ -38,7 +38,7 @@ namespace XBEECommunication
         {
             if (XBEEPort.IsOpen == false)
             {
-                mFile = System.IO.File.CreateText(@"d:\QuadReadings.txt" + System.Environment.TickCount.ToString());
+                mFile = System.IO.File.CreateText(@"d:\QuadReadings_" + System.Environment.TickCount.ToString()+".csv");
                 XBEEPort.DiscardNull = false;
                 XBEEPort.Encoding = Encoding.Unicode;
                 XBEEPort.PortName = (string)cmbCOMPort.SelectedItem;
@@ -48,7 +48,7 @@ namespace XBEECommunication
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            vArray=new byte[12];
+            vArray=new byte[14];
             foreach (string portname in SerialPort.GetPortNames())
             {
                 cmbCOMPort.Items.Add(portname);
@@ -74,6 +74,7 @@ namespace XBEECommunication
             ClosePort();
         }
 
+        bool ExpectEOF=false;
         bool bStartCopy = false;
         int Idx = 0;
         private void XBEEPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
@@ -81,11 +82,11 @@ namespace XBEECommunication
             
             string S;
             //SB.Clear();
-            //S= (XBEEPort.ReadExisting());
+            S= (XBEEPort.ReadExisting());
 
             byte[] array =  new byte[8000]; //
 
-            //array = Encoding.GetEncoding("Windows-1252").GetBytes(S);
+            array = Encoding.Unicode.GetBytes(S);
                 int j;
            /* for (j = 0; j < XBEEPort.BytesToRead; ++j)
             {
@@ -93,7 +94,7 @@ namespace XBEECommunication
                 array[j] =(byte) XBEEPort.ReadByte();
             }
            */
-            XBEEPort.Read(array,0,XBEEPort.ReadByte());
+           // XBEEPort.Read(array,0,XBEEPort.BytesToWrite);
             for (int i = 0; i < array.Length; ++i) // j; ++i)
             {
                 if (array[i] == 'S')
@@ -105,16 +106,8 @@ namespace XBEECommunication
                 }
                 if (array[i] == 'E')
                 {
-                   bStartCopy = false;
-                   
-                   continue;
-                }
-                if (bStartCopy)
-                {
-                    if (Idx == 12)
+                    if (ExpectEOF == true) // message correct then copy
                     {
-                        Idx = 0;
-                        bStartCopy = false;
                         GyroY = BitConverter.ToInt16(vArray, 0);
                         GyroZ = BitConverter.ToInt16(vArray, 2);
                         GyroX = BitConverter.ToInt16(vArray, 4);
@@ -124,7 +117,7 @@ namespace XBEECommunication
                         mFile.Write(GyroX);
                         mFile.Write(",");
                         mFile.Write(GyroY);
-                        mFile.Write(","); 
+                        mFile.Write(",");
                         mFile.Write(GyroZ);
                         mFile.Write(",");
                         mFile.Write(AccX);
@@ -133,12 +126,25 @@ namespace XBEECommunication
                         mFile.Write(",");
                         mFile.Write(AccZ);
                         mFile.WriteLine();
+                    }
+                    ExpectEOF = false;
+                   continue;
+                }
+                if (bStartCopy)
+                {
+                    if (Idx == 14)
+                    {
+                        Idx = 0;
+                        bStartCopy = false;
+                        ExpectEOF = true;
+                        i += 1;
                         continue;
                     }
                     vArray[Idx]=array[i];
                     Idx += 1;
                 }
-                
+
+                ExpectEOF = false;
             }
             
           
