@@ -67,6 +67,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\DataPlotter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -83,6 +87,9 @@
     </Compile>
     <Compile Include="Controls\CtrlMeter.xaml.cs">
       <DependentUpon>CtrlMeter.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\DataPlotter.xaml.cs">
+      <DependentUpon>DataPlotter.xaml</DependentUpon>
     </Compile>
     <Compile Include="HefnyCopterSerial.cs" />
     <Compile Include="MainWindow.xaml.cs">

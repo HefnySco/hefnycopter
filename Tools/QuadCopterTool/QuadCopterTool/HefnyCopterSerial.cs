@@ -10,16 +10,13 @@ namespace QuadCopterTool
     public class HefnyCopterSerial
     {
         protected byte[] vArray;
-        protected bool ExpectEOF = false;   //if true after receiving data so that we expect EOF flag. if not received then copied data is discarded
-        protected bool bStartCopy = false;  //if true data is moved to DataArray
-        protected int Idx = 0;              // index of DataArray
         protected System.IO.TextWriter mLogFile;        
       
         protected System.IO.Ports.SerialPort mSerialPort;
 
         protected string mReceivedData;
 
-        public Int16 GyroY, GyroX, GyroZ, AccY, AccX, AccZ;
+        public Int16 GyroY, GyroX, GyroZ, AccY, AccX, AccZ, Volt,Motor1, Motor2, Motor3, Motor4;
 
 
         public System.IO.Ports.SerialPort SerialPort
@@ -40,7 +37,7 @@ namespace QuadCopterTool
             mSerialPort.RtsEnable = true;
             mSerialPort.DataReceived += new System.IO.Ports.SerialDataReceivedEventHandler(DataReceived);
 
-            vArray = new byte[14];
+            vArray = new byte[20];
         }
 
 
@@ -52,6 +49,11 @@ namespace QuadCopterTool
           AccX = BitConverter.ToInt16(vArray, 6);
           AccY = BitConverter.ToInt16(vArray, 8);
           AccZ = BitConverter.ToInt16(vArray, 10);
+          //Volt= BitConverter.ToInt16(vArray, 12);
+          Motor1 = BitConverter.ToInt16(vArray, 12);
+          Motor2 = BitConverter.ToInt16(vArray, 14);
+          Motor3 = BitConverter.ToInt16(vArray, 16);
+          Motor4 = BitConverter.ToInt16(vArray, 18);
           mLogFile.Write(GyroX);
           mLogFile.Write(",");
           mLogFile.Write(GyroY);
@@ -63,6 +65,14 @@ namespace QuadCopterTool
           mLogFile.Write(AccY);
           mLogFile.Write(",");
           mLogFile.Write(AccZ);
+          mLogFile.Write(",");
+          mLogFile.Write(Motor1);
+          mLogFile.Write(",");
+          mLogFile.Write(Motor2);
+          mLogFile.Write(",");
+          mLogFile.Write(Motor3);
+          mLogFile.Write(",");
+          mLogFile.Write(Motor4);
           mLogFile.WriteLine();
       }
 
@@ -90,9 +100,13 @@ namespace QuadCopterTool
         }
 
 
+        bool ExpectEOF = false;   //if true after receiving data so that we expect EOF flag. if not received then copied data is discarded
+        bool bStartCopy = false;  //if true data is moved to DataArray
+        int Idx = 0;              // index of DataArray
+        
         private void DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-
+            
             string S;
             //SB.Clear();
             S = (mSerialPort.ReadExisting());
@@ -107,17 +121,18 @@ namespace QuadCopterTool
                  array[j] =(byte) XBEEPort.ReadByte();
              }
             */
-            // XBEEPort.Read(array,0,XBEEPort.BytesToWrite);
+           // bStartCopy = false;  // HERE I ignore data if packet ends before E received./// this can be updated to skip packet header and contiue reading.
+           // Idx = 0;
             for (int i = 0; i < array.Length; ++i) // j; ++i)
             {
-                if (array[i] == 'S')
+                if ((!bStartCopy) && (array[i] == 'S'))
                 {
                     bStartCopy = true;
                     Idx = 0;
                     //i += 1;
                     continue;
                 }
-                if (array[i] == 'E')
+                if ((!bStartCopy) && (array[i] == 'E'))
                 {
                     if (ExpectEOF == true) // message correct then copy
                     {
@@ -129,12 +144,12 @@ namespace QuadCopterTool
                 }
                 if (bStartCopy)
                 {
-                    if (Idx == 14)
+                    if (Idx == 20)
                     {
                         Idx = 0;
                         bStartCopy = false;
                         ExpectEOF = true;
-                        i += 1;
+                        i -= 1; // stepback to check for 'E'
                         continue;
                     }
                     vArray[Idx] = array[i];

@@ -14,7 +14,10 @@
 #include "Include/IO_config.h"
 #include "Include/Receiver.h"
 
+#define RX_SIGNAL_LOST_DURATION	20
+
 volatile int16_t  iTemp16; // used by Receiver intrrupts
+
 
 /*
 FailSafe:
@@ -43,25 +46,25 @@ void CalculateSignalLength1(uint8_t ChannelIndex)
 {
 	if (TCNT1 > RX_raw[0][ChannelIndex] )
 	{
-		RX[0][ChannelIndex] = TCNT1 - RX_raw[0][ChannelIndex] ;	
+		RX_Length[0][ChannelIndex] = TCNT1 - RX_raw[0][ChannelIndex] ;	
 	}
 	else
 	{
-		RX[0][ChannelIndex] = (0xffff - RX_raw[0][ChannelIndex] + TCNT1 );	
+		RX_Length[0][ChannelIndex] = (0xffff - RX_raw[0][ChannelIndex] + TCNT1 );	
 	}
-		
+	
 }
 void CalculateSignalLength2(uint8_t ChannelIndex)
 {
 	if (TCNT1 > RX_raw[1][ChannelIndex] )
 	{
-		RX[1][ChannelIndex] = TCNT1 - RX_raw[1][ChannelIndex] ;	
+		RX_Length[1][ChannelIndex] = TCNT1 - RX_raw[1][ChannelIndex] ;	
 	}
 	else
 	{
-		RX[1][ChannelIndex] = (0xffff - RX_raw[1][ChannelIndex] + TCNT1 );	
+		RX_Length[1][ChannelIndex] = (0xffff - RX_raw[1][ChannelIndex] + TCNT1 );	
 	}
-		
+	
 }
 
 #ifdef SECONDARY_INPUT_RX
@@ -213,7 +216,7 @@ ISR (RX_AUX_vect)
 	else
 	{
 		CalculateSignalLength2(RXChannel_AUX);
-		RX[0][RXChannel_AUX]=RX[1][RXChannel_AUX];
+		RX_Length[0][RXChannel_AUX]=RX_Length[1][RXChannel_AUX];
 	}
 }
 
@@ -292,7 +295,9 @@ void RX_Init(void)
 {
 	uint16_t _t;
 	ATOMIC_BLOCK(ATOMIC_FORCEON)
-		_t = RX[RXIndex][Channel];
+	{
+		_t = RX_Length[RXIndex][Channel];
+	}		
 	return _t;
 }
 
@@ -301,8 +306,11 @@ void RX_Init(void)
 	int16_t _t;
 	//////if (RX_Good != TX_GOOD) return 0;
 	ATOMIC_BLOCK(ATOMIC_FORCEON)
-		_t = ((int)(RX[RXIndex][Channel] - Config.RX_Mid[RXIndex][Channel])) / RX_Div_Factor;
-
+	{
+		_t = ((int)(RX_Length[RXIndex][Channel]));
+	}		
+	_t -= Config.RX_Mid[RXIndex][Channel];
+	_t /=RX_Div_Factor;
 	return _t;
 }
 
@@ -320,13 +328,13 @@ int16_t RX_GetReceiverThrottleValue (uint8_t RXIndex)
 	{
 		if (RXIndex==0)
 		{
-			if ( (TCNT1_X - RX1_LastValidSignal_timestamp) > 20)
+			if ( (TCNT1_X - RX1_LastValidSignal_timestamp) > RX_SIGNAL_LOST_DURATION)
 			{
 				RX_Good =TX1_NOT_FOUND;
 				return 0;
 			}	
 		
-			if ( (TCNT1_X - RX1_LastValidSignal_timestampAux) > 20)
+			if ( (TCNT1_X - RX1_LastValidSignal_timestampAux) > RX_SIGNAL_LOST_DURATION)
 			{
 				RX_Good =TX1_DISCONNECTED;
 				return 0;
@@ -334,13 +342,13 @@ int16_t RX_GetReceiverThrottleValue (uint8_t RXIndex)
 		}	
 		if (RXIndex==1)
 		{
-			if ( (TCNT1_X - RX2_LastValidSignal_timestamp) > 20)
+			if ( (TCNT1_X - RX2_LastValidSignal_timestamp) > RX_SIGNAL_LOST_DURATION)
 			{
 				RX_Good =TX2_NOT_FOUND;
 				return 0;
 			}	
 		
-			if ( (TCNT1_X - RX2_LastValidSignal_timestampAux) > 20)
+			if ( (TCNT1_X - RX2_LastValidSignal_timestampAux) > RX_SIGNAL_LOST_DURATION)
 			{
 				RX_Good =TX2_DISCONNECTED;
 				return 0;
@@ -348,9 +356,12 @@ int16_t RX_GetReceiverThrottleValue (uint8_t RXIndex)
 		}			
 		
 		
-		iTemp16 = ((int)(RX[RXIndex][RXChannel_THR] - Config.RX_Min[RXIndex][RXChannel_THR])) / RX_Div_Factor;
+		iTemp16 = ((int)(RX_Length[RXIndex][RXChannel_THR]));
 	}		
 	
+	iTemp16 -= Config.RX_Min[RXIndex][RXChannel_THR];
+	iTemp16 /= RX_Div_Factor;
+	 
 	return iTemp16;
 }
  

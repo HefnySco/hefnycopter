@@ -163,7 +163,7 @@ int main(void)
 	
 	while (Config.IsESCCalibration==ESCCalibration_ON)		
 	{
-		Beeper_Beep(100,2);
+		Beeper_Beep(BEEP_SHORT,2);
 		
 		Menu_LoadPage(PAGE_ESC_CALIBRATION);
 		while (1)
@@ -198,10 +198,10 @@ void LoopESCCalibration (void)
 {
 	RX_CopyLatestReceiverValues();
 	
-	MotorOut1 = RX_Latest[RXChannel_THR];
-	MotorOut2 = RX_Latest[RXChannel_THR];
-	MotorOut3 = RX_Latest[RXChannel_THR];
-	MotorOut4 = RX_Latest[RXChannel_THR];		
+	MotorOut[0] = RX_Latest[RXChannel_THR];
+	MotorOut[1] = RX_Latest[RXChannel_THR];
+	MotorOut[2] = RX_Latest[RXChannel_THR];
+	MotorOut[3] = RX_Latest[RXChannel_THR];		
 
 	Motor_GenerateOutputSignal();
 	
@@ -249,7 +249,7 @@ void MainLoop(void)
 	}	
 	// simulate
 	//RX_Latest[RXChannel_THR]=500;
-    ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+    ATOMIC_BLOCK(ATOMIC_FORCEON)
     {
       CurrentTCNT1_X = TCNT1_X;
     }
@@ -257,21 +257,6 @@ void MainLoop(void)
 	IMU_P2D(); 
 	bResetTCNR1_X = true;
 	
-	if (Config.RX_mode==RX_mode_UARTMode)
-	{
-		LED_Orange=~LED_Orange;
-		Send_Data("S",1);
-		
-		/*Sensors_Latest[0]=1;//0xff;
-		Sensors_Latest[1]=2;//-127;
-		Sensors_Latest[2]=0xff00;
-		Sensors_Latest[3]=0xf00f;
-		Sensors_Latest[4]=4;
-		Sensors_Latest[5]=5;
-		*/
-		Send_Data(Sensors_Latest,16);
-		Send_Data("E",1);
-	}
 	
 	if (Config.RX_mode==RX_mode_BuddyMode)
 	{   // in Buddy mode AUX channel is used for instance switching.
@@ -301,10 +286,11 @@ void MainLoop(void)
 
 
 	
-	if ((!IS_TX2_GOOD)) 
+	/*if ((!IS_TX2_GOOD)) 
 	{
 		return ; // Do nothing all below depends on TX.
-	}	
+	}
+	*/	
 	
 	
 	if (RX_Snapshot[RXChannel_THR] < STICKThrottle_ARMING) 
@@ -316,10 +302,7 @@ void MainLoop(void)
 		HandleSticksForArming();
 		
 		// Stop motors if Throttle Stick is less than minimum.
-		MotorOut1 = 0;
-		MotorOut2 = 0;
-		MotorOut3 = 0;
-		MotorOut4 = 0;
+		ZEROMotors();
 		
 		PID_Terms[0].I=0;
 		PID_Terms[1].I=0;
@@ -330,16 +313,14 @@ void MainLoop(void)
 		
 		if (IsArmed==false)
 		{  // However we are still DisArmed
-			MotorOut1 = 0;
-			MotorOut2 = 0;
-			MotorOut3 = 0;
-			MotorOut4 = 0;
+			ZEROMotors();
 			
 			// Sticks as Keyboard --- we are already disarmed to reach here.
 			HandleSticksAsKeys();
 		}
 		else
-		{	
+		{	// MOTORS ARE ON HERE
+			
 			
 			TCNT_X_snapshotAutoDisarm =0; // ZERO [user may disarm then fly slowly..in this case the qud will disarm once he turned off the stick...because the counter counts once the quad is armed..e.g. if it takes n sec to disarm automatically..user took n-1 sec keeping the stick low after arming then it will take 1 sec to disarm again after lowing the stick under STICKThrottle_ARMING
 			
@@ -363,11 +344,11 @@ void MainLoop(void)
 			RX_Snapshot[RXChannel_ELE] = (RX_Latest[ActiveRXIndex][RXChannel_ELE] * 3) / 5;
 			RX_Snapshot[RXChannel_RUD] = (RX_Latest[ActiveRXIndex][RXChannel_RUD] * 3) / 5 ;
 			
-			MotorOut1 = RX_Snapshot[RXChannel_THR];
-			MotorOut2 = RX_Snapshot[RXChannel_THR];
-			MotorOut3 = RX_Snapshot[RXChannel_THR];
-			MotorOut4 = RX_Snapshot[RXChannel_THR];		
-	
+			MotorOut[0] = RX_Snapshot[RXChannel_THR];
+			MotorOut[1] = RX_Snapshot[RXChannel_THR];
+			MotorOut[2] = RX_Snapshot[RXChannel_THR];
+			MotorOut[3] = RX_Snapshot[RXChannel_THR];		
+			
 			
 	
 			/*
@@ -403,17 +384,16 @@ void MainLoop(void)
 				*/
 				//gyroPitch = gyroPitch * (-1);
 				//gyroRoll  = gyroRoll  * (-1);
-				MotorOut1 -= gyroPitch ;
-				MotorOut4 += gyroPitch ; 
-				MotorOut2 -= gyroRoll  ;
-				MotorOut3 += gyroRoll  ;
-				MotorOut1 += gyroYaw;
-				MotorOut4 += gyroYaw;
-				MotorOut2 -= gyroYaw;
-				MotorOut3 -= gyroYaw;
+				MotorOut[0] -= gyroPitch ;
+				MotorOut[3] += gyroPitch ; 
+				MotorOut[1] -= gyroRoll  ;
+				MotorOut[2] += gyroRoll  ;
+				MotorOut[0] += gyroYaw;
+				MotorOut[3] += gyroYaw;
+				MotorOut[1] -= gyroYaw;
+				MotorOut[2] -= gyroYaw;
 				
 		
-			
 			
 			/*
 			*
@@ -424,42 +404,53 @@ void MainLoop(void)
 			if (Config.QuadFlyingMode==QuadFlyingMode_X)
 			{
 							
-				MotorOut1 += RX_Snapshot[RXChannel_AIL] ;
-				MotorOut2 += RX_Snapshot[RXChannel_AIL] ;
-				MotorOut3 -= RX_Snapshot[RXChannel_AIL] ;
-				MotorOut4 -= RX_Snapshot[RXChannel_AIL] ;
+				MotorOut[0] += RX_Snapshot[RXChannel_AIL] ;
+				MotorOut[1] += RX_Snapshot[RXChannel_AIL] ;
+				MotorOut[2] -= RX_Snapshot[RXChannel_AIL] ;
+				MotorOut[3] -= RX_Snapshot[RXChannel_AIL] ;
 				
-				MotorOut1 += RX_Snapshot[RXChannel_ELE];
-				MotorOut2 -= RX_Snapshot[RXChannel_ELE];
-				MotorOut3 += RX_Snapshot[RXChannel_ELE];
-				MotorOut4 -= RX_Snapshot[RXChannel_ELE];
+				MotorOut[0] += RX_Snapshot[RXChannel_ELE];
+				MotorOut[1] -= RX_Snapshot[RXChannel_ELE];
+				MotorOut[2] += RX_Snapshot[RXChannel_ELE];
+				MotorOut[3] -= RX_Snapshot[RXChannel_ELE];
 				
-				MotorOut1 -= RX_Snapshot[RXChannel_RUD];
-				MotorOut2 += RX_Snapshot[RXChannel_RUD];
-				MotorOut3 += RX_Snapshot[RXChannel_RUD];
-				MotorOut4 -= RX_Snapshot[RXChannel_RUD];
+				MotorOut[0] -= RX_Snapshot[RXChannel_RUD];
+				MotorOut[1] += RX_Snapshot[RXChannel_RUD];
+				MotorOut[2] += RX_Snapshot[RXChannel_RUD];
+				MotorOut[3] -= RX_Snapshot[RXChannel_RUD];
 			}
 			else
 			{
 				
-				MotorOut2 += RX_Snapshot[RXChannel_AIL] ;
-				MotorOut3 -= RX_Snapshot[RXChannel_AIL] ;
+				MotorOut[1] += RX_Snapshot[RXChannel_AIL] ;
+				MotorOut[2] -= RX_Snapshot[RXChannel_AIL] ;
 				
-				MotorOut1 += RX_Snapshot[RXChannel_ELE] ;
-				MotorOut4 -= RX_Snapshot[RXChannel_ELE] ;
+				MotorOut[0] += RX_Snapshot[RXChannel_ELE] ;
+				MotorOut[3] -= RX_Snapshot[RXChannel_ELE] ;
 		
-				MotorOut1 -= RX_Snapshot[RXChannel_RUD] ;
-				MotorOut2 += RX_Snapshot[RXChannel_RUD] ;
-				MotorOut3 += RX_Snapshot[RXChannel_RUD] ;
-				MotorOut4 -= RX_Snapshot[RXChannel_RUD] ;
+				MotorOut[0] -= RX_Snapshot[RXChannel_RUD] ;
+				MotorOut[1] += RX_Snapshot[RXChannel_RUD] ;
+				MotorOut[2] += RX_Snapshot[RXChannel_RUD] ;
+				MotorOut[3] -= RX_Snapshot[RXChannel_RUD] ;
 			}
 			
 			
 			// Save motors from turning-off
-			if (MotorOut1<MOTORS_IDLE_VALUE) MotorOut1=MOTORS_IDLE_VALUE;
-			if (MotorOut2<MOTORS_IDLE_VALUE) MotorOut2=MOTORS_IDLE_VALUE;
-			if (MotorOut3<MOTORS_IDLE_VALUE) MotorOut3=MOTORS_IDLE_VALUE;
-			if (MotorOut4<MOTORS_IDLE_VALUE) MotorOut4=MOTORS_IDLE_VALUE;
+			if (MotorOut[0]<MOTORS_IDLE_VALUE) MotorOut[0]=MOTORS_IDLE_VALUE;
+			if (MotorOut[1]<MOTORS_IDLE_VALUE) MotorOut[1]=MOTORS_IDLE_VALUE;
+			if (MotorOut[2]<MOTORS_IDLE_VALUE) MotorOut[2]=MOTORS_IDLE_VALUE;
+			if (MotorOut[3]<MOTORS_IDLE_VALUE) MotorOut[3]=MOTORS_IDLE_VALUE;
+			
+			
+			if (Config.RX_mode==RX_mode_UARTMode)
+			{
+				//LED_Orange=~LED_Orange;
+				Send_Data("S",1);
+				Send_Data(Sensors_Latest,12);
+				if (MotorOut[2]<0) LED_Orange=OFF;
+				Send_Data(MotorOut,8);
+				Send_Data("E",1);
+			}
 			
 			
 		} // End of ARMED & Throttle > Minimum
@@ -467,8 +458,22 @@ void MainLoop(void)
 			
 	}  // End of Throttle stick is NOT Down [Armed Could be True or not]
 	
-
-	Motor_GenerateOutputSignal();
+	if ((!IS_TX2_GOOD)) // if no signal and there is no AutoLandingMode.
+	{
+		ZEROMotors();
+		if (IsArmed==true)
+		{
+			Disarm();	
+		}
+		//return ; // Do nothing all below depends on TX.
+	}
+	
+	Motor_GenerateOutputSignal();	
+	
+	
+	
+	
+	
 	
 	if (bResetTCNR1_X==true)
 	{
@@ -613,4 +618,16 @@ void HandleSticksAsKeys (void)
 				}		 		
 			}	
 			
+}
+
+/*
+// STOPS MOTORS IMMEDIATLY
+*/
+void ZEROMotors()
+{
+	MotorOut[0] = 0;
+	MotorOut[1] = 0;
+	MotorOut[2] = 0;
+	MotorOut[3] = 0;
+	Motor_GenerateOutputSignal();
 }

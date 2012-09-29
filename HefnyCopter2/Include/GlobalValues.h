@@ -24,7 +24,7 @@
 
 // LCD
 #define LCD_RefreashRate	10
-char sXDeg[10];
+char sXDeg[20];
 
  
 
@@ -66,7 +66,7 @@ char sXDeg[10];
 
 // Receiver Signal Values
 volatile uint8_t ActiveRXIndex;			// 0: primary rx, 1: secondary rx, 3: buddy mode [primary & secondary] 
-volatile uint16_t RX          [2][RXChannels];
+volatile uint16_t RX_Length   [2][RXChannels];
 volatile int16_t  RX_Latest   [2][RXChannels];   // the actual RX values that are used for calculations.
 int16_t			  RX_Snapshot    [RXChannels];
 // used for calibration...not initialized... true values are in Config in case IsCalibrated & Stick = True.
@@ -80,10 +80,7 @@ BOOL	IsArmed;
 uint16_t Sensors_dt; // time in 100us between sensors reading
 
 // Motors Signals
-int16_t MotorOut1;
-int16_t MotorOut2;
-int16_t MotorOut3;
-int16_t MotorOut4;
+int16_t MotorOut[4];
 
 int16_t gyroPitch;
 int16_t gyroRoll;

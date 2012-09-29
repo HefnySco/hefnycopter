@@ -79,12 +79,17 @@ namespace QuadCopterTool
             meterAccZ.CurrentValue = mHefnyCopterSerial.AccZ;
 
 
-            ctrlGyro.RollLevel += mHefnyCopterSerial.GyroX  * 0.001256;
-            ctrlGyro.PitchLevel += mHefnyCopterSerial.GyroY * 0.001256;
+            //ctrlGyro.RollLevel += mHefnyCopterSerial.GyroX  * 0.001256;
+            //ctrlGyro.PitchLevel += mHefnyCopterSerial.GyroY * 0.001256;
             //ctrlGyro.YawLevel += mHefnyCopterSerial.GyroZ  * 0.001256;
             meterGyroX.CurrentValue = mHefnyCopterSerial.GyroX;
             meterGyroY.CurrentValue = mHefnyCopterSerial.GyroY;
+            meterGyroZ.CurrentValue = mHefnyCopterSerial.GyroZ;
 
+            meterMotor1.CurrentValue = mHefnyCopterSerial.Motor1;
+            meterMotor2.CurrentValue = mHefnyCopterSerial.Motor2;
+            meterMotor3.CurrentValue = mHefnyCopterSerial.Motor3;
+            meterMotor4.CurrentValue = mHefnyCopterSerial.Motor4;
         }
 
 

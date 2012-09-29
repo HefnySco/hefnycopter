@@ -27,8 +27,6 @@ void UART_Init( unsigned int ubrr)
 {
 	if (Config.RX_mode==RX_mode_UARTMode)
 	{
-		//UART_Buffer_RTS=0;
-	
 		/*Set baud rate */
 		UBRR1H = (unsigned char)(ubrr>>8);	
 		UBRR1L = (unsigned char)ubrr;
@@ -43,25 +41,20 @@ void UART_Init( unsigned int ubrr)
 
 void send_byte(uint8_t u8Data)
 {
-//#ifndef PRIMARY_INPUT_RX
 
 	// Wait if a byte is being transmitted
-	while((UCSR1A&(1<<UDRE1)) == 0);
+	while((UCSR1A & (1<<UDRE1)) == 0);
 	// Transmit data
 	/////////delay_ms(10);
 	UDR1 = u8Data;
-
-//#endif	
 }
 
 void Send_Data (void * msg, uint8_t len)
 {
-//#ifndef PRIMARY_INPUT_RX
 	
 	for (int i=0; i<len;++i)
 	{
 		send_byte (((uint8_t *)msg)[i]);
 	}
 	
-//#endif
 }

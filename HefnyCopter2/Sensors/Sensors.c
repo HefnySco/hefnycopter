@@ -121,7 +121,7 @@ void Sensors_ReadAll (void)
 {
    uint16_t TX,TX1;
    uint16_t *T;
-   ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+   ATOMIC_BLOCK(ATOMIC_FORCEON)
    {
 		TX= TCNT1;
 		TX1= TCNT1_X;

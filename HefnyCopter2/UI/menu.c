@@ -433,19 +433,19 @@ void _hHomeArmed()
 	
 	
 	LCD_SetPos(3,18);
-	itoa(MotorOut1,sXDeg,10);
+	itoa(MotorOut[0],sXDeg,10);
 	LCD_WritePadded(sXDeg,5);
 	
 	LCD_SetPos(3,78);
-	itoa(MotorOut4,sXDeg,10);
+	itoa(MotorOut[3],sXDeg,10);
 	LCD_WritePadded(sXDeg,5);
 	
 	LCD_SetPos(4,18);
-	itoa(MotorOut2,sXDeg,10);
+	itoa(MotorOut[1],sXDeg,10);
 	LCD_WritePadded(sXDeg,5);
 	
 	LCD_SetPos(4,78);
-	itoa(MotorOut3,sXDeg,10);
+	itoa(MotorOut[2],sXDeg,10);
 	LCD_WritePadded(sXDeg,5);
 	
 	
@@ -486,19 +486,19 @@ void _hHomeArmedESC (void)
 	}
 	
 	LCD_SetPos(3,18);
-	itoa(MotorOut1,sXDeg,10);
+	itoa(MotorOut[0],sXDeg,10);
 	LCD_WritePadded(sXDeg,5);
 	
 	LCD_SetPos(3,78);
-	itoa(MotorOut4,sXDeg,10);
+	itoa(MotorOut[3],sXDeg,10);
 	LCD_WritePadded(sXDeg,5);
 	
 	LCD_SetPos(4,18);
-	itoa(MotorOut2,sXDeg,10);
+	itoa(MotorOut[1],sXDeg,10);
 	LCD_WritePadded(sXDeg,5);
 	
 	LCD_SetPos(4,78);
-	itoa(MotorOut3,sXDeg,10);
+	itoa(MotorOut[2],sXDeg,10);
 	LCD_WritePadded(sXDeg,5);
 	
 }
@@ -582,7 +582,7 @@ void _hStickCentering()
 		}
 		else
 		{
-			Beeper_Beep(200,3);	
+			Beeper_Beep(BEEP_ERROR,3);	
 		}
 		
 	}
@@ -628,7 +628,7 @@ void _hSensorCalibration()
 		
 		for (i=0; i<10;++i)
 		{
-			Beeper_Beep(70,1);
+			Beeper_Beep(BEEP_SHORT,1);
 			delay_ms (500); // delay to avoid click vibration.	
 		
 		}
@@ -997,7 +997,7 @@ void Menu_MenuShow()
 	
 	
 	if (KEYPRESS)
-		Beeper_Beep(70,1);
+		Beeper_Beep(BEEP_KEY,1);
 		
 	_TXKeys = 0; // No Key Pressed
 }

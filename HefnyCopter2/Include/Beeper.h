@@ -11,8 +11,11 @@
 
 #include <inttypes.h>
 
-
-
+	#define BEEP_LONG	700
+	#define BEEP_SHORT	70
+	#define BEEP_KEY	70
+	#define BEEP_ERROR	200
+	
 	void Beeper_Beep (uint16_t msDuration, uint8_t Times);
 	
 

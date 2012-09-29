@@ -45,7 +45,7 @@ void Motor_GenerateOutputSignal(void)
 	
 	// Make sure we have spent enough time between pulses
 	// Also, handle the odd case where the TCNT1 rolls over and TCNT1 < MotorStartTCNT1
-	ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+	ATOMIC_BLOCK(ATOMIC_FORCEON)
    {
       CurrentTCNT2 = TCNT2_X;
    }
@@ -83,21 +83,21 @@ void Motor_GenerateOutputSignal(void)
 	
 	
 	// Set motor limits (0 -> MOTORS_HIGH_VALUE)
-	if ( MotorOut1 < 0 ) m1 = 0;
-	else if ( MotorOut1 > MOTORS_HIGH_VALUE ) m1 = MOTORS_HIGH_VALUE;
-	else m1 = MotorOut1;
+	if ( MotorOut[0] < 0 ) m1 = 0;
+	else if ( MotorOut[0] > MOTORS_HIGH_VALUE ) m1 = MOTORS_HIGH_VALUE;
+	else m1 = MotorOut[0];
 	
-	if ( MotorOut2 < 0 ) m2 = 0;
-	else if ( MotorOut2 > MOTORS_HIGH_VALUE ) m2 = MOTORS_HIGH_VALUE;
-	else m2 = MotorOut2;
+	if ( MotorOut[1] < 0 ) m2 = 0;
+	else if ( MotorOut[1] > MOTORS_HIGH_VALUE ) m2 = MOTORS_HIGH_VALUE;
+	else m2 = MotorOut[1];
 
-	if ( MotorOut3 < 0 ) m3 = 0;
-	else if ( MotorOut3 > MOTORS_HIGH_VALUE ) m3 = MOTORS_HIGH_VALUE;
-	else m3 = MotorOut3;
+	if ( MotorOut[2] < 0 ) m3 = 0;
+	else if ( MotorOut[2] > MOTORS_HIGH_VALUE ) m3 = MOTORS_HIGH_VALUE;
+	else m3 = MotorOut[2];
 
-	if ( MotorOut4 < 0 ) m4 = 0;
-	else if ( MotorOut4 > MOTORS_HIGH_VALUE ) m4 = MOTORS_HIGH_VALUE;
-	else m4 = MotorOut4;
+	if ( MotorOut[3] < 0 ) m4 = 0;
+	else if ( MotorOut[3] > MOTORS_HIGH_VALUE ) m4 = MOTORS_HIGH_VALUE;
+	else m4 = MotorOut[3];
 		
 	
 	
@@ -141,7 +141,7 @@ void Motor_GenerateOutputSignal(void)
 	}
 	
 	// Measure period of ESC rate from here
-    ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+    ATOMIC_BLOCK(ATOMIC_FORCEON)
     {
       MotorStartTCNT = TCNT2_X;
     }

@@ -19,7 +19,7 @@
 #include "../Include/IO_config.h"
 #include "../Include/GlobalValues.h"
 #include "../Include/eepROM.h"
-
+#include "../Include/Beeper.h"
  /*
  PI
  PG:50
@@ -115,7 +115,7 @@ void Save_Config_to_EEPROM(void)
 	eeprom_write_block_changes( (const void*) &Config, (void*) EEPROM_DATA_START_POS, sizeof(config_t));	//current_config CONFIG_STRUCT
 	sei();
 	
-	Beeper_Beep(700,1);	
+	Beeper_Beep(BEEP_LONG,1);	
 }
 
 
