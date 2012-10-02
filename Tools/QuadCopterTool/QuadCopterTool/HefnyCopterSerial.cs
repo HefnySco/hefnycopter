@@ -30,7 +30,7 @@ namespace QuadCopterTool
       public HefnyCopterSerial()
         {
             mSerialPort = new System.IO.Ports.SerialPort();
-            mSerialPort.BaudRate = 57600;
+            mSerialPort.BaudRate = 115200; // 57600;
             mSerialPort.DataBits = 8;
             mSerialPort.DiscardNull = false;
             mSerialPort.Parity = Parity.None;
