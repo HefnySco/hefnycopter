@@ -109,9 +109,10 @@ void Setup (void)
 				// clear interrupts
 #endif
 //#ifdef UART_ENABLED
-
-	UART_Init(3); //57600 = 20   115200=10
-	
+if (Config.RX_mode==RX_mode_UARTMode)
+{
+	UART_Init(10); //57600 = 20   115200=10
+}	
 	//15,11,10,9,8,7,6,5,4,3,2,1
 
 //#endif
@@ -448,8 +449,8 @@ void MainLoop(void)
 			{
 				//LED_Orange=~LED_Orange;
 				Send_Data("S",1);
-				///Send_Data(Sensors_Latest,12);
-				///Send_Data(MotorOut,8);
+				Send_Data(Sensors_Latest,12);
+				Send_Data(MotorOut,8);
 				Send_Data("E",1);
 			}
 			

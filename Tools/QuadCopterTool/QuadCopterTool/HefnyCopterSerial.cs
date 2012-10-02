@@ -41,19 +41,32 @@ namespace QuadCopterTool
         }
 
 
+      protected Int16 FilterSensorNoise(Int16 Input, Int16 Current)
+      {
+          if (Input < -560) return Current;
+          return Input;
+      }
+      protected Int16 FilterMotorNoise(Int16 Input, Int16 Current)
+      {
+          if (Input < 0) return Current;
+          return Input;
+      }
+
       protected void CopyData()
       {
-          GyroY = BitConverter.ToInt16(vArray, 0);
-          GyroZ = BitConverter.ToInt16(vArray, 2);
-          GyroX = BitConverter.ToInt16(vArray, 4);
-          AccX = BitConverter.ToInt16(vArray, 6);
-          AccY = BitConverter.ToInt16(vArray, 8);
-          AccZ = BitConverter.ToInt16(vArray, 10);
+
+
+          GyroY = FilterSensorNoise(BitConverter.ToInt16(vArray, 0),GyroX);
+          GyroZ = FilterSensorNoise(BitConverter.ToInt16(vArray, 2),GyroY);
+          GyroX = FilterSensorNoise(BitConverter.ToInt16(vArray, 4),GyroZ);
+          AccX = FilterSensorNoise(BitConverter.ToInt16(vArray, 6),AccX);
+          AccY = FilterSensorNoise(BitConverter.ToInt16(vArray, 8),AccY);
+          AccZ = FilterSensorNoise(BitConverter.ToInt16(vArray, 10),AccZ);
           //Volt= BitConverter.ToInt16(vArray, 12);
-          Motor1 = BitConverter.ToInt16(vArray, 12);
-          Motor2 = BitConverter.ToInt16(vArray, 14);
-          Motor3 = BitConverter.ToInt16(vArray, 16);
-          Motor4 = BitConverter.ToInt16(vArray, 18);
+          Motor1 = FilterMotorNoise(BitConverter.ToInt16(vArray, 12),Motor1);
+          Motor2 = FilterMotorNoise(BitConverter.ToInt16(vArray, 14),Motor2);
+          Motor3 = FilterMotorNoise(BitConverter.ToInt16(vArray, 16),Motor3);
+          Motor4 = FilterMotorNoise(BitConverter.ToInt16(vArray, 18),Motor4);
           mLogFile.Write(GyroX);
           mLogFile.Write(",");
           mLogFile.Write(GyroY);

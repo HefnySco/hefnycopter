@@ -30,6 +30,8 @@ void UART_Init( unsigned int ubrr)
 		/*Set baud rate */
 		UBRR1H = (unsigned char)(ubrr>>8);	
 		UBRR1L = (unsigned char)ubrr;
+		
+		//UCSR1A = (1 << U2X1); // doubling divisor rate;
 		// Set frame format to 8 data bits, no parity, 1 stop bit
 		UCSR1C = (0<<USBS1)|(1<<UCSZ11)|(1<<UCSZ10);
 		// Enable receiver and transmitter

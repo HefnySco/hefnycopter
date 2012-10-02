@@ -16,3 +16,5 @@ E:\Hefny Projects\QUADCode\HefnyCopter\trunk\Tools\XBEE\XBEECommunication\obj\x8
 E:\Hefny Projects\QUADCode\HefnyCopter\trunk\Tools\XBEE\XBEECommunication\obj\x86\Debug\XBEECommunication.Properties.Resources.resources
 E:\Hefny Projects\QUADCode\HefnyCopter\trunk\Tools\XBEE\XBEECommunication\obj\x86\Debug\GenerateResource.read.1.tlog
 E:\Hefny Projects\QUADCode\HefnyCopter\trunk\Tools\XBEE\XBEECommunication\obj\x86\Debug\GenerateResource.write.1.tlog
+D:\HefnyProjects\QUADCode\HefnyCopter\Tools\XBEE\XBEECommunication\obj\x86\Debug\XBEECommunication.exe
+D:\HefnyProjects\QUADCode\HefnyCopter\Tools\XBEE\XBEECommunication\obj\x86\Debug\XBEECommunication.pdb
