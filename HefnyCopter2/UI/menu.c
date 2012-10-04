@@ -670,13 +670,11 @@ void _hESCCalibration()
 	}
 	
 }
-
-void _hMiscSettings()
+void _hModeSettings ()
 {
 	NOKEYRETURN;
-	PageKey(3);
+	PageKey(1);
 	
-		
 	if (KEY4)
 	{
 		bValueChanged = true;
@@ -685,8 +683,7 @@ void _hMiscSettings()
 		switch (subpage)
 		{
 			case 0: Config.RX_mode=~Config.RX_mode; break;
-			case 1: startEditMode(&(Config.AutoDisarm),0,10,TYPE_UINT8); return ;
-			case 2: startEditMode(&(Config.VoltageAlarm),0,100,TYPE_UINT8);  return ;
+			
 		}
 		
 	}
@@ -704,8 +701,36 @@ void _hMiscSettings()
 	{
 		LCD_WriteString_Pex(0,84,PSTR("UART "),5,0==subpage);
 	}
-	LCD_WriteValue(1,84,Config.AutoDisarm,3,1==subpage);
-	LCD_WriteValue(2,84,Config.VoltageAlarm,3,2==subpage);
+
+}
+
+
+void _hMiscSettings()
+{
+	NOKEYRETURN;
+	PageKey(2);
+	
+		
+	if (KEY4)
+	{
+		bValueChanged = true;
+		currentPage.softkeys = _skMENUSAVE;
+		
+		switch (subpage)
+		{
+			case 0: startEditMode(&(Config.AutoDisarm),0,10,TYPE_UINT8); return ;
+			case 1: startEditMode(&(Config.VoltageAlarm),0,100,TYPE_UINT8);  return ;
+		}
+		
+	}
+	
+	if (KEY1)
+	{
+		_helper_SaveinEEPROM_ifChanged();
+	}
+	
+	LCD_WriteValue(0,84,Config.AutoDisarm,3,0==subpage);
+	LCD_WriteValue(1,84,Config.VoltageAlarm,3,1==subpage);
 		
 }
 
@@ -771,7 +796,7 @@ void _hStabilization()
 void _hSelfLeveling()
 {
 
-	/*NOKEYRETURN;
+	NOKEYRETURN;
 	PageKey(5);
 	
 	if (KEY4)
@@ -781,12 +806,8 @@ void _hSelfLeveling()
 		
 		switch (subpage)
 		{
-			case 0: if (Config.SelfLevelMode==IMU_SelfLevelMode) Config.SelfLevelMode=0; else Config.SelfLevelMode=IMU_SelfLevelMode; break;
-			case 1: startEditMode(&(Config.AccParams.minSource),0,500,TYPE_UINT16);  return ;
-			case 2: startEditMode(&(Config.AccParams.maxSource),0,500,TYPE_UINT16); return ;
-			case 3: startEditMode(&(Config.AccParams.minDest),0,500,TYPE_UINT16);  return ;
-			case 4: startEditMode(&(Config.AccParams.maxDest),0,500,TYPE_UINT16); return ;
-		
+			case 0: startEditMode(&(Config.AccParams._P),0,100,TYPE_UINT16);  return ;
+			
 		}
 	}
 
@@ -805,7 +826,7 @@ void _hSelfLeveling()
 	
 	
 	lcdReverse(subpage == 0);
-	if (Config.SelfLevelMode==IMU_SelfLevelMode)
+	/*if (Config.SelfLevelMode==IMU_SelfLevelMode)
 	{
 		strcpy_P(sXDeg,strYes);
 	}
@@ -813,15 +834,17 @@ void _hSelfLeveling()
 	{
 		strcpy_P(sXDeg,strNo);
 	}
+	
 	LCD_WriteStringex (1,80,sXDeg,0==subpage);
-	LCD_WriteValue(2,30,Config.AccParams.minSource,3,1==subpage);
-	LCD_WriteValue(2,78,Config.AccParams.maxSource,3,2==subpage);
-	LCD_WriteValue(3,30,Config.AccParams.minDest,3,3==subpage);
-	LCD_WriteValue(3,78,Config.AccParams.maxDest,3,4==subpage);
+	*/
+	LCD_WriteValue(1,30,Config.AccParams._P,3,0==subpage);
+	//LCD_WriteValue(2,78,Config.AccParams.maxSource,3,2==subpage);
+	//LCD_WriteValue(3,30,Config.AccParams.minDest,3,3==subpage);
+	//LCD_WriteValue(3,78,Config.AccParams.maxDest,3,4==subpage);
 	
 	
-	Acc_Ratio = ((double)(Config.AccParams.maxDest - Config.AccParams.minDest)/(double)(Config.AccParams.maxSource - Config.AccParams.minSource));
-		*/	
+	//Acc_Ratio = ((double)(Config.AccParams.maxDest - Config.AccParams.minDest)/(double)(Config.AccParams.maxSource - Config.AccParams.minSource));
+	
 }
 
 int16_t AccTotal;

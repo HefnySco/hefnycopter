@@ -90,9 +90,7 @@ P_STR scrHomePageArmedESCCalibration[] =
 	
 P_STR scrSelfLeveling[] =
 	"\n"
-	"Active:\n"
-	"min:    max:\n"
-	"min:    max:\n"
+	"Filter:\n"
 	;
 	
 	
@@ -122,7 +120,7 @@ P_STR scrSensorTest[] =
 	"Batt:";
 
 P_STR scrModeSettings[] = 
-	"Auto Disarm:"
+	"Buddy System:\n"
 	;
 
 //P_STR scrStickScaling[] = 
@@ -134,7 +132,6 @@ P_STR scrModeSettings[] =
 	//"Throttle:";
 
 P_STR scrMiscSettings[] = 
-	"Buddy System:\n"
 	"Auto Disarm:\n"
 	"Alarm volts:      mv\n"
 	;
@@ -216,6 +213,7 @@ void _hESCCalibration();
 void _hStickCentering();
 void _hShowModelLayout();
 void _hLoadModelLayout();
+void _hModeSettings ();
 void _hMiscSettings ();
 void _hDebug();
 void _hFactoryReset();
@@ -227,7 +225,7 @@ static const page_t pages[] PROGMEM = {
 /*	3 */	{ _skSAVE, _hHomeArmedESC, scrHomePageArmedESCCalibration},	// non-menu item
 { _skMENU, _hStabilization, scrStabilization},			// in case of extra adding non menu items  MENU_START_INDEX constant should be updated to indicate the start of the menu
 { _skMENU, _hSelfLeveling, scrSelfLeveling},	
-{ _skPAGE, NULL, scrModeSettings},
+{ _skPAGE, _hModeSettings, scrModeSettings},
 { _skPAGE, _hMiscSettings, scrMiscSettings},
 { _skBACK, _hSensorTest, scrSensorTest},
 { _skBACK, _hReceiverTest, scrReceiverTest},

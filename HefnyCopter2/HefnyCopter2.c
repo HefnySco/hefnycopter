@@ -472,11 +472,6 @@ void MainLoop(void)
 	
 	Motor_GenerateOutputSignal();	
 	
-	
-	
-	
-	
-	
 	if (bResetTCNR1_X==true)
 	{
 		TCNT1_X_snapshot1= 0; // reset timeout
