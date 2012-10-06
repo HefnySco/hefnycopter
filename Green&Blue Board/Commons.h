@@ -42,7 +42,8 @@
 
 #define YawLimit	 30
 
-
+#define LED_XMODE_TIMES		8
+#define LED_PLUSMODE_TIMES	4
 		
 // Stick Arming - enable this line to enable Stick arming
 #define STICK_LEFT  -20 //-100

@@ -70,6 +70,10 @@
 //		* Better range for sticks
 // 0.64
 //		* change GainInADC to signed integer.
+// 0.65
+//		* LPF for Gyros
+//		* When Arming LEDS indicates flying mode.
+//		* When Disarm LEDS turn OFF
 
 #define QUAD_COPTER
 /*
@@ -208,6 +212,8 @@ void setup(void)
 	
 }
 
+double CompPitch, CompRoll, CompYaw;
+
 
 uint16_t TCNT1_X_snapshot=0;
 int16_t cROLL;
@@ -216,29 +222,11 @@ int16_t cYAW;
 int16_t fROLL;
 int16_t fPITCH;
 int16_t fYAW;
+float Alpha = 0.6, Beta =0.4;
 bool bXQuadMode = false;	
 bool bResetTCNR1_X = true;
 
-/*
-uint16_t GyroStartReading;
-int16_t DegreeYAW=0;
-void loop2 (void)
-{
-	ReadGainValues();
-	ReadGyros();
-	//RxGetChannels();
-	if ((gyroADC[PITCH]< 1000) && (gyroADC[PITCH]> -1000))
-	{
-		DegreeYAW +=(gyroADC[PITCH]);
-	}	
-	if (DegreeYAW > 200)
-	{
-	  LED = 1;
-	}		
-	else 
-		LED = 0;
-		
-}*/
+
 
 
 void loop(void)
@@ -265,7 +253,7 @@ void loop(void)
 			{
 				Armed = false;
 				LED = 0;
-				FlashLED (LED_LONG_TOGGLE,4);
+				//FlashLED (LED_LONG_TOGGLE,4);
 				TCNT1_X_snapshot =0; // reset timer
 			}
 		}
@@ -279,10 +267,19 @@ void loop(void)
 			{
 				Armed = true;
 				LED = 1;
-				FlashLED (LED_LONG_TOGGLE,4);
+				int Times;
+				if (bXQuadMode==true)
+				{
+					Times = LED_XMODE_TIMES;
+				}
+				else
+				{
+					Times = LED_PLUSMODE_TIMES;					
+				}
+				FlashLED (LED_LONG_TOGGLE,Times);
 				CalibrateGyros();
 				ReadGainValues();
-				FlashLED (LED_SHORT_TOGGLE,4);
+				//FlashLED (LED_SHORT_TOGGLE,4);
 				TCNT1_X_snapshot =0; // reset timer
 			}		
 		}
@@ -299,11 +296,10 @@ void loop(void)
 				{
 					bXQuadMode = true;
 					LED = 0;
-					FlashLED (100,8);
+					FlashLED (LED_LONG_TOGGLE,LED_XMODE_TIMES);
 					TCNT1_X_snapshot =0; // reset timer
 				}		
 
-			
 			}
 			else  if ((RxInRoll < STICK_LEFT))
 			{	// QUAD COPTER MODE
@@ -313,7 +309,7 @@ void loop(void)
 				{
 					bXQuadMode = false;
 					LED = 0;
-					FlashLED (LED_LONG_TOGGLE,4);
+					FlashLED (LED_LONG_TOGGLE,LED_PLUSMODE_TIMES);
 					TCNT1_X_snapshot =0; // reset timer
 				}		
 
@@ -373,18 +369,21 @@ void loop(void)
 			if (gyroADC[YAW]> MAX_GYRO_VALUE)		gyroADC[YAW] = MAX_GYRO_VALUE;
 			if (gyroADC[YAW]< -MAX_GYRO_VALUE)		gyroADC[YAW] = -MAX_GYRO_VALUE;
 			*/
-				// calculate PITCH
-				cPITCH   = gyroADC[PITCH];
+				// calculate 
+				CompPitch = (double) (Alpha* CompPitch) + (double) (Beta * gyroADC[PITCH]);
+				cPITCH   = CompPitch;
 				cPITCH  *= (GainInADC[PITCH]); //   * PITCH_GAIN_MULTIPLIER);
 				cPITCH  /= ADC_GAIN_DIVIDER;
 				
 				// calculate ROLL
-				cROLL    = gyroADC[ROLL];							
+				CompRoll = (double) (Alpha* CompRoll) + (double) (Beta * gyroADC[ROLL]);
+				cROLL    = CompRoll;							
 				cROLL   *= (GainInADC[PITCH]); // /*GainInADC[ROLL]*/  * ROLL_GAIN_MULTIPLIER);		
 				cROLL   /= ADC_GAIN_DIVIDER;	
 				
 				// calculate YAW
-				cYAW     = gyroADC[YAW]; 
+				CompYaw  = (double) (Alpha* CompYaw) + (double) (Beta * gyroADC[YAW]);
+				cYAW     = CompYaw; 
 				cYAW	 *= GainInADC[YAW] ; //* YAW_GAIN_MULTIPLIER; 
 				cYAW    /= ADC_GAIN_DIVIDER;
 				cYAW	+= ((GainInADC[ROLL] - MID_POT) >> 5);
