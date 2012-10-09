@@ -751,7 +751,7 @@ void _hStabilization()
 		switch (subpage)
 		{
 			case 0: if (subindex==0) subindex=1; else subindex=0; break;
-			case 1: startEditMode(&(Config.GyroParams[subindex]._P),0,500,TYPE_INT16); return ;
+			case 1: startEditMode(&(Config.GyroParams[subindex]._P),-500,500,TYPE_INT16); return ;
 			case 2: startEditMode(&(Config.GyroParams[subindex]._PLimit),0,500,TYPE_INT16); return ;
 			case 3: startEditMode(&(Config.GyroParams[subindex]._I),-500,500,TYPE_INT16);  return ;
 			case 4: startEditMode(&(Config.GyroParams[subindex]._ILimit),0,500,TYPE_INT16); return ;
@@ -796,8 +796,8 @@ void _hStabilization()
 void _hSelfLeveling()
 {
 
-	NOKEYRETURN;
-	PageKey(5);
+	//NOKEYRETURN;
+	PageKey(1);
 	
 	if (KEY4)
 	{
@@ -806,7 +806,7 @@ void _hSelfLeveling()
 		
 		switch (subpage)
 		{
-			case 0: startEditMode(&(Config.AccParams._P),0,100,TYPE_UINT16);  return ;
+			case 0: startEditMode(&(Config.AccParams._P),0,999,TYPE_UINT16);  return ;
 			
 		}
 	}
@@ -824,8 +824,8 @@ void _hSelfLeveling()
 
 	
 	
-	
-	lcdReverse(subpage == 0);
+	IMU_P2D();
+	//lcdReverse(subpage == 0);
 	/*if (Config.SelfLevelMode==IMU_SelfLevelMode)
 	{
 		strcpy_P(sXDeg,strYes);
@@ -837,10 +837,19 @@ void _hSelfLeveling()
 	
 	LCD_WriteStringex (1,80,sXDeg,0==subpage);
 	*/
-	LCD_WriteValue(1,30,Config.AccParams._P,3,0==subpage);
-	//LCD_WriteValue(2,78,Config.AccParams.maxSource,3,2==subpage);
-	//LCD_WriteValue(3,30,Config.AccParams.minDest,3,3==subpage);
-	//LCD_WriteValue(3,78,Config.AccParams.maxDest,3,4==subpage);
+	LCD_WriteValue(1,60,Config.AccParams._P,3,0==subpage);
+	
+	LCD_WriteValue(2,60,CompGyroY,4,false);
+	LCD_WriteValue(3,70,gyroPitch,4,false);
+	
+	itoa((Sensors_Latest[ACC_X_Index] * 2.08), sXDeg,10);
+	LCD_SetPos(4,48);
+	LCD_WritePadded(sXDeg,5);
+	
+	itoa((CompGyroX), sXDeg,10);
+	LCD_SetPos(5,48);
+	strcat_P(sXDeg,strSPC3);
+	LCD_WritePadded(sXDeg,5);
 	
 	
 	//Acc_Ratio = ((double)(Config.AccParams.maxDest - Config.AccParams.minDest)/(double)(Config.AccParams.maxSource - Config.AccParams.minSource));
@@ -901,19 +910,11 @@ void _hDebug()
 	//IMU_CalculateAngles();
 	//
 	
-	itoa( Sensors_Latest[GYRO_Y_Index], sXDeg,10);
-	//itoa( Sensors_Latest[GYRO_Y_Index], sXDeg,10);
-	LCD_SetPos(1,48);
-	strcat_P(sXDeg,strSPC3);
-	LCD_WriteString(sXDeg);
-	
-	itoa( CompAngleY, sXDeg,10);
-	//itoa( term_P[0], sXDeg,10);
-	LCD_SetPos(2,48);
-	strcat_P(sXDeg,strSPC3);
-	LCD_WriteString(sXDeg);
+	LCD_WriteValue_double(1,48,CompGyroY,false);
+	LCD_WriteValue_double(2,48,CompGyroX,false);
 	
 	
+	/*
 	itoa((Sensors_Latest[ACC_X_Index] * 2.08), sXDeg,10);
 	LCD_SetPos(3,48);
 	strcat_P(sXDeg,strSPC3);
@@ -936,7 +937,7 @@ void _hDebug()
 	LCD_SetPos(6,48);
 	strcat_P(sXDeg,strSPC3);
 	LCD_WriteString(sXDeg);
-	
+	*/
 	
 /*		 
 	int16_t t=ADCPort_Get(ACC_X_PNUM);

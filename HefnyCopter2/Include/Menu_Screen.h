@@ -90,7 +90,7 @@ P_STR scrHomePageArmedESCCalibration[] =
 	
 P_STR scrSelfLeveling[] =
 	"\n"
-	"Filter:\n"
+	"LPF:\n"
 	;
 	
 	

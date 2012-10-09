@@ -293,6 +293,17 @@ void LCD_WritePadded_P(const char *s, uint8_t len)
 	LCD_WriteSpace(len - strlen_P(s));
 }
 
+void LCD_WriteValue_double(uint8_t x, uint8_t y, double value,  BOOL LCDReverse)
+{
+	char s[7];
+	dtostrf(value, 4,2, s);
+	//itoa(value, s, 10);
+	lcdReverse(LCDReverse);
+	LCD_SetPos(x, y);
+	LCD_WritePadded(s, 4);
+	lcdReverse(0);
+}
+
 void LCD_WriteValue(uint8_t x, uint8_t y, int16_t value, uint8_t len, BOOL LCDReverse)
 {
 	char s[7];
@@ -302,7 +313,6 @@ void LCD_WriteValue(uint8_t x, uint8_t y, int16_t value, uint8_t len, BOOL LCDRe
 	LCD_WritePadded(s, len);
 	lcdReverse(0);
 }
-
 
 void lcdSetContrast(uint8_t contrast)
 {

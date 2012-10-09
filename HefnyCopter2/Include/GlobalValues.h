@@ -103,7 +103,9 @@ int16_t accRoll;
 	float accZangle;
 ///////////////////////////////////////////////////
 
-	
+double CompGyroX;
+double CompGyroY;
+double CompGyroZ;	
 	
 
 // USed for Scaling
@@ -145,8 +147,8 @@ BOOL bResetTCNR1_X;
 
 // ADC Values
 // Order is aligned with Menu Screens
-#define ACC_X_Index			3
-#define ACC_Y_Index			4
+#define ACC_X_Index			3   // affected by Pitch and is in reverse direction with GyroY .... it is positive when backword.
+#define ACC_Y_Index			4	// affected by Roll and is in reverse direction with GyroX .... it is positive when right.	
 #define ACC_Z_Index			5
 #define GYRO_X_Index		0
 #define GYRO_Y_Index		1
