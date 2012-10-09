@@ -43,7 +43,7 @@ namespace QuadCopterTool
 
       protected Int16 FilterSensorNoise(Int16 Input, Int16 Current)
       {
-          if (Input < -560) return Current;
+          if (Input < -500) return Current;
           return Input;
       }
       protected Int16 FilterMotorNoise(Int16 Input, Int16 Current)

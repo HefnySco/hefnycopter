@@ -74,6 +74,8 @@
 //		* LPF for Gyros
 //		* When Arming LEDS indicates flying mode.
 //		* When Disarm LEDS turn OFF
+// 0.66
+//		* ROLL POT is ALPHA for the LPF
 
 #define QUAD_COPTER
 /*
@@ -212,17 +214,15 @@ void setup(void)
 	
 }
 
-double CompPitch, CompRoll, CompYaw;
+double CompPitch, CompRoll, CompYaw,CompIYaw;
 
 
 uint16_t TCNT1_X_snapshot=0;
 int16_t cROLL;
 int16_t cPITCH;
-int16_t cYAW;
-int16_t fROLL;
-int16_t fPITCH;
-int16_t fYAW;
-float Alpha = 0.6, Beta =0.4;
+int16_t cYAW,cIYAW;
+
+float Alpha = 0.4, Beta =0.6;
 bool bXQuadMode = false;	
 bool bResetTCNR1_X = true;
 
@@ -279,6 +279,9 @@ void loop(void)
 				FlashLED (LED_LONG_TOGGLE,Times);
 				CalibrateGyros();
 				ReadGainValues();
+				Alpha = (GainInADC[ROLL] - MIN_POT_Extreme) / MAX_POT_Extreme;
+				Beta= 1.0 - Alpha;
+				
 				//FlashLED (LED_SHORT_TOGGLE,4);
 				TCNT1_X_snapshot =0; // reset timer
 			}		
@@ -381,19 +384,33 @@ void loop(void)
 				cROLL   *= (GainInADC[PITCH]); // /*GainInADC[ROLL]*/  * ROLL_GAIN_MULTIPLIER);		
 				cROLL   /= ADC_GAIN_DIVIDER;	
 				
+				//float IYAW=0.1;
+				//int16_t
 				// calculate YAW
 				CompYaw  = (double) (Alpha* CompYaw) + (double) (Beta * gyroADC[YAW]);
+				//CompIYaw +=(CompYaw >> 3);// * IYAW;
 				cYAW     = CompYaw; 
 				cYAW	 *= GainInADC[YAW] ; //* YAW_GAIN_MULTIPLIER; 
 				cYAW    /= ADC_GAIN_DIVIDER;
-				cYAW	+= ((GainInADC[ROLL] - MID_POT) >> 5);
+				
+				//cIYAW    = CompIYaw ;
+				//cIYAW    = cIYAW >> 5;
+				//cIYAW    *= GainInADC[ROLL] ; //* YAW_GAIN_MULTIPLIER; 
+				//cIYAW    = cIYAW >> 3;
+				////cIYAW    /= ADC_GAIN_DIVIDER;
+				//cIYAW    =  cIYAW >> 5;
+				//if (cIYAW       > 10)		cIYAW       = 10;
+				//if (cIYAW       < -10)		cIYAW       = -10;
+			
+				//cYAW -=cIYAW;
+				//cYAW	+= ((GainInADC[ROLL] - MID_POT) >> 5);
 			
 			if (cPITCH > MAX_GYRO_RESPONSE_VALUE)		cPITCH = MAX_GYRO_RESPONSE_VALUE;
 			if (cPITCH < -MAX_GYRO_RESPONSE_VALUE)		cPITCH = -MAX_GYRO_RESPONSE_VALUE;
 			if (cROLL  > MAX_GYRO_RESPONSE_VALUE)		cROLL  = MAX_GYRO_RESPONSE_VALUE;
 			if (cROLL  < -MAX_GYRO_RESPONSE_VALUE)		cROLL  = -MAX_GYRO_RESPONSE_VALUE;
-			if (cYAW   > MAX_GYRO_RESPONSE_VALUE)		cYAW   = MAX_GYRO_RESPONSE_VALUE;
-			if (cYAW   < -MAX_GYRO_RESPONSE_VALUE)		cYAW   = -MAX_GYRO_RESPONSE_VALUE;
+			//if (cYAW   > MAX_GYRO_RESPONSE_VALUE)		cYAW   = MAX_GYRO_RESPONSE_VALUE;
+			//if (cYAW   < -MAX_GYRO_RESPONSE_VALUE)		cYAW   = -MAX_GYRO_RESPONSE_VALUE;
 				
 					
 				// Add ROLL [chk reverse - add to RX - update motors]

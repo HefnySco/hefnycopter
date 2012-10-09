@@ -33,7 +33,7 @@ void Initial_EEPROM_Config_Load(void)
 
 void Save_Default_Config_to_EEPROM (void)
 {
-	Config.setup = 0x47; // HefnyCopter Signature
+	
 	Set_EEPROM_Default_Config();
 	// write to eeProm
 	Save_Config_to_EEPROM_Init();
@@ -41,8 +41,9 @@ void Save_Default_Config_to_EEPROM (void)
 
 void Set_EEPROM_Default_Config(void)
 {
-	Config.RollGyroDirection 	= GYRO_REVERSED;
-	Config.PitchGyroDirection	= GYRO_REVERSED;
+	Config.setup = 0x47; // HefnyCopter Signature
+	Config.RollGyroDirection 	= GYRO_NORMAL;
+	Config.PitchGyroDirection	= GYRO_NORMAL;
 	Config.YawGyroDirection		= GYRO_NORMAL;
 
 	Config.RxChannel1ZeroOffset	= 1540;

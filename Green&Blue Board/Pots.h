@@ -13,8 +13,6 @@
 
 
 void ReadGainValues(void);
-void GetVbat(void);	
-
 
 
 #endif /* POTS_H_ */
