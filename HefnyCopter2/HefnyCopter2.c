@@ -347,10 +347,25 @@ void MainLoop(void)
 			RX_Snapshot[RXChannel_ELE] = (RX_Latest[ActiveRXIndex][RXChannel_ELE] * 3) / 5;
 			RX_Snapshot[RXChannel_RUD] = (RX_Latest[ActiveRXIndex][RXChannel_RUD] * 3) / 5 ;
 			
-			MotorOut[0] = RX_Snapshot[RXChannel_THR];
-			MotorOut[1] = RX_Snapshot[RXChannel_THR];
-			MotorOut[2] = RX_Snapshot[RXChannel_THR];
-			MotorOut[3] = RX_Snapshot[RXChannel_THR];		
+			int16_t Landing;
+			if (RX_Latest[1/*Always read from Secondary*/][RXChannel_AUX] < STICK_RIGHT)
+			{
+				LED_Orange=OFF;
+				Landing = (100 - Sensors_Latest[ACC_Z_Index]) ;
+				
+				Landing *= Config.GyroParams[1]._I; /* PID_Terms[2].I not used for YAW */
+				Limiter(Landing , Config.GyroParams[1]._ILimit);
+			}
+			else
+			{
+				LED_Orange=ON;
+				Landing =0;
+			}
+			
+			MotorOut[0] = RX_Snapshot[RXChannel_THR] + Landing;
+			MotorOut[1] = RX_Snapshot[RXChannel_THR] + Landing;
+			MotorOut[2] = RX_Snapshot[RXChannel_THR] + Landing;
+			MotorOut[3] = RX_Snapshot[RXChannel_THR] + Landing;		
 			
 			
 	
