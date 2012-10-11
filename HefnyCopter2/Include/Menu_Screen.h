@@ -99,6 +99,7 @@ P_STR scrStabilization[]=
 	"P:      Lim:\n"
 	"I:      Lim:\n"
 	"D:      Lim:\n"
+	"F:"
 	;
 
 P_STR scrReceiverTest[] = 
@@ -187,9 +188,9 @@ P_STR scrMixerEditor[] =
 static const prog_char _skHOME[]     = "                 MENU";
 static const prog_char _skMENU[]      = "BACK UP   DOWN ENTER";
 static const prog_char _skMENUSAVE[]  = "SAVE UP   DOWN ENTER";
-static const prog_char _skBACK[]      = "BACK";
+static const prog_char _skBACK[]      = "BACK                ";
 static const prog_char _skCONTINUE[]  = "BACK         CONTINUE";
-static const prog_char _skCANCELYES[] = "NO	             YES";
+static const prog_char _skCANCELYES[] = "NO                YES";
 static const prog_char _skPAGE[]      = "BACK PREV NEXT CHANGE";
 static const prog_char _skBACKNEXT[]  = "BACK NEXT";
 static const prog_char _skCANCEL[]    = "CANCEL";
@@ -224,7 +225,7 @@ static const page_t pages[] PROGMEM = {
 /*	2 */	{ _skHOME, _hHomeArmed, scrHomePageArmed},	// non-menu item
 /*	3 */	{ _skSAVE, _hHomeArmedESC, scrHomePageArmedESCCalibration},	// non-menu item
 { _skMENU, _hStabilization, scrStabilization},			// in case of extra adding non menu items  MENU_START_INDEX constant should be updated to indicate the start of the menu
-{ _skMENU, _hSelfLeveling, scrSelfLeveling},	
+{ _skMENU, _hSelfLeveling, scrStabilization},	
 { _skPAGE, _hModeSettings, scrModeSettings},
 { _skPAGE, _hMiscSettings, scrMiscSettings},
 { _skBACK, _hSensorTest, scrSensorTest},

@@ -108,6 +108,11 @@ double CompGyroY;
 double CompGyroZ;	
 	
 
+double CompAccX;
+double CompAccY;
+double CompAccZ;	
+
+
 // USed for Scaling
 double Pitch_Ratio;
 double Yaw_Ratio;
@@ -117,7 +122,11 @@ typedef struct
 {
 	//int16_t minSource,maxSource;
 	//int16_t minDest,maxDest;
-	int16_t _P,_PLimit, _I, _ILimit, _D, _DLimit
+	int16_t 
+			_P,_PLimit, 
+			_I, _ILimit, 
+			_D, _DLimit, 
+			ComplementaryFilterAlpha
 } pid_param_t;
 
 
@@ -126,7 +135,7 @@ typedef struct
 {
 	//int16_t minSource,maxSource;
 	//int16_t minDest,maxDest;
-	double P,I,D,Error
+	double P,I,D,Error,D2,D2Error
 } pid_terms_t;
 
 
@@ -201,7 +210,7 @@ typedef struct
 	uint8_t LVA;
 	//pid_param_t PID_SelfLevel;
 	uint8_t SelfLevelMode;
-	pid_param_t AccParams;
+	pid_param_t AccParams[2];
 	uint8_t VoltageAlarm;		//0 = 0ff
 	//model_t Mixer;
 } config_t;

@@ -48,8 +48,8 @@ static config_t const defaultConfig PROGMEM =
 	.IsCalibrated=0,
 	.RX_mode=RX_mode_BuddyMode,
 	.MixerIndex = 0,
-	.GyroParams[0]= {13,210,-2,50,10,100},	// pitch roll gyro.
-	.GyroParams[1]= {70,100,0,0,0,0},	// Yaw gyro
+	.GyroParams[0]= {10,90,1,50,10,80,0},	// pitch roll gyro.
+	.GyroParams[1]= {50,80,5,50,1,20,0},	// Yaw gyro
 	.RX_mode = 0, //RX_MODE_CPPM,
 	.Sensor_zero[GYRO_X_Index] = 548,
 	.Sensor_zero[GYRO_Y_Index] = 548,
@@ -65,7 +65,8 @@ static config_t const defaultConfig PROGMEM =
 	.HeightDampening = 0,
 	.HeightDampeningLimit = 30,
 	.LVA = 0,
-	.AccParams ={1,50,1,50},
+	.AccParams[0] ={0,0,0,0,0,0},		// ACC_X & Y
+	.AccParams[1] ={0,0,0,0,0,0},		// ACC_Z
 	.VoltageAlarm=0, // off	
 };
 

@@ -61,15 +61,15 @@ void IMU_Kalman (void)
  	accPitch  = Sensors_GetAccAngle(ACC_X_Index);       // in Quids  [0,765]
 	gyroPitch = Sensors_GetGyroRate(GYRO_Y_Index);		// in Quids/seconds
     gyroPitch = Kalman_Calculate(0,accPitch, gyroPitch,Sensors_dt);      // calculate filtered Angle
-	gyroPitch = P2D_Calculate(Config.GyroParams[0],PID_Terms[0],gyroPitch ,  RX_Latest[RXChannel_ELE], gyroPitch );
+	//gyroPitch = PID_Calculate(Config.GyroParams[0],PID_Terms[0],gyroPitch ,  RX_Latest[RXChannel_ELE], gyroPitch );
 
 	accRoll   = Sensors_GetAccAngle(ACC_Y_Index);       // in Quids
 	gyroRoll  = Sensors_GetGyroRate(GYRO_X_Index);		// in Quids/seconds
     gyroRoll  = Kalman_Calculate(1,accRoll, gyroRoll, Sensors_dt);      // calculate filtered Angle
-	gyroRoll = P2D_Calculate(Config.GyroParams[0],PID_Terms[1],gyroRoll ,  RX_Latest[RXChannel_AIL], gyroRoll );
+	//gyroRoll = PID_Calculate(Config.GyroParams[0],PID_Terms[1],gyroRoll ,  RX_Latest[RXChannel_AIL], gyroRoll );
 
 	
-	gyroYaw = P2D_Calculate(Config.GyroParams[1],PID_Terms[2],Sensors_Latest[GYRO_Z_Index],  RX_Latest[RXChannel_RUD], 0.0);
+	//gyroYaw = PID_Calculate(Config.GyroParams[1],PID_Terms[2],Sensors_Latest[GYRO_Z_Index],  RX_Latest[RXChannel_RUD], 0.0);
 	
 }
 
@@ -79,17 +79,43 @@ void IMU_P2D (void)
 	
 		//IMU_CalculateAngles();
 		
-		float Alpha = Config.AccParams._P / 1000;
+		float Alpha = Config.GyroParams[0].ComplementaryFilterAlpha / 1000;
 		float Beta = 1- Alpha;
 		CompGyroY = (double) (Alpha * CompGyroY) + (double) (Beta * Sensors_Latest[GYRO_Y_Index]);
 		CompGyroX = (double) (Alpha * CompGyroX) + (double) (Beta * Sensors_Latest[GYRO_X_Index]);
+		
+		Alpha = Config.GyroParams[1].ComplementaryFilterAlpha / 1000;
+		Beta = 1- Alpha;
 		CompGyroZ = (double) (Alpha * CompGyroZ) + (double) (Beta * Sensors_Latest[GYRO_Z_Index]);
 		
-		// PITCH
-		gyroPitch = P2D_Calculate(Config.GyroParams[0], PID_Terms[0],CompGyroY, RX_Latest[RXChannel_ELE], (Sensors_Latest[ACC_X_Index]));
-		// ROLL
-		gyroRoll = P2D_Calculate(Config.GyroParams[0], PID_Terms[1],CompGyroX, RX_Latest[RXChannel_AIL], (Sensors_Latest[ACC_Y_Index]));
-		// YAW
-		gyroYaw = P2D_Calculate(Config.GyroParams[1], PID_Terms[2],CompGyroZ, RX_Latest[RXChannel_RUD],0.0);
 		
+		Alpha = Config.AccParams[0].ComplementaryFilterAlpha / 1000;
+		Beta = 1- Alpha;
+		CompAccY = (double) (Alpha * CompAccY) + (double) (Beta * Sensors_Latest[ACC_Y_Index]);
+		CompAccX = (double) (Alpha * CompAccX) + (double) (Beta * Sensors_Latest[ACC_X_Index]);
+		
+		Alpha = Config.AccParams[1].ComplementaryFilterAlpha / 1000;
+		Beta = 1- Alpha;
+		CompAccZ = (double) (Alpha * CompAccZ) + (double) (Beta * Sensors_Latest[ACC_Z_Index]);
+		
+		
+		
+		// PITCH
+		gyroPitch = PID_Calculate(Config.GyroParams[0], PID_Terms[0],CompGyroY, Config.AccParams[0], (CompAccX));
+		// ROLL
+		gyroRoll = PID_Calculate(Config.GyroParams[0], PID_Terms[1],CompGyroX, Config.AccParams[0], (CompAccY));
+		// YAW
+		gyroYaw = PID_Calculate(Config.GyroParams[1], PID_Terms[2],CompGyroZ, Config.AccParams[1],0.0);
+		
+}
+
+
+int16_t IMU_HeightKeeping ()
+{
+	int16_t Landing = (100 - CompAccZ) ;
+	Landing *= Config.AccParams[1]._P; /* PID_Terms[2].I not used for YAW */
+	Limiter(Landing , Config.AccParams[1]._PLimit);
+	
+	return Landing;
+	
 }

@@ -351,10 +351,7 @@ void MainLoop(void)
 			if (RX_Latest[1/*Always read from Secondary*/][RXChannel_AUX] < STICK_RIGHT)
 			{
 				LED_Orange=OFF;
-				Landing = (100 - Sensors_Latest[ACC_Z_Index]) ;
-				
-				Landing *= Config.GyroParams[1]._I; /* PID_Terms[2].I not used for YAW */
-				Limiter(Landing , Config.GyroParams[1]._ILimit);
+				Landing = IMU_HeightKeeping();
 			}
 			else
 			{
@@ -539,6 +536,8 @@ void HandleSticksForArming (void)
 				bResetTCNR1_X = false;
 				if ( (CurrentTCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_LONG_TIME )
 				{
+					if ((Config.RX_mode==RX_mode_BuddyMode) && (!IS_TX1_GOOD)) return; // in Buddy mode you cannot arm is there is no signal from TX1
+				
 					Arm();
 					return ;
 				}

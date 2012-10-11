@@ -620,7 +620,7 @@ void _hStickCentering()
 
 void _hSensorCalibration()
 {
-
+	NOKEYRETURN;
 	uint8_t i;
 		
 	if (KEY4)
@@ -639,15 +639,15 @@ void _hSensorCalibration()
 		for (i=0;i<6;++i)
 		Config.Sensor_zero[i] = nResult[i];
 		Save_Config_to_EEPROM();
-		
-		//_mykey |= KEY_INIT;
+		currentPage.softkeys = _skBACK;
+		writeSoftkeys(currentPage.softkeys);
 	}
 	
 	
 	for (i=0; i<6;++i)
 	{ // order is aligned with ACC_X_Index & GYRO_X_Index
 		LCD_SetPos(i, 48);
-		itoa(Sensors_Latest[i],Result,10);
+		itoa(Config.Sensor_zero[i],Result,10);
 		LCD_WriteString(&Result);
 		LCD_WriteSpace(5);
 	}	
@@ -741,11 +741,11 @@ void _hStabilization()
 {
 	
 	NOKEYRETURN;
-	PageKey(7);
+	PageKey(8);
 	
 	if (KEY4)
 	{
-		bValueChanged = true;
+		if (subpage!=0) bValueChanged = true;
 		currentPage.softkeys = _skMENUSAVE;
 		
 		switch (subpage)
@@ -757,6 +757,7 @@ void _hStabilization()
 			case 4: startEditMode(&(Config.GyroParams[subindex]._ILimit),0,500,TYPE_INT16); return ;
 			case 5: startEditMode(&(Config.GyroParams[subindex]._D),-500,500,TYPE_INT16);  return ; // negative D
 			case 6: startEditMode(&(Config.GyroParams[subindex]._DLimit),0,500,TYPE_INT16); return ;
+			case 7: startEditMode(&(Config.GyroParams[subindex].ComplementaryFilterAlpha),0,999,TYPE_INT16); return ;
 		}
 		
 		
@@ -783,6 +784,7 @@ void _hStabilization()
 	LCD_WriteValue(2,78,Config.GyroParams[subindex]._ILimit,3,4==subpage);
 	LCD_WriteValue(3,30,Config.GyroParams[subindex]._D,3,5==subpage);
 	LCD_WriteValue(3,78,Config.GyroParams[subindex]._DLimit,3,6==subpage);
+	LCD_WriteValue(4,30,Config.GyroParams[subindex].ComplementaryFilterAlpha,3,7==subpage);
 	
 	//Pitch_Ratio = ((double)(Config.GyroParams[0].maxDest - Config.GyroParams[0].minDest)/(double)(Config.GyroParams[0].maxSource - Config.GyroParams[0].minSource));
 	//Yaw_Ratio = ((double)(Config.GyroParams[1].maxDest - Config.GyroParams[1].minDest)/(double)(Config.GyroParams[1].maxSource - Config.GyroParams[1].minSource));
@@ -796,63 +798,52 @@ void _hStabilization()
 void _hSelfLeveling()
 {
 
-	//NOKEYRETURN;
-	PageKey(1);
+	
+	NOKEYRETURN;
+	PageKey(8);
 	
 	if (KEY4)
 	{
-		bValueChanged = true;
+		if (subpage!=0) bValueChanged = true;
 		currentPage.softkeys = _skMENUSAVE;
 		
 		switch (subpage)
 		{
-			case 0: startEditMode(&(Config.AccParams._P),0,999,TYPE_UINT16);  return ;
-			
+			case 0: if (subindex==0) subindex=1; else subindex=0; break;
+			case 1: startEditMode(&(Config.AccParams[subindex]._P),-500,500,TYPE_INT16); return ;
+			case 2: startEditMode(&(Config.AccParams[subindex]._PLimit),0,500,TYPE_INT16); return ;
+			case 3: startEditMode(&(Config.AccParams[subindex]._I),-500,500,TYPE_INT16);  return ;
+			case 4: startEditMode(&(Config.AccParams[subindex]._ILimit),0,500,TYPE_INT16); return ;
+			case 5: startEditMode(&(Config.AccParams[subindex]._D),-500,500,TYPE_INT16);  return ; // negative D
+			case 6: startEditMode(&(Config.AccParams[subindex]._DLimit),0,500,TYPE_INT16); return ;
+			case 7: startEditMode(&(Config.AccParams[subindex].ComplementaryFilterAlpha),0,999,TYPE_INT16); return ;
 		}
-	}
-
 		
+		
+	}
+	
 	if (KEY1)
 	{
-		if (bValueChanged==true)
-		{
-			Save_Config_to_EEPROM();
-			bValueChanged = false;
-			return ;
-		}
+		_helper_SaveinEEPROM_ifChanged();
 	}
-
 	
-	
-	IMU_P2D();
-	//lcdReverse(subpage == 0);
-	/*if (Config.SelfLevelMode==IMU_SelfLevelMode)
+	lcdReverse(subpage == 0);
+	if (subindex==0)
 	{
-		strcpy_P(sXDeg,strYes);
+		strcpy_P(sXDeg,PSTR("ACC X & Y"));
 	}
 	else
 	{
-		strcpy_P(sXDeg,strNo);
+		strcpy_P(sXDeg,PSTR("ACC Z    "));
 	}
-	
-	LCD_WriteStringex (1,80,sXDeg,0==subpage);
-	*/
-	LCD_WriteValue(1,60,Config.AccParams._P,3,0==subpage);
-	
-	LCD_WriteValue(2,60,CompGyroY,4,false);
-	LCD_WriteValue(3,70,gyroPitch,4,false);
-	
-	itoa((Sensors_Latest[ACC_X_Index] * 2.08), sXDeg,10);
-	LCD_SetPos(4,48);
-	LCD_WritePadded(sXDeg,5);
-	
-	itoa((CompGyroX), sXDeg,10);
-	LCD_SetPos(5,48);
-	strcat_P(sXDeg,strSPC3);
-	LCD_WritePadded(sXDeg,5);
-	
-	
-	//Acc_Ratio = ((double)(Config.AccParams.maxDest - Config.AccParams.minDest)/(double)(Config.AccParams.maxSource - Config.AccParams.minSource));
+	LCD_WriteStringex (0,0,sXDeg,0==subpage);
+	LCD_WriteValue(1,30,Config.AccParams[subindex]._P,3,1==subpage);
+	LCD_WriteValue(1,78,Config.AccParams[subindex]._PLimit,3,2==subpage);
+	LCD_WriteValue(2,30,Config.AccParams[subindex]._I,3,3==subpage);
+	LCD_WriteValue(2,78,Config.AccParams[subindex]._ILimit,3,4==subpage);
+	LCD_WriteValue(3,30,Config.AccParams[subindex]._D,3,5==subpage);
+	LCD_WriteValue(3,78,Config.AccParams[subindex]._DLimit,3,6==subpage);
+	LCD_WriteValue(4,30,Config.AccParams[subindex].ComplementaryFilterAlpha,3,7==subpage);
 	
 }
 

@@ -51,6 +51,11 @@ version 0.46
 * Add Gyro reverse by allowing negative P in P2D
 * Complementary filter to Gyro and update screen menu 
 
+version 0.47
+* PID instead of P2D
+* New screen PID for ACC
+* Complementary filter values for Gyro XY , Gyro X, ACC XY, ACC Z.
+* fixed UI issue in Sensor Calibration
 
 ToDO:
 version 0.5
