@@ -433,6 +433,19 @@ void MainLoop(void)
 				MotorOut[1] += RX_Snapshot[RXChannel_RUD];
 				MotorOut[2] += RX_Snapshot[RXChannel_RUD];
 				MotorOut[3] -= RX_Snapshot[RXChannel_RUD];
+			
+				// Save motors from turning-off
+				if (MotorOut[0]<MOTORS_IDLE_VALUE) MotorOut[0]=MOTORS_IDLE_VALUE;
+				if (MotorOut[1]<MOTORS_IDLE_VALUE) MotorOut[1]=MOTORS_IDLE_VALUE;
+				if (MotorOut[2]<MOTORS_IDLE_VALUE) MotorOut[2]=MOTORS_IDLE_VALUE;
+				if (MotorOut[3]<MOTORS_IDLE_VALUE) MotorOut[3]=MOTORS_IDLE_VALUE;
+			/*
+				// Save motors from turning-off
+                if (MotorOut[0]<MOTORS_IDLE_VALUE) MotorOut[0]=MOTORS_IDLE_VALUE;
+                if (MotorOut[1]<MOTORS_IDLE_VALUE) MotorOut[1]=MOTORS_IDLE_VALUE;
+                if (MotorOut[2]<MOTORS_IDLE_VALUE) MotorOut[2]=MOTORS_IDLE_VALUE;
+                if (MotorOut[3]<MOTORS_IDLE_VALUE) MotorOut[3]=MOTORS_IDLE_VALUE;
+			*/
 			}
 			else
 			{
@@ -447,15 +460,48 @@ void MainLoop(void)
 				MotorOut[1] += RX_Snapshot[RXChannel_RUD] ;
 				MotorOut[2] += RX_Snapshot[RXChannel_RUD] ;
 				MotorOut[3] -= RX_Snapshot[RXChannel_RUD] ;
+				
+			/*	
+				// Save motors from turning-off
+				if (MotorOut[0]<MOTORS_IDLE_VALUE) 
+				{	
+					MotorOut[3]-=(MOTORS_IDLE_VALUE - MotorOut[0]);
+					MotorOut[0]=MOTORS_IDLE_VALUE;
+				}
+				else
+				{
+					if (MotorOut[3]<MOTORS_IDLE_VALUE) 
+					{
+						MotorOut[0]-=(MOTORS_IDLE_VALUE - MotorOut[3]);
+						MotorOut[3]=MOTORS_IDLE_VALUE;
+					}						
+				}					
+				
+				if (MotorOut[1]<MOTORS_IDLE_VALUE) 
+				{
+					MotorOut[2]-=(MOTORS_IDLE_VALUE - MotorOut[1]);	
+					MotorOut[1]=MOTORS_IDLE_VALUE;	
+				}
+				else
+				{
+					if (MotorOut[2]<MOTORS_IDLE_VALUE) 
+					{
+						MotorOut[1]-=(MOTORS_IDLE_VALUE - MotorOut[2]);	
+						MotorOut[2]=MOTORS_IDLE_VALUE;	
+					}						
+				}
+				*/					
+									
 			}
 			
 			
 			// Save motors from turning-off
-			if (MotorOut[0]<MOTORS_IDLE_VALUE) MotorOut[0]=MOTORS_IDLE_VALUE;
-			if (MotorOut[1]<MOTORS_IDLE_VALUE) MotorOut[1]=MOTORS_IDLE_VALUE;
-			if (MotorOut[2]<MOTORS_IDLE_VALUE) MotorOut[2]=MOTORS_IDLE_VALUE;
-			if (MotorOut[3]<MOTORS_IDLE_VALUE) MotorOut[3]=MOTORS_IDLE_VALUE;
+            if (MotorOut[0]<MOTORS_IDLE_VALUE) MotorOut[0]=MOTORS_IDLE_VALUE;
+            if (MotorOut[1]<MOTORS_IDLE_VALUE) MotorOut[1]=MOTORS_IDLE_VALUE;
+            if (MotorOut[2]<MOTORS_IDLE_VALUE) MotorOut[2]=MOTORS_IDLE_VALUE;
+            if (MotorOut[3]<MOTORS_IDLE_VALUE) MotorOut[3]=MOTORS_IDLE_VALUE;
 			
+		
 			
 			if (Config.RX_mode==RX_mode_UARTMode)
 			{

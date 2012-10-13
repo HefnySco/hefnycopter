@@ -83,7 +83,7 @@ int16_t PID_Calculate (pid_param_t PID_GyroParams, pid_terms_t PID_Term, int16_t
 	
 		Output = (PID_Term.P + PID_Term.I + PID_Term.D);	// P + I + D
 		
-		return  Limiter(Output,(int16_t)300);
+		return  Output; //Limiter(Output,(int16_t)300);
 }		
 
 /*
