@@ -458,11 +458,11 @@ void _hHomeArmed()
 	LCD_WritePadded(sXDeg,5);
 	
 	LCD_SetPos(6,18);
-	itoa(CompAngleX,sXDeg,10);
+	itoa(CompAccX,sXDeg,10);
 	LCD_WritePadded(sXDeg,5);
 	
 	LCD_SetPos(6,78);
-	itoa(CompAngleY,sXDeg,10);
+	itoa(CompAccY,sXDeg,10);
 	LCD_WritePadded(sXDeg,5);
 }
 
@@ -863,7 +863,7 @@ void _hDebug()
 		  
 		//dtime = 1;
 		//dt=150;
-		LCD_Clear();
+		//LCD_Clear();
 		LCD_SetPos(1,6);
 		LCD_WriteString_P(PSTR("GY")); // A Rate
 		LCD_SetPos(2,6);
@@ -877,7 +877,7 @@ void _hDebug()
 		LCD_SetPos(6,6);
 		LCD_WriteString_P(PSTR("GyroX"));
 	
-		OldAcc = ADCPort_Get(ACC_X_PNUM);
+		//OldAcc = ADCPort_Get(ACC_X_PNUM);
 	}
 	else
 	{
@@ -904,6 +904,8 @@ void _hDebug()
 	LCD_WriteValue_double(1,48,CompGyroY,false);
 	LCD_WriteValue_double(2,48,CompGyroX,false);
 	
+	LCD_WriteValue_double(3,48,CompAccY,false);
+	LCD_WriteValue_double(4,48,CompAccX,false);
 	
 	/*
 	itoa((Sensors_Latest[ACC_X_Index] * 2.08), sXDeg,10);

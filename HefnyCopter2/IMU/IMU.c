@@ -101,20 +101,32 @@ void IMU_P2D (void)
 		
 		
 		// PITCH
-		gyroPitch = PID_Calculate(Config.GyroParams[0], PID_Terms[0],CompGyroY, Config.AccParams[0], (CompAccX));
+		gyroPitch = //PID_Calculate(Config.GyroParams[0], PID_GyroTerms[0],CompGyroY, Config.AccParams[0], (CompAccX));
+				PID_Calculate (Config.GyroParams[0], PID_GyroTerms[0],CompGyroY)
+			+   PID_Calculate (Config.AccParams[0], PID_AccTerms[0],CompAccX);
+		
 		// ROLL
-		gyroRoll = PID_Calculate(Config.GyroParams[0], PID_Terms[1],CompGyroX, Config.AccParams[0], (CompAccY));
+		gyroRoll = //PID_Calculate(Config.GyroParams[0], PID_GyroTerms[1],CompGyroX, Config.AccParams[0], (CompAccY));
+				PID_Calculate (Config.GyroParams[0], PID_GyroTerms[1],CompGyroX)
+			+   PID_Calculate (Config.AccParams[0], PID_AccTerms[1],CompAccY);
+		
 		// YAW
-		gyroYaw = PID_Calculate(Config.GyroParams[1], PID_Terms[2],CompGyroZ, Config.AccParams[1],0.0);
+		gyroYaw = //PID_Calculate(Config.GyroParams[1], PID_GyroTerms[2],CompGyroZ, Config.AccParams[1],0.0);
+				PID_Calculate (Config.GyroParams[1], PID_GyroTerms[2],CompGyroZ);
 		
 }
 
 
 int16_t IMU_HeightKeeping ()
 {
+	/*
 	int16_t Landing = (100 - CompAccZ) ;
-	Landing *= Config.AccParams[1]._P; /* PID_Terms[2].I not used for YAW */
+	Landing *= Config.AccParams[1]._P; // PID_Terms[2].I not used for YAW 
 	Limiter(Landing , Config.AccParams[1]._PLimit);
+	*/
+	
+	int16_t Landing = PID_Calculate (Config.AccParams[1], PID_AccTerms[2],(100-CompAccZ));
+	
 	
 	return Landing;
 	

@@ -139,7 +139,7 @@ typedef struct
 } pid_terms_t;
 
 
-pid_terms_t PID_Terms[3]; // PITCH [0] - ROLL [1] - YAW [2]
+pid_terms_t PID_GyroTerms[3], PID_AccTerms[3];
 
 // TIMERS
 uint16_t CurrentTCNT1_X;				// equal to TCNT1_X value -- read every loop entry [it provide a safe read for TCNT1_X... it is updated only @ start of the loop

@@ -35,7 +35,8 @@ int arctan2(int y, int x) {                                    // http://www.dsp
 
 int16_t Limiter (int16_t Value, int16_t Limit)
 {
-	if (abs(Value) > Limit) return Limit;
+	if (Value > Limit) return   Limit;
+	if (Value < -Limit) return -Limit;
 	
 	return Value;
 }

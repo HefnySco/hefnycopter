@@ -307,9 +307,9 @@ void MainLoop(void)
 		// Stop motors if Throttle Stick is less than minimum.
 		ZEROMotors();
 		
-		PID_Terms[0].I=0;
-		PID_Terms[1].I=0;
-		PID_Terms[2].I=0;
+		PID_GyroTerms[0].I=0;
+		PID_GyroTerms[1].I=0;
+		PID_GyroTerms[2].I=0;
 	}
 	else
 	{	// Throttle stick is NOT Down
