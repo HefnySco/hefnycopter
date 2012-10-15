@@ -102,7 +102,6 @@ namespace QuadCopterTool.Controls
         protected void Draw()
         {
             rectangleValue.Height = mRatio * (mMaxValue - mCurrentValue);
-            lblValue.Content = mCurrentValue ;
         }
 
         private void Canvas_SizeChanged(object sender, SizeChangedEventArgs e)

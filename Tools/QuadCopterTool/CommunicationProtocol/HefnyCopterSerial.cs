@@ -39,7 +39,6 @@ namespace HefnyCopter.CommunicationProtocol
            
 
             mSerialPort = new System.IO.Ports.SerialPort();
-            mSerialPort.BaudRate = 115200; // 57600;
             mSerialPort.DataBits = 8;
             mSerialPort.DiscardNull = false;
             mSerialPort.Parity = Parity.None;
@@ -50,58 +49,85 @@ namespace HefnyCopter.CommunicationProtocol
 
         }
 
+        protected void LogHeader()
+        {
+            mLogFile.Write("Time");
+            mLogFile.Write(","); 
+            mLogFile.Write("Gyro_X");
+            mLogFile.Write(",");
+            mLogFile.Write("Gyro_Y");
+            mLogFile.Write(",");
+            mLogFile.Write("Gyro_Z");
+            mLogFile.Write(",");
+            mLogFile.Write("Acc_X");
+            mLogFile.Write(",");
+            mLogFile.Write("Acc_Y");
+            mLogFile.Write(",");
+            mLogFile.Write("Acc_Z");
+            mLogFile.Write(",");
+            mLogFile.Write("Motor1");
+            mLogFile.Write(",");
+            mLogFile.Write("Motor2");
+            mLogFile.Write(",");
+            mLogFile.Write("Motor3");
+            mLogFile.Write(",");
+            mLogFile.Write("Motor4");
+            mLogFile.WriteLine();
+        }
+
         protected void CopyData()
         {
 
-        //    Dispatcher.CurrentDispatcher.Invoke(new Action(delegate()
-        //        {
-                    SensorManager.Gyro_X.AddValue(BitConverter.ToInt16(vArray, 0));
-                    SensorManager.Gyro_Y.AddValue(BitConverter.ToInt16(vArray, 2));
-                    SensorManager.Gyro_Z.AddValue(BitConverter.ToInt16(vArray, 4));
-                    SensorManager.Acc_X.AddValue(BitConverter.ToInt16(vArray, 6));
-                    SensorManager.Acc_Y.AddValue(BitConverter.ToInt16(vArray, 8));
-                    SensorManager.Acc_Z.AddValue(BitConverter.ToInt16(vArray, 10));
+            SensorManager.Gyro_X.AddValue(BitConverter.ToInt16(vArray, 0));
+            SensorManager.Gyro_Y.AddValue(BitConverter.ToInt16(vArray, 2));
+            SensorManager.Gyro_Z.AddValue(BitConverter.ToInt16(vArray, 4));
+            SensorManager.Acc_X.AddValue(BitConverter.ToInt16(vArray, 6));
+            SensorManager.Acc_Y.AddValue(BitConverter.ToInt16(vArray, 8));
+            SensorManager.Acc_Z.AddValue(BitConverter.ToInt16(vArray, 10));
 
-        //        }));
-        //    //Volt= BitConverter.ToInt16(vArray, 12);
             SensorManager.Motors[0].AddValue (BitConverter.ToInt16(vArray, 12));
             SensorManager.Motors[1].AddValue (BitConverter.ToInt16(vArray, 14));
             SensorManager.Motors[2].AddValue (BitConverter.ToInt16(vArray, 16));
             SensorManager.Motors[3].AddValue (BitConverter.ToInt16(vArray, 18));
-        //    //mLogFile.Write(GyroX);
-        //    //mLogFile.Write(",");
-        //    //mLogFile.Write(GyroY);
-        //    //mLogFile.Write(",");
-        //    //mLogFile.Write(GyroZ);
-        //    //mLogFile.Write(",");
-        //    //mLogFile.Write(AccX);
-        //    //mLogFile.Write(",");
-        //    //mLogFile.Write(AccY);
-        //    //mLogFile.Write(",");
-        //    //mLogFile.Write(AccZ);
-        //    //mLogFile.Write(",");
-        //    //mLogFile.Write(Motor1);
-        //    //mLogFile.Write(",");
-        //    //mLogFile.Write(Motor2);
-        //    //mLogFile.Write(",");
-        //    //mLogFile.Write(Motor3);
-        //    //mLogFile.Write(",");
-        //    //mLogFile.Write(Motor4);
-        //    //mLogFile.WriteLine();
+
+            mLogFile.Write(Environment.TickCount);
+            mLogFile.Write(",");
+            mLogFile.Write(SensorManager.Gyro_X.LastValue);
+            mLogFile.Write(",");
+            mLogFile.Write(SensorManager.Gyro_Y.LastValue);
+            mLogFile.Write(",");
+            mLogFile.Write(SensorManager.Gyro_Z.LastValue);
+            mLogFile.Write(",");
+            mLogFile.Write(SensorManager.Acc_X.LastValue);
+            mLogFile.Write(",");
+            mLogFile.Write(SensorManager.Acc_Y.LastValue);
+            mLogFile.Write(",");
+            mLogFile.Write(SensorManager.Acc_Z.LastValue);
+            mLogFile.Write(",");
+            mLogFile.Write(SensorManager.Motors[0].LastValue);
+            mLogFile.Write(",");
+            mLogFile.Write(SensorManager.Motors[1].LastValue);
+            mLogFile.Write(",");
+            mLogFile.Write(SensorManager.Motors[2].LastValue);
+            mLogFile.Write(",");
+            mLogFile.Write(SensorManager.Motors[3].LastValue);
+            mLogFile.WriteLine();
 
             mdelegate_CopyData(vArray);
         }
 
 
-        public void OpenPort(string PortName, string FileName)
+        public void OpenPort(string PortName, int BaudRate, string FileName)
         {
-            mLogFile = System.IO.File.CreateText(FileName + System.Environment.TickCount.ToString() + ".csv");
+            mLogFile = System.IO.File.CreateText(FileName);
+            LogHeader();
             if (mSerialPort.IsOpen == false)
             {
                 // mFile = System.IO.File.CreateText(@"d:\QuadReadings_" + System.Environment.TickCount.ToString() + ".csv");
                 mSerialPort.DiscardNull = false;
                 mSerialPort.Encoding = Encoding.Unicode;
                 mSerialPort.PortName = PortName;
+                mSerialPort.BaudRate = BaudRate;
                 mSerialPort.Open();
             }
         }

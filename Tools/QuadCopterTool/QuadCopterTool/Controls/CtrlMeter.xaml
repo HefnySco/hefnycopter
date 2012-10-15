@@ -18,7 +18,6 @@
         </Rectangle>
         <Rectangle HorizontalAlignment="Stretch" Name="rectangle2" Stroke="Black" VerticalAlignment="Stretch" StrokeThickness="2"/>
         <Rectangle Height="55" HorizontalAlignment="Stretch" Name="rectangleValue" Stroke="Black" VerticalAlignment="Top" Fill="DimGray" />
-        <Label Content="0000" Height="22" Margin="0,0,0,6" Name="lblValue" VerticalAlignment="Bottom" FontSize="10" FontStyle="Oblique" FontWeight="Bold" Foreground="White" HorizontalContentAlignment="Center" />
     </Grid>
     
 </Canvas>

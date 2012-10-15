@@ -61,19 +61,38 @@ namespace QuadCopterTool
             var source = new EnumerableDataSource<GraphValueUnit>(SensorManager.Gyro_X);
             source.SetXMapping(x => x.X);
             source.SetYMapping(y => y.Y);
-            chartPlotter.AddLineGraph(source, Colors.Magenta, 2, "Gyro Roll");
+            chartPlotterGyro.AddLineGraph(source, Colors.Magenta, 2, "Gyro Roll");
 
             source = new EnumerableDataSource<GraphValueUnit>(SensorManager.Gyro_Y);
             source.SetXMapping(x => x.X);
             source.SetYMapping(y => y.Y);
-            chartPlotter.AddLineGraph(source, Colors.CadetBlue, 2, "Gyro Pitch");
+            chartPlotterGyro.AddLineGraph(source, Colors.CadetBlue, 2, "Gyro Pitch");
 
             source = new EnumerableDataSource<GraphValueUnit>(SensorManager.Gyro_Z);
             source.SetXMapping(x => x.X);
             source.SetYMapping(y => y.Y);
-            chartPlotter.AddLineGraph(source, Colors.MediumPurple, 2, "Gyro YAW");
+            chartPlotterGyro.AddLineGraph(source, Colors.MediumPurple, 2, "Gyro YAW");
 
-            //chartPlotter.InputBindings
+
+
+            source = new EnumerableDataSource<GraphValueUnit>(SensorManager.Acc_Y);
+            source.SetXMapping(x => x.X);
+            source.SetYMapping(y => y.Y);
+            chartPlotterAcc.AddLineGraph(source, Colors.Magenta, 2, "Acc Roll");
+
+            source = new EnumerableDataSource<GraphValueUnit>(SensorManager.Acc_X);
+            source.SetXMapping(x => x.X);
+            source.SetYMapping(y => y.Y);
+            chartPlotterAcc.AddLineGraph(source, Colors.CadetBlue, 2, "ACC Pitch");
+
+            source = new EnumerableDataSource<GraphValueUnit>(SensorManager.Acc_Z);
+            source.SetXMapping(x => x.X);
+            source.SetYMapping(y => y.Y);
+            chartPlotterAcc.AddLineGraph(source, Colors.MediumPurple, 2, "Acc Z");
+
+
+            
+            txtLogFolder.Text = Properties.Settings.Default["LogFolder"].ToString(); //Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
 
         }
@@ -89,10 +108,6 @@ namespace QuadCopterTool
                 cmbCOMPorts.Items.Add(portname);
             }
 
-
-         
-         
-           
             btnConnect.Tag = true;
             mHefnyCopterSerial = new HefnyCopterSerial();
             mHefnyCopterSerial.mdelegate_CopyData = CopyData;
@@ -105,11 +120,38 @@ namespace QuadCopterTool
 
         #region "tabConnection"
 
+        private void btnLogBrowse_Click(object sender, RoutedEventArgs e)
+        {
+            FolderBrowserDialog oFolderBrowserDialog = new FolderBrowserDialog();
+            if (oFolderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                txtLogFolder.Text = oFolderBrowserDialog.SelectedPath;
+            }
+        }
+
+      private void txtLogFolder_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (System.IO.Directory.Exists(txtLogFolder.Text) == false)
+            {
+                txtLogFolder.Foreground = Brushes.Red;
+            }
+            else
+            {
+                txtLogFolder.Foreground = Brushes.Black;
+                Properties.Settings.Default["LogFolder"] = txtLogFolder.Text;
+                Properties.Settings.Default.Save();
+            }
+        }
+
         private void btnConnect_Click(object sender, RoutedEventArgs e)
         {
+            try
+            {
             if ((bool) btnConnect.Tag == true)
             {
-                mHefnyCopterSerial.OpenPort(cmbCOMPorts.SelectedValue.ToString(), @"d:\QuadLog");
+                string FileName;
+                FileName = txtLogFolder.Text + Properties.Settings.Default["LogFileName"] + System.Environment.TickCount.ToString() + ".csv";
+                mHefnyCopterSerial.OpenPort(cmbCOMPorts.SelectionBoxItem.ToString(), int.Parse(cmdBaudRate.SelectionBoxItem.ToString()), FileName);
                 btnConnect.Content = "Disconnect";
                 btnConnect.Tag = false;
             }
@@ -119,6 +161,11 @@ namespace QuadCopterTool
                 btnConnect.Content = "Connect";
                 btnConnect.Tag = true;
             }
+            }
+            catch
+            {
+                System.Windows.Forms.MessageBox.Show ("Serial Port Failed");
+            }
         }
 
         
@@ -127,21 +174,26 @@ namespace QuadCopterTool
             if (bRead == true)
             {
                 bRead = false;
-                chartPlotter.Dispatcher.BeginInvoke(new Action(delegate()
+                chartPlotterGyro.Dispatcher.BeginInvoke(new Action(delegate()
                     {
                         SensorManager.Gyro_X.AddGraphValue();
                         SensorManager.Gyro_Y.AddGraphValue();
                         SensorManager.Gyro_Z.AddGraphValue();
-                        SensorManager.Acc_X.AddGraphValue();
+                    }));
+                chartPlotterAcc.Dispatcher.BeginInvoke(new Action(delegate()
+                {       SensorManager.Acc_X.AddGraphValue();
                         SensorManager.Acc_Y.AddGraphValue();
                         SensorManager.Acc_Z.AddGraphValue();
 
                     }));
             }
         }
+
+  
         #endregion
 
         #region "tabData"
+
         bool bRead = false;
         private void Timer_Elapsed(object sender, EventArgs e)
         {
@@ -178,5 +230,8 @@ namespace QuadCopterTool
         }
 
         #endregion
+
+ 
+       
     }
 }
