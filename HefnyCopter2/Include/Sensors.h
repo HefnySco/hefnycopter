@@ -21,5 +21,5 @@
 		void Sensors_ReadAll (void);
 		int Sensors_GetAccAngle(int8_t Acc_Index);
 		int16_t Sensors_GetGyroRate(int8_t Gyro_Index);
-
+		void DynamicCalibration (void);
 #endif /* SENSOR_H_ */

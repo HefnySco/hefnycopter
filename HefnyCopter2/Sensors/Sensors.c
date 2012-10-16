@@ -38,6 +38,13 @@ void Sensors_Init(void)
 	GYRO_X = INPUT;
 	GYRO_Y = INPUT;
 	GYRO_Z = INPUT;
+	
+	for (int i=0; i<20;++i)
+	{
+		
+		StabilityMatrix_GX[i]=0;
+		StabilityMatrix_GY[i]=0;
+	}
 }
 
 
@@ -131,8 +138,8 @@ void Sensors_ReadAll (void)
 	T[0]= TX;
 	T[1]= TX1;
 	
-	Sensors_Latest[ACC_X_Index] = ADCPort_Get(ACC_X_PNUM)-Config.Sensor_zero[ACC_X_Index];
-	Sensors_Latest[ACC_Y_Index] = ADCPort_Get(ACC_Y_PNUM)-Config.Sensor_zero[ACC_Y_Index];
+	Sensors_Latest[ACC_X_Index] = ADCPort_Get(ACC_X_PNUM)-Config.Sensor_zero[ACC_X_Index] - ACC_X_Offset;
+	Sensors_Latest[ACC_Y_Index] = ADCPort_Get(ACC_Y_PNUM)-Config.Sensor_zero[ACC_Y_Index] - ACC_Y_Offset;
 	Sensors_Latest[ACC_Z_Index] = ADCPort_Get(ACC_Z_PNUM)-Config.Sensor_zero[ACC_Z_Index];
 		
 	Sensors_Latest[GYRO_X_Index] = ADCPort_Get(GYRO_X_PNUM)-Config.Sensor_zero[GYRO_X_Index];
@@ -140,6 +147,8 @@ void Sensors_ReadAll (void)
 	Sensors_Latest[GYRO_Z_Index] = ADCPort_Get(GYRO_Z_PNUM)-Config.Sensor_zero[GYRO_Z_Index];
 	
 	Sensors_Latest[V_BAT_Index] = Sensor_GetBattery();
+	
+	
 	
 	// Handle the odd case where the TCNT1 rolls over and LastLoopTime[0] < LastLoopTime[1]
 	if (LastLoopTime[0] > LastLoopTime)
@@ -167,3 +176,38 @@ inline uint16_t  Sensor_GetBattery(void)
 	 // because the V_BAT is connected to a voltage divider R1 & R2
 	return ADCPort_Get(V_BAT_PNUM) * BAT_VOLT_RATIO;
 } 
+
+
+inline void DynamicCalibration (void)
+{
+	/* 
+	// Dynamic calibration of ACC
+	*/
+	if ((Sensors_Latest[ACC_X_Index] >= ACC_MIN) && (Sensors_Latest[ACC_X_Index] <= ACC_MAX))
+	{
+		StabilityMatrix_GX[Sensors_Latest[ACC_X_Index]-ACC_MIN]+=1;
+	}
+	if ((Sensors_Latest[ACC_Y_Index] >= ACC_MIN) && (Sensors_Latest[ACC_Y_Index] <= ACC_MAX))
+	{
+		StabilityMatrix_GY[Sensors_Latest[ACC_Y_Index]-ACC_MIN]+=1;
+	}
+	
+	int16_t maxX=0, maxY=0;
+		
+	for (int i=0; i<20;++i)
+	{
+		if (StabilityMatrix_GX[i]> StabilityMatrix_GX[maxX])
+		{
+			maxX = i;
+		}
+		
+		if (StabilityMatrix_GY[i]> StabilityMatrix_GY[maxY])
+		{
+			maxY = i;
+		}
+		
+	}
+	
+	ACC_X_Offset = maxX;
+	ACC_Y_Offset = maxY;
+}

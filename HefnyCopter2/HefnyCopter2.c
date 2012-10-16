@@ -239,17 +239,9 @@ void MainLoop(void)
 	RX_Snapshot[RXChannel_THR] = RX_Latest[ActiveRXIndex][RXChannel_THR];
 	Sensors_ReadAll();	
 	
-	if (Config.VoltageAlarm > 0)
-	{
-		if (Sensors_Latest[V_BAT_Index] < Config.VoltageAlarm)
-		{
-			Buzzer = ON;
-		}
-		else
-		{
-			Buzzer = OFF;
-		}
-	}	
+	
+	
+	
 	// simulate
 	//RX_Latest[RXChannel_THR]=500;
     ATOMIC_BLOCK(ATOMIC_FORCEON)
@@ -277,24 +269,30 @@ void MainLoop(void)
 	}			
 	
 		
-	
+	// Slow Actions inside
 	// HINT: you can try to skip this if flying to save time for more useful tasks as user cannot access menu when flying
 	if (TCNT_X_snapshot2==0) TCNT_X_snapshot2 = CurrentTCNT1_X;
-	else if ( ((CurrentTCNT1_X- TCNT_X_snapshot2) > 2) )  // TCNT1_X ticks in 32.768us
+	else if ( ((CurrentTCNT1_X- TCNT_X_snapshot2) > 4) )  // TCNT1_X ticks in 32.768us
 	{
-		Menu_MenuShow();	
+		Menu_MenuShow();
+		
+		if (Config.VoltageAlarm > 0)
+		{
+			if (Sensors_Latest[V_BAT_Index] < Config.VoltageAlarm)
+			{
+				Buzzer = ON;
+			}
+			else
+			{
+				Buzzer = OFF;
+			}
+		}	
+	
+		DynamicCalibration();
 		TCNT_X_snapshot2=0;
 	}		
 	
 
-
-	
-	/*if ((!IS_TX2_GOOD)) 
-	{
-		return ; // Do nothing all below depends on TX.
-	}
-	*/	
-	
 	
 	if (RX_Snapshot[RXChannel_THR] < STICKThrottle_ARMING) 
 	{	
@@ -434,18 +432,6 @@ void MainLoop(void)
 				MotorOut[2] += RX_Snapshot[RXChannel_RUD];
 				MotorOut[3] -= RX_Snapshot[RXChannel_RUD];
 			
-				// Save motors from turning-off
-				if (MotorOut[0]<MOTORS_IDLE_VALUE) MotorOut[0]=MOTORS_IDLE_VALUE;
-				if (MotorOut[1]<MOTORS_IDLE_VALUE) MotorOut[1]=MOTORS_IDLE_VALUE;
-				if (MotorOut[2]<MOTORS_IDLE_VALUE) MotorOut[2]=MOTORS_IDLE_VALUE;
-				if (MotorOut[3]<MOTORS_IDLE_VALUE) MotorOut[3]=MOTORS_IDLE_VALUE;
-			/*
-				// Save motors from turning-off
-                if (MotorOut[0]<MOTORS_IDLE_VALUE) MotorOut[0]=MOTORS_IDLE_VALUE;
-                if (MotorOut[1]<MOTORS_IDLE_VALUE) MotorOut[1]=MOTORS_IDLE_VALUE;
-                if (MotorOut[2]<MOTORS_IDLE_VALUE) MotorOut[2]=MOTORS_IDLE_VALUE;
-                if (MotorOut[3]<MOTORS_IDLE_VALUE) MotorOut[3]=MOTORS_IDLE_VALUE;
-			*/
 			}
 			else
 			{
@@ -461,37 +447,6 @@ void MainLoop(void)
 				MotorOut[2] += RX_Snapshot[RXChannel_RUD] ;
 				MotorOut[3] -= RX_Snapshot[RXChannel_RUD] ;
 				
-			/*	
-				// Save motors from turning-off
-				if (MotorOut[0]<MOTORS_IDLE_VALUE) 
-				{	
-					MotorOut[3]-=(MOTORS_IDLE_VALUE - MotorOut[0]);
-					MotorOut[0]=MOTORS_IDLE_VALUE;
-				}
-				else
-				{
-					if (MotorOut[3]<MOTORS_IDLE_VALUE) 
-					{
-						MotorOut[0]-=(MOTORS_IDLE_VALUE - MotorOut[3]);
-						MotorOut[3]=MOTORS_IDLE_VALUE;
-					}						
-				}					
-				
-				if (MotorOut[1]<MOTORS_IDLE_VALUE) 
-				{
-					MotorOut[2]-=(MOTORS_IDLE_VALUE - MotorOut[1]);	
-					MotorOut[1]=MOTORS_IDLE_VALUE;	
-				}
-				else
-				{
-					if (MotorOut[2]<MOTORS_IDLE_VALUE) 
-					{
-						MotorOut[1]-=(MOTORS_IDLE_VALUE - MotorOut[2]);	
-						MotorOut[2]=MOTORS_IDLE_VALUE;	
-					}						
-				}
-				*/					
-									
 			}
 			
 			

@@ -112,6 +112,16 @@ double CompAccX;
 double CompAccY;
 double CompAccZ;	
 
+int16_t ACC_X_Offset;
+int16_t ACC_Y_Offset;
+
+#define GYRO_MIN	-10
+#define GYRO_MAX	10
+#define ACC_MIN		-10
+#define ACC_MAX		10
+
+int16_t StabilityMatrix_GX[20];
+int16_t StabilityMatrix_GY[20];
 
 // USed for Scaling
 double Pitch_Ratio;
