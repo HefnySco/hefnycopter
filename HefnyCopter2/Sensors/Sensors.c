@@ -138,8 +138,8 @@ void Sensors_ReadAll (void)
 	T[0]= TX;
 	T[1]= TX1;
 	
-	Sensors_Latest[ACC_X_Index] = ADCPort_Get(ACC_X_PNUM)-Config.Sensor_zero[ACC_X_Index] - ACC_X_Offset;
-	Sensors_Latest[ACC_Y_Index] = ADCPort_Get(ACC_Y_PNUM)-Config.Sensor_zero[ACC_Y_Index] - ACC_Y_Offset;
+	Sensors_Latest[ACC_X_Index] = ADCPort_Get(ACC_X_PNUM)-Config.Sensor_zero[ACC_X_Index];// - ACC_X_Offset;
+	Sensors_Latest[ACC_Y_Index] = ADCPort_Get(ACC_Y_PNUM)-Config.Sensor_zero[ACC_Y_Index]; // - ACC_Y_Offset;
 	Sensors_Latest[ACC_Z_Index] = ADCPort_Get(ACC_Z_PNUM)-Config.Sensor_zero[ACC_Z_Index];
 		
 	Sensors_Latest[GYRO_X_Index] = ADCPort_Get(GYRO_X_PNUM)-Config.Sensor_zero[GYRO_X_Index];
@@ -160,7 +160,7 @@ void Sensors_ReadAll (void)
 }
 
 
-char * Sensor_GetBatteryTest(void)
+/*char * Sensor_GetBatteryTest(void)
 {
 		// Write Voltage
 	nTemp16 = Sensor_GetBattery();
@@ -169,7 +169,7 @@ char * Sensor_GetBatteryTest(void)
 	utoa(nTemp16 %10,Result2,10);
 	strcat (Result,Result2);
 	return Result;
-}
+}*/
 
 inline uint16_t  Sensor_GetBattery(void)
 {
@@ -183,11 +183,11 @@ inline void DynamicCalibration (void)
 	/* 
 	// Dynamic calibration of ACC
 	*/
-	if ((Sensors_Latest[ACC_X_Index] >= ACC_MIN) && (Sensors_Latest[ACC_X_Index] <= ACC_MAX))
+	if ((Sensors_Latest[ACC_X_Index] >= ACC_MIN) && (Sensors_Latest[ACC_X_Index] < ACC_MAX))
 	{
 		StabilityMatrix_GX[Sensors_Latest[ACC_X_Index]-ACC_MIN]+=1;
 	}
-	if ((Sensors_Latest[ACC_Y_Index] >= ACC_MIN) && (Sensors_Latest[ACC_Y_Index] <= ACC_MAX))
+	if ((Sensors_Latest[ACC_Y_Index] >= ACC_MIN) && (Sensors_Latest[ACC_Y_Index] < ACC_MAX))
 	{
 		StabilityMatrix_GY[Sensors_Latest[ACC_Y_Index]-ACC_MIN]+=1;
 	}
@@ -208,6 +208,6 @@ inline void DynamicCalibration (void)
 		
 	}
 	
-	ACC_X_Offset = maxX;
-	ACC_Y_Offset = maxY;
+	ACC_X_Offset = maxX + ACC_MIN;	/* Range from -10 to 9 */
+	ACC_Y_Offset = maxY + ACC_MIN;	/* Range from -10 to 9 */
 }

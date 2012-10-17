@@ -15,7 +15,7 @@
 
 		void Sensors_Init(void);
 		char *Sensors_Test(uint8_t channel, uint16_t LowLimit, uint16_t HighLimit);
-		char * Sensor_GetBatteryTest(void);
+		//char * Sensor_GetBatteryTest(void);
 		void Sensors_Calibrate (void);
 		uint16_t  Sensor_GetBattery(void);
 		void Sensors_ReadAll (void);

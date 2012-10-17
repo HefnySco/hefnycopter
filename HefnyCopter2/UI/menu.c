@@ -390,8 +390,8 @@ void _hHomePage()
 	}
 	
 	// Write Voltage
-	LCD_SetPos(2, 30);
-	LCD_WriteString(Sensor_GetBatteryTest());
+	//LCD_SetPos(2, 30);
+	LCD_WriteValue_double(2,30,(double)Sensor_GetBattery(),false);
 	
 	_helper_DisplayRXStatus(5);
 	
@@ -432,6 +432,7 @@ void _hHomeArmed()
 	}
 	
 	
+	/*
 	LCD_SetPos(3,18);
 	itoa(MotorOut[0],sXDeg,10);
 	LCD_WritePadded(sXDeg,5);
@@ -464,6 +465,7 @@ void _hHomeArmed()
 	LCD_SetPos(6,78);
 	itoa(CompAccY,sXDeg,10);
 	LCD_WritePadded(sXDeg,5);
+	*/
 }
 
 
@@ -527,7 +529,7 @@ void _hSensorTest()
 	LCD_SetPos(5, 48);
 	LCD_WriteString(Sensors_Test(ACC_Z_PNUM,AccLowLimit,AccHighLimit));
 	LCD_SetPos(6, 48);
-	LCD_WriteString(Sensor_GetBatteryTest());
+	LCD_WriteValue_double(6,48,Sensor_GetBattery(),false);
 }
 
 void _hReceiverTest()
@@ -647,9 +649,10 @@ void _hSensorCalibration()
 	for (i=0; i<6;++i)
 	{ // order is aligned with ACC_X_Index & GYRO_X_Index
 		LCD_SetPos(i, 48);
-		itoa(Config.Sensor_zero[i],Result,10);
-		LCD_WriteString(&Result);
-		LCD_WriteSpace(5);
+		LCD_WriteValue(i,48,Config.Sensor_zero[i],5,false);
+		//itoa(Config.Sensor_zero[i],Result,10);
+		//LCD_WriteString(&Result);
+		//LCD_WriteSpace(5);
 	}	
 	
 }
@@ -864,7 +867,7 @@ void _hDebug()
 		//dtime = 1;
 		//dt=150;
 		//LCD_Clear();
-		LCD_SetPos(1,6);
+		/*LCD_SetPos(1,6);
 		LCD_WriteString_P(PSTR("GY")); // A Rate
 		LCD_SetPos(2,6);
 		LCD_WriteString_P(PSTR("GX")); // A Deg
@@ -876,7 +879,7 @@ void _hDebug()
 		LCD_WriteString_P(PSTR("GyroY"));
 		LCD_SetPos(6,6);
 		LCD_WriteString_P(PSTR("GyroX"));
-	
+	*/
 		//OldAcc = ADCPort_Get(ACC_X_PNUM);
 	}
 	else
@@ -900,12 +903,20 @@ void _hDebug()
 		}	
 	//IMU_CalculateAngles();
 	//
+	for (int i=0;i<6;++i)
+	{
+		
+		LCD_WriteValue(i,0,StabilityMatrix_GX[i],4,false); 
+		LCD_WriteValue(i,36,StabilityMatrix_GX[i+6],4,false); 
+		LCD_WriteValue(i,72,StabilityMatrix_GX[i+12],4,false); 
+	}
 	
-	LCD_WriteValue_double(1,48,CompGyroY,false);
-	LCD_WriteValue_double(2,48,CompGyroX,false);
 	
-	LCD_WriteValue_double(3,48,CompAccY,false);
-	LCD_WriteValue_double(4,48,CompAccX,false);
+	LCD_WriteValue(6,48,ACC_X_Offset,4,true); 
+	//LCD_WriteValue_double(2,48,CompGyroX,false);
+	//
+	//LCD_WriteValue_double(3,48,CompAccY,false);
+	//LCD_WriteValue_double(4,48,CompAccX,false);
 	
 	/*
 	itoa((Sensors_Latest[ACC_X_Index] * 2.08), sXDeg,10);

@@ -112,8 +112,8 @@ double CompAccX;
 double CompAccY;
 double CompAccZ;	
 
-int16_t ACC_X_Offset;
-int16_t ACC_Y_Offset;
+int8_t ACC_X_Offset;
+int8_t ACC_Y_Offset;
 
 #define GYRO_MIN	-10
 #define GYRO_MAX	10
@@ -124,9 +124,9 @@ int16_t StabilityMatrix_GX[20];
 int16_t StabilityMatrix_GY[20];
 
 // USed for Scaling
-double Pitch_Ratio;
-double Yaw_Ratio;
-double Acc_Ratio;
+//double Pitch_Ratio;
+//double Yaw_Ratio;
+//double Acc_Ratio;
 
 typedef struct 
 {
@@ -177,7 +177,7 @@ BOOL bResetTCNR1_X;
 volatile int16_t Sensors_Latest [8];
 
 // TEMP
-volatile char Result[10]; 
+volatile char Result[5]; 
 volatile char Result2[10]; 
 volatile uint16_t nResult[8];
 volatile uint16_t nTemp16;

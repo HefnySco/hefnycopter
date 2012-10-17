@@ -288,7 +288,10 @@ void MainLoop(void)
 			}
 		}	
 	
-		DynamicCalibration();
+		if ((IsArmed == true) && (RX_Snapshot[RXChannel_THR] > STICKThrottle_ARMING+80))
+		{ // calibrate when start flying
+			DynamicCalibration();
+		}			
 		TCNT_X_snapshot2=0;
 	}		
 	

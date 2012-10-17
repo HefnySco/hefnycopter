@@ -72,10 +72,12 @@ P_STR scrHomePageArmed[] =
 	"\n"
 	"\n"
 	"\n"
+	/*
 	"M1:       M4:\n"
 	"M2:       M3:\n"
 	"GX:       GY:\n"
 	"AX:       AY:\n"
+	*/
 	;
 
 
