@@ -79,6 +79,7 @@ void IMU_P2D (void)
 	
 		//IMU_CalculateAngles();
 		
+		// Smoothing using complementary filters
 		float Alpha = Config.GyroParams[0].ComplementaryFilterAlpha / 1000;
 		float Beta = 1- Alpha;
 		CompGyroY = (double) (Alpha * CompGyroY) + (double) (Beta * Sensors_Latest[GYRO_Y_Index]);
@@ -97,7 +98,7 @@ void IMU_P2D (void)
 		Alpha = Config.AccParams[1].ComplementaryFilterAlpha / 1000;
 		Beta = 1- Alpha;
 		CompAccZ = (double) (Alpha * CompAccZ) + (double) (Beta * Sensors_Latest[ACC_Z_Index]);
-		
+		//////////////////////////////		
 		
 		
 		// PITCH
