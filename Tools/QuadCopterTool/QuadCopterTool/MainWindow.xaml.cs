@@ -282,7 +282,7 @@ namespace QuadCopterTool
         {
             if (mVideoComponent.Running == false)
             {
-                mVideoComponent.Run();
+                mVideoComponent.Capture();
             }
             else
             {

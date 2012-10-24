@@ -40,7 +40,7 @@ namespace QuadCopterTool
         protected System.Windows.Threading.DispatcherTimer mTimer;
         protected StreamReader mStreamReader;
         protected bool mValidFileExist;
-
+        protected VideoFileReader mVideoFileReader;
         protected bool mUpdateSldProgress;
         protected int mDelay;
         /// <summary>
@@ -106,6 +106,11 @@ namespace QuadCopterTool
 
         }
 
+        /// <summary>
+        /// With each tick a value is picked from the LogData list.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void Timer_Elapsed(object sender, EventArgs e)
         {
 
@@ -212,6 +217,7 @@ namespace QuadCopterTool
                     mValidFileExist = true;
                 }
 
+                // Read CSV file into Simulation List.
                 while (mStreamReader.EndOfStream == false)
                 {
                     S = mStreamReader.ReadLine();
@@ -221,6 +227,7 @@ namespace QuadCopterTool
                 }
 
 
+               
                 UpdateButtonStatus();
                 lblDuration.Content = "00:"+ (SimulationDuration / 1000).ToString() + " ms";
                 mDelay = 0;
@@ -233,6 +240,26 @@ namespace QuadCopterTool
         {
             mCurrentValueIndex = (int)sldProgress.Value;
 
+        }
+
+        private void btnOpenVideo_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Forms.OpenFileDialog oOpenFileDlg = new OpenFileDialog();
+            oOpenFileDlg.DefaultExt = @"*.syncVid";
+            oOpenFileDlg.Filter = @"Sync Video (*.syncVid)|*.syncVid|All Files (*.*)|*.*";
+            if (oOpenFileDlg.ShowDialog() == DialogResult.OK)
+            {
+                if (File.Exists(oOpenFileDlg.FileName) == false)
+                {
+                    System.Windows.Forms.MessageBox.Show("File not found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                
+                // Read Video File
+                mVideoFileReader = new VideoFileReader();
+                mVideoFileReader.OpenFile(oOpenFileDlg.FileName);
+                
+            }
         }
 
     }

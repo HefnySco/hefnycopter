@@ -4,39 +4,44 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="76" d:DesignWidth="417" BorderThickness="1">
-    <Grid Height="68" Width="412" HorizontalAlignment="Stretch">
-        <Button Height="32" HorizontalAlignment="Left" Name="btnRun" VerticalAlignment="Top" Width="32" Click="btnRun_Click" FontSize="10" ToolTip="Run" IsEnabled="True" BorderBrush="#FF55BB2A">
+             d:DesignHeight="68" d:DesignWidth="390" BorderThickness="1">
+    <Grid Height="59" Width="381" HorizontalAlignment="Stretch">
+        <Button Height="24" HorizontalAlignment="Left" Name="btnRun" VerticalAlignment="Top" Width="24" Click="btnRun_Click" FontSize="10" ToolTip="Run" IsEnabled="True" BorderBrush="#FF55BB2A">
             <Button.Background>
                 <ImageBrush ImageSource="/QuadCopterTool;component/Icons/media_play_green.png" />
             </Button.Background>
         </Button>
-        <Button Height="32" HorizontalAlignment="Left" Margin="76,0,0,0" Name="btnBack" VerticalAlignment="Top" Width="32" Click="btnBack_Click" FontSize="10" ToolTip="Backstep" BorderBrush="#FF0070D6">
+        <Button Height="24" HorizontalAlignment="Left" Margin="60,0,0,0" Name="btnBack" VerticalAlignment="Top" Width="24" Click="btnBack_Click" FontSize="10" ToolTip="Slower Speed" BorderBrush="#FF0070D6">
             <Button.Background>
                 <ImageBrush ImageSource="/QuadCopterTool;component/Icons/media_step_back.png" />
             </Button.Background>
         </Button>
-        <Button Height="32" HorizontalAlignment="Left" Margin="114,0,0,0" Name="btnForward" VerticalAlignment="Top" Width="32" Click="btnForward_Click" FontSize="10" ToolTip="Forward Step" BorderBrush="#FF0070D6">
+        <Button Height="24" HorizontalAlignment="Left" Margin="90,0,0,0" Name="btnForward" VerticalAlignment="Top" Width="24" Click="btnForward_Click" FontSize="10" ToolTip="Faster Step" BorderBrush="#FF0070D6">
             <Button.Background>
                 <ImageBrush ImageSource="/QuadCopterTool;component/Icons/media_step_forward.png" />
             </Button.Background>
         </Button>
-        <Button Height="32" HorizontalAlignment="Left" Margin="152,0,0,0" Name="btnStop" VerticalAlignment="Top" Width="32" Click="btnStop_Click" FontSize="10" ToolTip="Stop" BorderBrush="#FFE57664">
+        <Button Height="24" HorizontalAlignment="Left" Margin="120,0,0,0" Name="btnStop" VerticalAlignment="Top" Width="24" Click="btnStop_Click" FontSize="10" ToolTip="Stop" BorderBrush="#FFE57664">
             <Button.Background>
                 <ImageBrush ImageSource="/QuadCopterTool;component/Icons/media_stop_red.png" />
             </Button.Background>
         </Button>
-        <Button Height="32" HorizontalAlignment="Left" Margin="38,0,0,0" Name="btnPause" VerticalAlignment="Top" Width="32" Click="btnPause_Click" FontSize="10" ToolTip="Pause" BorderBrush="#FF0070D6">
+        <Button Height="24" HorizontalAlignment="Left" Margin="30,0,0,0" Name="btnPause" VerticalAlignment="Top" Width="24" Click="btnPause_Click" FontSize="10" ToolTip="Pause" BorderBrush="#FF0070D6">
             <Button.Background>
                 <ImageBrush ImageSource="/QuadCopterTool;component/Icons/media_pause.png" />
             </Button.Background>
         </Button>
-        <Button Height="32" HorizontalAlignment="Left" Margin="190,0,0,0" Name="btnOpen" VerticalAlignment="Top" Width="32" FontSize="10" ToolTip="Open Log File" Click="btnOpen_Click" BorderBrush="#FFFFEB5E">
+        <Button Height="24" HorizontalAlignment="Left" Margin="170,0,0,0" Name="btnOpen" VerticalAlignment="Top" Width="24" FontSize="10" ToolTip="Open Log File" Click="btnOpen_Click" BorderBrush="#FFFFEB5E">
             <Button.Background>
                 <ImageBrush ImageSource="/QuadCopterTool;component/Icons/folder.png" />
             </Button.Background>
         </Button>
-        <Slider Height="23" HorizontalAlignment="Left" Margin="5,38,0,0" Name="sldProgress" VerticalAlignment="Top" Width="289" ValueChanged="sldProgress_ValueChanged" />
-        <Label Height="28" HorizontalAlignment="Left" Margin="240,4,0,0" Name="lblDuration" VerticalAlignment="Top" FontSize="10" Content="Duration" />
+        <Slider Height="23" HorizontalAlignment="Left" Margin="0,33,0,0" Name="sldProgress" VerticalAlignment="Top" Width="289" ValueChanged="sldProgress_ValueChanged" />
+        <Label Height="28" HorizontalAlignment="Left" Margin="302,4,0,0" Name="lblDuration" VerticalAlignment="Top" FontSize="10" Content="Duration" />
+        <Button BorderBrush="#FFFFEB5E" FontSize="10" Height="24" HorizontalAlignment="Left" Margin="200,0,0,0" Name="btnOpenVideo" ToolTip="Open Log File" VerticalAlignment="Top" Width="24" Click="btnOpenVideo_Click">
+            <Button.Background>
+                <ImageBrush ImageSource="/QuadCopterTool;component/Icons/folder.png" />
+            </Button.Background>
+        </Button>
     </Grid>
 </UserControl>

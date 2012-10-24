@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuadCopterTool", "QuadCopte
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunicationProtocol", "CommunicationProtocol\CommunicationProtocol.csproj", "{58418A08-0067-48A6-A31F-4EC5C8F309FE}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "QuadcopterTool Setup", "QuadcopterTool Setup\QuadcopterTool Setup.vdproj", "{D2F9029B-B061-43E8-864B-297EA2D30616}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,12 @@ Global
 		{58418A08-0067-48A6-A31F-4EC5C8F309FE}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{58418A08-0067-48A6-A31F-4EC5C8F309FE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{58418A08-0067-48A6-A31F-4EC5C8F309FE}.Release|x86.ActiveCfg = Release|Any CPU
+		{D2F9029B-B061-43E8-864B-297EA2D30616}.Debug|Any CPU.ActiveCfg = Debug
+		{D2F9029B-B061-43E8-864B-297EA2D30616}.Debug|Mixed Platforms.ActiveCfg = Debug
+		{D2F9029B-B061-43E8-864B-297EA2D30616}.Debug|x86.ActiveCfg = Debug
+		{D2F9029B-B061-43E8-864B-297EA2D30616}.Release|Any CPU.ActiveCfg = Release
+		{D2F9029B-B061-43E8-864B-297EA2D30616}.Release|Mixed Platforms.ActiveCfg = Release
+		{D2F9029B-B061-43E8-864B-297EA2D30616}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

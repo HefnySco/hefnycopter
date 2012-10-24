@@ -116,6 +116,8 @@
     <Compile Include="Misc\Control2ImageConverter.cs" />
     <Compile Include="Misc\LogFileData.cs" />
     <Compile Include="Misc\VideoComponent.cs" />
+    <Compile Include="Misc\VideoFileIndex.cs" />
+    <Compile Include="Misc\VideoFileReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -169,6 +171,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\keyboard2_cordless.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\logo.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
