@@ -60,6 +60,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\SimulationPanel.xaml.cs">
+      <DependentUpon>SimulationPanel.xaml</DependentUpon>
+    </Compile>
     <Page Include="Controls\CtrlMeterMiddle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -100,12 +103,19 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Controls\SimulationPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Misc\Control2ImageConverter.cs" />
+    <Compile Include="Misc\LogFileData.cs" />
+    <Compile Include="Misc\VideoComponent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -138,6 +148,27 @@
       <Project>{58418A08-0067-48A6-A31F-4EC5C8F309FE}</Project>
       <Name>CommunicationProtocol</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\folder.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\media_play_green.png" />
+    <Resource Include="Icons\media_step_back.png" />
+    <Resource Include="Icons\media_step_forward.png" />
+    <Resource Include="Icons\media_stop_red.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\media_pause.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\camera.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\videocamera.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\keyboard2_cordless.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

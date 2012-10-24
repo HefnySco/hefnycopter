@@ -1,13 +1,17 @@
 ﻿<Window x:Class="QuadCopterTool.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="820" Width="844" Loaded="Window_Loaded" xmlns:my="clr-namespace:QuadCopterTool" xmlns:my1="clr-namespace:QuadCopterTool.Controls" xmlns:d3="http://research.microsoft.com/DynamicDataDisplay/1.0">
+        Title="MainWindow" Height="820" Width="844" Loaded="Window_Loaded" xmlns:my="clr-namespace:QuadCopterTool" xmlns:my1="clr-namespace:QuadCopterTool.Controls" xmlns:d3="http://research.microsoft.com/DynamicDataDisplay/1.0" Closing="Window_Closing">
     <Grid>
         <TabControl HorizontalAlignment="Stretch" Name="tabControl1" VerticalAlignment="Stretch" >
             <TabItem Header="Communication" Name="tabConnection" ForceCursor="True">
                 <Grid>
                     <ComboBox Height="23" HorizontalAlignment="Left" Margin="75,22,0,0" Name="cmbCOMPorts" VerticalAlignment="Top" Width="205" />
-                    <Button Content="Connect" Height="23" HorizontalAlignment="Left" Margin="305,22,0,0" Name="btnConnect" VerticalAlignment="Top" Width="75" Click="btnConnect_Click" />
+                    <Button Height="32" HorizontalAlignment="Left" Margin="310,22,0,0" Name="btnConnect" VerticalAlignment="Top" Width="32" Click="btnConnect_Click" ToolTip="Connect to XBEE">
+                        <Button.Background>
+                            <ImageBrush ImageSource="/QuadCopterTool;component/Icons/keyboard2_cordless.png" />
+                        </Button.Background>
+                    </Button>
                     <Label Content="COM Port" Height="28" HorizontalAlignment="Left" Margin="6,17,0,0" Name="label1" VerticalAlignment="Top" />
                     <ComboBox Height="23" HorizontalAlignment="Left" Margin="75,63,0,0" Name="cmdBaudRate" VerticalAlignment="Top" Width="205">
                         <ComboBoxItem Content="9600" />
@@ -17,26 +21,29 @@
                         <ComboBoxItem Content="115200" IsSelected="True" />
                     </ComboBox>
                     <Label Content="Baud Rate" Height="28" HorizontalAlignment="Left" Margin="6,58,0,0" Name="label10" VerticalAlignment="Top" />
-                    <Button Content="..." Height="26" HorizontalAlignment="Left" Margin="346,138,0,0" Name="btnLogBrowse" VerticalAlignment="Top" Width="34" Click="btnLogBrowse_Click" />
-                    <TextBox Height="26" HorizontalAlignment="Left" Margin="70,140,0,0" Name="txtLogFolder" VerticalAlignment="Top" Width="270" TextChanged="txtLogFolder_TextChanged" />
+                    <Button Content="..." Height="26" HorizontalAlignment="Left" Margin="351,138,0,0" Name="btnLogBrowse" VerticalAlignment="Top" Width="34" Click="btnLogBrowse_Click" />
+                    <TextBox Height="26" HorizontalAlignment="Left" Margin="75,140,0,0" Name="txtLogFolder" VerticalAlignment="Top" Width="270" TextChanged="txtLogFolder_TextChanged" />
                     <Label Content="Log Folder" Height="28" HorizontalAlignment="Left" Margin="5,136,0,0" Name="label11" VerticalAlignment="Top" />
+                    <TextBox Height="26" HorizontalAlignment="Left" Margin="75,204,0,0" Name="txtVideoConnection" VerticalAlignment="Top" Width="270" TextChanged="txtVideoConnection_TextChanged" />
+                    <Label Content="Video COM" Height="28" HorizontalAlignment="Left" Margin="5,202,0,0" Name="label12" VerticalAlignment="Top" />
                 </Grid>
             </TabItem>
-            <TabItem Header="Realtime Data" Name="tabItem1">
-                <Grid Margin="9,31,12,12">
+            <TabItem Header="Attitude Data" Name="tabItemRealTimeData">
+                <Grid Margin="0,0,0,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="0" />
                         <ColumnDefinition Width="791" />
                         <ColumnDefinition Width="0" />
+                        <ColumnDefinition Width="21*" />
                     </Grid.ColumnDefinitions>
-                    <my:CtrlPosition x:Name="ctrlACC" Margin="57,18,0,0" Title="Acc" HorizontalAlignment="Left" Width="113" Height="156" VerticalAlignment="Top" Grid.Column="1"></my:CtrlPosition>
-                    <my1:CtrlMeterMiddle Height="153" Margin="15,21,0,0" x:Name="meterAccZ" VerticalAlignment="Top" MaxValue="250" CurrentValue="-400" HorizontalAlignment="Left" Width="23" MinValue="-250" Grid.Column="1"></my1:CtrlMeterMiddle>
-                    <Label Content="G" Height="28" HorizontalAlignment="Left" Margin="15,180,0,0" Name="label6" VerticalAlignment="Top" Width="32" Grid.Column="1" />
+                    <my:CtrlPosition x:Name="ctrlACC" Margin="66,107,0,0" Title="Acc" HorizontalAlignment="Left" Width="113" Height="156" VerticalAlignment="Top" Grid.Column="1"></my:CtrlPosition>
+                    <my1:CtrlMeterMiddle Height="153" Margin="24,110,0,0" x:Name="meterAccZ" VerticalAlignment="Top" MaxValue="250" CurrentValue="-400" HorizontalAlignment="Left" Width="23" MinValue="-250" Grid.Column="1"></my1:CtrlMeterMiddle>
+                    <Label Content="G" Height="28" HorizontalAlignment="Left" Margin="24,269,0,0" Name="label6" VerticalAlignment="Top" Width="32" Grid.Column="1" />
                     <d3:ChartPlotter Height="187" Margin="24,513,112,0" Name="chartPlotterGyro" VerticalAlignment="Top" HorizontalContentAlignment="Center" Grid.Column="1" FontSize="8" Width="655">
-                        <d3:Header Content="Sensors " />
-                        <d3:VerticalAxisTitle Content="Gyro [G]" />
+                        <d3:Header Content="Gyroscopes" FontSize="12" />
+                        <d3:VerticalAxisTitle Content="Gyro [G]" FontSize="10" />
                     </d3:ChartPlotter>
-                    <GroupBox Grid.Column="1" Header="Gyro" Height="212" Margin="320,10,0,0" Name="groupBox1" VerticalAlignment="Top" FontSize="10" FontWeight="Normal" HorizontalAlignment="Left" Width="173">
+                    <GroupBox Grid.Column="1" Header="Gyros" Height="212" Margin="414,102,0,0" Name="groupBox1" VerticalAlignment="Top" FontSize="10" FontWeight="Normal" HorizontalAlignment="Left" Width="173">
                         <Grid Height="185" Width="162">
                             <my1:CtrlMeterMiddle CurrentValue="10" Height="140" MaxValue="250" MinValue="-250" x:Name="meterGyroZ" Width="25" Margin="113,16,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
                             <my1:CtrlMeterMiddle CurrentValue="10" Height="140" Margin="68,16,0,0" MaxValue="250" x:Name="meterGyroY" VerticalAlignment="Top" HorizontalAlignment="Left" Width="25" MinValue="-250"></my1:CtrlMeterMiddle>
@@ -46,7 +53,7 @@
                             <Label Content="Yaw" FontSize="8" FontWeight="Bold" Height="19" HorizontalAlignment="Left" Margin="110,161,0,0" Name="label8" VerticalAlignment="Top" Width="33" />
                         </Grid>
                     </GroupBox>
-                    <GroupBox FontSize="10" FontWeight="Normal" Grid.Column="1" Header="Gyro" Height="209" HorizontalAlignment="Left" Margin="507,13,0,0" Name="groupBox2" VerticalAlignment="Top" Width="181">
+                    <GroupBox FontSize="10" FontWeight="Normal" Grid.Column="1" Header="Motors" Height="209" HorizontalAlignment="Left" Margin="601,105,0,0" Name="groupBox2" VerticalAlignment="Top" Width="181">
                         <Grid Height="178" Width="163">
                             <my1:Meter CurrentValue="0" Height="140" MaxValue="1000" x:Name="meterMotor4" Width="20" Margin="128,13,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
                             <my1:Meter Height="140" HorizontalAlignment="Left" Margin="16,13,0,0" x:Name="meterMotor1" VerticalAlignment="Top" Width="20" MaxValue="1000" CurrentValue="0"></my1:Meter>
@@ -59,12 +66,23 @@
                         </Grid>
                     </GroupBox>
                     <d3:ChartPlotter FontSize="8" Grid.Column="1" Height="187" HorizontalContentAlignment="Center" Margin="24,320,112,0" Name="chartPlotterAcc" VerticalAlignment="Top" Width="655">
-                        <d3:Header Content="Sensors " />
-                        <d3:VerticalAxisTitle Content="Acc [F]" />
+                        <d3:Header Content="Accelerometers" FontSize="12" />
+                        <d3:VerticalAxisTitle Content="Acc [F]" FontSize="11" />
                     </d3:ChartPlotter>
+                    <my:SimulationPanel Grid.Column="1" HorizontalAlignment="Left" Margin="24,6,0,0" x:Name="simulationPanel1" VerticalAlignment="Top" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="Video" Name="tabItem2">
+                <Grid Background="#FFF0F0F0">
+                    <Image Height="482" HorizontalAlignment="Left" Margin="13,14,0,0" Name="imgLive" Stretch="Fill" VerticalAlignment="Top" Width="628" ToolTip="Live Video" Source="/QuadCopterTool;component/Icons/videocamera.png" />
+                    <Button Height="32" Margin="0,58,54,0" Name="btnVideoOnOff" VerticalAlignment="Top" HorizontalAlignment="Right" Width="32" Click="btnVideoOnOff_Click" FontSize="10" ToolTip="Video Capture">
+                        <Button.Background>
+                            <ImageBrush ImageSource="/QuadCopterTool;component/Icons/videocamera.png" />
+                        </Button.Background>
+                    </Button>
                 </Grid>
             </TabItem>
         </TabControl>
-       
+     
     </Grid>
 </Window>
