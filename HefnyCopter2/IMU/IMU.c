@@ -92,8 +92,8 @@ void IMU_P2D (void)
 		
 		Alpha = Config.AccParams[0].ComplementaryFilterAlpha / 1000;
 		Beta = 1- Alpha;
-		CompAccY = (double) (Alpha * CompAccY) + (double) (Beta * Sensors_Latest[ACC_Y_Index]);
-		CompAccX = (double) (Alpha * CompAccX) + (double) (Beta * Sensors_Latest[ACC_X_Index]);
+		CompAccY = (double) (Alpha * CompAccY) + (double) (Beta * (Sensors_Latest[ACC_Y_Index]-ACC_Y_Offset));
+		CompAccX = (double) (Alpha * CompAccX) + (double) (Beta * (Sensors_Latest[ACC_X_Index]-ACC_X_Offset));
 		
 		Alpha = Config.AccParams[1].ComplementaryFilterAlpha / 1000;
 		Beta = 1- Alpha;
