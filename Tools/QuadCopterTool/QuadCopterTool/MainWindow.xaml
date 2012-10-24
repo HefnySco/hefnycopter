@@ -74,7 +74,7 @@
             </TabItem>
             <TabItem Header="Video" Name="tabItem2">
                 <Grid Background="#FFF0F0F0">
-                    <Image Height="482" HorizontalAlignment="Left" Margin="13,14,0,0" Name="imgLive" Stretch="Fill" VerticalAlignment="Top" Width="628" ToolTip="Live Video" Source="/QuadCopterTool;component/Icons/videocamera.png" />
+                    <Image Height="482" HorizontalAlignment="Left" Margin="13,14,0,0" Name="imgLive" Stretch="Fill" VerticalAlignment="Top" Width="628" ToolTip="Live Video" />
                     <Button Height="32" Margin="0,58,54,0" Name="btnVideoOnOff" VerticalAlignment="Top" HorizontalAlignment="Right" Width="32" Click="btnVideoOnOff_Click" FontSize="10" ToolTip="Video Capture">
                         <Button.Background>
                             <ImageBrush ImageSource="/QuadCopterTool;component/Icons/videocamera.png" />

@@ -4,8 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="76" d:DesignWidth="327" BorderThickness="1">
-    <Grid Height="68" Width="313" HorizontalAlignment="Stretch">
+             d:DesignHeight="76" d:DesignWidth="417" BorderThickness="1">
+    <Grid Height="68" Width="412" HorizontalAlignment="Stretch">
         <Button Height="32" HorizontalAlignment="Left" Name="btnRun" VerticalAlignment="Top" Width="32" Click="btnRun_Click" FontSize="10" ToolTip="Run" IsEnabled="True" BorderBrush="#FF55BB2A">
             <Button.Background>
                 <ImageBrush ImageSource="/QuadCopterTool;component/Icons/media_play_green.png" />
@@ -36,6 +36,7 @@
                 <ImageBrush ImageSource="/QuadCopterTool;component/Icons/folder.png" />
             </Button.Background>
         </Button>
-        <Slider Height="23" HorizontalAlignment="Left" Margin="12,38,0,0" Name="sldProgress" VerticalAlignment="Top" Width="289" ValueChanged="sldProgress_ValueChanged" />
+        <Slider Height="23" HorizontalAlignment="Left" Margin="5,38,0,0" Name="sldProgress" VerticalAlignment="Top" Width="289" ValueChanged="sldProgress_ValueChanged" />
+        <Label Height="28" HorizontalAlignment="Left" Margin="240,4,0,0" Name="lblDuration" VerticalAlignment="Top" FontSize="10" Content="Duration" />
     </Grid>
 </UserControl>

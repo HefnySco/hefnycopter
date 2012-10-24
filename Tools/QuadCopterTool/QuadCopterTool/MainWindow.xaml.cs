@@ -27,6 +27,7 @@ using System.IO;
 using System.Windows.Forms;
 using System.ComponentModel;
 using System.Net;
+using System.Threading;
 
 using Microsoft.Research.DynamicDataDisplay;
 using Microsoft.Research.DynamicDataDisplay.DataSources;
@@ -57,6 +58,8 @@ namespace QuadCopterTool
         public MainWindow()
         {
             InitializeComponent();
+
+
 
             SensorManager.Init();
             // Create first source
@@ -198,7 +201,7 @@ namespace QuadCopterTool
         #endregion
 
         #region "tabData"
-        
+
 
         bool bRead = false;
         private void Timer_Elapsed(object sender, EventArgs e)
@@ -233,8 +236,15 @@ namespace QuadCopterTool
 
         private void ImageReceived(MemoryStream memStream)
         {
+            //BitmapImage bmpCamera = new BitmapImage();
+            //bmpCamera.BeginInit();
+            //bmpCamera.StreamSource = memStream;
+            //bmpCamera.CacheOption = BitmapCacheOption.OnLoad;
+            //bmpCamera.EndInit();
 
-            imgLive.Dispatcher.Invoke(new Action(delegate()
+            //imgLive.Source = bmpCamera; 
+
+            Dispatcher.Invoke((ThreadStart)delegate()
                 {
                     BitmapImage bmpCamera = new BitmapImage();
                     bmpCamera.BeginInit();
@@ -243,7 +253,7 @@ namespace QuadCopterTool
                     bmpCamera.EndInit();
 
                     imgLive.Source = bmpCamera;
-                }));
+                });
         }
 
         private void txtVideoConnection_TextChanged(object sender, TextChangedEventArgs e)
@@ -251,20 +261,20 @@ namespace QuadCopterTool
 
             if (System.Uri.IsWellFormedUriString(txtVideoConnection.Text, UriKind.RelativeOrAbsolute) == false)
             {
-                txtVideoConnection.Foreground = Brushes.Red; 
+                txtVideoConnection.Foreground = Brushes.Red;
             }
             else
             {
-                txtLogFolder.Foreground = Brushes.Black; 
+                txtLogFolder.Foreground = Brushes.Black;
                 Properties.Settings.Default["VideoConnection"] = txtVideoConnection.Text;
                 Properties.Settings.Default.Save();
             }
-            
+
         }
 
         private void btnVideoOnOff_Click(object sender, RoutedEventArgs e)
         {
-            ToggleVideoOnOff(); 
+            ToggleVideoOnOff();
         }
 
 
@@ -277,7 +287,7 @@ namespace QuadCopterTool
             else
             {
                 mVideoComponent.Close();
-                
+
             }
         }
         #endregion
@@ -299,7 +309,7 @@ namespace QuadCopterTool
             mVideoComponent.Close();
         }
 
-       
+
 
 
 

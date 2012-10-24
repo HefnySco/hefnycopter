@@ -30,7 +30,7 @@ namespace QuadCopterTool
 
         #region "Control Custom Events"
         public event EventHandler OnFileOpen;
-        #endregion 
+        #endregion
 
         #region "Attributes"
 
@@ -42,13 +42,13 @@ namespace QuadCopterTool
         protected bool mValidFileExist;
 
         protected bool mUpdateSldProgress;
-
+        protected int mDelay;
         /// <summary>
         /// List of LogFileData from log file.
         /// </summary>
         protected List<LogFileData> mLogFileDataList;
         protected Int32 mCurrentValueIndex;
-        #endregion 
+        #endregion
 
         #region "Properties"
 
@@ -56,20 +56,20 @@ namespace QuadCopterTool
         {
             get
             {
-                if (mLogFileDataList.Count==0)
+                if (mLogFileDataList.Count == 0)
                 {
                     return -1;
                 }
                 else
                 {
-                    return mLogFileDataList[mLogFileDataList.Count-1].Time - mLogFileDataList[0].Time;
+                    return mLogFileDataList[mLogFileDataList.Count - 1].Time - mLogFileDataList[0].Time;
                 }
 
 
             }
         }
 
-        #endregion 
+        #endregion
 
         public SimulationPanel()
         {
@@ -109,7 +109,16 @@ namespace QuadCopterTool
         protected void Timer_Elapsed(object sender, EventArgs e)
         {
 
-
+            if (mCurrentValueIndex < mLogFileDataList.Count - 1)
+            {
+                mTimer.Interval = TimeSpan.FromMilliseconds(mDelay);// TimeSpan.FromMilliseconds(100 * (mLogFileDataList[mCurrentValueIndex + 1].Time - mLogFileDataList[mCurrentValueIndex].Time));
+                lblDuration.Content = (mLogFileDataList[mCurrentValueIndex].Time-mLogFileDataList[0].Time).ToString() + ":" + (SimulationDuration).ToString() + " ms";
+             
+            }
+            else
+            {
+                mTimer.Stop();
+            }
             SensorManager.Gyro_X.AddValue(mLogFileDataList[mCurrentValueIndex].Gyro_X);
             SensorManager.Gyro_Y.AddValue(mLogFileDataList[mCurrentValueIndex].Gyro_Y);
             SensorManager.Gyro_Z.AddValue(mLogFileDataList[mCurrentValueIndex].Gyro_Z);
@@ -134,14 +143,13 @@ namespace QuadCopterTool
             {
                 sldProgress.Value = mCurrentValueIndex;
             }
-            
-            
+
+
         }
 
         private void btnRun_Click(object sender, RoutedEventArgs e)
         {
             mCurrentValueIndex = 0;
-            mTimer.Interval = TimeSpan.FromMilliseconds(100);
             mTimer.Start();
         }
 
@@ -159,17 +167,21 @@ namespace QuadCopterTool
 
         private void btnBack_Click(object sender, RoutedEventArgs e)
         {
+            if (mDelay == 0) return;
 
+            mDelay -= 10;
         }
 
         private void btnForward_Click(object sender, RoutedEventArgs e)
         {
-
+            mTimer.Stop();
+            mCurrentValueIndex = 0;
+            mDelay = 0;
         }
 
         private void btnStop_Click(object sender, RoutedEventArgs e)
         {
-
+            mDelay += 10;
         }
 
         private void btnOpen_Click(object sender, RoutedEventArgs e)
@@ -186,8 +198,8 @@ namespace QuadCopterTool
                 }
 
                 mLogFileDataList.Clear(); // delete current data anyway even if file is not valie
-                mStreamReader= File.OpenText(oOpenFileDlg.FileName);
-                
+                mStreamReader = File.OpenText(oOpenFileDlg.FileName);
+
                 String S = mStreamReader.ReadLine();
                 String[] Fields = S.Split(',');
                 if ((Fields.Length != 11) || (Fields[0] != "Time"))
@@ -210,6 +222,8 @@ namespace QuadCopterTool
 
 
                 UpdateButtonStatus();
+                lblDuration.Content = "00:"+ (SimulationDuration / 1000).ToString() + " ms";
+                mDelay = 0;
             }
         }
 
@@ -218,7 +232,7 @@ namespace QuadCopterTool
         private void sldProgress_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             mCurrentValueIndex = (int)sldProgress.Value;
-         
+
         }
 
     }
