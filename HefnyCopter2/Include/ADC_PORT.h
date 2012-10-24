@@ -11,7 +11,7 @@
 
 
 		void ADCPort_Init();
-		uint16_t ADCPort_Read(uint8_t channel);
+		//uint16_t ADCPort_Read(uint8_t channel);
 		uint16_t ADCPort_Get(uint8_t channel);
 
 

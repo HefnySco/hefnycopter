@@ -178,7 +178,7 @@ volatile int16_t Sensors_Latest [8];
 
 // TEMP
 volatile char Result[5]; 
-volatile char Result2[10]; 
+//volatile char Result2[10]; 
 volatile uint16_t nResult[8];
 volatile uint16_t nTemp16;
 
