@@ -146,7 +146,7 @@ void Sensors_ReadAll (void)
 	Sensors_Latest[GYRO_Y_Index] = ADCPort_Get(GYRO_Y_PNUM)-Config.Sensor_zero[GYRO_Y_Index];
 	Sensors_Latest[GYRO_Z_Index] = ADCPort_Get(GYRO_Z_PNUM)-Config.Sensor_zero[GYRO_Z_Index];
 	
-	Sensors_Latest[V_BAT_Index] = Sensor_GetBattery();
+	Sensors_Latest[V_BAT_Index] = Sensor_GetBattery(); 
 	
 	
 	
@@ -171,10 +171,10 @@ void Sensors_ReadAll (void)
 	return Result;
 }*/
 
-inline uint16_t  Sensor_GetBattery(void)
+int16_t  Sensor_GetBattery(void)
 {
 	 // because the V_BAT is connected to a voltage divider R1 & R2
-	return ADCPort_Get(V_BAT_PNUM) * BAT_VOLT_RATIO;
+	return (ADCPort_Get(V_BAT_PNUM) *  BAT_VOLT_RATIO);
 } 
 
 
@@ -192,7 +192,7 @@ inline void DynamicCalibration (void)
 		StabilityMatrix_GY[Sensors_Latest[ACC_Y_Index]-ACC_MIN]+=1;
 	}
 	
-	int16_t maxX=0, maxY=0;
+	uint16_t maxX=0, maxY=0;
 		
 	for (int i=0; i<20;++i)
 	{

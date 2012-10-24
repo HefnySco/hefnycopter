@@ -47,7 +47,7 @@ void ADCPort_Init ()
 }
 
 
-
+/*
 uint16_t ADCPort_Read(uint8_t channel)
 {
 	// disable interrupt and wait for end of conversion
@@ -60,7 +60,7 @@ uint16_t ADCPort_Read(uint8_t channel)
 	ADCSRA = 0b11011111;
 	return ADC;
 }
-
+*/
 inline uint16_t ADCPort_Get(uint8_t channel)
 {
 	uint16_t _t;

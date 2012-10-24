@@ -278,6 +278,7 @@ void MainLoop(void)
 		
 		if (Config.VoltageAlarm > 0)
 		{
+			//Sensor_GetBattery();
 			if (Sensors_Latest[V_BAT_Index] < Config.VoltageAlarm)
 			{
 				Buzzer = ON;

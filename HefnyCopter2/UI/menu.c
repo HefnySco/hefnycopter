@@ -294,11 +294,6 @@ uint8_t doMenu(menu_t *menu)
 	lcdReverse(0);
 
 
-
-
-
-
-
 	LCD_SetPos(6, 58);
 	if (menu->top < menu->len - 5)
 		lcdWriteGlyph_P(&glyArrowDown, 0);
@@ -341,29 +336,29 @@ void _hShowModelLayout()
 	}
 }
 
-void _hLoadModelLayout()
-{
-	//if (IS_INIT)
-		//mnuMLayout.marked = Config.MixerIndex;
-//
-	//if (subpage == 0)
-	//{
-		//if (doMenu(&mnuMLayout))
-		//{
-			//LCD_Clear();
-			//LCD_SetPos(3, 18);
-			//LCD_WriteString_P(strAreYouSure);
-			//writeSoftkeys(_skCANCELYES);
-			//subpage = 1;
-		//}
-	//}		
-	//else if (KEY4)		// YES
-	//{
-		//mixerLoadTable(mnuMLayout.marked);
-		//configSave();
-		//Menu_LoadPage(PAGE_SHOW_LAYOUT);
-	//}
-}
+//void _hLoadModelLayout()
+//{
+	////if (IS_INIT)
+		////mnuMLayout.marked = Config.MixerIndex;
+////
+	////if (subpage == 0)
+	////{
+		////if (doMenu(&mnuMLayout))
+		////{
+			////LCD_Clear();
+			////LCD_SetPos(3, 18);
+			////LCD_WriteString_P(strAreYouSure);
+			////writeSoftkeys(_skCANCELYES);
+			////subpage = 1;
+		////}
+	////}		
+	////else if (KEY4)		// YES
+	////{
+		////mixerLoadTable(mnuMLayout.marked);
+		////configSave();
+		////Menu_LoadPage(PAGE_SHOW_LAYOUT);
+	////}
+//}
 
 void _hHomePage()
 {
@@ -391,7 +386,7 @@ void _hHomePage()
 	
 	// Write Voltage
 	//LCD_SetPos(2, 30);
-	LCD_WriteValue_double(2,30,(double)Sensor_GetBattery(),false);
+	LCD_WriteValue_double(2,30,Sensor_GetBattery()/10.0f,false);
 	
 	_helper_DisplayRXStatus(5);
 	
