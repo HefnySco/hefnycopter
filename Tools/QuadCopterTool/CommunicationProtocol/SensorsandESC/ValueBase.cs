@@ -56,6 +56,10 @@ namespace HefnyCopter.CommunicationProtocol.Sensors
         }
 
 
+        /// <summary>
+        /// Latest value 
+        /// </summary>
+        /// <param name="Y"></param>
         public void AddValue(Int16 Y)
         {
             if ((Y > mUpperLimit) || (Y < mLowerLimit))

@@ -8,5 +8,8 @@
     <Setting Name="LogFileName" Type="System.String" Scope="User">
       <Value Profile="(Default)">HefnyCopterLog</Value>
     </Setting>
+    <Setting Name="VideoConnection" Type="System.String" Scope="User">
+      <Value Profile="(Default)">http://192.168.0.12:8080</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

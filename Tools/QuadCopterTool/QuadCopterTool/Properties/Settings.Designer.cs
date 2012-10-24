@@ -46,5 +46,17 @@ namespace QuadCopterTool.Properties {
                 this["LogFileName"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://192.168.0.12:8080")]
+        public string VideoConnection {
+            get {
+                return ((string)(this["VideoConnection"]));
+            }
+            set {
+                this["VideoConnection"] = value;
+            }
+        }
     }
 }
