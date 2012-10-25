@@ -118,6 +118,7 @@
     <Compile Include="Misc\VideoComponent.cs" />
     <Compile Include="Misc\VideoFileIndex.cs" />
     <Compile Include="Misc\VideoFileReader.cs" />
+    <Compile Include="Misc\VideoFileWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -37,11 +37,7 @@
             </Button.Background>
         </Button>
         <Slider Height="23" HorizontalAlignment="Left" Margin="0,33,0,0" Name="sldProgress" VerticalAlignment="Top" Width="289" ValueChanged="sldProgress_ValueChanged" />
-        <Label Height="28" HorizontalAlignment="Left" Margin="302,4,0,0" Name="lblDuration" VerticalAlignment="Top" FontSize="10" Content="Duration" />
-        <Button BorderBrush="#FFFFEB5E" FontSize="10" Height="24" HorizontalAlignment="Left" Margin="200,0,0,0" Name="btnOpenVideo" ToolTip="Open Log File" VerticalAlignment="Top" Width="24" Click="btnOpenVideo_Click">
-            <Button.Background>
-                <ImageBrush ImageSource="/QuadCopterTool;component/Icons/folder.png" />
-            </Button.Background>
-        </Button>
+        <Label Height="29" HorizontalAlignment="Left" Margin="200,0,0,0" Name="lblDuration" VerticalAlignment="Top" FontSize="10" Content="Duration" />
+        <Image Height="24" HorizontalAlignment="Left" Margin="346,0,0,0" Name="imgVideo" Stretch="Fill" VerticalAlignment="Top" Width="23" Source="/QuadCopterTool;component/Icons/videocamera.png" />
     </Grid>
 </UserControl>

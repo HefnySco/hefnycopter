@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using System.Windows.Forms;
 
 using QuadCopterTool.Misc;
+using QuadCopterTool.Misc.Video;
 using HefnyCopter.CommunicationProtocol;
 using HefnyCopter.CommunicationProtocol.Sensors;
 
@@ -28,8 +29,14 @@ namespace QuadCopterTool
     {
 
 
+        public delegate void delegate_ImageReceived(MemoryStream memStream);
+
+        
+
         #region "Control Custom Events"
         public event EventHandler OnFileOpen;
+        public event EventHandler OnFileRun;
+        public event delegate_ImageReceived OnImageReceived;
         #endregion
 
         #region "Attributes"
@@ -51,6 +58,13 @@ namespace QuadCopterTool
         #endregion
 
         #region "Properties"
+
+
+        public delegate_ImageReceived Delegate_ImageReceived
+        {
+            get;
+            set;
+        }
 
         public Int32 SimulationDuration
         {
@@ -93,9 +107,15 @@ namespace QuadCopterTool
                 sldProgress.IsEnabled = true;
                 sldProgress.Minimum = 0;
                 sldProgress.Maximum = mLogFileDataList.Count;
+
+                if (mVideoFileReader != null)
+                {
+                    imgVideo.Visibility = System.Windows.Visibility.Visible;
+                }
             }
             else
             {
+                imgVideo.Visibility = System.Windows.Visibility.Hidden;
                 btnRun.IsEnabled = false;
                 btnBack.IsEnabled = false;
                 btnForward.IsEnabled = false;
@@ -105,6 +125,30 @@ namespace QuadCopterTool
             }
 
         }
+
+
+        protected void OpenVideoFile(string FileName)
+        {
+            try
+            {
+                mVideoFileReader = null;
+                if (File.Exists(FileName) == false)
+                {
+                    System.Windows.MessageBox.Show("Warning", "No Video File with name \r\n " + FileName, MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                // Read Video File
+                mVideoFileReader = new VideoFileReader();
+                mVideoFileReader.OpenFile(FileName);
+            }
+            catch
+            {
+                mVideoFileReader = null;
+            }
+
+        }
+
 
         /// <summary>
         /// With each tick a value is picked from the LogData list.
@@ -117,12 +161,15 @@ namespace QuadCopterTool
             if (mCurrentValueIndex < mLogFileDataList.Count - 1)
             {
                 mTimer.Interval = TimeSpan.FromMilliseconds(mDelay);// TimeSpan.FromMilliseconds(100 * (mLogFileDataList[mCurrentValueIndex + 1].Time - mLogFileDataList[mCurrentValueIndex].Time));
-                lblDuration.Content = (mLogFileDataList[mCurrentValueIndex].Time-mLogFileDataList[0].Time).ToString() + ":" + (SimulationDuration).ToString() + " ms";
-             
+                lblDuration.Content = (mLogFileDataList[mCurrentValueIndex].Time - mLogFileDataList[0].Time).ToString() + ":" + (SimulationDuration).ToString() + " ms";
+
             }
             else
             {
+                System.Windows.MessageBox.Show("Information","Playback Done", MessageBoxButton.OK, MessageBoxImage.Information);
+                mCurrentValueIndex = 0;
                 mTimer.Stop();
+                return;
             }
             SensorManager.Gyro_X.AddValue(mLogFileDataList[mCurrentValueIndex].Gyro_X);
             SensorManager.Gyro_Y.AddValue(mLogFileDataList[mCurrentValueIndex].Gyro_Y);
@@ -149,6 +196,8 @@ namespace QuadCopterTool
                 sldProgress.Value = mCurrentValueIndex;
             }
 
+            MemoryStream ImageStream =  mVideoFileReader.GetFrameByOffset(mVideoFileReader.GetFrameOffsetByTickCount(mLogFileDataList[mCurrentValueIndex].Time));
+            OnImageReceived(ImageStream);
 
         }
 
@@ -172,21 +221,22 @@ namespace QuadCopterTool
 
         private void btnBack_Click(object sender, RoutedEventArgs e)
         {
-            if (mDelay == 0) return;
-
-            mDelay -= 10;
+            mDelay += 10; 
+            
         }
 
         private void btnForward_Click(object sender, RoutedEventArgs e)
         {
-            mTimer.Stop();
-            mCurrentValueIndex = 0;
-            mDelay = 0;
+           if (mDelay == 0) return;
+
+            mDelay -= 10;
         }
 
         private void btnStop_Click(object sender, RoutedEventArgs e)
         {
-            mDelay += 10;
+            mTimer.Stop();
+            mCurrentValueIndex = 0;
+            mDelay = 0;
         }
 
         private void btnOpen_Click(object sender, RoutedEventArgs e)
@@ -215,21 +265,27 @@ namespace QuadCopterTool
                 else
                 {
                     mValidFileExist = true;
+                    // Read CSV file into Simulation List.
+                    while (mStreamReader.EndOfStream == false)
+                    {
+                        S = mStreamReader.ReadLine();
+                        Fields = S.Split(',');
+                        LogFileData oLogFileData = new LogFileData(Fields);
+                        mLogFileDataList.Add(oLogFileData);
+                    }
+
+
+                    string VideoFileName = oOpenFileDlg.FileName.TrimEnd((".csv").ToCharArray()) + ".framed_vid";
+                    OpenVideoFile(VideoFileName);
                 }
 
-                // Read CSV file into Simulation List.
-                while (mStreamReader.EndOfStream == false)
-                {
-                    S = mStreamReader.ReadLine();
-                    Fields = S.Split(',');
-                    LogFileData oLogFileData = new LogFileData(Fields);
-                    mLogFileDataList.Add(oLogFileData);
-                }
 
 
-               
+
                 UpdateButtonStatus();
-                lblDuration.Content = "00:"+ (SimulationDuration / 1000).ToString() + " ms";
+
+
+                lblDuration.Content = "00:" + (SimulationDuration / 1000).ToString() + " ms";
                 mDelay = 0;
             }
         }
@@ -242,25 +298,7 @@ namespace QuadCopterTool
 
         }
 
-        private void btnOpenVideo_Click(object sender, RoutedEventArgs e)
-        {
-            System.Windows.Forms.OpenFileDialog oOpenFileDlg = new OpenFileDialog();
-            oOpenFileDlg.DefaultExt = @"*.syncVid";
-            oOpenFileDlg.Filter = @"Sync Video (*.syncVid)|*.syncVid|All Files (*.*)|*.*";
-            if (oOpenFileDlg.ShowDialog() == DialogResult.OK)
-            {
-                if (File.Exists(oOpenFileDlg.FileName) == false)
-                {
-                    System.Windows.Forms.MessageBox.Show("File not found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-                
-                // Read Video File
-                mVideoFileReader = new VideoFileReader();
-                mVideoFileReader.OpenFile(oOpenFileDlg.FileName);
-                
-            }
-        }
+
 
     }
 }

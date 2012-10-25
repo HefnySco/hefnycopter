@@ -26,6 +26,7 @@
                     <Label Content="Log Folder" Height="28" HorizontalAlignment="Left" Margin="5,136,0,0" Name="label11" VerticalAlignment="Top" />
                     <TextBox Height="26" HorizontalAlignment="Left" Margin="75,204,0,0" Name="txtVideoConnection" VerticalAlignment="Top" Width="270" TextChanged="txtVideoConnection_TextChanged" />
                     <Label Content="Video COM" Height="28" HorizontalAlignment="Left" Margin="5,202,0,0" Name="label12" VerticalAlignment="Top" />
+                    <CheckBox Content="Simulate Fake Port" Height="21" HorizontalAlignment="Left" Margin="75,92,0,0" Name="chkPortFake" VerticalAlignment="Top" Width="134" />
                 </Grid>
             </TabItem>
             <TabItem Header="Attitude Data" Name="tabItemRealTimeData" Background="#FF65B0CB" OpacityMask="#FF65B0CB">
@@ -69,7 +70,7 @@
                         <d3:Header Content="Accelerometers" FontSize="12" />
                         <d3:VerticalAxisTitle Content="Acc [F]" FontSize="11" />
                     </d3:ChartPlotter>
-                    <my:SimulationPanel Grid.Column="1" HorizontalAlignment="Left" Margin="24,6,0,0" x:Name="simulationPanel1" VerticalAlignment="Top" />
+                    <my:SimulationPanel Grid.Column="1" HorizontalAlignment="Left" Margin="24,6,0,0" x:Name="simulationPanel1" VerticalAlignment="Top" OnImageReceived="simulationPanel1_OnImageReceived" OnFileRun="simulationPanel1_OnFileRun" />
                 </Grid>
             </TabItem>
             <TabItem Header="Video" Name="tabItem2" Background="#FF65B0CB" OpacityMask="#FF65B0CB">

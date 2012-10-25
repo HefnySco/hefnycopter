@@ -73,8 +73,11 @@ namespace HefnyCopter.CommunicationProtocol.Sensors
             
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void AddGraphValue()
-        {
+        {  // Todo: should be moved from here to UI project
 
             this.Add(new GraphValueUnit(mInsertCountGraph, mValues[mInsertCount]));
             mInsertCountGraph += 1;

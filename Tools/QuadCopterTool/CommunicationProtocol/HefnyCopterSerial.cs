@@ -13,6 +13,8 @@ namespace HefnyCopter.CommunicationProtocol
     public class HefnyCopterSerial
     {
 
+        protected System.Windows.Threading.DispatcherTimer mTimer;
+
         public delegate void delegate_CopyData (byte[] vArray);
         public delegate_CopyData mdelegate_CopyData;
 
@@ -36,7 +38,11 @@ namespace HefnyCopter.CommunicationProtocol
 
         public HefnyCopterSerial()
         {
-           
+
+            mTimer = new DispatcherTimer();
+            mTimer.Interval = TimeSpan.FromMilliseconds(100);
+            mTimer.Tick += new EventHandler(FakeDataReceived);
+            
 
             mSerialPort = new System.IO.Ports.SerialPort();
             mSerialPort.DataBits = 8;
@@ -75,21 +81,9 @@ namespace HefnyCopter.CommunicationProtocol
             mLogFile.WriteLine();
         }
 
-        protected void CopyData()
+
+        protected void LogData()
         {
-
-            SensorManager.Gyro_X.AddValue(BitConverter.ToInt16(vArray, 0));
-            SensorManager.Gyro_Y.AddValue(BitConverter.ToInt16(vArray, 2));
-            SensorManager.Gyro_Z.AddValue(BitConverter.ToInt16(vArray, 4));
-            SensorManager.Acc_X.AddValue(BitConverter.ToInt16(vArray, 6));
-            SensorManager.Acc_Y.AddValue(BitConverter.ToInt16(vArray, 8));
-            SensorManager.Acc_Z.AddValue(BitConverter.ToInt16(vArray, 10));
-
-            SensorManager.Motors[0].AddValue (BitConverter.ToInt16(vArray, 12));
-            SensorManager.Motors[1].AddValue (BitConverter.ToInt16(vArray, 14));
-            SensorManager.Motors[2].AddValue (BitConverter.ToInt16(vArray, 16));
-            SensorManager.Motors[3].AddValue (BitConverter.ToInt16(vArray, 18));
-
             mLogFile.Write(Environment.TickCount);
             mLogFile.Write(",");
             mLogFile.Write(SensorManager.Gyro_X.LastValue);
@@ -112,10 +106,37 @@ namespace HefnyCopter.CommunicationProtocol
             mLogFile.Write(",");
             mLogFile.Write(SensorManager.Motors[3].LastValue);
             mLogFile.WriteLine();
-
-            mdelegate_CopyData(vArray);
         }
 
+
+        /// <summary>
+        /// used to simulate inpute measures received by the quad
+        /// </summary>
+        /// <param name="vArray"></param>
+        public void SimulateInputResult(byte[] vArray)
+        {
+            CopyData(vArray);
+        }
+
+        protected void CopyData(byte[] vArray)
+        {
+
+           
+      
+
+            mdelegate_CopyData(vArray);
+             LogData(); 
+       }
+
+
+        public void OpenPortFake(string FileName)
+        {
+            
+            mLogFile = System.IO.File.CreateText(FileName);
+            LogHeader();
+            mTimer.Start();
+            
+        }
 
         public void OpenPort(string PortName, int BaudRate, string FileName)
         {
@@ -123,7 +144,6 @@ namespace HefnyCopter.CommunicationProtocol
             LogHeader();
             if (mSerialPort.IsOpen == false)
             {
-                // mFile = System.IO.File.CreateText(@"d:\QuadReadings_" + System.Environment.TickCount.ToString() + ".csv");
                 mSerialPort.DiscardNull = false;
                 mSerialPort.Encoding = Encoding.Unicode;
                 mSerialPort.PortName = PortName;
@@ -132,8 +152,17 @@ namespace HefnyCopter.CommunicationProtocol
             }
         }
 
+
+        public void ClosePortFake()
+        {
+            mTimer.Stop();
+            mLogFile.Close();
+        }
+
+
         public void ClosePort()
         {
+            mTimer.Stop();
             mLogFile.Close();
             if (mSerialPort.IsOpen == true)
             {
@@ -157,28 +186,20 @@ namespace HefnyCopter.CommunicationProtocol
 
             array = Encoding.Unicode.GetBytes(S);
             int j;
-            /* for (j = 0; j < XBEEPort.BytesToRead; ++j)
-             {
-
-                 array[j] =(byte) XBEEPort.ReadByte();
-             }
-            */
-            // bStartCopy = false;  // HERE I ignore data if packet ends before E received./// this can be updated to skip packet header and contiue reading.
-            // Idx = 0;
+          
             for (int i = 0; i < array.Length; ++i) // j; ++i)
             {
                 if ((!bStartCopy) && (array[i] == 'S'))
                 {
                     bStartCopy = true;
                     Idx = 0;
-                    //i += 1;
                     continue;
                 }
                 if ((!bStartCopy) && (array[i] == 'E'))
                 {
                     if (ExpectEOF == true) // message correct then copy
                     {
-                        CopyData();
+                        CopyData(vArray);
 
                     }
                     ExpectEOF = false;
@@ -204,5 +225,18 @@ namespace HefnyCopter.CommunicationProtocol
 
         }
 
+
+        private void FakeDataReceived(object sender, EventArgs e)
+        {
+            #region "Dummy Data"
+
+            for (int i = 0; i < 20; ++i)
+            {
+                vArray[i] = (byte)(System.Environment.TickCount / (i + 1));
+            }
+            CopyData(vArray);
+
+            #endregion
+        }
     }
 }

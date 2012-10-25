@@ -13,18 +13,21 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.IO;
 
-namespace QuadCopterTool.Misc
+namespace QuadCopterTool.Misc.Video
 {
     public class VideoComponent
     {
         public delegate void delegate_ImageReceived(MemoryStream memStream);
-        protected bool mVideoCapturing;
+        protected  bool mVideoCapturing;
         protected byte[] buffer = new byte[1024];
         protected System.Threading.Thread mVideoThread;
-        public delegate_ImageReceived mdelegate_ImageReceived;
-        System.IO.FileStream mVideoFile;
-        //System.Windows.Threading.DispatcherTimer mTimer;
 
+        public delegate_ImageReceived mdelegate_ImageReceived;
+
+
+        #region "Properties"
+
+      
         public bool Running
         {
             get
@@ -33,6 +36,13 @@ namespace QuadCopterTool.Misc
             }
         }
 
+
+        #endregion
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="MethodImageReceived">delegate to function called when a frame is received.</param>
         public VideoComponent(delegate_ImageReceived MethodImageReceived)
         {
             mdelegate_ImageReceived = new delegate_ImageReceived(MethodImageReceived);
@@ -40,25 +50,19 @@ namespace QuadCopterTool.Misc
 
         public void Capture()
         {
-            mVideoFile= System.IO.File.Create(@"d:\VidoFile.vi");
+            mVideoCapturing = true;
             mVideoThread = new System.Threading.Thread(CaptureFrame);
             mVideoThread.Start();
-            //mTimer = new System.Windows.Threading.DispatcherTimer();
-            //mTimer.Interval = TimeSpan.FromMilliseconds(100); 
-            //mTimer.Tick += new EventHandler(CaptureFrame);
-            //mTimer.Start();
-            mVideoCapturing = true;
         }
 
 
         public void Close()
         {
             mVideoCapturing = false;
-
             System.Threading.Thread.Sleep(100);
         }
 
-        int counter=0;
+
 
         protected void CaptureFrame()
         {
@@ -76,9 +80,6 @@ namespace QuadCopterTool.Misc
                     httpRequest.Timeout = 30000;
                     httpRequest.Method = "GET";
 
-                    int nDuration = System.Environment.TickCount - nLastSnapShot;
-                    if (nDuration < 200) System.Threading.Thread.Sleep(50 - nDuration);
-                    nLastSnapShot = System.Environment.TickCount;
                     using (HttpWebResponse httpResponse = (HttpWebResponse)httpRequest.GetResponse())
                     {
                         using (Stream responseStream = httpResponse.GetResponseStream())
@@ -95,14 +96,7 @@ namespace QuadCopterTool.Misc
                     }
 
                     if (memStream.Length > 0)
-                    { 
-                        byte[] NumberData= new byte[4];
-                        NumberData = BitConverter.GetBytes(nLastSnapShot);  // save tick count.
-                        mVideoFile.Write(NumberData, 0, 4);
-                        counter += 1;
-                        NumberData = BitConverter.GetBytes(memStream.Length); // save image size
-                        mVideoFile.Write(NumberData, 0, 8);
-                        memStream.WriteTo(mVideoFile);
+                    {
                         mdelegate_ImageReceived(memStream);
                     }
                 }
@@ -112,6 +106,6 @@ namespace QuadCopterTool.Misc
         }
 
 
-   
+
     }
 }

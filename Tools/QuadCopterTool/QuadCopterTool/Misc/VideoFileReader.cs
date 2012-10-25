@@ -5,7 +5,7 @@ using System.Text;
 using System.IO;
 
 
-namespace QuadCopterTool.Misc
+namespace QuadCopterTool.Misc.Video
 {
     public class VideoFileReader
     {
@@ -38,12 +38,12 @@ namespace QuadCopterTool.Misc
                 mDataFrameList.Add(oVideoFileIndex);
             }
 
-            VideoFileIndex v = GetFrameOffsetByTickCount(100);
+           // VideoFileIndex v = GetFrameOffsetByTickCount(100);
         }
 
         public VideoFileIndex GetFrameOffsetByTickCount(int TickCount)
         {
-            int BinaryIndex = 0;
+            int BinaryIndex = 0, MaxIndex = mDataFrameList.Count, MinIndex=0;
             while (BinaryIndex < mDataFrameList.Count)
             {
             
@@ -52,17 +52,37 @@ namespace QuadCopterTool.Misc
                     return mDataFrameList[BinaryIndex];
                 }
                 
-                if ((mDataFrameList[BinaryIndex].FrameTickCount <= TickCount) && ((mDataFrameList[BinaryIndex + 1].FrameTickCount >= TickCount)))
+
+                if (mDataFrameList[BinaryIndex].FrameTickCount > TickCount) 
                 {
-                    return mDataFrameList[BinaryIndex];
+                    MaxIndex = BinaryIndex;
+                    BinaryIndex = (MinIndex + MaxIndex) / 2;
+
+                    continue;
                 }
-                else
+                if (mDataFrameList[BinaryIndex + 1].FrameTickCount < TickCount)
                 {
-                    BinaryIndex = (BinaryIndex + mDataFrameList.Count) / 2;
+                    MinIndex = BinaryIndex;
+                    BinaryIndex = (MinIndex + MaxIndex) / 2;
+                    
+                    continue;
                 }
-           
+
+                return mDataFrameList[BinaryIndex];
+                
             }
             return null;
+        }
+
+
+        public MemoryStream GetFrameByOffset(VideoFileIndex oVideoFileIndex)
+        {
+            MemoryStream ImageStream = new MemoryStream();
+            mVideoFile.Seek(oVideoFileIndex.FramePosition, SeekOrigin.Begin);
+            byte[] imageArray = new byte[oVideoFileIndex.FrameLength];
+            mVideoFile.Read(imageArray, 0,oVideoFileIndex.FrameLength);
+            ImageStream.Write(imageArray, 0, imageArray.Length);
+            return ImageStream;
         }
     }
 }
