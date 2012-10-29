@@ -60,6 +60,7 @@ version 0.47
 version 0.48
 * PID_I zero when throttle off -reset-.
 * calibration condition bug fixed.
+* while (TCNT2 < 45); //=8us : used 45 instead of 50 to reduce default pulse width...
 
 ToDO:
 version 0.5

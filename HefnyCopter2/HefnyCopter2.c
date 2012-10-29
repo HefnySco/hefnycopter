@@ -163,7 +163,6 @@ int main(void)
 	
 	DataPtr = (uint8_t *) (&Sensors_Latest);
 	DataCounter=0;
-	
 	while (Config.IsESCCalibration==ESCCalibration_ON)		
 	{
 		Beeper_Beep(BEEP_SHORT,2);
@@ -192,6 +191,7 @@ int main(void)
 				
 	while(1)
     {
+		//LoopESCCalibration();
     	MainLoop();
     }
 }
@@ -201,10 +201,10 @@ void LoopESCCalibration (void)
 {
 	RX_CopyLatestReceiverValues();
 	
-	MotorOut[0] = RX_Latest[RXChannel_THR];
-	MotorOut[1] = RX_Latest[RXChannel_THR];
-	MotorOut[2] = RX_Latest[RXChannel_THR];
-	MotorOut[3] = RX_Latest[RXChannel_THR];		
+	MotorOut[0] = RX_Latest[ActiveRXIndex][RXChannel_THR];
+	MotorOut[1] = RX_Latest[ActiveRXIndex][RXChannel_THR];
+	MotorOut[2] = RX_Latest[ActiveRXIndex][RXChannel_THR];
+	MotorOut[3] = RX_Latest[ActiveRXIndex][RXChannel_THR];		
 
 	Motor_GenerateOutputSignal();
 	
@@ -289,7 +289,7 @@ void MainLoop(void)
 			}
 		}	
 	
-		if ((IsArmed == true) && (RX_Snapshot[RXChannel_THR] > STICKThrottle_ARMING+80))
+		if ((IsArmed == true) && (RX_Snapshot[RXChannel_THR] < STICKThrottle_ARMING+160))
 		{ // calibrate when start flying
 			DynamicCalibration();
 		}			
@@ -312,6 +312,9 @@ void MainLoop(void)
 		PID_GyroTerms[0].I=0;
 		PID_GyroTerms[1].I=0;
 		PID_GyroTerms[2].I=0;
+		PID_AccTerms [0].I=0;
+		PID_AccTerms [1].I=0;
+		PID_AccTerms [2].I=0;
 	}
 	else
 	{	// Throttle stick is NOT Down
@@ -331,20 +334,6 @@ void MainLoop(void)
 			
 			// Armed & Throttle Stick > MIN . . . We should Fly now.
 			
-			/*
-			This code is good, however if you take-off from a non-flat ground then quad will try to bend similar to ground...as it took it as a calibration point.
-			*/
-			////if (RX_Latest[RXChannel_THR] <( STICKThrottle_ARMING + 80)) // calibrate again before leaving ground to average vibPitch_Rations.
-			////{
-				////Config.Sensor_zero[GYRO_X_Index] = (Config.Sensor_zero[GYRO_X_Index] + ADCPort_Get(GYRO_X_PNUM))/2;
-				////Config.Sensor_zero[GYRO_Y_Index] = (Config.Sensor_zero[GYRO_Y_Index] + ADCPort_Get(GYRO_Y_PNUM))/2;
-				////Config.Sensor_zero[GYRO_Z_Index] = (Config.Sensor_zero[GYRO_Z_Index] + ADCPort_Get(GYRO_Z_PNUM))/2;
-				////Config.Sensor_zero[ACC_X_Index]  = (Config.Sensor_zero[ACC_X_Index] + ADCPort_Get(ACC_X_PNUM))/2;
-				////Config.Sensor_zero[ACC_Y_Index]  = (Config.Sensor_zero[ACC_Y_Index] + ADCPort_Get(ACC_Y_PNUM))/2;
-				////
-			////}
-		//////
-				
 			RX_Snapshot[RXChannel_AIL] = (RX_Latest[ActiveRXIndex][RXChannel_AIL] * 3) / 5 ;
 			RX_Snapshot[RXChannel_ELE] = (RX_Latest[ActiveRXIndex][RXChannel_ELE] * 3) / 5;
 			RX_Snapshot[RXChannel_RUD] = (RX_Latest[ActiveRXIndex][RXChannel_RUD] * 3) / 5 ;
@@ -368,21 +357,6 @@ void MainLoop(void)
 			
 			
 	
-			/*
-			*
-			*	Stabilization Logic.
-			*	The logic is independent of Quad configuPitch_Ration 
-			*/
-			
-			//IMU_CalculateAngles ();
-			//double tCompAngleY = CompAngleY * CompAngleY;
-			//double tCompAngleX = CompAngleX * CompAngleY;
-			
-			//gyroPitch = ScaleSensor (tCompAngleY,&(Config.AccParams),Acc_Ratio);
-			//gyroRoll =  ScaleSensor (tCompAngleX,&(Config.AccParams),Acc_Ratio);
-			//gyroYaw   = ScaleSensor (Sensors_Latest[GYRO_Z_Index],&(Config.GyroParams[1]),Yaw_Ratio);
-			
-		
 			/*
 			*
 			*	Self Leveling

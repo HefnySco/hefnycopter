@@ -56,22 +56,22 @@ void IMU_CalculateAngles ()
 
 
 
-void IMU_Kalman (void)
-{
- 	accPitch  = Sensors_GetAccAngle(ACC_X_Index);       // in Quids  [0,765]
-	gyroPitch = Sensors_GetGyroRate(GYRO_Y_Index);		// in Quids/seconds
-    gyroPitch = Kalman_Calculate(0,accPitch, gyroPitch,Sensors_dt);      // calculate filtered Angle
-	//gyroPitch = PID_Calculate(Config.GyroParams[0],PID_Terms[0],gyroPitch ,  RX_Latest[RXChannel_ELE], gyroPitch );
-
-	accRoll   = Sensors_GetAccAngle(ACC_Y_Index);       // in Quids
-	gyroRoll  = Sensors_GetGyroRate(GYRO_X_Index);		// in Quids/seconds
-    gyroRoll  = Kalman_Calculate(1,accRoll, gyroRoll, Sensors_dt);      // calculate filtered Angle
-	//gyroRoll = PID_Calculate(Config.GyroParams[0],PID_Terms[1],gyroRoll ,  RX_Latest[RXChannel_AIL], gyroRoll );
-
-	
-	//gyroYaw = PID_Calculate(Config.GyroParams[1],PID_Terms[2],Sensors_Latest[GYRO_Z_Index],  RX_Latest[RXChannel_RUD], 0.0);
-	
-}
+////void IMU_Kalman (void)
+////{
+ 	////accPitch  = Sensors_GetAccAngle(ACC_X_Index);       // in Quids  [0,765]
+	////gyroPitch = Sensors_GetGyroRate(GYRO_Y_Index);		// in Quids/seconds
+    ////gyroPitch = Kalman_Calculate(0,accPitch, gyroPitch,Sensors_dt);      // calculate filtered Angle
+	//////gyroPitch = PID_Calculate(Config.GyroParams[0],PID_Terms[0],gyroPitch ,  RX_Latest[RXChannel_ELE], gyroPitch );
+////
+	////accRoll   = Sensors_GetAccAngle(ACC_Y_Index);       // in Quids
+	////gyroRoll  = Sensors_GetGyroRate(GYRO_X_Index);		// in Quids/seconds
+    ////gyroRoll  = Kalman_Calculate(1,accRoll, gyroRoll, Sensors_dt);      // calculate filtered Angle
+	//////gyroRoll = PID_Calculate(Config.GyroParams[0],PID_Terms[1],gyroRoll ,  RX_Latest[RXChannel_AIL], gyroRoll );
+////
+	////
+	//////gyroYaw = PID_Calculate(Config.GyroParams[1],PID_Terms[2],Sensors_Latest[GYRO_Z_Index],  RX_Latest[RXChannel_RUD], 0.0);
+	////
+////}
 
 
 void IMU_P2D (void)
@@ -102,17 +102,17 @@ void IMU_P2D (void)
 		
 		
 		// PITCH
-		gyroPitch = //PID_Calculate(Config.GyroParams[0], PID_GyroTerms[0],CompGyroY, Config.AccParams[0], (CompAccX));
+		gyroPitch = 
 				PID_Calculate (Config.GyroParams[0], PID_GyroTerms[0],CompGyroY)
 			+   PID_Calculate (Config.AccParams[0], PID_AccTerms[0],CompAccX);
 		
 		// ROLL
-		gyroRoll = //PID_Calculate(Config.GyroParams[0], PID_GyroTerms[1],CompGyroX, Config.AccParams[0], (CompAccY));
+		gyroRoll = 
 				PID_Calculate (Config.GyroParams[0], PID_GyroTerms[1],CompGyroX)
 			+   PID_Calculate (Config.AccParams[0], PID_AccTerms[1],CompAccY);
 		
 		// YAW
-		gyroYaw = //PID_Calculate(Config.GyroParams[1], PID_GyroTerms[2],CompGyroZ, Config.AccParams[1],0.0);
+		gyroYaw = 
 				PID_Calculate (Config.GyroParams[1], PID_GyroTerms[2],CompGyroZ);
 		
 }

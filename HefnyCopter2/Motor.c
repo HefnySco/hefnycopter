@@ -25,7 +25,7 @@
 
 #include "Include/Menu.h"
 
-int16_t	PMW_Pulse_Interval = PWM_LOW_PULSE_INTERVAL;
+int16_t	PMW_Pulse_Interval ;
 
 
 
@@ -44,7 +44,7 @@ void Motor_GenerateOutputSignal(void)
 	
 	
 	// Make sure we have spent enough time between pulses
-	// Also, handle the odd case where the TCNT1 rolls over and TCNT1 < MotorStartTCNT1
+	// Also, handle the odd case where the TCNT2_X rolls over and TCNT2_X < ElapsedTCNT2
 	ATOMIC_BLOCK(ATOMIC_FORCEON)
    {
       CurrentTCNT2 = TCNT2_X;
@@ -60,17 +60,18 @@ void Motor_GenerateOutputSignal(void)
    }		
 	
 	// If period less than 1/ESC_RATE, pad it out.
-	// TCNT1 tick is 50ns & TCNT2 tick is 3.2us and TCNT2_X ticks every 819.2 us.
+	// check Timer.c for timing table
 	
-	
-	PMW_Pulse_Interval = (PWM_LOW_PULSE_INTERVAL - ( ElapsedTCNT2 * 409)); // 409 
+	//interval in us
+	PMW_Pulse_Interval = (PWM_LOW_PULSE_INTERVAL - ( ElapsedTCNT2 * 409)); // 409 = OV time of TCNT2
 	while (PMW_Pulse_Interval > 0)
 	{
+		//LED_Orange=~LED_Orange;
 			TCNT2 =0;
 			if (PMW_Pulse_Interval>100)
 			{   // make big jumps if PWM_Low_Pulse_Interval is high
 				// [more accurate to decrease the % between the while loop and the PWM_Low_Pulse_Interval -=80 execution time.]
-				while (TCNT2 < 50); //=8us
+				while (TCNT2 < 40); //=8us 1.50
 				PMW_Pulse_Interval -=80;	
 			}
 			else
@@ -109,7 +110,7 @@ void Motor_GenerateOutputSignal(void)
 	M3 = 1;
 	M4 = 1;
 
-	// Minimum pulse we want to make is 1ms, max is 2ms
+	// Minimum pulse width we want to make is 1ms, max is 2ms
 	PMW_Pulse_Interval = BASE_PULSE;
 	while (PMW_Pulse_Interval > 0)
 	{
@@ -117,7 +118,7 @@ void Motor_GenerateOutputSignal(void)
 			if (PMW_Pulse_Interval>100)
 			{   // make big jumps if PWM_Low_Pulse_Interval is high
 				// [more accurate to decrease the % between the while loop and the PWM_Low_Pulse_Interval -=80 execution time.]
-				while (TCNT2 < 50); //=8us
+				while (TCNT2 < 45); //=8us //1. 50
 				PMW_Pulse_Interval -=80;	
 			}
 			else
@@ -128,10 +129,12 @@ void Motor_GenerateOutputSignal(void)
 	}
 		
 	
-	for (i=0;i<MOTORS_HIGH_VALUE+1;i+=4)			// 1000 gives a max of 2200us 
+	for (i=0;i<MOTORS_HIGH_VALUE+4;i+=4)			// 1000 gives a max of 2200us 
 	{
-		//TCNT2=0;
-		//while (TCNT2<1);  //1.6us
+		/*
+		MOTORS_HIGH_VALUE+4
+		in order to guarantee that all Ms are zeros when getting out of this loop.
+		*/
 		
 		if (i>=m1) M1 = 0;
 		if (i>=m2) M2 = 0;
@@ -139,7 +142,6 @@ void Motor_GenerateOutputSignal(void)
 		if (i>=m4) M4 = 0;
 		
 	}
-	
 	// Measure period of ESC rate from here
     ATOMIC_BLOCK(ATOMIC_FORCEON)
     {
