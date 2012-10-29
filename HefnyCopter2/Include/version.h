@@ -10,7 +10,7 @@
 #define VERSION_H_
 
 
-static const prog_char strVersionInfo[] = "HefnyCopter2 v0.47";
+static const prog_char strVersionInfo[] = "HefnyCopter2 v0.48";
 
 /*
 version 0.1
@@ -56,6 +56,10 @@ version 0.47
 * New screen PID for ACC
 * Complementary filter values for Gyro XY , Gyro X, ACC XY, ACC Z.
 * fixed UI issue in Sensor Calibration
+
+version 0.48
+* PID_I zero when throttle off -reset-.
+* calibration condition bug fixed.
 
 ToDO:
 version 0.5
