@@ -20,11 +20,14 @@ namespace QuadCopterTool.Misc.Video
         }
 
 
+        
+
         public void OpenFile(string FilePath)
         {
             mDataFrameList.Clear();
             mVideoFile = System.IO.File.OpenRead(FilePath);
             byte[] NumberData = new byte[8];
+            if (mVideoFile.Length == 0) throw new BadImageFormatException();
             while (mVideoFile.Position < mVideoFile.Length)
             {
                 VideoFileIndex oVideoFileIndex = new VideoFileIndex();

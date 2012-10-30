@@ -114,6 +114,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Misc\Control2ImageConverter.cs" />
+    <Compile Include="Misc\CSVLogFileWriter.cs" />
     <Compile Include="Misc\LogFileData.cs" />
     <Compile Include="Misc\VideoComponent.cs" />
     <Compile Include="Misc\VideoFileIndex.cs" />

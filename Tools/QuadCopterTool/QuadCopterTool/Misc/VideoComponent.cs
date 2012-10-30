@@ -66,8 +66,6 @@ namespace QuadCopterTool.Misc.Video
 
         protected void CaptureFrame()
         {
-            // httpRequest.UserAgent = "Mozilla/5.0 (Windows NT 6.1; rv:12.0) Gecko/20100101 Firefox/12.0";
-            //httpRequest.Accept = "image/png,image/*;q=0.8,*/*;q=0.5";
             MemoryStream memStream = new MemoryStream();
 
             int nLastSnapShot = System.Environment.TickCount;

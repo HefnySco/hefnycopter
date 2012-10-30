@@ -52,9 +52,10 @@ namespace QuadCopterTool
         System.Windows.Threading.DispatcherTimer mTimer;
         //public delegate void delegate_SensorData(Int16 GyroX, Int16 GyroY, Int16 GyroZ,Int16 AccX, Int16 AccY, Int16 AccZ);
 
-        protected HefnyCopterSerial mHefnyCopterSerial;
+        protected HefnyCopterBaseConnection mHefnyCopterSerial;
         protected VideoComponent mVideoComponent;
         protected VideoFileWriter mVideoFileWriter;
+        protected CSVLogFileWriter mCSVLogFileWriter;
 
         public MainWindow()
         {
@@ -113,11 +114,9 @@ namespace QuadCopterTool
             {
                 cmbCOMPorts.Items.Add(portname);
             }
-
+            
             mVideoComponent = new VideoComponent(ImageReceived);
             btnConnect.Tag = true;
-            mHefnyCopterSerial = new HefnyCopterSerial();
-            mHefnyCopterSerial.mdelegate_CopyData = CopyData;
             mTimer = new System.Windows.Threading.DispatcherTimer();
             //mTimer.AutoReset = true;
             mTimer.Interval = TimeSpan.FromMilliseconds(100);
@@ -160,15 +159,30 @@ namespace QuadCopterTool
                     FileName = txtLogFolder.Text + @"\" + Properties.Settings.Default["LogFileName"] + System.Environment.TickCount.ToString();
                     CSVFile = FileName + ".csv";
                     VideoFile = FileName + ".framed_vid";
+                    
                     if (chkPortFake.IsChecked == true)
                     {
-                        mHefnyCopterSerial.OpenPortFake(CSVFile);
+                        HefnyCopterDummySerial oHefnyCopterDummySerial = new HefnyCopterDummySerial();
+                        mHefnyCopterSerial = oHefnyCopterDummySerial;
+                        mHefnyCopterSerial.mdelegate_CopyData = CopyData;
+                        
                     }
                     else
                     {
-                        mHefnyCopterSerial.OpenPort(cmbCOMPorts.SelectionBoxItem.ToString(), int.Parse(cmdBaudRate.SelectionBoxItem.ToString()), CSVFile);
+                        HefnyCopterSerial oHefnyCopterSerial = new HefnyCopterSerial();
+                        mHefnyCopterSerial = oHefnyCopterSerial;
+                        mHefnyCopterSerial.mdelegate_CopyData = CopyData;
+                        oHefnyCopterSerial.PortName = cmbCOMPorts.SelectionBoxItem.ToString();
+                        oHefnyCopterSerial.BaudRate = int.Parse(cmdBaudRate.SelectionBoxItem.ToString());
+                        oHefnyCopterSerial.FileName = CSVFile;
                     }
+                    mHefnyCopterSerial.Open();
                     chkPortFake.IsEnabled = false;
+
+
+                    mCSVLogFileWriter = new CSVLogFileWriter(CSVFile);
+                    mCSVLogFileWriter.Create();
+
 
                     mVideoFileWriter = new VideoFileWriter(VideoFile);
                     mVideoFileWriter.Create();
@@ -178,17 +192,21 @@ namespace QuadCopterTool
                 }
                 else
                 {
+                    
                     if (chkPortFake.IsChecked == true)
                     {
-                        mHefnyCopterSerial.ClosePortFake();
+                        mHefnyCopterSerial.Close();
                     }
                     else
                     {
-                        mHefnyCopterSerial.ClosePort();
+                        mHefnyCopterSerial.Close();
                     }
+
                     chkPortFake.IsEnabled = true;
                     mVideoFileWriter.Close();
                     mVideoFileWriter = null;
+                    mCSVLogFileWriter.Close();
+                    mCSVLogFileWriter=null;
                     btnConnect.Content = "Connect";
                     btnConnect.Tag = true;
                     simulationPanel1.IsEnabled = true;
@@ -216,7 +234,11 @@ namespace QuadCopterTool
             SensorManager.Motors[2].AddValue(BitConverter.ToInt16(vArray, 16));
             SensorManager.Motors[3].AddValue(BitConverter.ToInt16(vArray, 18));
 
+            // Log Data into CSV file
+            mCSVLogFileWriter.LogData(); 
 
+
+            // UPdate Graph based on Timer Rate not actual received data rate.
             if (bRead == true)
             {
                 bRead = false;

@@ -196,8 +196,11 @@ namespace QuadCopterTool
                 sldProgress.Value = mCurrentValueIndex;
             }
 
-            MemoryStream ImageStream =  mVideoFileReader.GetFrameByOffset(mVideoFileReader.GetFrameOffsetByTickCount(mLogFileDataList[mCurrentValueIndex].Time));
-            OnImageReceived(ImageStream);
+            if (mVideoFileReader != null)
+            {
+                MemoryStream ImageStream = mVideoFileReader.GetFrameByOffset(mVideoFileReader.GetFrameOffsetByTickCount(mLogFileDataList[mCurrentValueIndex].Time));
+                OnImageReceived(ImageStream);
+            }
 
         }
 
