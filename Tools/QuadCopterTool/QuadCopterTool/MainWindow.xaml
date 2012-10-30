@@ -31,7 +31,7 @@
             </TabItem>
             <TabItem Header="Attitude Data" Name="tabItemRealTimeData" Background="#FF65B0CB" OpacityMask="#FF65B0CB">
                 <Grid Margin="0,0,0,0" Background="#FF65B0CB">
-                      <Image Margin="580,26,53,503" Name="imgLive" Stretch="Fill" ToolTip="Live Video" FlowDirection="LeftToRight" Source="/QuadCopterTool;component/Icons/logo.jpg" />
+                      <Image Margin="580,26,53,0" Name="imgLive" Stretch="Fill" ToolTip="Live Video" FlowDirection="LeftToRight" Source="/QuadCopterTool;component/Icons/logo.jpg" Height="273" VerticalAlignment="Top" />
                     <Button Margin="0,58,15,0" Name="btnVideoOnOff" HorizontalAlignment="Right" Width="32" Click="btnVideoOnOff_Click" FontSize="10" ToolTip="Video Capture" Height="32" VerticalAlignment="Top" Grid.Column="1" HorizontalContentAlignment="Right" VerticalContentAlignment="Top" FlowDirection="RightToLeft">
                         <Button.Background>
                             <ImageBrush ImageSource="/QuadCopterTool;component/Icons/videocamera.png" />
@@ -40,7 +40,7 @@
                     <my:CtrlPosition x:Name="ctrlACC" Margin="66,107,0,0" Title="Acc" HorizontalAlignment="Left" Width="113" Height="156" VerticalAlignment="Top" Grid.Column="1"></my:CtrlPosition>
                     <my1:CtrlMeterMiddle Height="153" Margin="24,110,0,0" x:Name="meterAccZ" VerticalAlignment="Top" MaxValue="250" CurrentValue="-400" HorizontalAlignment="Left" Width="23" MinValue="-250" Grid.Column="1"></my1:CtrlMeterMiddle>
                     <Label Content="G" Height="28" HorizontalAlignment="Left" Margin="24,269,0,0" Name="label6" VerticalAlignment="Top" Width="32" Grid.Column="1" />
-                    <d3:ChartPlotter Margin="24,0,15,49" Name="chartPlotterGyro" HorizontalContentAlignment="Stretch" FontSize="8" VerticalContentAlignment="Stretch" Height="187" VerticalAlignment="Bottom">
+                    <d3:ChartPlotter Margin="24,556,15,6" Name="chartPlotterGyro" HorizontalContentAlignment="Stretch" FontSize="8" VerticalContentAlignment="Stretch">
                         <d3:Header Content="Gyroscopes" FontSize="12" />
                         <d3:VerticalAxisTitle Content="Gyro [G]" FontSize="10" />
                     </d3:ChartPlotter>
@@ -66,18 +66,14 @@
                             <Label Content="M4" Height="20" Name="label5" Margin="127,155,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="27" FontSize="8" FontWeight="Bold" />
                         </Grid>
                     </GroupBox>
-                    <d3:ChartPlotter FontSize="8" HorizontalContentAlignment="Stretch" Margin="24,0,15,242" Name="chartPlotterAcc" VerticalContentAlignment="Stretch" Height="187" VerticalAlignment="Bottom">
+                    <d3:ChartPlotter FontSize="8" HorizontalContentAlignment="Stretch" Margin="24,363,15,199" Name="chartPlotterAcc" VerticalContentAlignment="Stretch">
                         <d3:Header Content="Accelerometers" FontSize="12" />
                         <d3:VerticalAxisTitle Content="Acc [F]" FontSize="11" />
                     </d3:ChartPlotter>
                     <my:SimulationPanel Grid.Column="1" HorizontalAlignment="Left" Margin="24,6,0,0" x:Name="simulationPanel1" VerticalAlignment="Top" OnImageReceived="simulationPanel1_OnImageReceived" OnFileRun="simulationPanel1_OnFileRun" />
                 </Grid>
             </TabItem>
-            <TabItem Header="Video" Name="tabItem2" Background="#FF65B0CB" OpacityMask="#FF65B0CB">
-                <Grid Background="#FF65B0CB">
-                   
-                </Grid>
-            </TabItem>
+           
         </TabControl>
      
     </Grid>

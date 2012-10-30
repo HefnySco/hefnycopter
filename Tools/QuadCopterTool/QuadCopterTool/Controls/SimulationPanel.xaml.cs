@@ -166,7 +166,7 @@ namespace QuadCopterTool
             }
             else
             {
-                System.Windows.MessageBox.Show("Information","Playback Done", MessageBoxButton.OK, MessageBoxImage.Information);
+                System.Windows.MessageBox.Show("End of Video","Playback Done", MessageBoxButton.OK, MessageBoxImage.Information);
                 mCurrentValueIndex = 0;
                 mTimer.Stop();
                 return;
@@ -176,7 +176,7 @@ namespace QuadCopterTool
             SensorManager.Gyro_Z.AddValue(mLogFileDataList[mCurrentValueIndex].Gyro_Z);
             SensorManager.Acc_X.AddValue(mLogFileDataList[mCurrentValueIndex].Acc_X);
             SensorManager.Acc_Y.AddValue(mLogFileDataList[mCurrentValueIndex].Acc_Y);
-            SensorManager.Acc_Z.AddValue(mLogFileDataList[mCurrentValueIndex].Acc_Z);
+            SensorManager.Acc_Z.AddValue((short)(mLogFileDataList[mCurrentValueIndex].Acc_Z-100));
             SensorManager.Motors[0].AddValue(mLogFileDataList[mCurrentValueIndex].Motor1);
             SensorManager.Motors[1].AddValue(mLogFileDataList[mCurrentValueIndex].Motor2);
             SensorManager.Motors[2].AddValue(mLogFileDataList[mCurrentValueIndex].Motor3);

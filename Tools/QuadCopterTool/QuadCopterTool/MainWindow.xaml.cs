@@ -227,7 +227,8 @@ namespace QuadCopterTool
             SensorManager.Gyro_Z.AddValue(BitConverter.ToInt16(vArray, 4));
             SensorManager.Acc_X.AddValue(BitConverter.ToInt16(vArray, 6));
             SensorManager.Acc_Y.AddValue(BitConverter.ToInt16(vArray, 8));
-            SensorManager.Acc_Z.AddValue(BitConverter.ToInt16(vArray, 10));
+            Int16 Z = (short) ((BitConverter.ToInt16(vArray, 10)) - 100);
+            SensorManager.Acc_Z.AddValue(Z);
 
             SensorManager.Motors[0].AddValue(BitConverter.ToInt16(vArray, 12));
             SensorManager.Motors[1].AddValue(BitConverter.ToInt16(vArray, 14));
