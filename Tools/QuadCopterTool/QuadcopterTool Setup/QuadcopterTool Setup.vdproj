@@ -15,44 +15,44 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_16A45B9C41FA49CB7870604E1BA8F431"
+        "OwnerKey" = "8:_4699E7874E5F4974AAA574F935FB3CB6"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_4699E7874E5F4974AAA574F935FB3CB6"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_9851BE316F07A249D87C15DCEC89B480"
-        "OwnerKey" = "8:_4699E7874E5F4974AAA574F935FB3CB6"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_D0D7C0FD32FC99C1CBF19F34441249FE"
-        "OwnerKey" = "8:_9851BE316F07A249D87C15DCEC89B480"
+        "OwnerKey" = "8:_16A45B9C41FA49CB7870604E1BA8F431"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_D0D7C0FD32FC99C1CBF19F34441249FE"
         "OwnerKey" = "8:_4699E7874E5F4974AAA574F935FB3CB6"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_4699E7874E5F4974AAA574F935FB3CB6"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_16A45B9C41FA49CB7870604E1BA8F431"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_D0D7C0FD32FC99C1CBF19F34441249FE"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_4699E7874E5F4974AAA574F935FB3CB6"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_9851BE316F07A249D87C15DCEC89B480"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -73,6 +73,14 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+            }
         }
         "Release"
         {
@@ -89,6 +97,27 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.0,Profile=Client"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4 Client Profile (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.0,Profile=Client"
+                    }
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Windows.Installer.3.1"
+                    {
+                    "Name" = "8:Windows Installer 3.1"
+                    "ProductCode" = "8:Microsoft.Windows.Installer.3.1"
+                    }
+                }
+            }
         }
     }
     "Deployable"
@@ -118,14 +147,14 @@
         }
         "File"
         {
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_9851BE316F07A249D87C15DCEC89B480"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_16A45B9C41FA49CB7870604E1BA8F431"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:HefnyCopter.CommunicationProtocol, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_9851BE316F07A249D87C15DCEC89B480"
+                    "_16A45B9C41FA49CB7870604E1BA8F431"
                     {
                     "Name" = "8:HefnyCopter.CommunicationProtocol.dll"
                     "Attributes" = "3:512"
@@ -247,21 +276,21 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:QuadcopterTool Setup"
-        "ProductCode" = "8:{CBE194E1-DC98-40FA-813B-D5878B20DDB0}"
-        "PackageCode" = "8:{6E50ACDD-205B-4553-8A88-F22D960D370A}"
+        "ProductCode" = "8:{D192A63A-5572-494B-90FC-888674EDF5B4}"
+        "PackageCode" = "8:{9F58F7B2-FE3B-4209-8C0A-CDDAFB957270}"
         "UpgradeCode" = "8:{87BB81B1-675D-4C01-9C9A-D7409471F0CA}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
-        "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.0"
-        "Manufacturer" = "8:Default Company Name"
+        "InstallAllUsers" = "11:TRUE"
+        "ProductVersion" = "8:0.9.0"
+        "Manufacturer" = "8:HefnyCopter"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
         "Title" = "8:QuadcopterTool Setup"
         "Subject" = "8:"
-        "ARPCONTACT" = "8:Default Company Name"
+        "ARPCONTACT" = "8:HefnyCopter"
         "Keywords" = "8:"
         "ARPCOMMENTS" = "8:"
         "ARPURLINFOABOUT" = "8:"
@@ -783,7 +812,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_4699E7874E5F4974AAA574F935FB3CB6"
             {
-            "SourcePath" = "8:..\\QuadCopterTool\\obj\\x86\\Debug\\QuadCopterTool.exe"
+            "SourcePath" = "8:..\\QuadCopterTool\\obj\\x86\\Release\\QuadCopterTool.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_B3EF8CA75F0C4687A496EE62ADA1F1A0"
