@@ -46,13 +46,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_16A45B9C41FA49CB7870604E1BA8F431"
+        "OwnerKey" = "8:_D0D7C0FD32FC99C1CBF19F34441249FE"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_D0D7C0FD32FC99C1CBF19F34441249FE"
+        "OwnerKey" = "8:_16A45B9C41FA49CB7870604E1BA8F431"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -80,6 +80,19 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.0,Profile=Client"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4 Client Profile (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.0,Profile=Client"
+                    }
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Windows.Installer.3.1"
+                    {
+                    "Name" = "8:Windows Installer 3.1"
+                    "ProductCode" = "8:Microsoft.Windows.Installer.3.1"
+                    }
+                }
             }
         }
         "Release"
@@ -154,11 +167,6 @@
             "AssemblyAsmDisplayName" = "8:HefnyCopter.CommunicationProtocol, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_16A45B9C41FA49CB7870604E1BA8F431"
-                    {
-                    "Name" = "8:HefnyCopter.CommunicationProtocol.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:HefnyCopter.CommunicationProtocol.dll"
             "TargetName" = "8:"
@@ -185,11 +193,6 @@
             "AssemblyAsmDisplayName" = "8:DynamicDataDisplay, Version=0.3.0.0, Culture=neutral, PublicKeyToken=5b7d744a7263923f, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_D0D7C0FD32FC99C1CBF19F34441249FE"
-                    {
-                    "Name" = "8:DynamicDataDisplay.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:DynamicDataDisplay.dll"
             "TargetName" = "8:"
@@ -276,15 +279,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:QuadcopterTool Setup"
-        "ProductCode" = "8:{D192A63A-5572-494B-90FC-888674EDF5B4}"
-        "PackageCode" = "8:{9F58F7B2-FE3B-4209-8C0A-CDDAFB957270}"
+        "ProductCode" = "8:{319217FF-424F-44A6-9B23-C8C37E72F1CD}"
+        "PackageCode" = "8:{A2CB4A7C-193E-4A9A-95E0-9F087BB5D229}"
         "UpgradeCode" = "8:{87BB81B1-675D-4C01-9C9A-D7409471F0CA}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:0.9.0"
+        "ProductVersion" = "8:0.9.1"
         "Manufacturer" = "8:HefnyCopter"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
