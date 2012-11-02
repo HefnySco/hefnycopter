@@ -47,7 +47,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HefnyCopterBaseScoket.cs" />
+    <Compile Include="HefnyCopterBaseConnection.cs" />
     <Compile Include="HefnyCopterDummySerial.cs" />
     <Compile Include="SensorsandESC\EnumerationSensors.cs" />
     <Compile Include="SensorsandESC\AccelerometerSensor.cs" />

@@ -15,7 +15,7 @@
 #include "../Include/Kalman.h"
 
 // --- Kalman filter module  ----------------------------------------------------------------------------
-
+/*
 double Q_angle[2]	=  {0.001,0.001}; //0.001
 double Q_gyro[2]		=  {0.003,0.003};  //0.003
 double R_angle[2]	=  {0.03,0.03};  //0.03
@@ -25,10 +25,13 @@ double x_bias[2]		= {0,0};
 double P_00[2] = {0,0}, P_01[2] = {0,0}, P_10[2] = {0,0}, P_11[2] = {0,0};
 double dtKalman[2], yKalman[2], SKalman[2];
 double K_0[2], K_1[2];
+*/
+
 
  /*
  * URL: http://www.x-firm.com/?page_id=191
  */
+ /*
   int16_t Kalman_Calculate(int8_t index, int16_t newAngle, int16_t newRate,uint16_t looptime) {
     dtKalman [index]= (double)((looptime)/10000); //time in 100us
     x_angle[index] += dtKalman[index] * (newRate - x_bias[index]);
@@ -51,4 +54,4 @@ double K_0[2], K_1[2];
 
     return (uint16_t) (x_angle[index]);
   }
-  
+  */

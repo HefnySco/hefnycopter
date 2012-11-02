@@ -23,6 +23,9 @@
 	//UART_Buffer_RTS=0;
 //}
 //
+
+
+
 void UART_Init( unsigned int ubrr)
 {
 	if (Config.RX_mode==RX_mode_UARTMode)

@@ -119,50 +119,50 @@ static void lcdSetByte(uint8_t x, uint8_t y, uint8_t b)
 void LCD_Line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1)
 {
 	// simple optimized bresenham algorithm
-	int8_t dx =  abs(x1 - x0);
-	int8_t sx = x0 < x1 ? 1 : -1;
-	int8_t dy = -abs(y1 - y0);
-	int8_t sy = y0 < y1 ? 1 : -1; 
-	int16_t err = dx + dy, e2; /* error value e_xy */
- 
-	for(;;)
-	{
-		lcdSetPixel(x0, y0, 1);
-		
-		if (x0 == x1 && y0 == y1)
-			break;
-			
-		e2 = 2 * err;
-		if (e2 > dy) { err += dy; x0 += sx; } /* e_xy + e_x > 0 */
-		if (e2 < dx) { err += dx; y0 += sy; } /* e_xy + e_y < 0 */
-	}
+	////int8_t dx =  abs(x1 - x0);
+	////int8_t sx = x0 < x1 ? 1 : -1;
+	////int8_t dy = -abs(y1 - y0);
+	////int8_t sy = y0 < y1 ? 1 : -1; 
+	////int16_t err = dx + dy, e2; /* error value e_xy */
+ ////
+	////for(;;)
+	////{
+		////lcdSetPixel(x0, y0, 1);
+		////
+		////if (x0 == x1 && y0 == y1)
+			////break;
+			////
+		////e2 = 2 * err;
+		////if (e2 > dy) { err += dy; x0 += sx; } /* e_xy + e_x > 0 */
+		////if (e2 < dx) { err += dx; y0 += sy; } /* e_xy + e_y < 0 */
+	////}
 }
 
 void LCD_Rectangle(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t color)
 {
-	uint8_t a;
-	if (x0 > x1) { a = x0; x0 = x1; x1 = a;}
-	if (y0 > y1) { a = y0; y0 = y1; y1 = a;}
-	for (a = x0; a <= x1; a++)
-	{
-		lcdSetPixel(a, y0, color);
-		lcdSetPixel(a, y1, color);
-	}
-	for (a = y0; a <= y1; a++)
-	{
-		lcdSetPixel(x0, a, color);
-		lcdSetPixel(x1, a, color);
-	}
+	//uint8_t a;
+	//if (x0 > x1) { a = x0; x0 = x1; x1 = a;}
+	//if (y0 > y1) { a = y0; y0 = y1; y1 = a;}
+	//for (a = x0; a <= x1; a++)
+	//{
+		//lcdSetPixel(a, y0, color);
+		//lcdSetPixel(a, y1, color);
+	//}
+	//for (a = y0; a <= y1; a++)
+	//{
+		//lcdSetPixel(x0, a, color);
+		//lcdSetPixel(x1, a, color);
+	//}
 }
 
 void LCD_FillRectangle(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t color)
 {
-	uint8_t a;
-	if (x0 > x1) { a = x0; x0 = x1; x1 = a;}
-	if (y0 > y1) { a = y0; y0 = y1; y1 = a;}
-	for (a = y0; a <= y1; a++)
-		for(uint8_t i = x0; i <= x1; i++)
-			lcdSetPixel(i, a, color);
+	//uint8_t a;
+	//if (x0 > x1) { a = x0; x0 = x1; x1 = a;}
+	//if (y0 > y1) { a = y0; y0 = y1; y1 = a;}
+	//for (a = y0; a <= y1; a++)
+		//for(uint8_t i = x0; i <= x1; i++)
+			//lcdSetPixel(i, a, color);
 }
  
 void LCD_Clear()

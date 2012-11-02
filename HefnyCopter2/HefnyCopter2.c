@@ -77,7 +77,6 @@ void Setup (void)
 
 	Initial_EEPROM_Config_Load();
 	
-	//Config.RX_mode=RX_mode_BuddyMode;
 	Config.QuadFlyingMode = QuadFlyingMode_PLUS;
 	
 	RX_Init();
@@ -86,10 +85,7 @@ void Setup (void)
 	M2_DIR = OUTPUT;
 	M3_DIR = OUTPUT;
 	M4_DIR = OUTPUT;
-	//M5_DIR = OUTPUT;
-	//M6_DIR = OUTPUT;
-	//M7_DIR = OUTPUT;
-	//M8_DIR = OUTPUT;
+	
 	
 	Buzzer_DIR = OUTPUT;
 	LED_Orange_DIR = OUTPUT;
@@ -142,25 +138,7 @@ int main(void)
 	Setup();
 	
 	 
-		
-				 //Pitch_Ratio = ((double)(Config.GyroParams[0].maxDest - Config.GyroParams[0].minDest)/(double)(Config.GyroParams[0].maxSource - Config.GyroParams[0].minSource));
-			 //Yaw_Ratio = ((double)(Config.GyroParams[1].maxDest - Config.GyroParams[1].minDest)/(double)(Config.GyroParams[1].maxSource - Config.GyroParams[1].minSource));
-			 //Acc_Ratio = ((double)(Config.AccParams.maxDest - Config.AccParams.minDest)/(double)(Config.AccParams.maxSource - Config.AccParams.minSource));
-	//////while (1)
-	//////{
-		//////send_byte('1');
-		//////send_byte('2');
-		//////send_byte('3');
-		//////send_byte('4');
-		//////send_byte('5');
-		//////send_byte('6');
-		//////send_byte('7');
-		//////send_byte('8');
-		//////
-		//////delay_ms(10);
-	//////}
-	//////
-	
+
 	DataPtr = (uint8_t *) (&Sensors_Latest);
 	DataCounter=0;
 	while (Config.IsESCCalibration==ESCCalibration_ON)		
@@ -325,6 +303,15 @@ void MainLoop(void)
 			
 			// Sticks as Keyboard --- we are already disarmed to reach here.
 			HandleSticksAsKeys();
+			
+			
+			// Send Setting Data
+			if (Config.RX_mode==RX_mode_UARTMode)
+			{
+				Send_Data("C",1);
+				Send_Data(&Config,sizeof(config_t));
+				Send_Data("E",1);
+			}
 		}
 		else
 		{	// MOTORS ARE ON HERE
@@ -435,7 +422,7 @@ void MainLoop(void)
             if (MotorOut[3]<MOTORS_IDLE_VALUE) MotorOut[3]=MOTORS_IDLE_VALUE;
 			
 		
-			
+			// Sending Sensors & Motor Data 
 			if (Config.RX_mode==RX_mode_UARTMode)
 			{
 				//LED_Orange=~LED_Orange;
