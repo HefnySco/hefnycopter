@@ -1,0 +1,16 @@
+﻿<UserControl x:Class="QuadCopterTool.Controls.CtrlQuadConfiguration"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="492" d:DesignWidth="480" xmlns:my="clr-namespace:QuadCopterTool.Controls">
+    <Grid Loaded="Grid_Loaded" Background="#FF65B0CB">
+        <Label Content="Volt Alram" Height="28" HorizontalAlignment="Left" Margin="12,12,0,0" Name="label1" VerticalAlignment="Top" ClipToBounds="False" />
+        <TextBox Height="23" HorizontalAlignment="Left" Margin="84,14,0,0" Name="txtVoltageAlram" VerticalAlignment="Top" Width="120" TextChanged="txtVoltageAlram_TextChanged" />
+        <my:CtrlSensorParameters HorizontalAlignment="Left" Margin="12,46,0,0" x:Name="ctrlSensorGyroPitchRoll" VerticalAlignment="Top" Caption="Gyro Pitch &amp; Roll" />
+        <my:CtrlSensorParameters Caption="Acc Pitch &amp; Roll" HorizontalAlignment="Left" Margin="12,191,0,0" x:Name="ctrlSensorAccPitchRoll" VerticalAlignment="Top" />
+        <my:CtrlSensorParameters Caption="Gyro Yaw" HorizontalAlignment="Left" Margin="209,46,0,0" x:Name="ctrlSensorGyroYaw" VerticalAlignment="Top" />
+        <my:CtrlSensorParameters Caption="Acc Z-Axis" HorizontalAlignment="Left" Margin="209,191,0,0" x:Name="ctrlSensorAccZ" VerticalAlignment="Top" />
+    </Grid>
+</UserControl>
