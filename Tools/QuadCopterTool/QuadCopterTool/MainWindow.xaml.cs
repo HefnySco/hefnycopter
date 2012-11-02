@@ -101,6 +101,8 @@ namespace QuadCopterTool
             txtVideoConnection.Text = Properties.Settings.Default["VideoConnection"].ToString();
             txtLogFolder.Text = Properties.Settings.Default["LogFolder"].ToString(); //Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
+          
+            octrlQuadConfiguration.QuadConfigStructure = QuadConfigurationManager.QuadConfigStructure;
 
         }
 
@@ -219,44 +221,86 @@ namespace QuadCopterTool
         }
 
 
-        public void CopyData(byte[] vArray)
+        public void CopyData(HefnyCopter.CommunicationProtocol.ENUM_RxDataType DataType, byte[] vArray)
         {
-
-            SensorManager.Gyro_X.AddValue(BitConverter.ToInt16(vArray, 0));
-            SensorManager.Gyro_Y.AddValue(BitConverter.ToInt16(vArray, 2));
-            SensorManager.Gyro_Z.AddValue(BitConverter.ToInt16(vArray, 4));
-            SensorManager.Acc_X.AddValue(BitConverter.ToInt16(vArray, 6));
-            SensorManager.Acc_Y.AddValue(BitConverter.ToInt16(vArray, 8));
-            Int16 Z = (short) ((BitConverter.ToInt16(vArray, 10)) - 100);
-            SensorManager.Acc_Z.AddValue(Z);
-
-            SensorManager.Motors[0].AddValue(BitConverter.ToInt16(vArray, 12));
-            SensorManager.Motors[1].AddValue(BitConverter.ToInt16(vArray, 14));
-            SensorManager.Motors[2].AddValue(BitConverter.ToInt16(vArray, 16));
-            SensorManager.Motors[3].AddValue(BitConverter.ToInt16(vArray, 18));
-
-            // Log Data into CSV file
-            mCSVLogFileWriter.LogData(); 
-
-
-            // UPdate Graph based on Timer Rate not actual received data rate.
-            if (bRead == true)
+            switch (DataType)
             {
-                bRead = false;
-                chartPlotterGyro.Dispatcher.BeginInvoke(new Action(delegate()
-                    {
-                        SensorManager.Gyro_X.AddGraphValue();
-                        SensorManager.Gyro_Y.AddGraphValue();
-                        SensorManager.Gyro_Z.AddGraphValue();
-                    }));
-                chartPlotterAcc.Dispatcher.BeginInvoke(new Action(delegate()
-                {
-                    SensorManager.Acc_X.AddGraphValue();
-                    SensorManager.Acc_Y.AddGraphValue();
-                    SensorManager.Acc_Z.AddGraphValue();
+                case ENUM_RxDataType.Sensors:
+                SensorManager.Gyro_X.AddValue(BitConverter.ToInt16(vArray, 0));
+                SensorManager.Gyro_Y.AddValue(BitConverter.ToInt16(vArray, 2));
+                SensorManager.Gyro_Z.AddValue(BitConverter.ToInt16(vArray, 4));
+                SensorManager.Acc_X.AddValue(BitConverter.ToInt16(vArray, 6));
+                SensorManager.Acc_Y.AddValue(BitConverter.ToInt16(vArray, 8));
+                Int16 Z = (short)((BitConverter.ToInt16(vArray, 10)) - 100);
+                SensorManager.Acc_Z.AddValue(Z);
 
-                }));
+                SensorManager.Motors[0].AddValue(BitConverter.ToInt16(vArray, 12));
+                SensorManager.Motors[1].AddValue(BitConverter.ToInt16(vArray, 14));
+                SensorManager.Motors[2].AddValue(BitConverter.ToInt16(vArray, 16));
+                SensorManager.Motors[3].AddValue(BitConverter.ToInt16(vArray, 18));
+
+                // Log Data into CSV file
+                mCSVLogFileWriter.LogData();
+
+
+                // UPdate Graph based on Timer Rate not actual received data rate.
+                if (bRead == true)
+                {
+                    bRead = false;
+                    chartPlotterGyro.Dispatcher.BeginInvoke(new Action(delegate()
+                        {
+                            SensorManager.Gyro_X.AddGraphValue();
+                            SensorManager.Gyro_Y.AddGraphValue();
+                            SensorManager.Gyro_Z.AddGraphValue();
+                        }));
+                    chartPlotterAcc.Dispatcher.BeginInvoke(new Action(delegate()
+                    {
+                        SensorManager.Acc_X.AddGraphValue();
+                        SensorManager.Acc_Y.AddGraphValue();
+                        SensorManager.Acc_Z.AddGraphValue();
+
+                    }));
+                }
+                break;
+
+                case ENUM_RxDataType.Settings:
+                
+                QuadConfigurationManager.QuadConfigStructure.GyroParams[0].P = BitConverter.ToInt16(vArray, 14);
+                QuadConfigurationManager.QuadConfigStructure.GyroParams[0].P_Limit = BitConverter.ToInt16(vArray, 16);
+                QuadConfigurationManager.QuadConfigStructure.GyroParams[0].I = BitConverter.ToInt16(vArray, 18);
+                QuadConfigurationManager.QuadConfigStructure.GyroParams[0].I_Limit = BitConverter.ToInt16(vArray, 20);
+                    QuadConfigurationManager.QuadConfigStructure.GyroParams[0].D = BitConverter.ToInt16(vArray, 22);
+                    QuadConfigurationManager.QuadConfigStructure.GyroParams[0].D_Limit = BitConverter.ToInt16(vArray, 24);
+                    QuadConfigurationManager.QuadConfigStructure.GyroParams[0].ComplementartuFilterAlpha = BitConverter.ToInt16(vArray, 26);
+                    
+                    QuadConfigurationManager.QuadConfigStructure.GyroParams[1].P = BitConverter.ToInt16(vArray, 28);
+                    QuadConfigurationManager.QuadConfigStructure.GyroParams[1].P_Limit = BitConverter.ToInt16(vArray, 30);
+                    QuadConfigurationManager.QuadConfigStructure.GyroParams[1].I = BitConverter.ToInt16(vArray, 32);
+                    QuadConfigurationManager.QuadConfigStructure.GyroParams[1].I_Limit = BitConverter.ToInt16(vArray, 34);
+                    QuadConfigurationManager.QuadConfigStructure.GyroParams[1].D= BitConverter.ToInt16(vArray, 36);
+                    QuadConfigurationManager.QuadConfigStructure.GyroParams[1].D_Limit = BitConverter.ToInt16(vArray, 38);
+                    QuadConfigurationManager.QuadConfigStructure.GyroParams[1].ComplementartuFilterAlpha = BitConverter.ToInt16(vArray, 40);
+
+                    QuadConfigurationManager.QuadConfigStructure.AccParams[0].P = BitConverter.ToInt16(vArray, 42);
+                    QuadConfigurationManager.QuadConfigStructure.AccParams[0].P_Limit = BitConverter.ToInt16(vArray, 44);
+                    QuadConfigurationManager.QuadConfigStructure.AccParams[0].I = BitConverter.ToInt16(vArray, 46);
+                    QuadConfigurationManager.QuadConfigStructure.AccParams[0].I_Limit = BitConverter.ToInt16(vArray, 48);
+                    QuadConfigurationManager.QuadConfigStructure.AccParams[0].D= BitConverter.ToInt16(vArray, 50);
+                    QuadConfigurationManager.QuadConfigStructure.AccParams[0].D_Limit = BitConverter.ToInt16(vArray, 52);
+                    QuadConfigurationManager.QuadConfigStructure.AccParams[0].ComplementartuFilterAlpha = BitConverter.ToInt16(vArray, 54);
+
+                    QuadConfigurationManager.QuadConfigStructure.AccParams[1].P = BitConverter.ToInt16(vArray, 56);
+                    QuadConfigurationManager.QuadConfigStructure.AccParams[1].P_Limit = BitConverter.ToInt16(vArray, 58);
+                    QuadConfigurationManager.QuadConfigStructure.AccParams[1].I = BitConverter.ToInt16(vArray, 60);
+                    QuadConfigurationManager.QuadConfigStructure.AccParams[1].I_Limit = BitConverter.ToInt16(vArray, 62);
+                    QuadConfigurationManager.QuadConfigStructure.AccParams[1].D= BitConverter.ToInt16(vArray, 64);
+                    QuadConfigurationManager.QuadConfigStructure.AccParams[1].D_Limit = BitConverter.ToInt16(vArray, 66);
+                    QuadConfigurationManager.QuadConfigStructure.AccParams[1].ComplementartuFilterAlpha = BitConverter.ToInt16(vArray, 68);
+                    QuadConfigurationManager.QuadConfigStructure.VoltageAlarm = vArray[70];
+
+                break;
             }
+            
         }
 
 
@@ -276,30 +320,27 @@ namespace QuadCopterTool
 
             bRead = true;
 
-            ctrlACC.RollLevel = -SensorManager.Acc_Y.LastValue * 0.01256; // mHefnyCopterSerial.AccY * 0.01256;
-            ctrlACC.PitchLevel = -SensorManager.Acc_X.LastValue * 0.01256; // mHefnyCopterSerial.AccX * 0.01256;
+            ctrlACC.RollLevel = -SensorManager.Acc_Y.LastValue * 0.01256; 
+            ctrlACC.PitchLevel = -SensorManager.Acc_X.LastValue * 0.01256; 
             //ctrlACC.YawLevel = (mHefnyCopterSerial.AccZ -100)* 0.01256;
-            meterAccZ.CurrentValue = (int)SensorManager.Acc_Z.LastValue;  // mHefnyCopterSerial.AccZ;
+            meterAccZ.CurrentValue = (int)SensorManager.Acc_Z.LastValue;  
 
 
-            meterGyroX.CurrentValue = (int)SensorManager.Gyro_X.LastValue; // mHefnyCopterSerial.GyroX;
-            meterGyroY.CurrentValue = (int)SensorManager.Gyro_Y.LastValue; //mHefnyCopterSerial.GyroY;
-            meterGyroZ.CurrentValue = (int)SensorManager.Gyro_Z.LastValue; //mHefnyCopterSerial.GyroZ;
+            meterGyroX.CurrentValue = (int)SensorManager.Gyro_X.LastValue; 
+            meterGyroY.CurrentValue = (int)SensorManager.Gyro_Y.LastValue; 
+            meterGyroZ.CurrentValue = (int)SensorManager.Gyro_Z.LastValue; 
 
             meterMotor1.CurrentValue = SensorManager.Motors[0].LastValue;
             meterMotor2.CurrentValue = SensorManager.Motors[1].LastValue;
             meterMotor3.CurrentValue = SensorManager.Motors[2].LastValue;
             meterMotor4.CurrentValue = SensorManager.Motors[3].LastValue;
 
+
+            octrlQuadConfiguration.UpdateUIValues();
         }
 
 
-        #endregion
-
-
-        #region "tabVideo"
-
-
+     
         private void simulationPanel1_OnFileRun(object sender, EventArgs e)
         {
             mVideoComponent.Close();
@@ -376,6 +417,9 @@ namespace QuadCopterTool
         }
         #endregion
 
+        #region "tabConfigurations"
+
+        #endregion 
 
         #region INotifyPropertyChanged members
 

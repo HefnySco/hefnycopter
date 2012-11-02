@@ -645,9 +645,6 @@ void _hSensorCalibration()
 	{ // order is aligned with ACC_X_Index & GYRO_X_Index
 		LCD_SetPos(i, 48);
 		LCD_WriteValue(i,48,Config.Sensor_zero[i],5,false);
-		//itoa(Config.Sensor_zero[i],Result,10);
-		//LCD_WriteString(&Result);
-		//LCD_WriteSpace(5);
 	}	
 	
 }
@@ -683,7 +680,6 @@ void _hModeSettings ()
 			case 0: Config.RX_mode=~Config.RX_mode; break;
 			
 		}
-		
 	}
 	
 	if (KEY1)
@@ -783,12 +779,6 @@ void _hStabilization()
 	LCD_WriteValue(3,30,Config.GyroParams[subindex]._D,3,5==subpage);
 	LCD_WriteValue(3,78,Config.GyroParams[subindex]._DLimit,3,6==subpage);
 	LCD_WriteValue(4,30,Config.GyroParams[subindex].ComplementaryFilterAlpha,3,7==subpage);
-	
-	//Pitch_Ratio = ((double)(Config.GyroParams[0].maxDest - Config.GyroParams[0].minDest)/(double)(Config.GyroParams[0].maxSource - Config.GyroParams[0].minSource));
-	//Yaw_Ratio = ((double)(Config.GyroParams[1].maxDest - Config.GyroParams[1].minDest)/(double)(Config.GyroParams[1].maxSource - Config.GyroParams[1].minSource));
-	
-	
-	
 }
 
 
@@ -857,26 +847,7 @@ void _hDebug()
 {
 	if (IS_INIT)
 	{
-  	    //timer = TCNT1;	
-		  
-		//dtime = 1;
-		//dt=150;
-		//LCD_Clear();
-		/*LCD_SetPos(1,6);
-		LCD_WriteString_P(PSTR("GY")); // A Rate
-		LCD_SetPos(2,6);
-		LCD_WriteString_P(PSTR("GX")); // A Deg
-		LCD_SetPos(3,6);
-		LCD_WriteString_P(PSTR("AY")); 
-		LCD_SetPos(4,6);
-		LCD_WriteString_P(PSTR("AX"));
-		LCD_SetPos(5,6);
-		LCD_WriteString_P(PSTR("GyroY"));
-		LCD_SetPos(6,6);
-		LCD_WriteString_P(PSTR("GyroX"));
-	*/
-		//OldAcc = ADCPort_Get(ACC_X_PNUM);
-	}
+  	}
 	else
 	{
 	
@@ -898,16 +869,16 @@ void _hDebug()
 		}	
 	//IMU_CalculateAngles();
 	//
-	for (int i=0;i<6;++i)
-	{
+	//for (int i=0;i<6;++i)
+	//{
 		
-		LCD_WriteValue(i,0,StabilityMatrix_GX[i],4,false); 
-		LCD_WriteValue(i,36,StabilityMatrix_GX[i+6],4,false); 
-		LCD_WriteValue(i,72,StabilityMatrix_GX[i+12],4,false); 
-	}
-	
-	
-	LCD_WriteValue(6,48,ACC_X_Offset,4,true); 
+		//LCD_WriteValue(i,0,StabilityMatrix_GX[i],4,false); 
+		//LCD_WriteValue(i,36,StabilityMatrix_GX[i+6],4,false); 
+		//LCD_WriteValue(i,72,StabilityMatrix_GX[i+12],4,false); 
+	//}
+	RXBuffer[7]=0;
+	LCD_WriteStringex(0,0,RXBuffer,false);
+	//LCD_WriteValue(6,48,ACC_X_Offset,4,true); 
 	//LCD_WriteValue_double(2,48,CompGyroX,false);
 	//
 	//LCD_WriteValue_double(3,48,CompAccY,false);

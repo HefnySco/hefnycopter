@@ -10,7 +10,7 @@
 #define VERSION_H_
 
 
-static const prog_char strVersionInfo[] = "HefnyCopter2 v0.48";
+static const prog_char strVersionInfo[] = "HefnyCopter2 v0.5";
 
 /*
 version 0.1
@@ -62,8 +62,14 @@ version 0.48
 * calibration condition bug fixed.
 * while (TCNT2 < 45); //=8us : used 45 instead of 50 to reduce default pulse width...
 
-ToDO:
 version 0.5
+* enable sending config data via USART
+* Restructure config to optimize transmitted config through UART - dont send unwanted data at the end of structure.
+* Adjust minor text issue of menu -  make sure all are of the same length
+
+
+ToDO:
+
 
 
 * Move voltage port to default (ADC0) connected to VCC by default to free ADC1

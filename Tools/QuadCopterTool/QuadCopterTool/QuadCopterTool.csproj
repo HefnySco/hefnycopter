@@ -60,6 +60,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\CtrlQuadConfiguration.xaml.cs">
+      <DependentUpon>CtrlQuadConfiguration.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\CtrlSensorParameters.xaml.cs">
+      <DependentUpon>CtrlSensorParameters.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\SimulationPanel.xaml.cs">
       <DependentUpon>SimulationPanel.xaml</DependentUpon>
     </Compile>
@@ -72,6 +78,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\CtrlMeter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\CtrlQuadConfiguration.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\CtrlSensorParameters.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -38,7 +38,7 @@
                         </Button.Background>
                     </Button>
                     <my:CtrlPosition x:Name="ctrlACC" Margin="66,107,0,0" Title="Acc" HorizontalAlignment="Left" Width="113" Height="156" VerticalAlignment="Top" Grid.Column="1"></my:CtrlPosition>
-                    <my1:CtrlMeterMiddle Height="153" Margin="24,110,0,0" x:Name="meterAccZ" VerticalAlignment="Top" MaxValue="250" CurrentValue="-400" HorizontalAlignment="Left" Width="23" MinValue="-250" Grid.Column="1"></my1:CtrlMeterMiddle>
+                    <my1:CtrlMeterMiddle Height="153" Margin="24,110,0,0" x:Name="meterAccZ" VerticalAlignment="Top" MaxValue="100" CurrentValue="-400" HorizontalAlignment="Left" Width="23" MinValue="-100" Grid.Column="1"></my1:CtrlMeterMiddle>
                     <Label Content="G" Height="28" HorizontalAlignment="Left" Margin="24,269,0,0" Name="label6" VerticalAlignment="Top" Width="32" Grid.Column="1" />
                     <d3:ChartPlotter Margin="24,556,15,6" Name="chartPlotterGyro" HorizontalContentAlignment="Stretch" FontSize="8" VerticalContentAlignment="Stretch">
                         <d3:Header Content="Gyroscopes" FontSize="12" />
@@ -46,9 +46,9 @@
                     </d3:ChartPlotter>
                     <GroupBox Grid.Column="1" Header="Gyros" Height="212" Margin="205,87,0,0" Name="groupBox1" VerticalAlignment="Top" FontSize="10" FontWeight="Normal" HorizontalAlignment="Left" Width="173">
                         <Grid Height="185" Width="162">
-                            <my1:CtrlMeterMiddle CurrentValue="10" Height="140" MaxValue="250" MinValue="-250" x:Name="meterGyroZ" Width="25" Margin="113,16,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
-                            <my1:CtrlMeterMiddle CurrentValue="10" Height="140" Margin="68,16,0,0" MaxValue="250" x:Name="meterGyroY" VerticalAlignment="Top" HorizontalAlignment="Left" Width="25" MinValue="-250"></my1:CtrlMeterMiddle>
-                            <my1:CtrlMeterMiddle CurrentValue="10" MaxValue="250" x:Name="meterGyroX" Width="25" Margin="20,16,0,0" HorizontalAlignment="Left" MinValue="-250" Height="140" VerticalAlignment="Top" />
+                            <my1:CtrlMeterMiddle CurrentValue="0" Height="140" MaxValue="100" MinValue="-100" x:Name="meterGyroZ" Width="25" Margin="113,16,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                            <my1:CtrlMeterMiddle CurrentValue="0" Height="140" Margin="68,16,0,0" MaxValue="100" x:Name="meterGyroY" VerticalAlignment="Top" HorizontalAlignment="Left" Width="25" MinValue="-100"></my1:CtrlMeterMiddle>
+                            <my1:CtrlMeterMiddle CurrentValue="0" MaxValue="100" x:Name="meterGyroX" Width="25" Margin="20,16,0,0" HorizontalAlignment="Left" MinValue="-100" Height="140" VerticalAlignment="Top" />
                             <Label Content="Roll" Height="19" HorizontalAlignment="Left" Margin="20,161,0,0" Name="label9" VerticalAlignment="Top" Width="25" FontSize="8" FontWeight="Bold" />
                             <Label Content="Pitch" FontSize="8" FontWeight="Bold" Height="19" HorizontalAlignment="Left" Margin="64,161,0,0" Name="label7" VerticalAlignment="Top" Width="33" />
                             <Label Content="Yaw" FontSize="8" FontWeight="Bold" Height="19" HorizontalAlignment="Left" Margin="110,161,0,0" Name="label8" VerticalAlignment="Top" Width="33" />
@@ -73,7 +73,11 @@
                     <my:SimulationPanel Grid.Column="1" HorizontalAlignment="Left" Margin="24,6,0,0" x:Name="simulationPanel1" VerticalAlignment="Top" OnImageReceived="simulationPanel1_OnImageReceived" OnFileRun="simulationPanel1_OnFileRun" />
                 </Grid>
             </TabItem>
-           
+            <TabItem Header="Configuration" Name="tabItem1" Background="#FF65B0CB" OpacityMask="#FF65B0CB">
+                <Grid>
+                    <my1:CtrlQuadConfiguration Margin="6,6,394,405" x:Name="octrlQuadConfiguration" Height="338" Width="412" />
+                </Grid>
+            </TabItem>
         </TabControl>
      
     </Grid>

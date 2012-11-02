@@ -187,12 +187,12 @@ P_STR scrMixerEditor[] =
 
 //////////////////////////////////////////////////////////////////////////
 // softkeys
-static const prog_char _skHOME[]     = "                 MENU";
+static const prog_char _skHOME[]      = "                MENU";
 static const prog_char _skMENU[]      = "BACK UP   DOWN ENTER";
 static const prog_char _skMENUSAVE[]  = "SAVE UP   DOWN ENTER";
 static const prog_char _skBACK[]      = "BACK                ";
-static const prog_char _skCONTINUE[]  = "BACK         CONTINUE";
-static const prog_char _skCANCELYES[] = "NO                YES";
+static const prog_char _skCONTINUE[]  = "BACK        CONTINUE";
+static const prog_char _skCANCELYES[] = "NO               YES";
 static const prog_char _skPAGE[]      = "BACK PREV NEXT CHANGE";
 static const prog_char _skBACKNEXT[]  = "BACK NEXT";
 static const prog_char _skCANCEL[]    = "CANCEL";

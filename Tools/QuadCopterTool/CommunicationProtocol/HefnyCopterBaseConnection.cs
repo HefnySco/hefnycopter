@@ -5,10 +5,20 @@ using System.Text;
 
 namespace HefnyCopter.CommunicationProtocol
 {
+
+    public enum ENUM_RxDataType
+    {
+        Undefined,
+        Sensors,
+        Settings
+    }
+
+
     public class HefnyCopterBaseConnection
     {
+       
 
-        public delegate void delegate_CopyData(byte[] vArray);
+        public delegate void delegate_CopyData(ENUM_RxDataType DataType , byte[] DataArray);
 
 
         #region "Attributes"
@@ -51,7 +61,7 @@ namespace HefnyCopter.CommunicationProtocol
         }
 
 
-        protected virtual void CopyData(byte[] vArray)
+        protected virtual void CopyData(ENUM_RxDataType DataType, byte[] vArray)
         {
             throw new NotImplementedException();
         }

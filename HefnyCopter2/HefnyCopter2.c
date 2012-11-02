@@ -293,6 +293,14 @@ void MainLoop(void)
 		PID_AccTerms [0].I=0;
 		PID_AccTerms [1].I=0;
 		PID_AccTerms [2].I=0;
+		
+		// Send Setting Data
+		if (Config.RX_mode==RX_mode_UARTMode)
+		{
+			Send_Data("C",1);
+			Send_Data(&Config,72);
+			Send_Data("E",1);
+		}
 	}
 	else
 	{	// Throttle stick is NOT Down
@@ -304,14 +312,6 @@ void MainLoop(void)
 			// Sticks as Keyboard --- we are already disarmed to reach here.
 			HandleSticksAsKeys();
 			
-			
-			// Send Setting Data
-			if (Config.RX_mode==RX_mode_UARTMode)
-			{
-				Send_Data("C",1);
-				Send_Data(&Config,sizeof(config_t));
-				Send_Data("E",1);
-			}
 		}
 		else
 		{	// MOTORS ARE ON HERE

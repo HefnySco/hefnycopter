@@ -82,25 +82,24 @@ uint16_t Sensors_dt; // time in 100us between sensors reading
 // Motors Signals
 int16_t MotorOut[4];
 
+// Holds final calculated values of Pitch, Roll, Yaw based on the sensors and stabilization algorithm
 int16_t gyroPitch;
 int16_t gyroRoll;
 int16_t gyroYaw;
 
-int16_t accPitch;
-int16_t accRoll;
 
 
 ///////////////////////////////////////////////////
 // Intermediate results for IMU_CalculateAngles
 //gyros
-	float gyroXrate;
-	float gyroYrate;
-	float gyroZrate;
+	//float gyroXrate;
+	//float gyroYrate;
+	//float gyroZrate;
 
 	//accelerometers
-	float accXangle;
-	float accYangle;
-	float accZangle;
+	//float accXangle;
+	//float accYangle;
+	//float accZangle;
 ///////////////////////////////////////////////////
 
 double CompGyroX;
@@ -140,7 +139,7 @@ typedef struct
 } pid_param_t;
 
 
-
+// holds runtime values for PID calculation
 typedef struct 
 {
 	//int16_t minSource,maxSource;
@@ -181,6 +180,7 @@ volatile char Result[5];
 //volatile char Result2[10]; 
 volatile uint16_t nResult[8];
 volatile uint16_t nTemp16;
+volatile uint8_t  RXBuffer[10];
 
 
 #define CALIBRATED_ALL				7
@@ -203,26 +203,25 @@ typedef struct
 	uint8_t signature;					
 	uint8_t IsCalibrated;
 	uint8_t RX_mode;			// 01 [Secondary RX only and PD are used of UART"PD2-PD3"]  02[Buddy mode both Primary & Secondary RX are used]
-	uint16_t RX_Mid[2][RXChannels];
-	uint16_t RX_Min[2][RXChannels];
-	uint16_t Sensor_zero[SENSORS_ALL];
-	pid_param_t GyroParams[2];
+	uint8_t SelfLevelMode;
 	uint8_t ArmingMode;
 	uint8_t AutoDisarm;
 	uint8_t IsESCCalibration;
 	uint8_t ReceiverMode;
 	uint8_t MixerIndex;
-	uint8_t StickScaling[4];
 	uint8_t QuadFlyingMode;
 	uint8_t LCDContrast;
 	uint8_t HeightDampening;
 	uint8_t HeightDampeningLimit;
-	uint8_t LVA;
-	//pid_param_t PID_SelfLevel;
-	uint8_t SelfLevelMode;
-	pid_param_t AccParams[2];
-	uint8_t VoltageAlarm;		//0 = 0ff
+	uint8_t LVA;									//14 byte
+	pid_param_t GyroParams[2];						// + 28
+	pid_param_t AccParams[2];						// + 28
+	uint8_t VoltageAlarm;		//0 = 0ff			// +1
 	//model_t Mixer;
+	uint16_t RX_Mid[2][RXChannels];
+	uint16_t RX_Min[2][RXChannels];
+	uint8_t StickScaling[4];
+	uint16_t Sensor_zero[SENSORS_ALL];
 } config_t;
 
 config_t Config;

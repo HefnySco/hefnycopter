@@ -18,11 +18,16 @@
 #include "../Include/IO_config.h"
 #include "../Include/UART.h"
 
-//ISR (USART1_TX_vect)
-//{
-	//UART_Buffer_RTS=0;
-//}
-//
+volatile uint8_t  RXIndex;
+
+ISR (USART1_RX_vect)
+{
+	 while ( !(UCSR1A & (1<<RXC1))); 
+	 RXBuffer[RXIndex]=UDR1;
+	 RXIndex=RXIndex+1;
+	 if (RXIndex==10) RXIndex=0;
+}
+
 
 
 
@@ -30,6 +35,8 @@ void UART_Init( unsigned int ubrr)
 {
 	if (Config.RX_mode==RX_mode_UARTMode)
 	{
+		
+		RXIndex=0;
 		/*Set baud rate */
 		UBRR1H = (unsigned char)(ubrr>>8);	
 		UBRR1L = (unsigned char)ubrr;
@@ -40,6 +47,8 @@ void UART_Init( unsigned int ubrr)
 		// Enable receiver and transmitter
 		UCSR1B =  (1<<TXEN1)	// Enable USART TX
 				//| (1<<TXCIE1)   // Enable TX interrupt
+				  | (1<<RXEN1)
+				  | (1<< RXCIE1)
 				;
 	}
 }

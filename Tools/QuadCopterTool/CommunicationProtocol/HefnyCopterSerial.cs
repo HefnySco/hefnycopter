@@ -13,12 +13,8 @@ namespace HefnyCopter.CommunicationProtocol
     public class HefnyCopterSerial : HefnyCopterBaseConnection
     {
 
-        private enum ENUM_RxDataType
-        {
-            Undefined,
-            Sensors,
-            Settings
-        }
+       
+        protected const byte CONST_FIRMWARE_SIGNATURE = 0xfe;
 
         #region "Attributes"
 
@@ -26,7 +22,7 @@ namespace HefnyCopter.CommunicationProtocol
         protected bool bStartCopy = false;  //if true data is moved to DataArray
         protected int Idx = 0;              // index of DataArray
 
-        protected byte[] vArray;
+        protected byte[] vArray,cArray;
         protected ENUM_RxDataType mRxDataType;
 
         protected System.IO.Ports.SerialPort mSerialPort;
@@ -101,6 +97,7 @@ namespace HefnyCopter.CommunicationProtocol
             mSerialPort.DataReceived += new System.IO.Ports.SerialDataReceivedEventHandler(DataReceived);
 
             vArray = new byte[20];
+            cArray = new byte[400];
 
         }
 
@@ -109,9 +106,9 @@ namespace HefnyCopter.CommunicationProtocol
 
 
 
-        protected override void CopyData(byte[] vArray)
+        protected override void CopyData(ENUM_RxDataType DataType, byte[] DataArray)
         {
-            mdelegate_CopyData(vArray);
+            mdelegate_CopyData(DataType, DataArray);
         }
 
 
@@ -163,10 +160,11 @@ namespace HefnyCopter.CommunicationProtocol
             byte[] array = new byte[8000]; //
 
             array = Encoding.Unicode.GetBytes(RxString);
-          
+
 
             for (int i = 0; i < array.Length; ++i) // j; ++i)
             {
+                // Sensors Start Tag
                 if ((!bStartCopy) && (array[i] == 'S'))
                 {
                     mRxDataType = ENUM_RxDataType.Sensors;
@@ -174,6 +172,7 @@ namespace HefnyCopter.CommunicationProtocol
                     Idx = 0;
                     continue;
                 }
+                // Configuration Start Tag
                 if ((!bStartCopy) && (array[i] == 'C'))
                 {
                     mRxDataType = ENUM_RxDataType.Settings;
@@ -181,28 +180,69 @@ namespace HefnyCopter.CommunicationProtocol
                     Idx = 0;
                     continue;
                 }
+                // End Tag
                 if ((!bStartCopy) && (array[i] == 'E'))
                 {
-                    mRxDataType = ENUM_RxDataType.Undefined;
                     if (ExpectEOF == true) // message correct then copy
+                    {switch (mRxDataType)
                     {
-                        CopyData(vArray);
+                        case ENUM_RxDataType.Sensors:
+                            CopyData(mRxDataType,vArray);
+                            break;
+                        case ENUM_RxDataType.Settings:
+                            CopyData(mRxDataType,cArray);
+                            break;
 
                     }
+                    }
+                    mRxDataType = ENUM_RxDataType.Undefined;
+                    
+                        
+
+                    
                     ExpectEOF = false;
                     continue;
                 }
+                // Incoming Data Copying
                 if (bStartCopy)
                 {
-                    if (Idx == 20)
+                    switch (mRxDataType)
                     {
-                        Idx = 0;
-                        bStartCopy = false;
-                        ExpectEOF = true;
-                        i -= 1; // stepback to check for 'E'
-                        continue;
+                        case ENUM_RxDataType.Sensors:
+                            if (Idx == 20)
+                            {
+                                Idx = 0;
+                                bStartCopy = false;
+                                ExpectEOF = true;
+                                i -= 1; // stepback to check for 'E'
+                                continue;
+                            }
+                            vArray[Idx] = array[i];
+                            break;
+
+                        case ENUM_RxDataType.Settings:
+                            if (Idx == 0)
+                            {
+                                // verify data is OK
+                                if (array[i] == CONST_FIRMWARE_SIGNATURE)
+                                { // signature is OK 
+                                }
+                            }
+
+                            if (Idx == 72)
+                            {
+                                Idx = 0;
+                                bStartCopy = false;
+                                ExpectEOF = true;
+                                i -= 1; // stepback to check for 'E'
+                                continue;
+                            }
+                            cArray[Idx] = array[i];
+                            break;
+                            
+
                     }
-                    vArray[Idx] = array[i];
+
                     Idx += 1;
                 }
 

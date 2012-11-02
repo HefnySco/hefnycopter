@@ -48,9 +48,9 @@ namespace HefnyCopter.CommunicationProtocol
             mTimer.Start();
         }
 
-        protected override void CopyData(byte[] vArray)
+        protected override void CopyData(ENUM_RxDataType DataType, byte[] vArray)
         {
-            mdelegate_CopyData(vArray);
+            mdelegate_CopyData(DataType, vArray);
         }
 
 
@@ -62,7 +62,7 @@ namespace HefnyCopter.CommunicationProtocol
             {
                 vArray[i] = (byte)(System.Environment.TickCount / (i + 1));
             }
-            CopyData(vArray);
+            CopyData(ENUM_RxDataType.Sensors, vArray);
 
             #endregion
         }

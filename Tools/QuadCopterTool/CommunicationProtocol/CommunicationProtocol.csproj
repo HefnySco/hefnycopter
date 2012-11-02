@@ -47,8 +47,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\PIDParameters.cs" />
     <Compile Include="HefnyCopterBaseConnection.cs" />
     <Compile Include="HefnyCopterDummySerial.cs" />
+    <Compile Include="Configuration\QuadConfigStructure.cs" />
+    <Compile Include="Configuration\QuadConfigurationManager.cs" />
     <Compile Include="SensorsandESC\EnumerationSensors.cs" />
     <Compile Include="SensorsandESC\AccelerometerSensor.cs" />
     <Compile Include="SensorsandESC\GyroSensor.cs" />
