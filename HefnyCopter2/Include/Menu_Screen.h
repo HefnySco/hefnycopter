@@ -136,7 +136,8 @@ P_STR scrModeSettings[] =
 
 P_STR scrMiscSettings[] = 
 	"Auto Disarm:\n"
-	"Alarm volts:      mv\n"
+	"Alarm volts:      vx10\n"
+	"Throttle min:"
 	;
 
 
@@ -249,15 +250,11 @@ static const prog_char *lstMenu[] PROGMEM = {
 	strSelflevel,
 	strModeSettings,
 	strMiscSettings,
-	//strSelflevelSettings,
 	strSensorTest,
 	strReceiverTest,
 	strSensorCalibration,
 	strRadioCalibration,
 	strESCCalibration,
-	//strCPPMSettings,
-	//strMixerEditor,
-	//strLoadMotorLayout,
 	strDebug,
 	strFactoryReset,
 };

@@ -111,7 +111,7 @@ void Motor_GenerateOutputSignal(void)
 	M4 = 1;
 
 	// Minimum pulse width we want to make is 1ms, max is 2ms
-	PMW_Pulse_Interval = BASE_PULSE;
+	PMW_Pulse_Interval = BASE_PULSE + Config.ThrottleMin;
 	while (PMW_Pulse_Interval > 0)
 	{
 			TCNT2 =0;

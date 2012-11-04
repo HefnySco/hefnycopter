@@ -702,7 +702,7 @@ void _hModeSettings ()
 void _hMiscSettings()
 {
 	NOKEYRETURN;
-	PageKey(2);
+	PageKey(3);
 	
 		
 	if (KEY4)
@@ -714,6 +714,7 @@ void _hMiscSettings()
 		{
 			case 0: startEditMode(&(Config.AutoDisarm),0,10,TYPE_UINT8); return ;
 			case 1: startEditMode(&(Config.VoltageAlarm),0,100,TYPE_UINT8);  return ;
+			case 2: startEditMode(&(Config.ThrottleMin),0,255,TYPE_UINT8);  return ;
 		}
 		
 	}
@@ -725,6 +726,7 @@ void _hMiscSettings()
 	
 	LCD_WriteValue(0,84,Config.AutoDisarm,3,0==subpage);
 	LCD_WriteValue(1,84,Config.VoltageAlarm,3,1==subpage);
+	LCD_WriteValue(2,84,Config.ThrottleMin,3,2==subpage);
 		
 }
 

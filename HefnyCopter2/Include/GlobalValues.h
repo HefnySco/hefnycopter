@@ -56,7 +56,7 @@ char sXDeg[20];
 //#define ESC_RATE 450	// in Hz
 //#define ESC_RATE 495	// in Hz
 #define PWM_LOW_PULSE_INTERVAL 1000000 / ESC_RATE // time in ms for a delay.
-#define BASE_PULSE				950 //1000   //  :: I reduced it from 1120 to 1104 as trimming.
+#define BASE_PULSE				800 //950 //1000   //  :: I reduced it from 1120 to 1104 as trimming.
 
 
 
@@ -211,7 +211,7 @@ typedef struct
 	uint8_t MixerIndex;
 	uint8_t QuadFlyingMode;
 	uint8_t LCDContrast;
-	uint8_t HeightDampening;
+	uint8_t ThrottleMin;
 	uint8_t HeightDampeningLimit;
 	uint8_t LVA;									//14 byte
 	pid_param_t GyroParams[2];						// + 28
