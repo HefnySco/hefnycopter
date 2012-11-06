@@ -44,7 +44,7 @@ void Set_EEPROM_Default_Config(void)
 	Config.setup = 0x47; // HefnyCopter Signature
 	Config.RollGyroDirection 	= GYRO_NORMAL;
 	Config.PitchGyroDirection	= GYRO_NORMAL;
-	Config.YawGyroDirection		= GYRO_NORMAL;
+	Config.YawGyroDirection		= GYRO_REVERSED;
 
 	Config.RxChannel1ZeroOffset	= 1540;
 	Config.RxChannel2ZeroOffset	= 1540;

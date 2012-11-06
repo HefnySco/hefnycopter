@@ -46,8 +46,8 @@
 #define LED_PLUSMODE_TIMES	4
 		
 // Stick Arming - enable this line to enable Stick arming
-#define STICK_LEFT  -20 //-100
-#define STICK_RIGHT 20 //100
+#define STICK_LEFT  -10 //-100
+#define STICK_RIGHT 10 //100
 #define STICKThrottle_ARMING 10
 #define STICKPOSITION_MIN	 16  // minimum time duration for stick to accept a command.
 // Max Collective
@@ -145,6 +145,7 @@ volatile int8_t RxInPitch;
 volatile int8_t RxInCollective;
 volatile int8_t RxInYaw;
 
+volatile BOOL RxChannelsUpdatingFlag;
 
 
 #endif /* COMMONS_H_ */

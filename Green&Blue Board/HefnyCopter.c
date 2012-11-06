@@ -76,6 +76,7 @@
 //		* When Disarm LEDS turn OFF
 // 0.66
 //		* ROLL POT is ALPHA for the LPF
+//      * Arming Timing Fix for 328PA board
 
 #define QUAD_COPTER
 /*
@@ -143,7 +144,6 @@ Quad-X
 #include "Pots.h"
 
 
-volatile BOOL RxChannelsUpdatingFlag;
 
 //#define Debugging
 

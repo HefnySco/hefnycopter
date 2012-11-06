@@ -141,11 +141,12 @@ void StickCenter (void)
 		{	
 			for (int i=0;i<4;i++)
 			{
-	 			RxGetChannels();
-
-				Config.RxChannel1ZeroOffset = (RxInRoll << StickDivFactor);
-				Config.RxChannel2ZeroOffset = (RxInPitch << StickDivFactor);
-				Config.RxChannel4ZeroOffset = (RxInYaw << StickDivFactor);
+	 			while ( RxChannelsUpdatingFlag );
+				Config.RxChannel1ZeroOffset = (RxChannel1);
+				while ( RxChannelsUpdatingFlag );
+				Config.RxChannel2ZeroOffset = (RxChannel2);
+				while ( RxChannelsUpdatingFlag );
+				Config.RxChannel4ZeroOffset = (RxChannel4);
 
 				delay_ms(100);
 			}

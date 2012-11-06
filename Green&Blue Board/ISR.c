@@ -44,6 +44,7 @@ ISR(TIMER1_OVF_vect)
 
 ISR(PCINT2_vect)
 {
+	RxChannelsUpdatedFlag = false;
 	if (RX_ROLL)				// RX_ROLL rising
 	{
 			RxChannel1Start = TCNT1;
@@ -64,6 +65,7 @@ ISR(PCINT2_vect)
 
 ISR(INT0_vect)
 {
+	RxChannelsUpdatedFlag = false;
 	if (RX_PITCH)	// Rising 
 	{
 		RxChannel2Start = TCNT1;
@@ -84,6 +86,7 @@ ISR(INT0_vect)
 
 ISR(INT1_vect)
 {
+	RxChannelsUpdatedFlag = false;
 	if (RX_COLL)	// Rising
 	{
 		RxChannel3Start = TCNT1;
@@ -104,6 +107,7 @@ ISR(INT1_vect)
 
 ISR(PCINT0_vect)
 {
+	RxChannelsUpdatedFlag = false;
 	if (RX_YAW)	// Rising
 	{
 		RxChannel4Start = TCNT1;
