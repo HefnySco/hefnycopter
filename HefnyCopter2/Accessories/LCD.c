@@ -39,10 +39,12 @@ static void sendByte(uint8_t byte)
 	for (uint8_t i = 8; i; i--)
 	{
 		LCD_SCL = 0;
+		
 		if (byte & 0x80) // read MSB [& b10000000]
 			LCD_SDA = 1;
 		else
 			LCD_SDA = 0;
+		
 		LCD_SCL = 1;
 		byte <<= 1;
 	}

@@ -136,7 +136,7 @@ P_STR scrModeSettings[] =
 
 P_STR scrMiscSettings[] = 
 	"Auto Disarm:\n"
-	"Alarm volts:      vx10\n"
+	"Alarm volts:     vx10\n"
 	"Throttle min:"
 	;
 
