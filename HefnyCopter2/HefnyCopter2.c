@@ -137,7 +137,7 @@ int main(void)
 	UIEnableStickCommands=false;  
 	Setup();
 	
-	 
+    SystemErrorType = SYS_ERR_NON;
 
 	DataPtr = (uint8_t *) (&Sensors_Latest);
 	DataCounter=0;
@@ -171,6 +171,7 @@ int main(void)
     {
 		//LoopESCCalibration();
     	MainLoop();
+		//SlowerLoop();
     }
 }
 
@@ -206,7 +207,13 @@ void Loop(void)
 
 }
 
-
+//
+//void SlowerLoop(void)
+//{
+	//
+	//
+//}
+//
 /*
 	This is the main loop of the application.
 */
@@ -259,14 +266,26 @@ void MainLoop(void)
 			//Sensor_GetBattery();
 			if (Sensors_Latest[V_BAT_Index] < Config.VoltageAlarm)
 			{
-				Buzzer = ON;
+				
+				SystemErrorType = SET_SYS_ERR_VOLTAGE;
 			}
 			else
 			{
-				Buzzer = OFF;
+				SystemErrorType = CLR_SYS_ERR_VOLTAGE;
+				
 			}
 		}	
-	
+		if (SystemErrorType != SYS_ERR_NON)
+		{
+			Buzzer =ON ;	
+		}
+		else
+		{
+			Buzzer = OFF;
+		}
+		
+		
+		
 		if ((IsArmed == true) && (RX_Snapshot[RXChannel_THR] < STICKThrottle_ARMING+160))
 		{ // calibrate when start flying
 			DynamicCalibration();
@@ -294,7 +313,7 @@ void MainLoop(void)
 		PID_AccTerms [1].I=0;
 		PID_AccTerms [2].I=0;
 		
-		// Send Setting Data
+		// Send Setting Data only when Throttle is down.
 		if (Config.RX_mode==RX_mode_UARTMode)
 		{
 			Send_Data("C",1);
@@ -443,8 +462,11 @@ void MainLoop(void)
 		ZEROMotors();
 		if (IsArmed==true)
 		{
+			Motor_GenerateOutputSignal();	
 			Disarm();	
 		}
+		SystemErrorType = SET_SYS_ERR_SIGNAL;
+		
 		//return ; // Do nothing all below depends on TX.
 	}
 	
@@ -466,6 +488,7 @@ void MainLoop(void)
 void HandleSticksForArming (void)
 {
 	if ((UIEnableStickCommands==false) || (ActiveRXIndex!=1) || (!IS_TX2_GOOD)) return ; // you cannot use Primary to Arm and Disarm
+	SystemErrorType = CLR_SYS_ERR_SIGNAL;
 	
 	if (TCNT1_X_snapshot1==0)  TCNT1_X_snapshot1 = CurrentTCNT1_X; // start counting
 		

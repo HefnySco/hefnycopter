@@ -40,7 +40,7 @@ uint8_t tempTCNT2;
 
 void Motor_GenerateOutputSignal(void)
 {
-		// Only enable motors when armed or not connected to the GUI
+	// Only enable motors when armed or not connected to the GUI
 	
 	
 	// Make sure we have spent enough time between pulses
