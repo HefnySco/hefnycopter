@@ -17,17 +17,17 @@
 void Beeper_Beep (uint16_t msDuration, uint8_t Times)
 {
 	
-	bool CurrentBuzzer_Status = Buzzer;
+	//bool CurrentBuzzer_Status = Buzzer;
 	
 	for (int i=0; i< Times; ++i)
 	{
-		Buzzer = ~Buzzer;
+		Buzzer = ON;
 		delay_ms(msDuration);
-		Buzzer = ~Buzzer;
+		Buzzer = OFF;
 		delay_ms(msDuration);		
 	}
 	
-	Buzzer = CurrentBuzzer_Status;
+	//Buzzer = CurrentBuzzer_Status;
 	
 }
 
