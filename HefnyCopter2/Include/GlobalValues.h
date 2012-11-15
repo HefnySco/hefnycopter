@@ -15,6 +15,15 @@
 #include "IO_config.h"
 ///////////////////////////// Define Section
 
+
+int8_t SystemErrorType; 
+#define SYS_ERR_NON				0b00000000
+#define CLR_SYS_ERR_SIGNAL		(SystemErrorType & 0b11111110)
+#define SET_SYS_ERR_SIGNAL		(SystemErrorType | 0b00000001)
+#define CLR_SYS_ERR_VOLTAGE		(SystemErrorType & 0b11111101)
+#define SET_SYS_ERR_VOLTAGE		(SystemErrorType | 0b00000010)
+
+
 //Timer
 //#define 
 

@@ -10,7 +10,7 @@
 #define VERSION_H_
 
 
-static const prog_char strVersionInfo[] = "HefnyCopter2 v0.5";
+static const prog_char strVersionInfo[] = "HefnyCopter2 v0.51";
 
 /*
 version 0.1
@@ -67,6 +67,9 @@ version 0.5
 * Restructure config to optimize transmitted config through UART - dont send unwanted data at the end of structure.
 * Adjust minor text issue of menu -  make sure all are of the same length
 
+
+version 0.51
+* Fail Alarm: if signal is lost alarm is on.
 
 ToDO:
 
