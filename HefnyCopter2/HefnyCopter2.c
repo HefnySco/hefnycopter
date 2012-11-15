@@ -503,7 +503,7 @@ void HandleSticksForArming (void)
 				if ( (CurrentTCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_LONG_TIME )
 				{
 					if ((Config.RX_mode==RX_mode_BuddyMode) && (!IS_TX1_GOOD)) return; // in Buddy mode you cannot arm is there is no signal from TX1
-				
+					//TODO: Calibrate Gyros Here to get used on Temperature
 					Arm();
 					return ;
 				}
