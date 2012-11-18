@@ -71,6 +71,10 @@ version 0.5
 version 0.51
 * Fail Alarm: if signal is lost alarm is on.
 
+version 0.52
+* Fixed a major issue in calculating I in PID.
+* Split PID for Gyro & Acc
+
 ToDO:
 
 

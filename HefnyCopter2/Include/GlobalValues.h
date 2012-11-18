@@ -153,7 +153,7 @@ typedef struct
 {
 	//int16_t minSource,maxSource;
 	//int16_t minDest,maxDest;
-	double P,I,D,Error,D2,D2Error
+	int16_t P,I,D,Error,D2,D2Error
 } pid_terms_t;
 
 

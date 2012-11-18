@@ -80,8 +80,10 @@ void IMU_P2D (void)
 		//IMU_CalculateAngles();
 		
 		// Smoothing using complementary filters
+		// for Alpha =0 then Take values with NO FILTERING ... max Alpha is 999
 		float Alpha = Config.GyroParams[0].ComplementaryFilterAlpha / 1000;
 		float Beta = 1- Alpha;
+		
 		CompGyroY = (double) (Alpha * CompGyroY) + (double) (Beta * Sensors_Latest[GYRO_Y_Index]);
 		CompGyroX = (double) (Alpha * CompGyroX) + (double) (Beta * Sensors_Latest[GYRO_X_Index]);
 		
@@ -92,8 +94,8 @@ void IMU_P2D (void)
 		
 		Alpha = Config.AccParams[0].ComplementaryFilterAlpha / 1000;
 		Beta = 1- Alpha;
-		CompAccY = (double) (Alpha * CompAccY) + (double) (Beta * (Sensors_Latest[ACC_Y_Index]-ACC_Y_Offset));
-		CompAccX = (double) (Alpha * CompAccX) + (double) (Beta * (Sensors_Latest[ACC_X_Index]-ACC_X_Offset));
+		CompAccY = (double) (Alpha * CompAccY) + (double) (Beta * (Sensors_Latest[ACC_Y_Index] - ACC_Y_Offset));
+		CompAccX = (double) (Alpha * CompAccX) + (double) (Beta * (Sensors_Latest[ACC_X_Index] - ACC_X_Offset));
 		
 		Alpha = Config.AccParams[1].ComplementaryFilterAlpha / 1000;
 		Beta = 1- Alpha;
@@ -103,17 +105,17 @@ void IMU_P2D (void)
 		
 		// PITCH
 		gyroPitch = 
-				PID_Calculate (Config.GyroParams[0], PID_GyroTerms[0],CompGyroY)
-			+   PID_Calculate (Config.AccParams[0], PID_AccTerms[0],CompAccX);
+				PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[0],CompGyroY)
+			+   PID_Calculate_ACC (Config.AccParams[0], &PID_AccTerms[0],CompAccX);
 		
 		// ROLL
 		gyroRoll = 
-				PID_Calculate (Config.GyroParams[0], PID_GyroTerms[1],CompGyroX)
-			+   PID_Calculate (Config.AccParams[0], PID_AccTerms[1],CompAccY);
+				PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[1],CompGyroX)
+			+   PID_Calculate_ACC (Config.AccParams[0], &PID_AccTerms[1],CompAccY);
 		
 		// YAW
 		gyroYaw = 
-				PID_Calculate (Config.GyroParams[1], PID_GyroTerms[2],CompGyroZ);
+				PID_Calculate (Config.GyroParams[1], &PID_GyroTerms[2],CompGyroZ);
 		
 }
 
@@ -125,8 +127,8 @@ int16_t IMU_HeightKeeping ()
 	Landing *= Config.AccParams[1]._P; // PID_Terms[2].I not used for YAW 
 	Limiter(Landing , Config.AccParams[1]._PLimit);
 	*/
-	
-	int16_t Landing = PID_Calculate (Config.AccParams[1], PID_AccTerms[2],(100-CompAccZ));
+	PID_AccTerms[2].D2 = (PID_AccTerms[2].D2 + (100-CompAccZ))/2; // moving average
+	int16_t Landing = PID_Calculate (Config.AccParams[1], &PID_AccTerms[2],PID_AccTerms[2].D2);
 	
 	
 	return Landing;

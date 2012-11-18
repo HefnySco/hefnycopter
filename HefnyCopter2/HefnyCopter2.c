@@ -306,12 +306,7 @@ void MainLoop(void)
 		// Stop motors if Throttle Stick is less than minimum.
 		ZEROMotors();
 		
-		PID_GyroTerms[0].I=0;
-		PID_GyroTerms[1].I=0;
-		PID_GyroTerms[2].I=0;
-		PID_AccTerms [0].I=0;
-		PID_AccTerms [1].I=0;
-		PID_AccTerms [2].I=0;
+		
 		
 		// Send Setting Data only when Throttle is down.
 		if (Config.RX_mode==RX_mode_UARTMode)
@@ -527,6 +522,12 @@ void HandleSticksForArming (void)
 				{
 					if ((Config.RX_mode==RX_mode_BuddyMode) && (!IS_TX1_GOOD)) return; // in Buddy mode you cannot arm is there is no signal from TX1
 					//TODO: Calibrate Gyros Here to get used on Temperature
+					PID_GyroTerms[0].I=0;
+					PID_GyroTerms[1].I=0;
+					PID_GyroTerms[2].I=0;
+					PID_AccTerms [0].I=0;
+					PID_AccTerms [1].I=0;
+					PID_AccTerms [2].I=0;
 					Arm();
 					return ;
 				}

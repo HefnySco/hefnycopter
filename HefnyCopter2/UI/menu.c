@@ -878,10 +878,18 @@ void _hDebug()
 		//LCD_WriteValue(i,36,StabilityMatrix_GX[i+6],4,false); 
 		//LCD_WriteValue(i,72,StabilityMatrix_GX[i+12],4,false); 
 	//}
-	RXBuffer[7]=0;
-	LCD_WriteStringex(0,0,RXBuffer,false);
-	//LCD_WriteValue(6,48,ACC_X_Offset,4,true); 
-	//LCD_WriteValue_double(2,48,CompGyroX,false);
+	//RXBuffer[7]=0;
+	//LCD_WriteStringex(0,0,RXBuffer,false);
+	LCD_WriteValue(1,48,ACC_X_Offset,4,false); 
+	LCD_WriteValue(2,48,Sensors_Latest[ACC_X_Index],4,false);
+	LCD_WriteValue(3,48,CompAccX,4,false);LCD_WriteValue(3,0,CompGyroY,4,false);
+	LCD_WriteValue(0,48,PID_AccTerms[0].P,4,false);
+	LCD_WriteValue(4,48,PID_AccTerms[0].I,4,false);
+	LCD_WriteValue(5,48,PID_AccTerms[0].D,4,false);
+	LCD_WriteValue(0,0,PID_GyroTerms[0].P,4,false);
+	LCD_WriteValue(4,0,PID_GyroTerms[0].I,4,false);
+	LCD_WriteValue(5,0,PID_GyroTerms[0].D,4,false);
+	
 	//
 	//LCD_WriteValue_double(3,48,CompAccY,false);
 	//LCD_WriteValue_double(4,48,CompAccX,false);
