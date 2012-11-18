@@ -10,7 +10,7 @@
 #define VERSION_H_
 
 
-static const prog_char strVersionInfo[] = "HefnyCopter2 v0.51";
+static const prog_char strVersionInfo[] = "HefnyCopter2 v0.60";
 
 /*
 version 0.1
@@ -72,8 +72,11 @@ version 0.51
 * Fail Alarm: if signal is lost alarm is on.
 
 version 0.52
-* Fixed a major issue in calculating I in PID.
+* Fixed a major issue in calculating I in PID. [YAW issue disappeared after fixing using I in YAW PID]
 * Split PID for Gyro & Acc
+
+version 0.6
+* Adding RUD, AIL, ELE deviation of ACC data in Plus mode.
 
 ToDO:
 

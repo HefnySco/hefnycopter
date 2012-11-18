@@ -93,7 +93,7 @@ int16_t PID_Calculate_ACC (pid_param_t PID_Params, pid_terms_t *PID_Term, double
 	double Output;
 		
 		// Calculate Terms 
-	    PID_Term->P  = ((Value * PID_Params._P) /10);						
+	    PID_Term->P  = ((Value * PID_Params._P) / 10);						
 		
 		
 		
@@ -101,15 +101,15 @@ int16_t PID_Calculate_ACC (pid_param_t PID_Params, pid_terms_t *PID_Term, double
 		
 		if (Value>1)
 		{
-			PID_Term->I += (PID_Params._I );						    		
+			PID_Term->I += (PID_Params._I / 10);						    		
 		}
 		else if	(Value<-1)
 		{	
-			PID_Term->I -= (PID_Params._I );						    		
+			PID_Term->I -= (PID_Params._I / 10 );						    		
 		}
+				
 		
-		
-		PID_Term->D= ((Value - PID_Term->Error) * PID_Params._D)  /10;
+		PID_Term->D= ((Value - PID_Term->Error) * PID_Params._D) / 10 ;
 		PID_Term->Error = Value;	
 		
 				
@@ -119,7 +119,7 @@ int16_t PID_Calculate_ACC (pid_param_t PID_Params, pid_terms_t *PID_Term, double
 	    PID_Term->D= Limiter(PID_Term->D, PID_Params._DLimit);
 	
 		Output = (PID_Term->P + PID_Term->I + PID_Term->D);	// P + I + D
-		
+		//Output = Output / 10;
 		return  Output; //Limiter(Output,(int16_t)300);
 	
 }
@@ -129,19 +129,19 @@ int16_t PID_Calculate (pid_param_t PID_Params, pid_terms_t *PID_Term, double  Va
 		double Output;
 		
 		// Calculate Terms 
-	    PID_Term->P  = ((Value * PID_Params._P) /10 );						
+	    PID_Term->P  = ((Value * PID_Params._P) / 10);						
 		
 		
 		
 		int16_t DeltaError = (Value - PID_Term->Error);
 		
-		if ((Value>1) || (Value<-1))
+		if ((Value>2) || (Value<-2))
 		{	// only increment I when the Value is increasing compared to the old one, also use [-1,1] as deadband.
-				PID_Term->I += ((Value * PID_Params._I)) /10;						    		
+				PID_Term->I += ((Value * PID_Params._I) / 30) ;	
 		}
 		
 		
-		PID_Term->D= (DeltaError * PID_Params._D) /10 ;
+		PID_Term->D= (DeltaError * PID_Params._D) / 10 ;
 		PID_Term->Error = Value;	
 		
 				
@@ -151,7 +151,7 @@ int16_t PID_Calculate (pid_param_t PID_Params, pid_terms_t *PID_Term, double  Va
 	    PID_Term->D= Limiter(PID_Term->D, PID_Params._DLimit);
 	
 		Output = (PID_Term->P + PID_Term->I + PID_Term->D);	// P + I + D
-		
+		//Output = Output / 10;
 		return  Output; //Limiter(Output,(int16_t)300);
 }		
 

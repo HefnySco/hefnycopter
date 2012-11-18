@@ -105,17 +105,18 @@ void IMU_P2D (void)
 		
 		// PITCH
 		gyroPitch = 
-				PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[0],CompGyroY)
+				PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[0],CompGyroY - (RX_Snapshot[RXChannel_ELE] >> 3))
 			+   PID_Calculate_ACC (Config.AccParams[0], &PID_AccTerms[0],CompAccX);
 		
 		// ROLL
 		gyroRoll = 
-				PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[1],CompGyroX)
+				PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[1],CompGyroX - (RX_Snapshot[RXChannel_AIL] >> 3))
 			+   PID_Calculate_ACC (Config.AccParams[0], &PID_AccTerms[1],CompAccY);
 		
 		// YAW
+		double NavGyro = CompGyroZ - (RX_Snapshot[RXChannel_RUD]>>3);
 		gyroYaw = 
-				PID_Calculate (Config.GyroParams[1], &PID_GyroTerms[2],CompGyroZ);
+				PID_Calculate (Config.GyroParams[1], &PID_GyroTerms[2],NavGyro); 
 		
 }
 
