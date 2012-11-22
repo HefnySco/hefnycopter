@@ -77,7 +77,9 @@
 // 0.66
 //		* ROLL POT is ALPHA for the LPF
 //      * Arming Timing Fix for 328PA board
-
+// 0.65
+//		* Set Beta to 0.8 fixed.
+//		* Restore Roll_POT function as YAW drift fix.
 #define QUAD_COPTER
 /*
 
@@ -222,7 +224,7 @@ int16_t cROLL;
 int16_t cPITCH;
 int16_t cYAW,cIYAW;
 
-float Alpha = 0.4, Beta =0.6;
+float Alpha = 0.2, Beta =0.8;
 bool bXQuadMode = false;	
 bool bResetTCNR1_X = true;
 
@@ -279,8 +281,8 @@ void loop(void)
 				FlashLED (LED_LONG_TOGGLE,Times);
 				CalibrateGyros();
 				ReadGainValues();
-				Alpha = (GainInADC[ROLL] - MIN_POT_Extreme) / MAX_POT_Extreme;
-				Beta= 1.0 - Alpha;
+				//Alpha = (GainInADC[ROLL] - MIN_POT_Extreme) / MAX_POT_Extreme;
+				//Beta= 1.0 - Alpha;
 				
 				//FlashLED (LED_SHORT_TOGGLE,4);
 				TCNT1_X_snapshot =0; // reset timer
@@ -403,7 +405,7 @@ void loop(void)
 				//if (cIYAW       < -10)		cIYAW       = -10;
 			
 				//cYAW -=cIYAW;
-				//cYAW	+= ((GainInADC[ROLL] - MID_POT) >> 5);
+				cYAW	+= ((GainInADC[ROLL] - MID_POT) >> 5);
 			
 			if (cPITCH > MAX_GYRO_RESPONSE_VALUE)		cPITCH = MAX_GYRO_RESPONSE_VALUE;
 			if (cPITCH < -MAX_GYRO_RESPONSE_VALUE)		cPITCH = -MAX_GYRO_RESPONSE_VALUE;
