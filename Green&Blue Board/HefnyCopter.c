@@ -77,7 +77,7 @@
 // 0.66
 //		* ROLL POT is ALPHA for the LPF
 //      * Arming Timing Fix for 328PA board
-// 0.65
+// 0.67
 //		* Set Beta to 0.8 fixed.
 //		* Restore Roll_POT function as YAW drift fix.
 #define QUAD_COPTER
