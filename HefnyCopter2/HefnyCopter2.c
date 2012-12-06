@@ -420,11 +420,11 @@ void MainLoop(void)
 			else
 			{
 				
-				//MotorOut[1] += RX_Snapshot[RXChannel_AIL] ;
-				//MotorOut[2] -= RX_Snapshot[RXChannel_AIL] ;
-				//
-				//MotorOut[0] += RX_Snapshot[RXChannel_ELE] ;
-				//MotorOut[3] -= RX_Snapshot[RXChannel_ELE] ;
+				MotorOut[1] += RX_Snapshot[RXChannel_AIL] ;
+				MotorOut[2] -= RX_Snapshot[RXChannel_AIL] ;
+				
+				MotorOut[0] += RX_Snapshot[RXChannel_ELE] ;
+				MotorOut[3] -= RX_Snapshot[RXChannel_ELE] ;
 		//
 				MotorOut[0] -= RX_Snapshot[RXChannel_RUD] ;
 				MotorOut[1] += RX_Snapshot[RXChannel_RUD] ;

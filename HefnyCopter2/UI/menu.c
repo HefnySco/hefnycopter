@@ -880,10 +880,11 @@ void _hDebug()
 	//}
 	//RXBuffer[7]=0;
 	//LCD_WriteStringex(0,0,RXBuffer,false);
+	LCD_WriteValue(0,48,PID_AccTerms[0].P,4,false);
 	LCD_WriteValue(1,48,ACC_X_Offset,4,false); 
 	LCD_WriteValue(2,48,Sensors_Latest[ACC_X_Index],4,false);
-	LCD_WriteValue(3,48,CompAccX,4,false);LCD_WriteValue(3,0,CompGyroY,4,false);
-	LCD_WriteValue(0,48,PID_AccTerms[0].P,4,false);
+	LCD_WriteValue(3,48,CompAccX,4,false);
+	LCD_WriteValue(3,0,CompGyroY,4,false);
 	LCD_WriteValue(4,48,PID_AccTerms[0].I,4,false);
 	LCD_WriteValue(5,48,PID_AccTerms[0].D,4,false);
 	LCD_WriteValue(0,0,PID_GyroTerms[0].P,4,false);
