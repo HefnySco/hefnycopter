@@ -18,6 +18,7 @@
 #define PAGE_MENU				1
 #define PAGE_HOME_ARMED			2
 #define PAGE_ESC_CALIBRATION	3
+#define PAGE_RESTART			4
 #define PAGE_SHOW_LAYOUT		14
 
 
@@ -38,7 +39,7 @@ P_STR strNo[] =		"No ";
 
 // main menu
 //P_STR strPIEditor[] = "PI Editor";
-P_STR strStabilization[]= "Stabilization";
+P_STR strStabilization[]= "Gyro PID Editor";
 P_STR strReceiverTest[] = "Receiver Test";
 P_STR strModeSettings[] = "Mode Settings";
 P_STR strStickScaling[] = "Stick Scaling";

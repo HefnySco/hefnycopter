@@ -246,7 +246,7 @@ static void startEditMode(void* valuePtr, int16_t loLimit, int16_t hiLimit, uint
 	LCD_Rectangle(30, 11, 98, 34, 1);
 	LCD_Rectangle(31, 12, 97, 33, 1);
 	writeSoftkeys(_skEDIT);
-	LCD_SelectFont(NULL);//&font12x16);
+	LCD_SelectFont(&font12x16);
 	editModeHandler();
 }
 
@@ -501,6 +501,18 @@ void _hHomeArmedESC (void)
 	
 }
 
+
+void _hHomeRestart (void)
+{
+	NOKEYRETURN
+	
+	if (KEY4)
+	{
+		while (true);
+	}
+}
+
+
 void _hSensorTest()
 {
 	
@@ -671,21 +683,23 @@ void _hModeSettings ()
 	NOKEYRETURN;
 	PageKey(1);
 	
-	if (KEY4)
+	if ((KEY4) && (bValueChanged==true))
+	{
+		_helper_SaveinEEPROM_ifChanged();
+		Menu_LoadPage(PAGE_RESTART);
+		return;
+	}
+	
+	if ((KEY2) || (KEY3))
 	{
 		bValueChanged = true;
-		currentPage.softkeys = _skMENUSAVE;
-		
+		//currentPage.softkeys = _skMENUSAVE;
 		switch (subpage)
 		{
 			case 0: Config.RX_mode=~Config.RX_mode; break;
 			
+			
 		}
-	}
-	
-	if (KEY1)
-	{
-		_helper_SaveinEEPROM_ifChanged();
 	}
 	
 	if (Config.RX_mode == RX_mode_BuddyMode)
@@ -776,12 +790,12 @@ void _hStabilization()
 	}
 	LCD_WriteStringex (0,0,sXDeg,0==subpage);
 	LCD_WriteValue(1,30,Config.GyroParams[subindex]._P,3,1==subpage);
-	LCD_WriteValue(1,78,Config.GyroParams[subindex]._PLimit,3,2==subpage);
+	LCD_WriteValue(1,84,Config.GyroParams[subindex]._PLimit,3,2==subpage);
 	LCD_WriteValue(2,30,Config.GyroParams[subindex]._I,3,3==subpage);
-	LCD_WriteValue(2,78,Config.GyroParams[subindex]._ILimit,3,4==subpage);
+	LCD_WriteValue(2,84,Config.GyroParams[subindex]._ILimit,3,4==subpage);
 	LCD_WriteValue(3,30,Config.GyroParams[subindex]._D,3,5==subpage);
-	LCD_WriteValue(3,78,Config.GyroParams[subindex]._DLimit,3,6==subpage);
-	LCD_WriteValue(4,30,Config.GyroParams[subindex].ComplementaryFilterAlpha,3,7==subpage);
+	LCD_WriteValue(3,84,Config.GyroParams[subindex]._DLimit,3,6==subpage);
+	LCD_WriteValue(5,84,Config.GyroParams[subindex].ComplementaryFilterAlpha,3,7==subpage);
 }
 
 
@@ -829,12 +843,12 @@ void _hSelfLeveling()
 	}
 	LCD_WriteStringex (0,0,sXDeg,0==subpage);
 	LCD_WriteValue(1,30,Config.AccParams[subindex]._P,3,1==subpage);
-	LCD_WriteValue(1,78,Config.AccParams[subindex]._PLimit,3,2==subpage);
+	LCD_WriteValue(1,84,Config.AccParams[subindex]._PLimit,3,2==subpage);
 	LCD_WriteValue(2,30,Config.AccParams[subindex]._I,3,3==subpage);
-	LCD_WriteValue(2,78,Config.AccParams[subindex]._ILimit,3,4==subpage);
+	LCD_WriteValue(2,84,Config.AccParams[subindex]._ILimit,3,4==subpage);
 	LCD_WriteValue(3,30,Config.AccParams[subindex]._D,3,5==subpage);
-	LCD_WriteValue(3,78,Config.AccParams[subindex]._DLimit,3,6==subpage);
-	LCD_WriteValue(4,30,Config.AccParams[subindex].ComplementaryFilterAlpha,3,7==subpage);
+	LCD_WriteValue(3,84,Config.AccParams[subindex]._DLimit,3,6==subpage);
+	LCD_WriteValue(5,84,Config.AccParams[subindex].ComplementaryFilterAlpha,3,7==subpage);
 	
 }
 
@@ -859,7 +873,7 @@ void _hDebug()
 			send_byte('C');
 			send_byte(0x01);
 			send_byte(0x00);send_byte(0x00);send_byte(0x00);
-			send_byte(0x01);send_byte(0x00);send_byte(0x00);
+			send_byte(0x00);send_byte(0x00);send_byte(0x00);
 			send_byte('D');
 		}
 		if (KEY3)

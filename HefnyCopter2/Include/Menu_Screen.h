@@ -50,15 +50,6 @@ typedef struct
 
 ////////////////////////////////////SCREEN TEXT/////////////////////////////////////
 
-/*P_STR scrPIEditor[] = 
-	"Axis:\n"
-	"\n"
-	"P Gain:\n"
-	"P Limit:\n"
-	"I Gain:\n"
-	"I Limit:";
-*/
-
 P_STR scrHomePage[] = 
 	"\n"
 	"\n"
@@ -66,6 +57,12 @@ P_STR scrHomePage[] =
 	"\n"
 	"\n"
 	"RX: -  SN:    ST: -"
+	;
+	
+P_STR scrHomePageRestart[] = 
+	"\n"
+	"RESTART\n"
+	"      BOARD"
 	;
 	
 P_STR scrHomePageArmed[] = 
@@ -98,10 +95,11 @@ P_STR scrSelfLeveling[] =
 	
 P_STR scrStabilization[]=
 	"\n"
-	"P:      Lim:\n"
-	"I:      Lim:\n"
-	"D:      Lim:\n"
-	"F:"
+	"P:       Lim:\n"
+	"I:       Lim:\n"
+	"D:       Lim:\n"
+	"\n"
+	"Noise Filter:"
 	;
 
 P_STR scrReceiverTest[] = 
@@ -136,7 +134,7 @@ P_STR scrModeSettings[] =
 
 P_STR scrMiscSettings[] = 
 	"Auto Disarm:\n"
-	"Alarm volts:     vx10\n"
+	"Volt Alarm:    vx10\n"
 	"Throttle min:"
 	;
 
@@ -188,26 +186,27 @@ P_STR scrMixerEditor[] =
 
 //////////////////////////////////////////////////////////////////////////
 // softkeys
-static const prog_char _skHOME[]      = "                MENU";
-static const prog_char _skMENU[]      = "BACK UP   DOWN ENTER";
-static const prog_char _skMENUSAVE[]  = "SAVE UP   DOWN ENTER";
+static const prog_char _skHOME[]      = "                 MENU";
+static const prog_char _skMENU[]      = "BACK UP   DOWN  ENTER";
+static const prog_char _skMENUSAVE[]  = "SAVE UP   DOWN  ENTER";
 static const prog_char _skBACK[]      = "BACK                ";
-static const prog_char _skCONTINUE[]  = "BACK        CONTINUE";
-static const prog_char _skCANCELYES[] = "NO               YES";
+static const prog_char _skCONTINUE[]  = "BACK         CONTINUE";
+static const prog_char _skCANCELYES[] = "NO                YES";
 static const prog_char _skPAGE[]      = "BACK PREV NEXT CHANGE";
-static const prog_char _skBACKNEXT[]  = "BACK NEXT";
-static const prog_char _skCANCEL[]    = "CANCEL";
-static const prog_char _skEDIT[]      = "CANCEL  DOWN  UP  OK";
-static const prog_char _skSAVE[]      = "                DONE";
+static const prog_char _skBACKNEXT[]  = "BACK NEXT			  ";
+static const prog_char _skCANCEL[]    = "CANCEL				  ";
+static const prog_char _skEDIT[]      = "CANCEL  DOWN   UP  OK";
+static const prog_char _skSAVE[]      = "                 DONE";
 
 //////////////////////////////////////////////////////////////////////////
 // Menu Structure
 
-#define MENU_START_INDEX 4
+#define MENU_START_INDEX 5
 void _hHomePage();
 void _hMenu();
 void _hHomeArmed();
 void _hHomeArmedESC();
+void _hHomeRestart();
 void _hStabilization();
 void _hSelfLeveling();
 void _hReceiverTest();
@@ -223,13 +222,14 @@ void _hDebug();
 void _hFactoryReset();
 
 static const page_t pages[] PROGMEM = {
-/*  0 */	{ _skHOME, _hHomePage, scrHomePage },		// non-menu item
-/*  1 */	{ _skMENU, _hMenu},							// non-menu item
-/*	2 */	{ _skHOME, _hHomeArmed, scrHomePageArmed},	// non-menu item
+/*  0 */	{ _skHOME, _hHomePage, scrHomePage },						// non-menu item
+/*  1 */	{ _skMENU, _hMenu},											// non-menu item
+/*	2 */	{ _skHOME, _hHomeArmed, scrHomePageArmed},					// non-menu item
 /*	3 */	{ _skSAVE, _hHomeArmedESC, scrHomePageArmedESCCalibration},	// non-menu item
+/*	4 */	{ _skSAVE, _hHomeRestart, scrHomePageRestart},				// non-menu item
 { _skMENU, _hStabilization, scrStabilization},			// in case of extra adding non menu items  MENU_START_INDEX constant should be updated to indicate the start of the menu
 { _skMENU, _hSelfLeveling, scrStabilization},	
-{ _skPAGE, _hModeSettings, scrModeSettings},
+{ _skMENU, _hModeSettings, scrModeSettings},
 { _skPAGE, _hMiscSettings, scrMiscSettings},
 { _skBACK, _hSensorTest, scrSensorTest},
 { _skBACK, _hReceiverTest, scrReceiverTest},
