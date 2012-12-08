@@ -189,7 +189,7 @@ volatile char Result[5];
 //volatile char Result2[10]; 
 volatile uint16_t nResult[8];
 volatile uint16_t nTemp16;
-volatile uint8_t  RXBuffer[10];
+
 
 
 #define CALIBRATED_ALL				7
@@ -209,25 +209,25 @@ volatile uint8_t  RXBuffer[10];
 #define QuadFlyingMode_X	1
 typedef struct  
 {
-	uint8_t signature;					
-	uint8_t IsCalibrated;
-	uint8_t RX_mode;			// 01 [Secondary RX only and PD are used of UART"PD2-PD3"]  02[Buddy mode both Primary & Secondary RX are used]
-	uint8_t SelfLevelMode;
-	uint8_t ArmingMode;
-	uint8_t AutoDisarm;
-	uint8_t IsESCCalibration;
-	uint8_t ReceiverMode;
-	uint8_t MixerIndex;
-	uint8_t QuadFlyingMode;
-	uint8_t LCDContrast;
-	uint8_t ThrottleMin;
-	uint8_t HeightDampeningLimit;
-	uint8_t LVA;									//14 byte
-	pid_param_t GyroParams[2];						// + 28
-	pid_param_t AccParams[2];						// + 28
-	uint8_t VoltageAlarm;		//0 = 0ff			// +1
+	uint8_t signature;				//	offset: +0		
+	uint8_t IsCalibrated;			//	offset: +1		
+	uint8_t RX_mode;				//	offset: +2		 01 [Secondary RX only and PD are used of UART"PD2-PD3"]  02[Buddy mode both Primary & Secondary RX are used]
+	uint8_t SelfLevelMode;			//	offset: +3	
+	uint8_t ArmingMode;				//	offset: +4	
+	uint8_t AutoDisarm;				//	offset: +5	
+	uint8_t IsESCCalibration;		//	offset: +6	
+	uint8_t ReceiverMode;			//	offset: +7	
+	uint8_t MixerIndex;				//	offset: +8	
+	uint8_t QuadFlyingMode;			//	offset: +9	
+	uint8_t LCDContrast;			//	offset: +10	
+	uint8_t ThrottleMin;			//	offset: +11	
+	uint8_t HeightDampeningLimit;	//	offset: +12	
+	uint8_t LVA;					//	offset: +14	
+	pid_param_t GyroParams[2];		//	offset: +15 Length	 + 28
+	pid_param_t AccParams[2];		//	offset: +43	Length	 + 28
+	uint8_t VoltageAlarm;			//	offset: 71
 	//model_t Mixer;
-	uint16_t RX_Mid[2][RXChannels];
+	uint16_t RX_Mid[2][RXChannels]; //	offset: 72	Length	+
 	uint16_t RX_Min[2][RXChannels];
 	uint8_t StickScaling[4];
 	uint16_t Sensor_zero[SENSORS_ALL];

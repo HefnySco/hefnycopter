@@ -25,6 +25,7 @@
 #include "../Include/Sensors.h"
 #include "../Include/Beeper.h"
 #include "../Include/IMU.h"
+#include "../Include/UART.h"
 
 
 static uint8_t oldPage;
@@ -855,19 +856,15 @@ void _hDebug()
 	
 		if (KEY2)
 		{
-			//dt+=1;
-			//gyroXangle=0;
-			CompAngleX=0;
-			//gyroYangle=0;
-			CompAngleY=0;
+			send_byte('C');
+			send_byte(0x01);
+			send_byte(0x00);send_byte(0x00);send_byte(0x00);
+			send_byte(0x01);send_byte(0x00);send_byte(0x00);
+			send_byte('D');
 		}
 		if (KEY3)
 		{
-			//dt-=1;
-			//gyroXangle=0;
-			CompAngleX=0;
-			//gyroYangle=0;
-			CompAngleY=0;
+			
 		}	
 	//IMU_CalculateAngles();
 	//
@@ -878,18 +875,18 @@ void _hDebug()
 		//LCD_WriteValue(i,36,StabilityMatrix_GX[i+6],4,false); 
 		//LCD_WriteValue(i,72,StabilityMatrix_GX[i+12],4,false); 
 	//}
-	//RXBuffer[7]=0;
-	//LCD_WriteStringex(0,0,RXBuffer,false);
-	LCD_WriteValue(0,48,PID_AccTerms[0].P,4,false);
-	LCD_WriteValue(1,48,ACC_X_Offset,4,false); 
-	LCD_WriteValue(2,48,Sensors_Latest[ACC_X_Index],4,false);
-	LCD_WriteValue(3,48,CompAccX,4,false);
-	LCD_WriteValue(3,0,CompGyroY,4,false);
-	LCD_WriteValue(4,48,PID_AccTerms[0].I,4,false);
-	LCD_WriteValue(5,48,PID_AccTerms[0].D,4,false);
-	LCD_WriteValue(0,0,PID_GyroTerms[0].P,4,false);
-	LCD_WriteValue(4,0,PID_GyroTerms[0].I,4,false);
-	LCD_WriteValue(5,0,PID_GyroTerms[0].D,4,false);
+	DisplayBuffer[9]=0;
+	LCD_WriteStringex(0,0,DisplayBuffer,false);
+	//LCD_WriteValue(0,48,PID_AccTerms[0].P,4,false);
+	//LCD_WriteValue(1,48,ACC_X_Offset,4,false); 
+	//LCD_WriteValue(2,48,Sensors_Latest[ACC_X_Index],4,false);
+	//LCD_WriteValue(3,48,CompAccX,4,false);
+	//LCD_WriteValue(3,0,CompGyroY,4,false);
+	//LCD_WriteValue(4,48,PID_AccTerms[0].I,4,false);
+	//LCD_WriteValue(5,48,PID_AccTerms[0].D,4,false);
+	//LCD_WriteValue(0,0,PID_GyroTerms[0].P,4,false);
+	//LCD_WriteValue(4,0,PID_GyroTerms[0].I,4,false);
+	//LCD_WriteValue(5,0,PID_GyroTerms[0].D,4,false);
 	
 	//
 	//LCD_WriteValue_double(3,48,CompAccY,false);
