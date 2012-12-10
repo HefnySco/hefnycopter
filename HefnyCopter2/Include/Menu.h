@@ -13,5 +13,6 @@ void Menu_MenuInit();
 void Menu_MenuShow();
 void Menu_LoadPage(uint8_t pageIndex);
 
+void Menu_EnableAllItems ();
 
 #endif /* MENU_H_ */

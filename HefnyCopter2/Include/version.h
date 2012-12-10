@@ -78,6 +78,18 @@ version 0.52
 version 0.6
 * Adding RUD, AIL, ELE deviation of ACC data in Plus mode.
 
+version 0.7
+* UI:
+*	. Many improvement on Menu UI wording and styles.
+*	.  Disabled menu items with flashing to allow more smoother setup.
+*	.  Adding Board Positioning X or Plus... more flexible to your frame
+*	.  Disable some menu items if Sticks and Sensors are not calibrated to ease setting process.
+*	.  Adding Restart Screen.
+* IMU:
+*	. Update Landing Logic.
+*	. Acc_Z =0 instead of 100 as a default value.
+*	. Increase (I) only when there is a condition: if (abs(Value) > abs(PID_Term->Error))
+*	. Update Logic for PID_ACC to ZERO I.
 ToDO:
 
 
@@ -86,11 +98,10 @@ ToDO:
 * Motor Layout
 * Store Quadcopter Flying Modes in eeprom using menu.
 
-version 0.6
 * Motor Mixing 
 * Enhanced Receiver Test menu.... show left & right words next to controls.
 
-version 0.7
+
 * Self Landing when battery is weak.
 
 */

@@ -119,7 +119,8 @@ void Sensors_Calibrate (void)
 		nResult[i] /=25;
 	}	
 	
-	nResult[ACC_Z_Index]-=100; // Sensor: horizontal, upward
+	//nResult[ACC_Z_Index]-=100; // Sensor: horizontal, upward ... the caller of this function is responsible for updating Config.Sensor_zero[i] = nResult[i];
+		
 }
 
 uint32_t LastLoopTime[2];

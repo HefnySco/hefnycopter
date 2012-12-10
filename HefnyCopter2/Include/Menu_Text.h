@@ -14,12 +14,7 @@
 
 #include "../Include/typedefs.h"
 
-#define PAGE_HOME				0
-#define PAGE_MENU				1
-#define PAGE_HOME_ARMED			2
-#define PAGE_ESC_CALIBRATION	3
-#define PAGE_RESTART			4
-#define PAGE_SHOW_LAYOUT		14
+
 
 
 

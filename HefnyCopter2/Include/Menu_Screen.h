@@ -15,6 +15,8 @@
 
 #include "../Include/Version.h"
 
+
+
 // Pointer to menu item function handler.
 typedef void (pageHandler)(void);
 
@@ -25,6 +27,7 @@ typedef struct
 	const char *softkeys;   // softkeys function text  
 	pageHandler *handler;	// function to execute
 	const char *screen;		// screen contents
+
 } page_t;
 
 typedef struct  
@@ -134,7 +137,7 @@ P_STR scrModeSettings[] =
 
 P_STR scrMiscSettings[] = 
 	"Auto Disarm:\n"
-	"Volt Alarm:    vx10\n"
+	"Volt Alarm:      /10v\n"
 	"Throttle min:"
 	;
 
@@ -160,12 +163,7 @@ P_STR scrESCCal1[] =
 	"Press Continue after calibration.\n"
 	"\n"
 	"unplug battery.\n";
-	
-PROGMEM const prog_char* scrESCCal[] = 
-	{
-		scrESCCal0,
-		scrESCCal1
-	};
+
 
 /*P_STR scrRadioCal0[] = 
 	"Move Thr & Ele up - down\n"
@@ -189,7 +187,7 @@ P_STR scrMixerEditor[] =
 static const prog_char _skHOME[]      = "                 MENU";
 static const prog_char _skMENU[]      = "BACK UP   DOWN  ENTER";
 static const prog_char _skMENUSAVE[]  = "SAVE UP   DOWN  ENTER";
-static const prog_char _skBACK[]      = "BACK                ";
+static const prog_char _skBACK[]      = "BACK                 ";
 static const prog_char _skCONTINUE[]  = "BACK         CONTINUE";
 static const prog_char _skCANCELYES[] = "NO                YES";
 static const prog_char _skPAGE[]      = "BACK PREV NEXT CHANGE";
@@ -222,8 +220,8 @@ void _hDebug();
 void _hFactoryReset();
 
 static const page_t pages[] PROGMEM = {
-/*  0 */	{ _skHOME, _hHomePage, scrHomePage },						// non-menu item
-/*  1 */	{ _skMENU, _hMenu},											// non-menu item
+/*  0 */	{ _skHOME, _hHomePage, scrHomePage},						// non-menu item
+/*  1 */	{ _skMENU, _hMenu, NULL},									// non-menu item
 /*	2 */	{ _skHOME, _hHomeArmed, scrHomePageArmed},					// non-menu item
 /*	3 */	{ _skSAVE, _hHomeArmedESC, scrHomePageArmedESCCalibration},	// non-menu item
 /*	4 */	{ _skSAVE, _hHomeRestart, scrHomePageRestart},				// non-menu item
@@ -239,8 +237,8 @@ static const page_t pages[] PROGMEM = {
 ///* 11 */	{ _skPAGE, NULL, scrCPPMSettings},
 ///* 13 */	{ _skPAGE, NULL, scrMixerEditor},
 ///* 15 */	{ _skMENU, _hLoadModelLayout },
-{ _skBACK, _hDebug },
-{ _skCANCELYES, _hFactoryReset },
+{ _skBACK, _hDebug, NULL},
+{ _skCANCELYES, _hFactoryReset, NULL},
 };
 
  
@@ -258,6 +256,8 @@ static const prog_char *lstMenu[] PROGMEM = {
 	strDebug,
 	strFactoryReset,
 };
+
+int8_t menuEnabled[16];
 
 PGM_P tsmMain(uint8_t);
 PGM_P tsmLoadModelLayout(uint8_t);

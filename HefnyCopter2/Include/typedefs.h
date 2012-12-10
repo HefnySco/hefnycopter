@@ -6,6 +6,28 @@
 #include <avr/io.h>
 
 
+
+
+#define PAGE_HOME					0
+#define PAGE_MENU					1
+#define PAGE_HOME_ARMED				2
+#define PAGE_HOME_ESC_CALIBRATION	3
+#define PAGE_RESTART				4
+
+
+#define PAGE_STABILIZATION			5
+#define PAGE_SELF_LEVELING			6
+#define PAGE_MODE_SETTING			7
+#define PAGE_MISC_SETTING			8
+#define PAGE_SENSOR_TEST			9
+#define PAGE_RECEIVER_TEST			10
+#define PAGE_SENSOR_CALIBRATION		11
+#define PAGE_STICK_CENTER			12
+#define PAGE_ESC_CALIBRATION		13
+#define PAGE_DEBUG					14
+#define PAGE_SHOW_LAYOUT			14
+
+
 #define P_STR static const prog_char
 
 

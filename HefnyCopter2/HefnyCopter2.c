@@ -35,7 +35,7 @@
 #include "Include/Math.h"
 #include "Include/Arming.h"
 #include "Include/UART.h"
-
+#include "Include/Menu_Screen.h"
 
 /*
 
@@ -74,7 +74,9 @@ Quad-X
 
 void Setup (void)
 {
-
+	
+	Menu_EnableAllItems();
+	
 	Initial_EEPROM_Config_Load();
 	
 	Config.QuadFlyingMode = QuadFlyingMode_PLUS;
@@ -134,6 +136,7 @@ if (Config.RX_mode==RX_mode_UARTMode)
 int main(void)
 {
 	// Stick Commands are only available for Secondary Receiver and when Stick is calibrated.
+	
 	UIEnableStickCommands=false;  
 	Setup();
 	
@@ -141,26 +144,35 @@ int main(void)
 
 	DataPtr = (uint8_t *) (&Sensors_Latest);
 	DataCounter=0;
-	while (Config.IsESCCalibration==ESCCalibration_ON)		
-	{
-		Beeper_Beep(BEEP_SHORT,2);
-		
-		Menu_LoadPage(PAGE_ESC_CALIBRATION);
-		while (1)
-		{  // loop forever
-			LoopESCCalibration();
-			Loop();
-		}
-	}			
-
+	
 	// Never go to MainLoop "fly loop" unless Sensors & RX is calibrated.
 	// This loop to protect against any bug that might make the quad start or KB stick click
 	// as in this case crash is a must.
 	while (!(Config.IsCalibrated & CALIBRATED_SENSOR) || !(Config.IsCalibrated & CALIBRATED_Stick_SECONDARY))
-	{
+	{	
+		menuEnabled[PAGE_STABILIZATION]=0;
+		menuEnabled[PAGE_SELF_LEVELING]=0;
+		menuEnabled[PAGE_MISC_SETTING] =0;
+		menuEnabled[PAGE_ESC_CALIBRATION]=0; // u cannot make ESC Calibration as sticks are not ready for testing.
 		Loop();
 	}
 	
+	
+	// This loop better be under the sensor/stick loop to avoid entering this mode is sticks are not calibrated.
+	// This is no longer a condition after adding menuEnabled[PAGE_ESC_CALIBRATION]=0
+	if (Config.IsESCCalibration==ESCCalibration_ON)		
+	{
+		Beeper_Beep(BEEP_SHORT,2);
+		
+		Menu_LoadPage(PAGE_HOME_ESC_CALIBRATION);
+		while (1)
+		{  // loop forever
+			Loop();
+			LoopESCCalibration();
+		}
+	}			
+
+	Menu_EnableAllItems();
 	
 	// Simulate
 	//IsArmed = true;
@@ -178,7 +190,6 @@ int main(void)
 
 void LoopESCCalibration (void)
 {
-	RX_CopyLatestReceiverValues();
 	
 	MotorOut[0] = RX_Latest[ActiveRXIndex][RXChannel_THR];
 	MotorOut[1] = RX_Latest[ActiveRXIndex][RXChannel_THR];

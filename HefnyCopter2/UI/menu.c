@@ -44,6 +44,15 @@ typedef struct
 #include "../Include/menu_text.h"
 #include "../Include/menu_screen.h"
 
+	
+PROGMEM const prog_char* scrESCCal[] = 
+	{
+		scrESCCal0,
+		scrESCCal1
+	};
+//////////////////////////////////////////////////////////////////////////
+
+	
 void _helper_DisplayBiStateText(uint8_t Row, uint8_t Col, PGM_P strTrue, PGM_P strFalse, bool Condition )
 {
 
@@ -306,7 +315,16 @@ uint8_t doMenu(menu_t *menu)
 void _hMenu()
 {
 	if (doMenu(&mnuMain))
-		Menu_LoadPage(mnuMain.marked + MENU_START_INDEX);
+	{	// if menu item selected then open it if...
+		if (menuEnabled[mnuMain.marked + MENU_START_INDEX]==1)
+		{ //... the menu item is enabled 
+			Menu_LoadPage(mnuMain.marked + MENU_START_INDEX);
+		}
+		else
+		{ //... else flash light and ignore command
+			LED_FlashOrangeLED(LED_SHORT_TOGGLE,2);
+		}
+	}
 }
 
 
@@ -674,6 +692,10 @@ void _hESCCalibration()
 			Save_Config_to_EEPROM();
 			while (true); // loop forever	
 		}
+		else
+		{ //...flash as error
+			LED_FlashOrangeLED(LED_SHORT_TOGGLE,2);
+		}			
 				
 	}
 	
@@ -969,7 +991,8 @@ void _hFactoryReset()
 	{
 		Save_Default_Config_to_EEPROM();
 		//RST_CTRL
-		while(1); // Loop for reset
+		Menu_LoadPage(PAGE_RESTART);
+		return;
 	}
 }
 
@@ -1032,4 +1055,17 @@ PGM_P tsmMain(uint8_t index)
 PGM_P tsmLoadModelLayout(uint8_t index)
 {
 	//return (PGM_P)pgm_read_word(&mixerTable[index].Name);
+}
+
+
+void Menu_EnableAllItems ()
+{
+	
+	for (int i=0;i <16;++i)
+	{
+		
+		menuEnabled[i]=1;
+	}
+	menuEnabled[PAGE_DEBUG]=0;
+	
 }

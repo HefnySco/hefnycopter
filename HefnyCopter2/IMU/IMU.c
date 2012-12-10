@@ -114,7 +114,7 @@ void IMU_P2D (void)
 			+   PID_Calculate_ACC (Config.AccParams[0], &PID_AccTerms[1],CompAccY);
 		
 		// YAW
-		double NavGyro = CompGyroZ;// - (RX_Snapshot[RXChannel_RUD]>>3);
+		double NavGyro = CompGyroZ - (RX_Snapshot[RXChannel_RUD]>>3);
 		gyroYaw = 
 				PID_Calculate (Config.GyroParams[1], &PID_GyroTerms[2],NavGyro); 
 		
@@ -128,8 +128,15 @@ int16_t IMU_HeightKeeping ()
 	Landing *= Config.AccParams[1]._P; // PID_Terms[2].I not used for YAW 
 	Limiter(Landing , Config.AccParams[1]._PLimit);
 	*/
-	PID_AccTerms[2].D2 = (PID_AccTerms[2].D2 + (100-CompAccZ))/2; // moving average
-	int16_t Landing = PID_Calculate (Config.AccParams[1], &PID_AccTerms[2],PID_AccTerms[2].D2);
+	if (CompAccZ < 0)
+	{
+		int16_t Landing = PID_Calculate_ACC (Config.AccParams[1], &PID_AccTerms[2],CompAccZ);
+	}
+	else
+	{
+		
+		PID_AccTerms[2].I=0;
+	}
 	
 	
 	return Landing;
