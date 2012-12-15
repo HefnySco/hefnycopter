@@ -87,7 +87,10 @@ void Setup (void)
 	M2_DIR = OUTPUT;
 	M3_DIR = OUTPUT;
 	M4_DIR = OUTPUT;
-	
+	M1 = 0;
+	M2 = 0;
+	M3 = 0;
+	M4 = 0;
 	
 	Buzzer_DIR = OUTPUT;
 	LED_Orange_DIR = OUTPUT;
@@ -128,7 +131,7 @@ if (Config.RX_mode==RX_mode_UARTMode)
 	
 	sei();
 	
-	delay_ms(20);
+	//delay_ms(20);
     
 }
 
@@ -148,35 +151,19 @@ int main(void)
 	// Never go to MainLoop "fly loop" unless Sensors & RX is calibrated.
 	// This loop to protect against any bug that might make the quad start or KB stick click
 	// as in this case crash is a must.
-	while (!(Config.IsCalibrated & CALIBRATED_SENSOR) || !(Config.IsCalibrated & CALIBRATED_Stick_SECONDARY))
-	{	
-		menuEnabled[PAGE_STABILIZATION]=0;
-		menuEnabled[PAGE_SELF_LEVELING]=0;
-		menuEnabled[PAGE_MISC_SETTING] =0;
-		menuEnabled[PAGE_ESC_CALIBRATION]=0; // u cannot make ESC Calibration as sticks are not ready for testing.
-		Loop();
-	}
+	LoopCalibration ();
+
 	
 	
 	// This loop better be under the sensor/stick loop to avoid entering this mode is sticks are not calibrated.
 	// This is no longer a condition after adding menuEnabled[PAGE_ESC_CALIBRATION]=0
 	if (Config.IsESCCalibration==ESCCalibration_ON)		
 	{
-		Beeper_Beep(BEEP_SHORT,2);
+		LoopESCCalibration ();
 		
-		Menu_LoadPage(PAGE_HOME_ESC_CALIBRATION);
-		while (1)
-		{  // loop forever
-			Loop();
-			LoopESCCalibration();
-		}
-	}			
+	}			 
 
 	Menu_EnableAllItems();
-	
-	// Simulate
-	//IsArmed = true;
-	//Menu_LoadPage (PAGE_HOME_ARMED);
 	
 				
 	while(1)
@@ -187,17 +174,31 @@ int main(void)
     }
 }
 
+// Never go to MainLoop "fly loop" unless Sensors & RX is calibrated.
+// This loop to protect against any bug that might make the quad start or KB stick click
+// as in this case crash is a must.
+void LoopCalibration (void)
+{
+	menuEnabled[PAGE_STABILIZATION]=0;
+	menuEnabled[PAGE_SELF_LEVELING]=0;
+	menuEnabled[PAGE_MISC_SETTING] =0;
+	menuEnabled[PAGE_ESC_CALIBRATION]=0; // u cannot make ESC Calibration as sticks are not ready for testing.
+		
+	while (!(Config.IsCalibrated & CALIBRATED_SENSOR) || !(Config.IsCalibrated & CALIBRATED_Stick_SECONDARY))
+	{	
+		Loop();
+	}
+}
 
 void LoopESCCalibration (void)
 {
 	
-	MotorOut[0] = RX_Latest[ActiveRXIndex][RXChannel_THR];
-	MotorOut[1] = RX_Latest[ActiveRXIndex][RXChannel_THR];
-	MotorOut[2] = RX_Latest[ActiveRXIndex][RXChannel_THR];
-	MotorOut[3] = RX_Latest[ActiveRXIndex][RXChannel_THR];		
-
-	Motor_GenerateOutputSignal();
-	
+	Menu_LoadPage(PAGE_HOME_ESC_CALIBRATION);
+	while (1)
+	{
+		Loop();
+	}		
+		
 }
 
 
@@ -207,7 +208,7 @@ void LoopESCCalibration (void)
 */
 void Loop(void)
 {
-	RX_CopyLatestReceiverValues();
+	RX_CopyLatestReceiverValues(); // update RX_Latest also IS_TXn_GOOD
 	
 	if (TCNT_X_snapshot2==0) TCNT_X_snapshot2 = TCNT2_X;
 	if ( (TCNT2_X- TCNT_X_snapshot2) > LCD_RefreashRate )  
@@ -238,9 +239,7 @@ void MainLoop(void)
 	
 	
 	
-	// simulate
-	//RX_Latest[RXChannel_THR]=500;
-    ATOMIC_BLOCK(ATOMIC_FORCEON)
+	ATOMIC_BLOCK(ATOMIC_FORCEON)
     {
       CurrentTCNT1_X = TCNT1_X;
     }
@@ -253,7 +252,7 @@ void MainLoop(void)
 	{   // in Buddy mode AUX channel is used for instance switching.
 		if (IS_TX2_GOOD)
 		{
-			if (RX_Latest[1/*Always read from Secondary*/][RXChannel_AUX] < STICK_RIGHT)
+			if (RX_Latest[RX_MAIN][RXChannel_AUX] < STICK_RIGHT)
 			{
 				ActiveRXIndex = 0;		// use Primary RX
 			}
@@ -265,8 +264,9 @@ void MainLoop(void)
 	}			
 	
 		
-	// Slow Actions inside
+	////////// Slow Actions inside
 	// HINT: you can try to skip this if flying to save time for more useful tasks as user cannot access menu when flying
+	
 	if (TCNT_X_snapshot2==0) TCNT_X_snapshot2 = CurrentTCNT1_X;
 	else if ( ((CurrentTCNT1_X- TCNT_X_snapshot2) > 4) )  // TCNT1_X ticks in 32.768us
 	{
@@ -288,7 +288,7 @@ void MainLoop(void)
 		}	
 		if (SystemErrorType != SYS_ERR_NON)
 		{
-			Buzzer =ON ;	
+			Buzzer =~Buzzer ;	
 		}
 		else
 		{
@@ -304,7 +304,7 @@ void MainLoop(void)
 		TCNT_X_snapshot2=0;
 	}		
 	
-
+	//////////////// EOF Slow Loop
 	
 	if (RX_Snapshot[RXChannel_THR] < STICKThrottle_ARMING) 
 	{	
@@ -316,13 +316,6 @@ void MainLoop(void)
 		
 		// Stop motors if Throttle Stick is less than minimum.
 		ZEROMotors();
-		
-		PID_GyroTerms[0].I=0;
-		PID_GyroTerms[1].I=0;
-		PID_GyroTerms[2].I=0;
-		PID_AccTerms [0].I=0;
-		PID_AccTerms [1].I=0;
-		PID_AccTerms [2].I=0;
 		
 		// Send Setting Data only when Throttle is down.
 		if (Config.RX_mode==RX_mode_UARTMode)
@@ -356,7 +349,7 @@ void MainLoop(void)
 			RX_Snapshot[RXChannel_RUD] = (RX_Latest[ActiveRXIndex][RXChannel_RUD] * 3) / 5 ;
 			
 			int16_t Landing;
-			if (RX_Latest[1/*Always read from Secondary*/][RXChannel_AUX] < STICK_RIGHT)
+			if (RX_Latest[RX_MAIN][RXChannel_AUX] < STICK_RIGHT)
 			{
 				LED_Orange=OFF;
 				Landing = IMU_HeightKeeping();
@@ -436,7 +429,7 @@ void MainLoop(void)
 				
 				MotorOut[0] += RX_Snapshot[RXChannel_ELE] ;
 				MotorOut[3] -= RX_Snapshot[RXChannel_ELE] ;
-		//
+		
 				MotorOut[0] -= RX_Snapshot[RXChannel_RUD] ;
 				MotorOut[1] += RX_Snapshot[RXChannel_RUD] ;
 				MotorOut[2] += RX_Snapshot[RXChannel_RUD] ;
@@ -475,8 +468,9 @@ void MainLoop(void)
 		{
 			Motor_GenerateOutputSignal();	
 			Disarm();	
+			SystemErrorType = SET_SYS_ERR_SIGNAL; // only error if signal lost while arming
 		}
-		SystemErrorType = SET_SYS_ERR_SIGNAL;
+		
 		
 		//return ; // Do nothing all below depends on TX.
 	}
@@ -496,14 +490,15 @@ void MainLoop(void)
 
 
 // This function is never called if there is a calibration issue.
+// called in true section of if (RX_Snapshot[RXChannel_THR] < STICKThrottle_ARMING) 
 void HandleSticksForArming (void)
 {
+	
 	if ((UIEnableStickCommands==false) || (ActiveRXIndex!=1) || (!IS_TX2_GOOD)) return ; // you cannot use Primary to Arm and Disarm
 	SystemErrorType = CLR_SYS_ERR_SIGNAL;
 	
 	if (TCNT1_X_snapshot1==0)  TCNT1_X_snapshot1 = CurrentTCNT1_X; // start counting
 		
-		/////ReadGainValues(); // keep reading values of POTS here. as we can change the value while quad is armed. but sure it is on land and motors are off.
 		// DisArm Check
 		if (IsArmed == true) 
 		{
@@ -536,8 +531,8 @@ void HandleSticksForArming (void)
 				bResetTCNR1_X = false;
 				if ( (CurrentTCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_LONG_TIME )
 				{
-					if ((Config.RX_mode==RX_mode_BuddyMode) && (!IS_TX1_GOOD)) return; // in Buddy mode you cannot arm is there is no signal from TX1
-					//TODO: Calibrate Gyros Here to get used on Temperature
+					if ((Config.RX_mode==RX_mode_BuddyMode) && (!IS_TX1_GOOD)) return; 
+					// in Buddy mode you cannot arm is there is no signal from TX1
 					
 					Arm();
 					return ;
@@ -577,58 +572,56 @@ void HandleSticksForArming (void)
 
 
 // This function is never called if there is a calibration issue.
+// called in FALSE section of if (RX_Snapshot[RXChannel_THR] < STICKThrottle_ARMING) 
 void HandleSticksAsKeys (void)
 {
-		if ((UIEnableStickCommands==false) || (ActiveRXIndex!=1) || (!IS_TX2_GOOD))  return ; // you cannot use Primary as keys
+		if ((UIEnableStickCommands==false) || (!IS_TX2_GOOD))  return ; // you cannot use Primary as keys
 
-	
-		if (RX_Snapshot[RXChannel_THR] > STICKThrottle_HIGH)
-		{ // if Throttle is high and stick are calibrated
+		// if Throttle is high and stick are calibrated
 		
-				if (TCNT1_X_snapshot1==0)  TCNT1_X_snapshot1 = CurrentTCNT1_X; // start counting
+		if (TCNT1_X_snapshot1==0)  TCNT1_X_snapshot1 = CurrentTCNT1_X; // start counting
 				
-	 			if ((RX_Latest[ActiveRXIndex][RXChannel_ELE]) > STICK_LEFT) 
-				{
-					bResetTCNR1_X = false;
-					if ( (CurrentTCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_SHORT_TIME )
-					{
-						_TXKeys = KEY_3;
-						TCNT1_X_snapshot1 =0; // reset timer
-					}		
-				
-				}
-				else if ((RX_Latest[ActiveRXIndex][RXChannel_ELE]) < STICK_RIGHT) 
-				{
-					bResetTCNR1_X = false;
-					if ( (CurrentTCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_SHORT_TIME )
-					{
-						_TXKeys = KEY_2;
-						TCNT1_X_snapshot1 =0; // reset timer
-					}		
-				
-				}		 	 
-				
-				if ((RX_Latest[ActiveRXIndex][RXChannel_AIL]) > STICK_LEFT) 
-				{
-					bResetTCNR1_X = false;
-					if ( (CurrentTCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_SHORT_TIME )
-					{
-						_TXKeys = KEY_4;
-						TCNT1_X_snapshot1 =0; // reset timer
-					}		
-				
-				}
-				else if ((RX_Latest[ActiveRXIndex][RXChannel_AIL]) < STICK_RIGHT) 
-				{
-					bResetTCNR1_X = false;
-					if ( (CurrentTCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_SHORT_TIME )
-					{
-						_TXKeys = KEY_1;
-						TCNT1_X_snapshot1 =0; // reset timer
-					}		
-				
-				}		 		
-			}	
+	 	if ((RX_Latest[RX_MAIN][RXChannel_ELE]) > STICK_LEFT) 
+		{
+			bResetTCNR1_X = false;
+			if ( (CurrentTCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_SHORT_TIME )
+			{
+				_TXKeys = KEY_3;
+				TCNT1_X_snapshot1 =0; // reset timer
+			}		
+		
+		}
+		else if ((RX_Latest[RX_MAIN][RXChannel_ELE]) < STICK_RIGHT) 
+		{
+			bResetTCNR1_X = false;
+			if ( (CurrentTCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_SHORT_TIME )
+			{
+				_TXKeys = KEY_2;
+				TCNT1_X_snapshot1 =0; // reset timer
+			}		
+		
+		}		 	 
+		
+		if ((RX_Latest[RX_MAIN][RXChannel_AIL]) > STICK_LEFT) 
+		{
+			bResetTCNR1_X = false;
+			if ( (CurrentTCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_SHORT_TIME )
+			{
+				_TXKeys = KEY_4;
+				TCNT1_X_snapshot1 =0; // reset timer
+			}		
+		
+		}
+		else if ((RX_Latest[RX_MAIN][RXChannel_AIL]) < STICK_RIGHT) 
+		{
+			bResetTCNR1_X = false;
+			if ( (CurrentTCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_SHORT_TIME )
+			{
+				_TXKeys = KEY_1;
+				TCNT1_X_snapshot1 =0; // reset timer
+			}		
+		
+		}		 		
 			
 }
 

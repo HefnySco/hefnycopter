@@ -10,7 +10,7 @@
 #define VERSION_H_
 
 
-static const prog_char strVersionInfo[] = "HefnyCopter2 v0.60";
+static const prog_char strVersionInfo[] = "HefnyCopter2 v0.7.1";
 
 /*
 version 0.1
@@ -78,19 +78,26 @@ version 0.52
 version 0.6
 * Adding RUD, AIL, ELE deviation of ACC data in Plus mode.
 
+
 version 0.7
 * UI:
 *	. Many improvement on Menu UI wording and styles.
 *	.  Disabled menu items with flashing to allow more smoother setup.
 *	.  Adding Board Positioning X or Plus... more flexible to your frame
 *	.  Disable some menu items if Sticks and Sensors are not calibrated to ease setting process.
-*	.  Adding Restart Screen.
+*	.  Adding Restart Screen notification.
+*	.  If Voltage error then voltage on homepage is highlighted.
 * IMU:
 *	. Update Landing Logic.
 *	. Acc_Z =0 instead of 100 as a default value.
 *	. Increase (I) only when there is a condition: if (abs(Value) > abs(PID_Term->Error))
 *	. Update Logic for PID_ACC to ZERO I.
-ToDO:
+* Function:
+*	. Adjusting ESC Calibration... was not working correct... now the signal comes from ISR of RX to M1..4 directly to gurantee correct programming signal length.
+*	. RX_Main handles acts as buttons even if RX_Trainer is selected..
+*		.. You can arm only with the active RX.
+*		.. Even if RX_Main is selected you cannor ARM if RX_Trainer signal does not exist.
+*
 
 
 

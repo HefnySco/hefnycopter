@@ -23,5 +23,5 @@ double  CompAngleZ;
 //void IMU_Kalman (void);
 //void IMU_CalculateAngles (void);
 void IMU_P2D (void);
-int16_t IMU_HeightKeeping ();
+double IMU_HeightKeeping ();
 #endif /* IMU_H_ */

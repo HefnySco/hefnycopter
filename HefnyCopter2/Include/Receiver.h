@@ -12,7 +12,7 @@
 
 //extern int16_t RX[RX_CHANNELS];
 //extern uint16_t RX_raw[RX_CHANNELS];
-uint8_t RX_Good;
+volatile uint8_t RX_Good;
 
 #define RX_MODE_PWM		0
 #define RX_MODE_CPPM	1
@@ -37,6 +37,8 @@ uint8_t RX_Good;
 #define TX2_CONNECTED_ERR			(RX_Good  & 0b00101111) // should equal to ZERO
 #define TX2_FOUND_ERR				(RX_Good  & 0b00011111) // should equal to ZERO
 
+#define RX_MAIN						1
+#define RX_TRAINER					0
 
 void rxInit							(uint8_t mode);
 void RX_StickCenterCalibrationInit	(uint8_t RXIndex);

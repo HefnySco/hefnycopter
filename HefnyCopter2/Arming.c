@@ -43,4 +43,12 @@ void Arm (void)
 	TCNT1_X_snapshot1 =0; // reset timer
 	TCNT_X_snapshotAutoDisarm=0;				
 	Menu_LoadPage (PAGE_HOME_ARMED);
+	
+	PID_GyroTerms[0].I=0;
+	PID_GyroTerms[1].I=0;
+	PID_GyroTerms[2].I=0;
+	PID_AccTerms [0].I=0;
+	PID_AccTerms [1].I=0;
+	PID_AccTerms [2].I=0;
+		
 }

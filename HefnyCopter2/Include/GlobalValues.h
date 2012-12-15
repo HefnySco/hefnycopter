@@ -20,9 +20,10 @@ int8_t SystemErrorType;
 #define SYS_ERR_NON				0b00000000
 #define CLR_SYS_ERR_SIGNAL		(SystemErrorType & 0b11111110)
 #define SET_SYS_ERR_SIGNAL		(SystemErrorType | 0b00000001)
+#define IS_SYS_ERR_SIGNAL		(SystemErrorType & 0b00000001)	
 #define CLR_SYS_ERR_VOLTAGE		(SystemErrorType & 0b11111101)
 #define SET_SYS_ERR_VOLTAGE		(SystemErrorType | 0b00000010)
-
+#define IS_SYS_ERR_VOLTAGE		(SystemErrorType & 0b00000010)
 
 //Timer
 //#define 
@@ -55,7 +56,7 @@ char sXDeg[20];
 // this allows gyros to stabilize better when full throttle applied
 #define MAX_COLLECTIVE		800
 // trimming value for motors when generating PWM signals.
-#define MOTORS_HIGH_VALUE	1000  
+#define MOTORS_HIGH_VALUE	1150 //1100 = 2.0 
 #define MOTORS_IDLE_VALUE	100
 // Defines output rate to ESC/Servo
 // either define by setting ESC_RATE (Max is approx 495Hz)
@@ -153,7 +154,7 @@ typedef struct
 {
 	//int16_t minSource,maxSource;
 	//int16_t minDest,maxDest;
-	int16_t P,I,D,Error,D2,D2Error
+	float P,I,D,Error,D2,D2Error
 } pid_terms_t;
 
 

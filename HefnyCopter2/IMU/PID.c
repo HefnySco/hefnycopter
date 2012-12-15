@@ -88,36 +88,45 @@ int16_t P2D_Calculate (pid_param_t PID_Params, pid_terms_t PID_Term, int16_t  Gy
 //
 
 
-int16_t PID_Calculate_ACC (pid_param_t PID_Params, pid_terms_t *PID_Term, double  Value)
+float PID_Calculate_ACC (pid_param_t PID_Params, pid_terms_t *PID_Term, double  Value)
 {
-	double Output;
+	float Output;
 		
 		// Calculate Terms 
-	    PID_Term->P  = ((Value * PID_Params._P) / 10);						
+	    PID_Term->P  = ((float)(Value * PID_Params._P) / 10.0f);						
 		
 		// Increment by 1 always ... dont use value to increment.
-		if (Value>2)
-		{
-			PID_Term->I += (PID_Params._I / 10);						    		
-		}
-		else if	(Value<-2)
-		{	
-			PID_Term->I -= (PID_Params._I / 10 );						    		
-		}
-		else
-		{
+		
+		
+		double AbsValue = abs (Value);
+		
+		/*
+		// I Logic Here:
+		// Increment or Decrement by PID_Params._I no value.
+		// Reset I whenever sign of value changed because this means overshot.
+		*/
+		if ((abs(Value - PID_Term->Error) > AbsValue ) || (Value ==0))
+		{  // Zero I if different signs.
 			PID_Term->I =0;
-		}			
+		}		
+		if (Value > 0)
+		{
+			PID_Term->I += (float)(PID_Params._I / 10.0f);						    		
+		}
+		else if (Value < 0)
+		{	
+			PID_Term->I -= (float)(PID_Params._I / 10.0f );						    		
+		}
 				
 		
-		PID_Term->D= ((Value - PID_Term->Error) * PID_Params._D) / 10 ;
+		PID_Term->D= (float)((float)(Value - PID_Term->Error) * (float)PID_Params._D) / 10.0f ;
 		PID_Term->Error = Value;	
 		
 				
 		// Limit boundaries to custom values defined by user.
-		PID_Term->I= Limiter(PID_Term->I, PID_Params._ILimit);
-		PID_Term->P= Limiter(PID_Term->P, PID_Params._PLimit);
-	    PID_Term->D= Limiter(PID_Term->D, PID_Params._DLimit);
+		PID_Term->I= Limiterf(PID_Term->I, PID_Params._ILimit);
+		PID_Term->P= Limiterf(PID_Term->P, PID_Params._PLimit);
+	    PID_Term->D= Limiterf(PID_Term->D, PID_Params._DLimit);
 	
 		Output = (PID_Term->P + PID_Term->I + PID_Term->D);	// P + I + D
 		//Output = Output / 10;
@@ -125,39 +134,37 @@ int16_t PID_Calculate_ACC (pid_param_t PID_Params, pid_terms_t *PID_Term, double
 	
 }
 
-int16_t PID_Calculate (pid_param_t PID_Params, pid_terms_t *PID_Term, double  Value)
+float PID_Calculate (pid_param_t PID_Params, pid_terms_t *PID_Term, double  Value)
 {
-		double Output;
+		float Output;
 		
 		// Calculate Terms 
-	    PID_Term->P  = ((Value * PID_Params._P) / 10);						
+	    PID_Term->P  = ((float)(Value * PID_Params._P) / 10.0f);						
 		
 		
 		
 		int16_t DeltaError = (Value - PID_Term->Error);
 		
-		
-		double AbsValue = abs (Value);
-		
-		if (abs(Value - PID_Term->Error)) > AbsValue )
-		{  // Zero I if different signs.
-			PID_Term->I =0;
-		} else
-		if (abs(Value) > abs(PID_Term->Error))
+		/*
+		// I Logic here:
+		// DEAD band = 2
+		// Increment or Decrement by Value * PID_Params._I 
+		*/
+		if ((Value > 2) || (Value < -2))
 		{	// only increment I when the Value is increasing compared to the old one, also use [-1,1] as deadband.
-				PID_Term->I += ((Value * PID_Params._I) / 30) ;	
+			PID_Term->I += (float)((float)(Value * PID_Params._I) / 30.0f) ;	
 		}
 		
 		
 		
-		PID_Term->D= (DeltaError * PID_Params._D) / 10 ;
+		PID_Term->D= (float)(DeltaError * PID_Params._D) / 10.0f ;
 		PID_Term->Error = Value;	
 		
 				
 		// Limit boundaries to custom values defined by user.
-		PID_Term->I= Limiter(PID_Term->I, PID_Params._ILimit);
-		PID_Term->P= Limiter(PID_Term->P, PID_Params._PLimit);
-	    PID_Term->D= Limiter(PID_Term->D, PID_Params._DLimit);
+		PID_Term->I= Limiterf(PID_Term->I, PID_Params._ILimit);
+		PID_Term->P= Limiterf(PID_Term->P, PID_Params._PLimit);
+	    PID_Term->D= Limiterf(PID_Term->D, PID_Params._DLimit);
 	
 		Output = (PID_Term->P + PID_Term->I + PID_Term->D);	// P + I + D
 		//Output = Output / 10;

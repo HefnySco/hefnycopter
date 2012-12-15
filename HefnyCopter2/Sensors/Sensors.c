@@ -108,7 +108,7 @@ void Sensors_Calibrate (void)
 		nResult[GYRO_Y_Index] += ADCPort_Get(GYRO_Y_PNUM);
 		nResult[GYRO_Z_Index] += ADCPort_Get(GYRO_Z_PNUM); 
 		
-		_delay_ms(10);
+		_delay_ms(40);
 		LED_Orange =~LED_Orange;
 	}
 	

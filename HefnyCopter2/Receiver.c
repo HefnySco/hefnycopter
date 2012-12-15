@@ -107,9 +107,13 @@ ISR (RX2_ALL_vect)
 		if (RX2_COLL)
 		{
 			RX_raw[1][RXChannel_THR]=TCNT1;
+			if (Config.IsESCCalibration==ESCCalibration_ON)
+			{M1=1;M2=1;M3=1;M4=1;}
 		}
 		else
 		{
+			if ((Config.IsESCCalibration==ESCCalibration_ON) && (IS_TX2_GOOD))
+			{M1=0;M2=0;M3=0;M4=0;}
 			CalculateSignalLength2 (RXChannel_THR);
 			RX2_LastValidSignal_timestamp = TCNT1_X;
 			RX_Good = TX2_CONNECTED_ERR;  // CLR bit 5 ---  Status = OK
@@ -141,6 +145,7 @@ ISR (RX1_COLL_vect)
 	if (RX1_COLL)
 	{
 		RX_raw[0][RXChannel_THR]=TCNT1;
+
 	}
 	else
 	{

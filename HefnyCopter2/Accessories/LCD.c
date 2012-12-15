@@ -298,11 +298,11 @@ void LCD_WritePadded_P(const char *s, uint8_t len)
 void LCD_WriteValue_double(uint8_t x, uint8_t y, double value,  BOOL LCDReverse)
 {
 	char s[7];
-	dtostrf(value, 4,2, s);
+	dtostrf(value, 5,2, s);
 	//itoa(value, s, 10);
 	lcdReverse(LCDReverse);
 	LCD_SetPos(x, y);
-	LCD_WritePadded(s, 4);
+	LCD_WritePadded(s, 5);
 	lcdReverse(0);
 }
 

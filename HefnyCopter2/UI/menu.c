@@ -405,7 +405,7 @@ void _hHomePage()
 	
 	// Write Voltage
 	//LCD_SetPos(2, 30);
-	LCD_WriteValue_double(2,30,Sensor_GetBattery()/10.0f,false);
+	LCD_WriteValue_double(2,30,Sensor_GetBattery()/10.0f,IS_SYS_ERR_VOLTAGE);
 	
 	_helper_DisplayRXStatus(5);
 	
@@ -585,6 +585,7 @@ void _hReceiverTest()
 BOOL bError; 
 void _hStickCentering()
 {
+	uint8_t i ;
 	UIEnableStickCommands=false; // you cannot use sticks here. for arming or as buttons.
 	
 	if (IS_INIT)
@@ -598,7 +599,7 @@ void _hStickCentering()
 		if (!bError)
 		{
 			// Save config
-			for (uint8_t i = 0; i < RXChannels; i++)
+			for (i = 0; i < RXChannels; i++)
 			{
 				Config.RX_Mid[ActiveRXIndex][i] = (RX_MAX_raw[ActiveRXIndex][i]+RX_MIN_raw[ActiveRXIndex][i])/2;
 				Config.RX_Min[ActiveRXIndex][i] = RX_MIN_raw[ActiveRXIndex][i];
@@ -614,6 +615,12 @@ void _hStickCentering()
 		}
 		
 	}
+	
+	if (KEY2)
+	{
+		RX_StickCenterCalibrationInit(ActiveRXIndex);				
+	}
+	
 	bError = false;
 	RX_StickCenterCalibration(ActiveRXIndex);
 	for (uint8_t i = 0; i < RXChannels; i++)
@@ -653,12 +660,11 @@ void _hSensorCalibration()
 		
 	if (KEY4)
 	{
-		
-		for (i=0; i<10;++i)
+		// Delay to allow not touching the board.		
+		for (i=0; i<5;++i)
 		{
+			LED_FlashOrangeLED (200,2);
 			Beeper_Beep(BEEP_SHORT,1);
-			delay_ms (500); // delay to avoid click vibration.	
-		
 		}
 	
 		Sensors_Calibrate ();
@@ -690,7 +696,8 @@ void _hESCCalibration()
 		{
 			Config.IsESCCalibration=ESCCalibration_ON;
 			Save_Config_to_EEPROM();
-			while (true); // loop forever	
+			Menu_LoadPage(PAGE_RESTART);
+			return;
 		}
 		else
 		{ //...flash as error
@@ -788,7 +795,7 @@ void _hStabilization()
 			case 2: startEditMode(&(Config.GyroParams[subindex]._PLimit),0,500,TYPE_INT16); return ;
 			case 3: startEditMode(&(Config.GyroParams[subindex]._I),-500,500,TYPE_INT16);  return ;
 			case 4: startEditMode(&(Config.GyroParams[subindex]._ILimit),0,500,TYPE_INT16); return ;
-			case 5: startEditMode(&(Config.GyroParams[subindex]._D),-500,500,TYPE_INT16);  return ; // negative D
+			case 5: startEditMode(&(Config.GyroParams[subindex]._D),-500,500,TYPE_INT16);  return ; 
 			case 6: startEditMode(&(Config.GyroParams[subindex]._DLimit),0,500,TYPE_INT16); return ;
 			case 7: startEditMode(&(Config.GyroParams[subindex].ComplementaryFilterAlpha),0,999,TYPE_INT16); return ;
 		}
@@ -857,11 +864,11 @@ void _hSelfLeveling()
 	lcdReverse(subpage == 0);
 	if (subindex==0)
 	{
-		strcpy_P(sXDeg,PSTR("ACC X & Y"));
+		strcpy_P(sXDeg,PSTR("ACC X & Y    "));
 	}
 	else
 	{
-		strcpy_P(sXDeg,PSTR("ACC Z    "));
+		strcpy_P(sXDeg,PSTR("ACC-Z damping"));
 	}
 	LCD_WriteStringex (0,0,sXDeg,0==subpage);
 	LCD_WriteValue(1,30,Config.AccParams[subindex]._P,3,1==subpage);
@@ -874,8 +881,8 @@ void _hSelfLeveling()
 	
 }
 
-int16_t AccTotal;
-int16_t OldAcc;
+//int16_t AccTotal;
+//int16_t OldAcc;
 
 
 
@@ -912,11 +919,16 @@ void _hDebug()
 		//LCD_WriteValue(i,72,StabilityMatrix_GX[i+12],4,false); 
 	//}
 	DisplayBuffer[9]=0;
-	LCD_WriteStringex(0,0,DisplayBuffer,false);
+	///////////LCD_WriteStringex(0,0,DisplayBuffer,false);   // UART RX
 	//LCD_WriteValue(0,48,PID_AccTerms[0].P,4,false);
 	//LCD_WriteValue(1,48,ACC_X_Offset,4,false); 
 	//LCD_WriteValue(2,48,Sensors_Latest[ACC_X_Index],4,false);
-	//LCD_WriteValue(3,48,CompAccX,4,false);
+	LCD_WriteValue_double(0,48,CompAccX,false);
+	LCD_WriteValue_double(1,48,PID_AccTerms[0].P,false);
+	LCD_WriteValue_double(2,48,PID_AccTerms[0].I,false);
+	LCD_WriteValue_double(3,48,PID_AccTerms[0].D,false);
+	LCD_WriteValue(4,48,gyroPitch,4,false);
+	
 	//LCD_WriteValue(3,0,CompGyroY,4,false);
 	//LCD_WriteValue(4,48,PID_AccTerms[0].I,4,false);
 	//LCD_WriteValue(5,48,PID_AccTerms[0].D,4,false);
@@ -1066,6 +1078,6 @@ void Menu_EnableAllItems ()
 		
 		menuEnabled[i]=1;
 	}
-	menuEnabled[PAGE_DEBUG]=0;
+	menuEnabled[PAGE_DEBUG]=1;
 	
 }

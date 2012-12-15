@@ -32,6 +32,13 @@ int arctan2(int y, int x) {                                    // http://www.dsp
 }
 
 
+float Limiterf (float Value, float Limit)
+{
+	if (Value > Limit) return   Limit;
+	if (Value < -Limit) return -Limit;
+	
+	return Value;
+}
 
 int16_t Limiter (int16_t Value, int16_t Limit)
 {

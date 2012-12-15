@@ -94,8 +94,8 @@ void IMU_P2D (void)
 		
 		Alpha = Config.AccParams[0].ComplementaryFilterAlpha / 1000;
 		Beta = 1- Alpha;
-		CompAccY = (double) (Alpha * CompAccY) + (double) (Beta * (Sensors_Latest[ACC_Y_Index] - ACC_Y_Offset));
-		CompAccX = (double) (Alpha * CompAccX) + (double) (Beta * (Sensors_Latest[ACC_X_Index] - ACC_X_Offset));
+		CompAccY = (double) (Alpha * CompAccY) + (double) (Beta * (Sensors_Latest[ACC_Y_Index] )); // no Dynamic calibration - ACC_Y_Offset));
+		CompAccX = (double) (Alpha * CompAccX) + (double) (Beta * (Sensors_Latest[ACC_X_Index] )); // no Dynamic calibration - ACC_X_Offset));
 		
 		Alpha = Config.AccParams[1].ComplementaryFilterAlpha / 1000;
 		Beta = 1- Alpha;
@@ -106,36 +106,36 @@ void IMU_P2D (void)
 		// PITCH
 		gyroPitch = 
 				PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[0],CompGyroY);// - (RX_Snapshot[RXChannel_ELE] >> 3))
-			+   PID_Calculate_ACC (Config.AccParams[0], &PID_AccTerms[0],CompAccX);
+			+   PID_Calculate_ACC (Config.AccParams[0], &PID_AccTerms[0],-CompAccX);
 		
 		// ROLL
 		gyroRoll = 
 				PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[1],CompGyroX);// - (RX_Snapshot[RXChannel_AIL] >> 3))
-			+   PID_Calculate_ACC (Config.AccParams[0], &PID_AccTerms[1],CompAccY);
+			+   PID_Calculate_ACC (Config.AccParams[0], &PID_AccTerms[1],-CompAccY);
 		
 		// YAW
-		double NavGyro = CompGyroZ - (RX_Snapshot[RXChannel_RUD]>>3);
+		double NavGyro = CompGyroZ - (double)((float)RX_Snapshot[RXChannel_RUD]/8.0f);
 		gyroYaw = 
 				PID_Calculate (Config.GyroParams[1], &PID_GyroTerms[2],NavGyro); 
 		
 }
 
 
-int16_t IMU_HeightKeeping ()
+double IMU_HeightKeeping ()
 {
 	/*
 	int16_t Landing = (100 - CompAccZ) ;
 	Landing *= Config.AccParams[1]._P; // PID_Terms[2].I not used for YAW 
 	Limiter(Landing , Config.AccParams[1]._PLimit);
 	*/
-	if (CompAccZ < 0)
+	double Landing =0;
+	if (CompAccZ > 0)
 	{
-		int16_t Landing = PID_Calculate_ACC (Config.AccParams[1], &PID_AccTerms[2],CompAccZ);
-	}
-	else
-	{
-		
 		PID_AccTerms[2].I=0;
+	}
+	else 
+	{
+		Landing = PID_Calculate_ACC (Config.AccParams[1], &PID_AccTerms[2],CompAccZ);
 	}
 	
 	

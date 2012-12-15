@@ -195,7 +195,7 @@ static const prog_char _skBACKNEXT[]  = "BACK NEXT			  ";
 static const prog_char _skCANCEL[]    = "CANCEL				  ";
 static const prog_char _skEDIT[]      = "CANCEL  DOWN   UP  OK";
 static const prog_char _skSAVE[]      = "                 DONE";
-
+static const prog_char _skCLRDONE[]   = "BACK CLR         DONE";
 //////////////////////////////////////////////////////////////////////////
 // Menu Structure
 
@@ -232,7 +232,7 @@ static const page_t pages[] PROGMEM = {
 { _skBACK, _hSensorTest, scrSensorTest},
 { _skBACK, _hReceiverTest, scrReceiverTest},
 { _skCONTINUE, _hSensorCalibration, scrSensorTest},
-{ _skCONTINUE, _hStickCentering, scrReceiverTest},
+{ _skCLRDONE, _hStickCentering, scrReceiverTest},
 { _skCONTINUE, _hESCCalibration, scrESCCal0},
 ///* 11 */	{ _skPAGE, NULL, scrCPPMSettings},
 ///* 13 */	{ _skPAGE, NULL, scrMixerEditor},
