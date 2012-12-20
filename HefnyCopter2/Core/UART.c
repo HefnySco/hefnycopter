@@ -17,6 +17,9 @@
 #include "../Include/GlobalValues.h"
 #include "../Include/IO_config.h"
 #include "../Include/UART.h"
+#include "../Include/eepROM.h"
+#include "../Include/Arming.h"
+#include "../Include/Sensors.h"
 
 volatile uint8_t  RXIndex=0;
 volatile uint16_t LastRXTime;
@@ -35,14 +38,14 @@ ISR (USART1_RX_vect)
 	 while ( !(UCSR1A & (1<<RXC1))); 
 	 RXChar = UDR1;
 	 
-	  if ((c_state!=IDLE) && (TCNT1_X - LastRXTime) > 10) 
+	  if ((c_state!=IDLE) && (TCNT1_X - LastRXTime) > 20) 
 	   {
 		   // timeout ..
 		   c_state = IDLE;
 		   RXIndex =0;
 		   DisplayBuffer[4]=0;
-		   memcpy(DisplayBuffer,"OUT",3);
-		   return ;
+		   //memcpy(DisplayBuffer,"OUT",3);
+		   //return ;
 	   }
 	   RXBuffer[RXIndex]=RXChar;
 	   switch (c_state)
@@ -89,7 +92,7 @@ ISR (USART1_RX_vect)
 void ParseCommand ()
 {
 	int8_t CRC=0;
-	for (int i=0;i < SERIAL_BUFFERSIZE -1; ++i)
+	for (int i=0;i < SERIAL_BUFFERSIZE_1; ++i)
 	{
 		CRC +=RXBuffer[i];
 	}
@@ -100,22 +103,38 @@ void ParseCommand ()
 			case SERIAL_HEADER_DOCMD:
 				switch (RXBuffer[SERIAL_CMD_ID])
 				{
-					case SERIAL_CMD_LED_BLINK:
-						LED_FlashOrangeLED (LED_LONG_TOGGLE,8);
+					case SERIAL_CMD_LED_BLINK: // never  call while ARMED .... calling delay function will affect motor speed.
+						LED_FlashOrangeLED (LED_SHORT_TOGGLE,1);
 						DisplayBuffer[4]=0;
 						memcpy(DisplayBuffer,"LED",3);
+					break;
+					case SERIAL_CMD_READ_CONFIG:
+						Send_Data("C",1);
+						Send_Data(&Config,72);
+						Send_Data("E",1);
+					break;
+					case SERIAL_CMD_SAVE_CONFIG:
+						Save_Config_to_EEPROM();
+					break;
+					case SERIAL_CMD_CALIBRATE_ACC:
+						Sensors_Calibrate();								
 					break;
 				}
 			break;
 			case SERIAL_HEADER_SETVALUE:
-				memcpy ((void *) &Config + RXBuffer[SERIAL_DATA_OFFSET],&RXBuffer[SERIAL_DATA_VALUE], (int8_t) RXBuffer[SERIAL_DATA_LENGHT]);
+				LED_FlashOrangeLED (LED_SHORT_TOGGLE,4);
+				memcpy ((void *)&Config + RXBuffer[SERIAL_DATA_OFFSET] + (RXBuffer[SERIAL_DATA_OFFSET+1] * 0xff),(void *) &RXBuffer[SERIAL_DATA_VALUE], (int8_t) RXBuffer[SERIAL_DATA_LENGHT]);
 			break;
 		}
+		
+		c_state = IDLE;
+		RXIndex=0;
 	}
 	else
 	{
-		DisplayBuffer[4]=0;
-		memcpy(DisplayBuffer,"ERR",3);
+
+		DisplayBuffer[1]+='0';
+		//memcpy(DisplayBuffer,"ERR",3);
 	}		
 	
 	
@@ -152,6 +171,7 @@ void send_byte(uint8_t u8Data)
 	/////////delay_ms(10);
 	UDR1 = u8Data;
 }
+
 
 void Send_Data (void * msg, uint8_t len)
 {

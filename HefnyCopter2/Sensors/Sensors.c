@@ -39,12 +39,12 @@ void Sensors_Init(void)
 	GYRO_Y = INPUT;
 	GYRO_Z = INPUT;
 	
-	for (int i=0; i<20;++i)
-	{
-		
-		StabilityMatrix_GX[i]=0;
-		StabilityMatrix_GY[i]=0;
-	}
+	//for (int i=0; i<20;++i)
+	//{
+		//
+		//StabilityMatrix_GX[i]=0;
+		//StabilityMatrix_GY[i]=0;
+	//}
 }
 
 
@@ -119,6 +119,11 @@ void Sensors_Calibrate (void)
 		nResult[i] /=25;
 	}	
 	
+	Config.IsCalibrated = (Config.IsCalibrated | CALIBRATED_SENSOR);
+	for (i=0;i<6;++i)
+	Config.Sensor_zero[i] = nResult[i];
+		
+	
 	//nResult[ACC_Z_Index]-=100; // Sensor: horizontal, upward ... the caller of this function is responsible for updating Config.Sensor_zero[i] = nResult[i];
 		
 }
@@ -179,36 +184,36 @@ int16_t  Sensor_GetBattery(void)
 } 
 
 
-inline void DynamicCalibration (void)
-{
-	/* 
-	// Dynamic calibration of ACC
-	*/
-	if ((Sensors_Latest[ACC_X_Index] >= ACC_MIN) && (Sensors_Latest[ACC_X_Index] < ACC_MAX))
-	{
-		StabilityMatrix_GX[Sensors_Latest[ACC_X_Index]-ACC_MIN]+=1;
-	}
-	if ((Sensors_Latest[ACC_Y_Index] >= ACC_MIN) && (Sensors_Latest[ACC_Y_Index] < ACC_MAX))
-	{
-		StabilityMatrix_GY[Sensors_Latest[ACC_Y_Index]-ACC_MIN]+=1;
-	}
-	
-	uint16_t maxX=0, maxY=0;
-		
-	for (int i=0; i<20;++i)
-	{
-		if (StabilityMatrix_GX[i]> StabilityMatrix_GX[maxX])
-		{
-			maxX = i;
-		}
-		
-		if (StabilityMatrix_GY[i]> StabilityMatrix_GY[maxY])
-		{
-			maxY = i;
-		}
-		
-	}
-	
-	ACC_X_Offset = maxX + ACC_MIN;	/* Range from -10 to 9 */
-	ACC_Y_Offset = maxY + ACC_MIN;	/* Range from -10 to 9 */
-}
+//inline void DynamicCalibration (void)
+//{
+	///* 
+	//// Dynamic calibration of ACC
+	//*/
+	//if ((Sensors_Latest[ACC_X_Index] >= ACC_MIN) && (Sensors_Latest[ACC_X_Index] < ACC_MAX))
+	//{
+		//StabilityMatrix_GX[Sensors_Latest[ACC_X_Index]-ACC_MIN]+=1;
+	//}
+	//if ((Sensors_Latest[ACC_Y_Index] >= ACC_MIN) && (Sensors_Latest[ACC_Y_Index] < ACC_MAX))
+	//{
+		//StabilityMatrix_GY[Sensors_Latest[ACC_Y_Index]-ACC_MIN]+=1;
+	//}
+	//
+	//uint16_t maxX=0, maxY=0;
+		//
+	//for (int i=0; i<20;++i)
+	//{
+		//if (StabilityMatrix_GX[i]> StabilityMatrix_GX[maxX])
+		//{
+			//maxX = i;
+		//}
+		//
+		//if (StabilityMatrix_GY[i]> StabilityMatrix_GY[maxY])
+		//{
+			//maxY = i;
+		//}
+		//
+	//}
+	//
+	//ACC_X_Offset = maxX + ACC_MIN;	/* Range from -10 to 9 */
+	//ACC_Y_Offset = maxY + ACC_MIN;	/* Range from -10 to 9 */
+//}

@@ -16,6 +16,8 @@
 ///////////////////////////// Define Section
 
 
+#define PID_I_LEAK_RATE	0.1
+
 int8_t SystemErrorType; 
 #define SYS_ERR_NON				0b00000000
 #define CLR_SYS_ERR_SIGNAL		(SystemErrorType & 0b11111110)
@@ -79,6 +81,7 @@ volatile uint8_t ActiveRXIndex;			// 0: primary rx, 1: secondary rx, 3: buddy mo
 volatile uint16_t RX_Length   [2][RXChannels];
 volatile int16_t  RX_Latest   [2][RXChannels];   // the actual RX values that are used for calculations.
 int16_t			  RX_Snapshot    [RXChannels];
+int16_t			  RX_Snapshot_1  [RXChannels];
 // used for calibration...not initialized... true values are in Config in case IsCalibrated & Stick = True.
 uint16_t RX_MAX_raw			  [2][RXChannels];
 uint16_t RX_MIN_raw			  [2][RXChannels];
@@ -129,8 +132,8 @@ int8_t ACC_Y_Offset;
 #define ACC_MIN		-10
 #define ACC_MAX		10
 
-int16_t StabilityMatrix_GX[20];
-int16_t StabilityMatrix_GY[20];
+//int16_t StabilityMatrix_GX[20];
+//int16_t StabilityMatrix_GY[20];
 
 // USed for Scaling
 //double Pitch_Ratio;
@@ -218,11 +221,11 @@ typedef struct
 	uint8_t AutoDisarm;				//	offset: +5	
 	uint8_t IsESCCalibration;		//	offset: +6	
 	uint8_t ReceiverMode;			//	offset: +7	
-	uint8_t MixerIndex;				//	offset: +8	
+	uint8_t BoardOrientationMode;				//	offset: +8	
 	uint8_t QuadFlyingMode;			//	offset: +9	
 	uint8_t LCDContrast;			//	offset: +10	
 	uint8_t ThrottleMin;			//	offset: +11	
-	uint8_t HeightDampeningLimit;	//	offset: +12	
+	uint8_t StickScaling;	//	offset: +12	
 	uint8_t LVA;					//	offset: +14	
 	pid_param_t GyroParams[2];		//	offset: +15 Length	 + 28
 	pid_param_t AccParams[2];		//	offset: +43	Length	 + 28
@@ -230,7 +233,7 @@ typedef struct
 	//model_t Mixer;
 	uint16_t RX_Mid[2][RXChannels]; //	offset: 72	Length	+
 	uint16_t RX_Min[2][RXChannels];
-	uint8_t StickScaling[4];
+	uint8_t Reserved[4];
 	uint16_t Sensor_zero[SENSORS_ALL];
 } config_t;
 

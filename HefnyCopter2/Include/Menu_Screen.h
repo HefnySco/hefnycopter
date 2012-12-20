@@ -59,8 +59,8 @@ P_STR scrHomePage[] =
 	"Batt:\n"
 	"\n"
 	"\n"
-	"RX: -  SN:    ST: -"
-	;
+	"RX: -  SN:    ST: -\n"
+	"Fly:   Board:";
 	
 P_STR scrHomePageRestart[] = 
 	"\n"
@@ -125,6 +125,7 @@ P_STR scrSensorTest[] =
 
 P_STR scrModeSettings[] = 
 	"Buddy System:\n"
+	"Board Dir:\n"
 	;
 
 //P_STR scrStickScaling[] = 
@@ -138,7 +139,8 @@ P_STR scrModeSettings[] =
 P_STR scrMiscSettings[] = 
 	"Auto Disarm:\n"
 	"Volt Alarm:      /10v\n"
-	"Throttle min:"
+	"Throttle min:\n"
+	"Stick Scale:"
 	;
 
 

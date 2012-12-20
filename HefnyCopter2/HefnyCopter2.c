@@ -106,28 +106,26 @@ void Setup (void)
 	TCCR1B = 0;
 	TCCR1C = 0;
 	
-#ifdef PRIMARY_INPUT_RX
-				// clear interrupts
-#endif
-//#ifdef UART_ENABLED
+
 if (Config.RX_mode==RX_mode_UARTMode)
 {
 	UART_Init(10); //57600 = 20   115200=10
 }	
-	//15,11,10,9,8,7,6,5,4,3,2,1
 
-//#endif
 
 
 	ADCPort_Init();
 	Sensors_Init();
 	KeyBoard_Init();
 	Timer_Init();
+	
+	LCD_Init();
+	LCD_Clear();
+	
 	Menu_MenuInit();
 	
 		
-	LCD_Init();
-	LCD_Clear();
+	
 	
 	sei();
 	
@@ -233,7 +231,8 @@ void MainLoop(void)
 {
 	
 	RX_CopyLatestReceiverValues();
-	RX_Snapshot[RXChannel_THR] = RX_Latest[ActiveRXIndex][RXChannel_THR];
+	RX_Snapshot_1 [RXChannel_THR]= RX_Snapshot[RXChannel_THR];
+	RX_Snapshot   [RXChannel_THR]= RX_Latest[ActiveRXIndex][RXChannel_THR];
 	Sensors_ReadAll();	
 	
 	
@@ -297,10 +296,10 @@ void MainLoop(void)
 		
 		
 		
-		if ((IsArmed == true) && (RX_Snapshot[RXChannel_THR] < STICKThrottle_ARMING+160))
-		{ // calibrate when start flying
-			DynamicCalibration();
-		}			
+		//if ((IsArmed == true) && (RX_Snapshot[RXChannel_THR] < STICKThrottle_ARMING+160))
+		//{ // calibrate when start flying
+			//DynamicCalibration();
+		//}			
 		TCNT_X_snapshot2=0;
 	}		
 	
@@ -318,12 +317,12 @@ void MainLoop(void)
 		ZEROMotors();
 		
 		// Send Setting Data only when Throttle is down.
-		if (Config.RX_mode==RX_mode_UARTMode)
+		/*if (Config.RX_mode==RX_mode_UARTMode)
 		{
 			Send_Data("C",1);
 			Send_Data(&Config,72);
 			Send_Data("E",1);
-		}
+		}*/
 	}
 	else
 	{	// Throttle stick is NOT Down
@@ -343,23 +342,25 @@ void MainLoop(void)
 			TCNT_X_snapshotAutoDisarm = 0; // ZERO [user may disarm then fly slowly..in this case the qud will disarm once he turned off the stick...because the counter counts once the quad is armed..e.g. if it takes n sec to disarm automatically..user took n-1 sec keeping the stick low after arming then it will take 1 sec to disarm again after lowing the stick under STICKThrottle_ARMING
 			
 			// Armed & Throttle Stick > MIN . . . We should Fly now.
-			
-			RX_Snapshot[RXChannel_AIL] = (RX_Latest[ActiveRXIndex][RXChannel_AIL] * 3) / 5 ;
-			RX_Snapshot[RXChannel_ELE] = (RX_Latest[ActiveRXIndex][RXChannel_ELE] * 3) / 5;
-			RX_Snapshot[RXChannel_RUD] = (RX_Latest[ActiveRXIndex][RXChannel_RUD] * 3) / 5 ;
+			RX_Snapshot_1 [RXChannel_AIL]= RX_Snapshot[RXChannel_AIL];
+			RX_Snapshot_1 [RXChannel_ELE]= RX_Snapshot[RXChannel_ELE];
+			RX_Snapshot_1 [RXChannel_RUD]= RX_Snapshot[RXChannel_RUD];
+			RX_Snapshot	  [RXChannel_AIL] = (RX_Latest[ActiveRXIndex][RXChannel_AIL] * Config.StickScaling / 10);
+			RX_Snapshot   [RXChannel_ELE] = (RX_Latest[ActiveRXIndex][RXChannel_ELE] * Config.StickScaling / 10); //* 3) / 5;
+			RX_Snapshot   [RXChannel_RUD] = (RX_Latest[ActiveRXIndex][RXChannel_RUD] * Config.StickScaling / 10); //* 3) / 5 ;
 			
 			int16_t Landing;
-			if (RX_Latest[RX_MAIN][RXChannel_AUX] < STICK_RIGHT)
-			{
-				LED_Orange=OFF;
-				Landing = IMU_HeightKeeping();
-			}
-			else
-			{
-				LED_Orange=ON;
-				Landing =0;
-			}
-			
+			//if (RX_Latest[RX_MAIN][RXChannel_AUX] < STICK_RIGHT)
+			//{
+				//LED_Orange=OFF;
+				//Landing = IMU_HeightKeeping();
+			//}
+			//else
+			//{
+				//LED_Orange=ON;
+				//Landing =0;
+			//}
+			Landing =0;
 			MotorOut[0] = RX_Snapshot[RXChannel_THR] + Landing;
 			MotorOut[1] = RX_Snapshot[RXChannel_THR] + Landing;
 			MotorOut[2] = RX_Snapshot[RXChannel_THR] + Landing;
@@ -385,14 +386,35 @@ void MainLoop(void)
 				*/
 				//gyroPitch = gyroPitch * (-1);
 				//gyroRoll  = gyroRoll  * (-1);
-				MotorOut[0] -= gyroPitch ;
-				MotorOut[3] += gyroPitch ; 
-				MotorOut[1] -= gyroRoll  ;
-				MotorOut[2] += gyroRoll  ;
-				MotorOut[0] += gyroYaw;
-				MotorOut[3] += gyroYaw;
-				MotorOut[1] -= gyroYaw;
-				MotorOut[2] -= gyroYaw;
+				
+				if (Config.BoardOrientationMode==QuadFlyingMode_X)
+				{
+					MotorOut[0] -= gyroRoll ;
+					MotorOut[1] -= gyroRoll ;
+					MotorOut[2] += gyroRoll ;
+					MotorOut[3] += gyroRoll ;
+				
+					MotorOut[0] -= gyroPitch;
+					MotorOut[1] += gyroPitch;
+					MotorOut[2] -= gyroPitch;
+					MotorOut[3] += gyroPitch;
+				
+					MotorOut[0] += gyroYaw;
+					MotorOut[1] -= gyroYaw;
+					MotorOut[2] -= gyroYaw;
+					MotorOut[3] += gyroYaw;
+				}
+				else
+				{
+					MotorOut[0] -= gyroPitch ;
+					MotorOut[3] += gyroPitch ; 
+					MotorOut[1] -= gyroRoll  ;
+					MotorOut[2] += gyroRoll  ;
+					MotorOut[0] += gyroYaw;
+					MotorOut[3] += gyroYaw;
+					MotorOut[1] -= gyroYaw;
+					MotorOut[2] -= gyroYaw;
+				}
 				
 		
 			

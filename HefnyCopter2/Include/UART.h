@@ -20,22 +20,26 @@ Protocol:
 		'C'		: SETCMD
 					CMD:		1 byte
 								0	--		DISARM	
-								1	--		X-MODE
-								2	--		P-MODE
-								3	--		CALIBRATE_ACC
-								4	--		
-								5	--	
+								1   --		BLINK
+								2	--		X-MODE
+								3	--		P-MODE
+								4	--		CALIBRATE_ACC
+								5	--		
 								6	--	
 								7	--	
 								8	--	
 								9	--	
+								10	--	
 								
 					DataValue:	6
 					CHKSUM:		1 byte
 */
 
 //#define SERIAL_OFFSET_ThrottleMin	
-#define SERIAL_CMD_LED_BLINK	0x01
+#define SERIAL_CMD_LED_BLINK		0x01
+#define SERIAL_CMD_READ_CONFIG		0x05
+#define SERIAL_CMD_SAVE_CONFIG		0x06
+#define SERIAL_CMD_CALIBRATE_ACC	0x07
 
 #define SERIAL_HEADER_SETVALUE	'V'
 #define	SERIAL_HEADER_DOCMD		'C'

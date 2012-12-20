@@ -10,7 +10,7 @@
 #define VERSION_H_
 
 
-static const prog_char strVersionInfo[] = "HefnyCopter2 v0.7.1";
+static const prog_char strVersionInfo[] = "HefnyCopter2 v0.8.1";
 
 /*
 version 0.1
@@ -91,7 +91,7 @@ version 0.7
 *	. Update Landing Logic.
 *	. Acc_Z =0 instead of 100 as a default value.
 *	. Increase (I) only when there is a condition: if (abs(Value) > abs(PID_Term->Error))
-*	. Update Logic for PID_ACC to ZERO I.
+*	. Update Logic for PID_ACC to ZERO I....removed lated it caused whobbles. 
 * Function:
 *	. Adjusting ESC Calibration... was not working correct... now the signal comes from ISR of RX to M1..4 directly to gurantee correct programming signal length.
 *	. RX_Main handles acts as buttons even if RX_Trainer is selected..
@@ -99,11 +99,20 @@ version 0.7
 *		.. Even if RX_Main is selected you cannor ARM if RX_Trainer signal does not exist.
 *
 
+version 0.8
+* IMU:
+*	. Adding Board-Orientation and saved in EEPRom
+* Function:
+*	. When turning off TX during armed ... motors off and buzzer starts.
+*	. When turning off TX during disarmed ... no beeps - issue fixed-.
+*   . Adding stick scaling
 
+version 0.8.1
+* IMU:
+*	. Adding Leaky PID
 
+=========================================================================================
 * Move voltage port to default (ADC0) connected to VCC by default to free ADC1
-* Motor Layout
-* Store Quadcopter Flying Modes in eeprom using menu.
 
 * Motor Mixing 
 * Enhanced Receiver Test menu.... show left & right words next to controls.

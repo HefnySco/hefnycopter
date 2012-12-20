@@ -93,22 +93,25 @@ float PID_Calculate_ACC (pid_param_t PID_Params, pid_terms_t *PID_Term, double  
 	float Output;
 		
 		// Calculate Terms 
-	    PID_Term->P  = ((float)(Value * PID_Params._P) / 10.0f);						
+	    PID_Term->P  = ((float)(Value * PID_Params._P) / 5.0f);						
 		
 		// Increment by 1 always ... dont use value to increment.
 		
 		
-		double AbsValue = abs (Value);
+		//double AbsValue = abs (Value);
 		
 		/*
 		// I Logic Here:
 		// Increment or Decrement by PID_Params._I no value.
 		// Reset I whenever sign of value changed because this means overshot.
 		*/
-		if ((abs(Value - PID_Term->Error) > AbsValue ) || (Value ==0))
-		{  // Zero I if different signs.
-			PID_Term->I =0;
-		}		
+		//if ((abs(Value - PID_Term->Error) > AbsValue ) || (Value ==0))
+		//{  // Zero I if different signs.
+			//PID_Term->I =0; ..... removed because it nakes whobbles.S
+		//}
+		//else 
+		int16_t DeltaError = (Value - PID_Term->Error);
+		
 		if (Value > 0)
 		{
 			PID_Term->I += (float)(PID_Params._I / 10.0f);						    		
@@ -117,9 +120,13 @@ float PID_Calculate_ACC (pid_param_t PID_Params, pid_terms_t *PID_Term, double  
 		{	
 			PID_Term->I -= (float)(PID_Params._I / 10.0f );						    		
 		}
+		//else
+		//{
+			//PID_Term->I -= (float)(PID_Term->I * PID_I_LEAK_RATE);
+		//}			
 				
 		
-		PID_Term->D= (float)((float)(Value - PID_Term->Error) * (float)PID_Params._D) / 10.0f ;
+		PID_Term->D= (float)((float)(DeltaError) * (float)PID_Params._D) / 5.0f ;
 		PID_Term->Error = Value;	
 		
 				
@@ -151,9 +158,13 @@ float PID_Calculate (pid_param_t PID_Params, pid_terms_t *PID_Term, double  Valu
 		// Increment or Decrement by Value * PID_Params._I 
 		*/
 		if ((Value > 2) || (Value < -2))
-		{	// only increment I when the Value is increasing compared to the old one, also use [-1,1] as deadband.
-			PID_Term->I += (float)((float)(Value * PID_Params._I) / 30.0f) ;	
+		{	// only increment I when the Value is increasing compared to the old one, also use [-2,2] as deadband.
+			PID_Term->I += (float)((float)(DeltaError * PID_Params._I) / 100.0f) ;	// try to replace Value with DeltaError
 		}
+		//else
+		//{
+			//PID_Term->I -= (float)(PID_Term->I * PID_I_LEAK_RATE);
+		//}	
 		
 		
 		
