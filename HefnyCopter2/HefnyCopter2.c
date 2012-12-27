@@ -142,6 +142,8 @@ int main(void)
 	Setup();
 	
     SystemErrorType = SYS_ERR_NON;
+	nFlyingModes = FLYINGMODE_ACRO;
+	
 
 	DataPtr = (uint8_t *) (&Sensors_Latest);
 	DataCounter=0;
@@ -294,8 +296,18 @@ void MainLoop(void)
 			Buzzer = OFF;
 		}
 		
-		
-		
+		if (Config.RX_mode==RX_mode_UARTMode)
+		{
+			if ( RX_Latest[RX_MAIN][RXChannel_AUX] < STICK_RIGHT )
+			{
+				nFlyingModes = FLYINGMODE_LEVEL;
+			}
+			else
+			{
+				//LED_Orange=ON;
+				nFlyingModes = FLYINGMODE_ACRO;
+			}
+		}		
 		//if ((IsArmed == true) && (RX_Snapshot[RXChannel_THR] < STICKThrottle_ARMING+160))
 		//{ // calibrate when start flying
 			//DynamicCalibration();
@@ -330,7 +342,7 @@ void MainLoop(void)
 		if (IsArmed==false)
 		{  // However we are still DisArmed
 			ZEROMotors();
-			
+			ZERO_Is();
 			// Sticks as Keyboard --- we are already disarmed to reach here.
 			HandleSticksAsKeys();
 			
@@ -350,17 +362,17 @@ void MainLoop(void)
 			RX_Snapshot   [RXChannel_RUD] = (RX_Latest[ActiveRXIndex][RXChannel_RUD] * Config.StickScaling / 10); //* 3) / 5 ;
 			
 			int16_t Landing;
-			//if (RX_Latest[RX_MAIN][RXChannel_AUX] < STICK_RIGHT)
-			//{
-				//LED_Orange=OFF;
-				//Landing = IMU_HeightKeeping();
-			//}
-			//else
-			//{
-				//LED_Orange=ON;
-				//Landing =0;
-			//}
-			Landing =0;
+			
+		
+			if (nFlyingModes == FLYINGMODE_ACRO)
+			{
+				Landing =0;
+			}
+			else
+			{
+				IMU_HeightKeeping();
+			}	
+			
 			MotorOut[0] = RX_Snapshot[RXChannel_THR] + Landing;
 			MotorOut[1] = RX_Snapshot[RXChannel_THR] + Landing;
 			MotorOut[2] = RX_Snapshot[RXChannel_THR] + Landing;
@@ -423,42 +435,39 @@ void MainLoop(void)
 			*	Pilot Control Logic.
 			*	
 			*/
-	
-			if (Config.QuadFlyingMode==QuadFlyingMode_X)
+			if (nFlyingModes == FLYINGMODE_ACRO)
 			{
+				if (Config.QuadFlyingMode==QuadFlyingMode_X)
+				{
 							
-				MotorOut[0] += RX_Snapshot[RXChannel_AIL] ;
-				MotorOut[1] += RX_Snapshot[RXChannel_AIL] ;
-				MotorOut[2] -= RX_Snapshot[RXChannel_AIL] ;
-				MotorOut[3] -= RX_Snapshot[RXChannel_AIL] ;
+					MotorOut[0] += RX_Snapshot[RXChannel_AIL] ;
+					MotorOut[1] += RX_Snapshot[RXChannel_AIL] ;
+					MotorOut[2] -= RX_Snapshot[RXChannel_AIL] ;
+					MotorOut[3] -= RX_Snapshot[RXChannel_AIL] ;
 				
-				MotorOut[0] += RX_Snapshot[RXChannel_ELE];
-				MotorOut[1] -= RX_Snapshot[RXChannel_ELE];
-				MotorOut[2] += RX_Snapshot[RXChannel_ELE];
-				MotorOut[3] -= RX_Snapshot[RXChannel_ELE];
+					MotorOut[0] += RX_Snapshot[RXChannel_ELE];
+					MotorOut[1] -= RX_Snapshot[RXChannel_ELE];
+					MotorOut[2] += RX_Snapshot[RXChannel_ELE];
+					MotorOut[3] -= RX_Snapshot[RXChannel_ELE];
 				
-				MotorOut[0] -= RX_Snapshot[RXChannel_RUD];
-				MotorOut[1] += RX_Snapshot[RXChannel_RUD];
-				MotorOut[2] += RX_Snapshot[RXChannel_RUD];
-				MotorOut[3] -= RX_Snapshot[RXChannel_RUD];
+				}
+				else
+				{
+				
+						MotorOut[1] += RX_Snapshot[RXChannel_AIL] ;
+						MotorOut[2] -= RX_Snapshot[RXChannel_AIL] ;
+				
+						MotorOut[0] += RX_Snapshot[RXChannel_ELE] ;
+						MotorOut[3] -= RX_Snapshot[RXChannel_ELE] ;
+								
+				}
 			
-			}
-			else
-			{
-				
-				MotorOut[1] += RX_Snapshot[RXChannel_AIL] ;
-				MotorOut[2] -= RX_Snapshot[RXChannel_AIL] ;
-				
-				MotorOut[0] += RX_Snapshot[RXChannel_ELE] ;
-				MotorOut[3] -= RX_Snapshot[RXChannel_ELE] ;
-		
+			}						
+			
 				MotorOut[0] -= RX_Snapshot[RXChannel_RUD] ;
 				MotorOut[1] += RX_Snapshot[RXChannel_RUD] ;
 				MotorOut[2] += RX_Snapshot[RXChannel_RUD] ;
 				MotorOut[3] -= RX_Snapshot[RXChannel_RUD] ;
-				
-			}
-			
 			
 			// Save motors from turning-off
             if (MotorOut[0]<MOTORS_IDLE_VALUE) MotorOut[0]=MOTORS_IDLE_VALUE;

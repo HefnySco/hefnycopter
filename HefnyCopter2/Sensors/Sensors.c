@@ -129,10 +129,10 @@ void Sensors_Calibrate (void)
 }
 
 uint32_t LastLoopTime[2];
-
+uint16_t TX,TX1,TX2;
 void Sensors_ReadAll (void)
 {
-   uint16_t TX,TX1;
+   
    uint16_t *T;
    ATOMIC_BLOCK(ATOMIC_FORCEON)
    {
@@ -140,9 +140,9 @@ void Sensors_ReadAll (void)
 		TX1= TCNT1_X;
    }   
 
-	T = &LastLoopTime[0];
-	T[0]= TX;
-	T[1]= TX1;
+	//T = &LastLoopTime[0];
+	//T[0]= TX;
+	//T[1]= TX1;
 	
 	Sensors_Latest[ACC_X_Index] = ADCPort_Get(ACC_X_PNUM)-Config.Sensor_zero[ACC_X_Index]; // - ACC_X_Offset == Gyro Y in negative Direction
 	Sensors_Latest[ACC_Y_Index] = ADCPort_Get(ACC_Y_PNUM)-Config.Sensor_zero[ACC_Y_Index]; // - ACC_Y_Offset == Gyro X in negative Direction
@@ -157,12 +157,23 @@ void Sensors_ReadAll (void)
 	
 	
 	// Handle the odd case where the TCNT1 rolls over and LastLoopTime[0] < LastLoopTime[1]
-	if (LastLoopTime[0] > LastLoopTime)
+	/*
+	if (LastLoopTime[0] > LastLoopTime[1])
 		Sensors_dt = LastLoopTime[0] - LastLoopTime[1];
 	else 
-		Sensors_dt = (0xffff - LastLoopTime[1]) + LastLoopTime[0] ;
+		Sensors_dt = (0xffffffff - LastLoopTime[1]) + LastLoopTime[0] ;
 		
 	LastLoopTime[1] = LastLoopTime[0]; // in 100 us unit
+	*/
+	if (TX2 > TX1)
+	{
+		Sensors_dt = (0xffff - TX1) +  TX2;
+	}
+	else
+	{
+		Sensors_dt = TX1 - TX2;
+	}
+	TX2=TX1;
 }
 
 

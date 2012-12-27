@@ -74,6 +74,8 @@
 ////}
 
 
+double NavY, NavX;
+
 void IMU_P2D (void)
 {
 	
@@ -85,17 +87,31 @@ void IMU_P2D (void)
 		float Beta = 1- Alpha;
 		
 		CompGyroY = (double) (Alpha * CompGyroY) + (double) (Beta * Sensors_Latest[GYRO_Y_Index]);
+		if ((CompGyroY<=1) && (CompGyroY>=-1)) CompGyroY=0;
+		gyroYangle += CompGyroY/20.83; //.83333333 * (double)((float)Sensors_dt / 1000.0f);
+		
 		CompGyroX = (double) (Alpha * CompGyroX) + (double) (Beta * Sensors_Latest[GYRO_X_Index]);
+		if ((CompGyroX<=1) && (CompGyroX>=-1)) CompGyroX=0;
+		gyroXangle += CompGyroX /20.83; // 45.83333333 * Sensors_dt;
+		
 		
 		Alpha = Config.GyroParams[1].ComplementaryFilterAlpha / 1000;
 		Beta = 1- Alpha;
+		
 		CompGyroZ = (double) (Alpha * CompGyroZ) + (double) (Beta * Sensors_Latest[GYRO_Z_Index]);
+		if ((CompGyroZ<=1) && (CompGyroZ>=-1)) CompGyroZ=0;
+		/////gyroZangle += CompGyroZ/41.66;
+		
 		
 		
 		Alpha = Config.AccParams[0].ComplementaryFilterAlpha / 1000;
 		Beta = 1- Alpha;
 		CompAccY = (double) (Alpha * CompAccY) + (double) (Beta * (Sensors_Latest[ACC_Y_Index] )); // no Dynamic calibration - ACC_Y_Offset));
 		CompAccX = (double) (Alpha * CompAccX) + (double) (Beta * (Sensors_Latest[ACC_X_Index] )); // no Dynamic calibration - ACC_X_Offset));
+		gyroXangle = gyroXangle + (double)((0.2) * (-CompAccY - gyroXangle));
+		gyroYangle = gyroYangle + (double)((0.2) * (-CompAccX - gyroYangle));
+		
+		
 		
 		Alpha = Config.AccParams[1].ComplementaryFilterAlpha / 1000;
 		Beta = 1- Alpha;
@@ -103,24 +119,47 @@ void IMU_P2D (void)
 		//////////////////////////////		
 		
 		
-		// PITCH
-		double NavAcc =  -CompAccX ; // - (float)((float)(RX_Snapshot [RXChannel_ELE] - RX_Snapshot_1[RXChannel_ELE])/100.0f);
-		gyroPitch = 
-				PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[0],CompGyroY)//  -  ((float)RX_Snapshot[RXChannel_ELE] / 32.0f))
-			+   PID_Calculate_ACC (Config.AccParams[0], &PID_AccTerms[0],NavAcc );
-		
-		// ROLL
-		 NavAcc =  -CompAccY; // - (float)((float)(RX_Snapshot [RXChannel_AIL] - RX_Snapshot_1[RXChannel_AIL]/100.0f));
-		gyroRoll = 
-				PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[1],CompGyroX) //)
-			+   PID_Calculate_ACC (Config.AccParams[0], &PID_AccTerms[1],NavAcc );
-		
+		//// PITCH
+		//gyroPitch =	PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[0],CompGyroY);//  -  ((float)RX_Snapshot[RXChannel_ELE] / 32.0f))
+			//
+		//
+		//// ROLL
+		//gyroRoll = PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[1],CompGyroX); //)
+			//
+		//
 		// YAW
+		if ((Sensors_Latest[GYRO_Z_Index]>=-2) && (Sensors_Latest[GYRO_Z_Index]<=2))
+		{
+			Sensors_Latest[GYRO_Z_Index]=0;
+		}
 		double NavGyro = CompGyroZ - (double)((float)RX_Snapshot[RXChannel_RUD]/4.0f);
-		gyroYaw = 
+		gyroYaw =  //(double)(CompGyroZ);// * (float)Sensors_dt / 100.0f); // CompGyroZ;
 				PID_Calculate (Config.GyroParams[1], &PID_GyroTerms[2],NavGyro); 
+
+
+		if (nFlyingModes == FLYINGMODE_ACRO)
+		{
+			gyroPitch =	PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[0],CompGyroY);	
+			gyroRoll  = PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[1],CompGyroX); 
+		}
+		else
+		{	/*NOTE if u USE CompACCY & X u should use it in negative sign*/
+			//gyroPitch = PID_Calculate_ACC (Config.AccParams[0], &PID_AccTerms[0],gyroYangle - (double)((float)RX_Snapshot[RXChannel_ELE] / 4.0f)); //-CompAccX );
+			//gyroRoll  = PID_Calculate_ACC (Config.AccParams[0], &PID_AccTerms[1],gyroXangle - (double)((float)RX_Snapshot[RXChannel_AIL] / 4.0f)); //-CompAccY );
+			
+			gyroPitch =	PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[0],CompGyroY - CompAccX - (double)((float)RX_Snapshot[RXChannel_ELE] / 4.0f));	
+			gyroRoll  = PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[1],CompGyroX - CompAccY - (double)((float)RX_Snapshot[RXChannel_AIL] / 4.0f)); 
+			
+			NavY = -CompAccX  - (double)((float)RX_Snapshot[RXChannel_ELE] / 4.0f);
+			NavX = -CompAccY  - (double)((float)RX_Snapshot[RXChannel_AIL] / 4.0f);	
+			
+			gyroPitch += PID_Calculate_ACC (Config.AccParams[0], &PID_AccTerms[0],NavY); //-CompAccX );
+			gyroRoll  += PID_Calculate_ACC (Config.AccParams[0], &PID_AccTerms[1],NavX); //-CompAccY );
+		}			
+	
 		
 }
+
 
 
 double IMU_HeightKeeping ()
@@ -131,11 +170,7 @@ double IMU_HeightKeeping ()
 	Limiter(Landing , Config.AccParams[1]._PLimit);
 	*/
 	double Landing =0;
-	if (CompAccZ > 0)
-	{
-		PID_AccTerms[2].I=0;
-	}
-	else 
+	if ((CompAccZ > 2) || (CompAccZ < -2))
 	{
 		Landing = PID_Calculate_ACC (Config.AccParams[1], &PID_AccTerms[2],CompAccZ);
 	}

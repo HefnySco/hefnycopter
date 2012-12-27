@@ -159,7 +159,7 @@ float PID_Calculate (pid_param_t PID_Params, pid_terms_t *PID_Term, double  Valu
 		*/
 		if ((Value > 2) || (Value < -2))
 		{	// only increment I when the Value is increasing compared to the old one, also use [-2,2] as deadband.
-			PID_Term->I += (float)((float)(DeltaError * PID_Params._I) / 100.0f) ;	// try to replace Value with DeltaError
+			PID_Term->I += (float)((float)(Value * PID_Params._I) / 100.0f) ;	// try to replace Value with DeltaError
 		}
 		//else
 		//{
@@ -181,6 +181,16 @@ float PID_Calculate (pid_param_t PID_Params, pid_terms_t *PID_Term, double  Valu
 		//Output = Output / 10;
 		return  Output; //Limiter(Output,(int16_t)300);
 }		
+
+void ZERO_Is()
+{
+	PID_GyroTerms[0].I=0;
+	PID_GyroTerms[1].I=0;
+//	PID_GyroTerms[2].I=0;
+	PID_AccTerms[0].I=0;
+	PID_AccTerms[1].I=0;
+}
+
 
 /*
 int16_t PID2_Calculation (pid_param_t PID_Params, pid_terms_t PID_Term, int16_t  Gyro_Value)

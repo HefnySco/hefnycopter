@@ -56,7 +56,7 @@ typedef struct
 P_STR scrHomePage[] = 
 	"\n"
 	"\n"
-	"Batt:\n"
+	"Batt:     v\n"
 	"\n"
 	"\n"
 	"RX: -  SN:    ST: -\n"

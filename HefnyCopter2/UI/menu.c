@@ -405,8 +405,16 @@ void _hHomePage()
 	
 	// Write Voltage
 	//LCD_SetPos(2, 30);
-	LCD_WriteValue_double(2,30,Sensor_GetBattery()/10.0f,IS_SYS_ERR_VOLTAGE);
-	
+	LCD_WriteValue(2,36,Sensor_GetBattery(),4,IS_SYS_ERR_VOLTAGE);
+	LCD_SetPos (3,12);
+	if (nFlyingModes == FLYINGMODE_ACRO)
+	{
+		LCD_WriteString_P(PSTR("ACRO  "));
+	}
+	else
+	{
+		LCD_WriteString_P(PSTR("STABLE"));
+	}
 	_helper_DisplayRXStatus(5);
 	
 		
@@ -939,6 +947,7 @@ void _hDebug()
 			send_byte(0x01);
 			send_byte(0x01);send_byte(0x00);send_byte(0x00);send_byte(0x00);
 			send_byte(97);
+			gyroXangle=0;
 		}	
 	//IMU_CalculateAngles();
 	//
@@ -958,11 +967,14 @@ void _hDebug()
 	//LCD_WriteValue(0,48,PID_AccTerms[0].P,4,false);
 	//LCD_WriteValue(1,48,ACC_X_Offset,4,false); 
 	//LCD_WriteValue(2,48,Sensors_Latest[ACC_X_Index],4,false);
-	LCD_WriteValue_double(1,48,-CompAccX,false);
-	LCD_WriteValue_double(2,48,PID_AccTerms[0].P,false);
-	LCD_WriteValue_double(3,48,PID_AccTerms[0].I,false);
-	LCD_WriteValue(4,48,gyroPitch,4,false);
-	LCD_WriteValue(5,48,RX_Snapshot[RXChannel_ELE],4,false);
+	char s[12];
+	dtostrf(gyroYaw, 9,1, s);
+	LCD_SetPos(1,48);
+	LCD_WritePadded(s,10);
+	//LCD_WriteValue_double_ex(2,48,CompAccY,9,false);
+	LCD_WriteValue_double_ex(3,48,gyroYangle,9,false);
+	LCD_WriteValue_double_ex(4,48,-CompAccX,9,false);
+	LCD_WriteValue_double_ex(5,48,gyroYangle - (double)((float)RX_Snapshot[RXChannel_ELE] / 4.0f),9,false);
 	
 	//LCD_WriteValue(3,0,CompGyroY,4,false);
 	//LCD_WriteValue(4,48,PID_AccTerms[0].I,4,false);

@@ -10,7 +10,7 @@
 #define VERSION_H_
 
 
-static const prog_char strVersionInfo[] = "HefnyCopter2 v0.8.1";
+static const prog_char strVersionInfo[] = "HefnyCopter2 v0.8.3";
 
 /*
 version 0.1
@@ -109,7 +109,7 @@ version 0.8
 
 version 0.8.1
 * IMU:
-*	. Adding Leaky PID
+*	. Adding Deffirential Value in I instead of Value.
 
 =========================================================================================
 * Move voltage port to default (ADC0) connected to VCC by default to free ADC1

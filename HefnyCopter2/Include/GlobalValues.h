@@ -95,6 +95,12 @@ uint16_t Sensors_dt; // time in 100us between sensors reading
 // Motors Signals
 int16_t MotorOut[4];
 
+
+int8_t nFlyingModes;   
+#define FLYINGMODE_ACRO		0
+#define FLYINGMODE_LEVEL	1
+
+
 // Holds final calculated values of Pitch, Roll, Yaw based on the sensors and stabilization algorithm
 int16_t gyroPitch;
 int16_t gyroRoll;
@@ -105,13 +111,13 @@ int16_t gyroYaw;
 ///////////////////////////////////////////////////
 // Intermediate results for IMU_CalculateAngles
 //gyros
-	//float gyroXrate;
-	//float gyroYrate;
-	//float gyroZrate;
+	double gyroXangle;
+	double gyroYangle;
+	double gyroZangle;
 
 	//accelerometers
-	//float accXangle;
-	//float accYangle;
+	//double accXangle;
+	//double accYangle;
 	//float accZangle;
 ///////////////////////////////////////////////////
 

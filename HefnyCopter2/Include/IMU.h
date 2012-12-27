@@ -14,9 +14,9 @@
 
 #define RAD_TO_DEG 57.295779513082320876798154814105
 
-double CompAngleX;
-double CompAngleY;
-double  CompAngleZ;
+//double CompAngleX;
+//double CompAngleY;
+//double  CompAngleZ;
 
 
 

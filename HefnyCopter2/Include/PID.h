@@ -15,6 +15,6 @@
 
 float  PID_Calculate_ACC (pid_param_t PID_Params, pid_terms_t *PID_Term, double  Value);
 float  PID_Calculate     (pid_param_t PID_Params, pid_terms_t *PID_Term, double  Value);
-
+void ZERO_Is();
 
 #endif /* PID_H_ */

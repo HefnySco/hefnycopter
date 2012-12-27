@@ -28,6 +28,7 @@ void LCD_WritePadded(char *s, uint8_t len);
 void LCD_WritePadded_P(const char *s, uint8_t len);
 void LCD_WriteValue(uint8_t x, uint8_t y, int16_t value, uint8_t len, BOOL LCDReverse);
 void LCD_WriteValue_double(uint8_t x, uint8_t y, double value, BOOL LCDReverse);
+void LCD_WriteValue_double_ex(uint8_t x, uint8_t y, double value, int8_t len, BOOL LCDReverse);
 void lcdReverse(uint8_t reversed);
 void lcdSetContrast(uint8_t contrast);
 void lcdSetPixel(uint8_t x, uint8_t y, uint8_t on);
