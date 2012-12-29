@@ -147,11 +147,12 @@ void IMU_P2D (void)
 			//gyroPitch = PID_Calculate_ACC (Config.AccParams[0], &PID_AccTerms[0],gyroYangle - (double)((float)RX_Snapshot[RXChannel_ELE] / 4.0f)); //-CompAccX );
 			//gyroRoll  = PID_Calculate_ACC (Config.AccParams[0], &PID_AccTerms[1],gyroXangle - (double)((float)RX_Snapshot[RXChannel_AIL] / 4.0f)); //-CompAccY );
 			
-			gyroPitch =	PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[0],CompGyroY - CompAccX - (double)((float)RX_Snapshot[RXChannel_ELE] / 4.0f));	
-			gyroRoll  = PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[1],CompGyroX - CompAccY - (double)((float)RX_Snapshot[RXChannel_AIL] / 4.0f)); 
-			
 			NavY = -CompAccX  - (double)((float)RX_Snapshot[RXChannel_ELE] / 4.0f);
 			NavX = -CompAccY  - (double)((float)RX_Snapshot[RXChannel_AIL] / 4.0f);	
+			
+			gyroPitch =	PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[0],CompGyroY + NavY * 2);	
+			gyroRoll  = PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[1],CompGyroX + NavX * 2); 
+			
 			
 			gyroPitch += PID_Calculate_ACC (Config.AccParams[0], &PID_AccTerms[0],NavY); //-CompAccX );
 			gyroRoll  += PID_Calculate_ACC (Config.AccParams[0], &PID_AccTerms[1],NavX); //-CompAccY );
