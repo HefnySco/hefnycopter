@@ -93,7 +93,7 @@ float PID_Calculate_ACC (pid_param_t PID_Params, pid_terms_t *PID_Term, double  
 	float Output;
 		
 		// Calculate Terms 
-	    PID_Term->P  = ((float)(Value * PID_Params._P) / 5.0f);						
+	    PID_Term->P  = ((float)(Value * PID_Params._P) / 10.0f);						
 		
 		// Increment by 1 always ... dont use value to increment.
 		
@@ -114,11 +114,11 @@ float PID_Calculate_ACC (pid_param_t PID_Params, pid_terms_t *PID_Term, double  
 		
 		if (Value > 0)
 		{
-			PID_Term->I += (float)(PID_Params._I / 10.0f);						    		
+			PID_Term->I += (float)(PID_Params._I / 100.0f);						    		
 		}
 		else if (Value < 0)
 		{	
-			PID_Term->I -= (float)(PID_Params._I / 10.0f );						    		
+			PID_Term->I -= (float)(PID_Params._I / 100.0f );						    		
 		}
 		//else
 		//{
@@ -146,7 +146,7 @@ float PID_Calculate (pid_param_t PID_Params, pid_terms_t *PID_Term, double  Valu
 		float Output;
 		
 		// Calculate Terms 
-	    PID_Term->P  = ((float)(Value * PID_Params._P) / 10.0f);						
+	    PID_Term->P  = ((float)(Value * PID_Params._P) / 20.0f);						
 		
 		
 		
@@ -159,7 +159,7 @@ float PID_Calculate (pid_param_t PID_Params, pid_terms_t *PID_Term, double  Valu
 		*/
 		if ((Value > 2) || (Value < -2))
 		{	// only increment I when the Value is increasing compared to the old one, also use [-2,2] as deadband.
-			PID_Term->I += (float)((float)(Value * PID_Params._I) / 100.0f) ;	// try to replace Value with DeltaError
+			PID_Term->I += (float)((float)(Value * PID_Params._I) / 200.0f) ;	// try to replace Value with DeltaError
 		}
 		//else
 		//{
@@ -168,7 +168,7 @@ float PID_Calculate (pid_param_t PID_Params, pid_terms_t *PID_Term, double  Valu
 		
 		
 		
-		PID_Term->D= (float)(DeltaError * PID_Params._D) / 10.0f ;
+		PID_Term->D= (float)(DeltaError * PID_Params._D) / 20.0f ;
 		PID_Term->Error = Value;	
 		
 				

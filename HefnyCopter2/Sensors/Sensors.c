@@ -75,7 +75,11 @@ char *Sensors_Test(uint8_t channel, uint16_t LowLimit ,uint16_t HighLimit)
 
   
 int Sensors_GetAccAngle(int8_t Acc_Index) {
-  return arctan2(-Sensors_Latest[ACC_Z_Index], -Sensors_Latest[Acc_Index]) + 256;    // in Quid: 1024/(2*PI))
+  //return arctan2(-Sensors_Latest[ACC_Z_Index],-Sensors_Latest[Acc_Index]) + 256;    // in Quid: 1024/(2*PI))
+//arctan2(accelData[PITCH] * sign[PITCH], sqrt((long(accelData[ROLL]) * accelData[ROLL]) + (long(accelData[ZAXIS]) * accelData[ZAXIS])));
+	//return arctan2 (-Sensors_Latest[Acc_Index] , sqrt((long())))
+	if (Acc_Index == ACC_X_Index) return arctan2(-Sensors_Latest[ACC_X_Index],sqrt(Sensors_Latest[ACC_Y_Index] * Sensors_Latest[ACC_Y_Index]) + (Sensors_Latest[ACC_Z_Index] * Sensors_Latest[ACC_Z_Index]) );
+	if (Acc_Index == ACC_Y_Index) return arctan2(-Sensors_Latest[ACC_Y_Index],sqrt(Sensors_Latest[ACC_X_Index] * Sensors_Latest[ACC_X_Index]) + (Sensors_Latest[ACC_Z_Index] * Sensors_Latest[ACC_Z_Index]) );
 }
 
 int16_t Sensors_GetGyroRate(int8_t Gyro_Index) {

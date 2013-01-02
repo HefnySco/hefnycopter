@@ -132,7 +132,7 @@ void IMU_P2D (void)
 		{
 			Sensors_Latest[GYRO_Z_Index]=0;
 		}
-		double NavGyro = CompGyroZ - (double)((float)RX_Snapshot[RXChannel_RUD]/4.0f);
+		double NavGyro = CompGyroZ ;//- (double)((float)RX_Snapshot[RXChannel_RUD]/4.0f);
 		gyroYaw =  //(double)(CompGyroZ);// * (float)Sensors_dt / 100.0f); // CompGyroZ;
 				PID_Calculate (Config.GyroParams[1], &PID_GyroTerms[2],NavGyro); 
 
@@ -144,18 +144,63 @@ void IMU_P2D (void)
 		}
 		else
 		{	/*NOTE if u USE CompACCY & X u should use it in negative sign*/
-			//gyroPitch = PID_Calculate_ACC (Config.AccParams[0], &PID_AccTerms[0],gyroYangle - (double)((float)RX_Snapshot[RXChannel_ELE] / 4.0f)); //-CompAccX );
-			//gyroRoll  = PID_Calculate_ACC (Config.AccParams[0], &PID_AccTerms[1],gyroXangle - (double)((float)RX_Snapshot[RXChannel_AIL] / 4.0f)); //-CompAccY );
 			
-			NavY = -CompAccX  - (double)((float)RX_Snapshot[RXChannel_ELE] / 4.0f);
-			NavX = -CompAccY  - (double)((float)RX_Snapshot[RXChannel_AIL] / 4.0f);	
+				
+			NavY = -CompAccX ;
+			NavX = -CompAccY ;	
 			
-			gyroPitch =	PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[0],CompGyroY + NavY * 2);	
-			gyroRoll  = PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[1],CompGyroX + NavX * 2); 
+			//gyroPitch = PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[0],CompGyroY + NavY * 2);	// here sticks are rate
+			//gyroRoll  = PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[1],CompGyroX + NavX * 2); 
 			
 			
-			gyroPitch += PID_Calculate_ACC (Config.AccParams[0], &PID_AccTerms[0],NavY); //-CompAccX );
-			gyroRoll  += PID_Calculate_ACC (Config.AccParams[0], &PID_AccTerms[1],NavX); //-CompAccY );
+			/*
+					Board Orientation					FlyingMode
+							X								X
+							X								+
+							+								X
+							+								+		
+			*/
+			
+			if ((Config.BoardOrientationMode==QuadFlyingMode_PLUS) && (Config.QuadFlyingMode==QuadFlyingMode_X))
+			{
+				NavY += ( -  (double)((float)RX_Snapshot[RXChannel_AIL]  / 4.0f));
+				NavY += ( -  (double)((float)RX_Snapshot[RXChannel_ELE]  / 4.0f));	
+				NavX += ( -  (double)((float)RX_Snapshot[RXChannel_AIL]  / 4.0f));
+				NavX += ( +  (double)((float)RX_Snapshot[RXChannel_ELE]  / 4.0f));	
+			}
+			else if ((Config.BoardOrientationMode==QuadFlyingMode_PLUS) && (Config.QuadFlyingMode==QuadFlyingMode_PLUS))
+			{
+				NavY += ( - (double)((float)RX_Snapshot[RXChannel_ELE] / 4.0f));	
+				NavX += ( - (double)((float)RX_Snapshot[RXChannel_AIL] / 4.0f));
+			}					
+			else if ((Config.BoardOrientationMode==QuadFlyingMode_X) && (Config.QuadFlyingMode==QuadFlyingMode_X))
+			{
+				NavY += ( - (double)((float)RX_Snapshot[RXChannel_ELE] / 4.0f));	
+				NavX += ( - (double)((float)RX_Snapshot[RXChannel_AIL] / 4.0f));
+		
+			}
+			else if ((Config.BoardOrientationMode==QuadFlyingMode_X) && (Config.QuadFlyingMode==QuadFlyingMode_PLUS))
+			{
+				NavY += ( +  (double)((float)RX_Snapshot[RXChannel_AIL]  / 4.0f));
+				NavY += ( +  (double)((float)RX_Snapshot[RXChannel_ELE]  / 4.0f));	
+				NavX += ( +  (double)((float)RX_Snapshot[RXChannel_AIL]  / 4.0f));
+				NavX += ( -  (double)((float)RX_Snapshot[RXChannel_ELE]  / 4.0f));	
+			}
+			
+			gyroPitch =	PID_Calculate (Config.AccParams[0], &PID_AccTerms[0],CompGyroY + (NavY - PID_GyroTerms[0].D2 ) * 2);	// here sticks are rate
+			gyroRoll  = PID_Calculate (Config.AccParams[0], &PID_AccTerms[1],CompGyroX + (NavX - PID_GyroTerms[1].D2 ) * 2); 
+			
+			//gyroPitch =	PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[0],CompGyroY);	
+			//gyroRoll  = PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[1],CompGyroX); 
+		
+			//gyroPitch += PID_Calculate_ACC (Config.AccParams[0], &PID_AccTerms[0],NavY - PID_GyroTerms[0].D2 ); //-CompAccX );
+			//gyroRoll  += PID_Calculate_ACC (Config.AccParams[0], &PID_AccTerms[1],NavX - PID_GyroTerms[1].D2); //-CompAccY );
+		
+			PID_AccTerms[0].D2 = NavY;
+			PID_AccTerms[1].D2 = NavX;
+			
+			//gyroPitch += PID_Calculate_ACC (Config.AccParams[0], &PID_AccTerms[0],NavY); //-CompAccX );
+			//gyroRoll  += PID_Calculate_ACC (Config.AccParams[0], &PID_AccTerms[1],NavX); //-CompAccY );
 		}			
 	
 		

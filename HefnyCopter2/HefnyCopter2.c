@@ -420,8 +420,10 @@ void MainLoop(void)
 				{
 					MotorOut[0] -= gyroPitch ;
 					MotorOut[3] += gyroPitch ; 
+					
 					MotorOut[1] -= gyroRoll  ;
 					MotorOut[2] += gyroRoll  ;
+					
 					MotorOut[0] += gyroYaw;
 					MotorOut[3] += gyroYaw;
 					MotorOut[1] -= gyroYaw;
@@ -439,7 +441,9 @@ void MainLoop(void)
 			{
 				if (Config.QuadFlyingMode==QuadFlyingMode_X)
 				{
-							
+					RX_Snapshot[RXChannel_AIL] = RX_Snapshot[RXChannel_AIL] * 0.7;		
+					RX_Snapshot[RXChannel_ELE] = RX_Snapshot[RXChannel_ELE] * 0.7;
+					
 					MotorOut[0] += RX_Snapshot[RXChannel_AIL] ;
 					MotorOut[1] += RX_Snapshot[RXChannel_AIL] ;
 					MotorOut[2] -= RX_Snapshot[RXChannel_AIL] ;
@@ -454,11 +458,11 @@ void MainLoop(void)
 				else
 				{
 				
-						MotorOut[1] += RX_Snapshot[RXChannel_AIL] ;
-						MotorOut[2] -= RX_Snapshot[RXChannel_AIL] ;
+					MotorOut[1] += RX_Snapshot[RXChannel_AIL] ;
+					MotorOut[2] -= RX_Snapshot[RXChannel_AIL] ;
 				
-						MotorOut[0] += RX_Snapshot[RXChannel_ELE] ;
-						MotorOut[3] -= RX_Snapshot[RXChannel_ELE] ;
+					MotorOut[0] += RX_Snapshot[RXChannel_ELE] ;
+					MotorOut[3] -= RX_Snapshot[RXChannel_ELE] ;
 								
 				}
 			
