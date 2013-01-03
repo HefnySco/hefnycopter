@@ -920,6 +920,7 @@ void _hSelfLeveling()
 
 void _hDebug()
 {
+	static int16_t YAWAngle;
 	if (IS_INIT)
 	{
   	}
@@ -948,6 +949,7 @@ void _hDebug()
 			send_byte(0x01);send_byte(0x00);send_byte(0x00);send_byte(0x00);
 			send_byte(97);
 			gyroXangle=0;
+			YAWAngle=0;
 		}	
 	//IMU_CalculateAngles();
 	//
@@ -974,10 +976,16 @@ void _hDebug()
 	//LCD_WriteValue_double_ex(2,48,CompAccY,9,false);
 	//LCD_WriteValue_double_ex(3,48,gyroYangle,9,false);
 	static double OldAngle;
-	LCD_WriteValue_double_ex(4,48,(3 * (-CompAccX) + OldAngle)/4,9,false);
+	
+	YAWAngle+=Sensors_GetGyroRate(2);
+	LCD_WriteValue(5,0,YAWAngle,5,false);
 	//LCD_WriteValue_double_ex(5,48,gyroYangle - (double)((float)RX_Snapshot[RXChannel_ELE] / 4.0f),9,false);
 	OldAngle = -CompAccX;
-	LCD_WriteValue(3,0,Sensors_GetAccAngle(ACC_X_Index),4,false);
+	
+	LCD_WriteValue(2,0,-Sensors_Latest[ACC_X_Index],5,false);
+	LCD_WriteValue(3,0,-Sensors_GetAccAngle(ACC_X_Index),5,false);
+	LCD_WriteValue_double_ex(4,0,CompAccX,9,false);
+	
 	//LCD_WriteValue(4,48,PID_AccTerms[0].I,4,false);
 	//LCD_WriteValue(5,48,PID_AccTerms[0].D,4,false);
 	//LCD_WriteValue(0,0,PID_GyroTerms[0].P,4,false);

@@ -78,14 +78,18 @@ int Sensors_GetAccAngle(int8_t Acc_Index) {
   //return arctan2(-Sensors_Latest[ACC_Z_Index],-Sensors_Latest[Acc_Index]) + 256;    // in Quid: 1024/(2*PI))
 //arctan2(accelData[PITCH] * sign[PITCH], sqrt((long(accelData[ROLL]) * accelData[ROLL]) + (long(accelData[ZAXIS]) * accelData[ZAXIS])));
 	//return arctan2 (-Sensors_Latest[Acc_Index] , sqrt((long())))
-	if (Acc_Index == ACC_X_Index) return arctan2(-Sensors_Latest[ACC_X_Index],sqrt(Sensors_Latest[ACC_Y_Index] * Sensors_Latest[ACC_Y_Index]) + (Sensors_Latest[ACC_Z_Index] * Sensors_Latest[ACC_Z_Index]) );
-	if (Acc_Index == ACC_Y_Index) return arctan2(-Sensors_Latest[ACC_Y_Index],sqrt(Sensors_Latest[ACC_X_Index] * Sensors_Latest[ACC_X_Index]) + (Sensors_Latest[ACC_Z_Index] * Sensors_Latest[ACC_Z_Index]) );
+	//if (Acc_Index == ACC_X_Index) return arctan2(-Sensors_Latest[ACC_X_Index],Sensors_Latest[ACC_Z_Index]+100) * 0.4275;
+	//if (Acc_Index == ACC_Y_Index) return arctan2(-Sensors_Latest[ACC_Y_Index],Sensors_Latest[ACC_Z_Index]+100) * 0.4275;
+	if (Acc_Index == ACC_X_Index) return arctan2((int16_t)CompAccX,(int16_t)CompGyroZ+100) * 0.84609375;
+	if (Acc_Index == ACC_Y_Index) return arctan2((int16_t)CompAccY,(int16_t)CompGyroZ+100) * 0.84609375;
+	
 }
 
+// divide by 10 after reading
 int16_t Sensors_GetGyroRate(int8_t Gyro_Index) {
 	int16_t t= Sensors_Latest[Gyro_Index];	                                            // ARef=3.3V, Gyro sensitivity=2mV/(deg/sec)
 	if ((t<=1) && (t>=-1)) return 0;
-  return (int16_t)(t * 4.583333333);							// in quid/sec:(1024/360)/1024 * 3.3/0.002)
+  return (int16_t)(t * 0.4583333333);							// in quid/sec:(1024/360)/1024 * 3.3/0.002)
 }
 
 /*

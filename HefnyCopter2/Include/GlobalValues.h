@@ -146,6 +146,8 @@ int8_t ACC_Y_Offset;
 //double Yaw_Ratio;
 //double Acc_Ratio;
 
+
+// Contains Values of PID and their limit.... configured from the LCD.
 typedef struct 
 {
 	//int16_t minSource,maxSource;
@@ -154,19 +156,25 @@ typedef struct
 			_P,_PLimit, 
 			_I, _ILimit, 
 			_D, _DLimit, 
-			ComplementaryFilterAlpha
+			ComplementaryFilterAlpha   // this value ranges from 0 [no filter] to 999[smoothest] ... this is the complementry filter ALPHA
 } pid_param_t;
 
 
-// holds runtime values for PID calculation
+// holds runtime values for PID calculation 
 typedef struct 
 {
 	//int16_t minSource,maxSource;
 	//int16_t minDest,maxDest;
-	float P,I,D,Error,D2,D2Error
+	float P,			// float value of pid_param_t._P * Value
+	float I,
+	float D,			
+	float Error,		// Old value (n-1)
+	float D2,
+	float D2Error
 } pid_terms_t;
 
 
+// Structure that hold PID calculated values for Gyro & ACC
 pid_terms_t PID_GyroTerms[3], PID_AccTerms[3];
 
 // TIMERS
@@ -174,7 +182,7 @@ uint16_t CurrentTCNT1_X;				// equal to TCNT1_X value -- read every loop entry [
 volatile uint16_t TCNT1_X;				// TCNT1_X click every 0.0032768 sec [1 sec = 305.17578125 TCNT1_X]
 volatile uint16_t TCNT2_X;				// TCNT2  overflows every  3.2us x 0xff = 0.0008192 sec,  TCNT2_X value tick every 819.2 us and overflow every 53.6870912 sec
 //volatile uint16_t OCR0A_X;
-uint16_t TCNT1_X_snapshot1;
+uint16_t TCNT1_X_snapshot1;				
 uint16_t TCNT_X_snapshot2;
 uint16_t TCNT_X_snapshotAutoDisarm;
 //uint16_t TCNT1_X_GlobalTimer;

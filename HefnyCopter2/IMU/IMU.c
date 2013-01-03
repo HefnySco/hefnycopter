@@ -132,7 +132,7 @@ void IMU_P2D (void)
 		{
 			Sensors_Latest[GYRO_Z_Index]=0;
 		}
-		double NavGyro = CompGyroZ ;//- (double)((float)RX_Snapshot[RXChannel_RUD]/4.0f);
+		double NavGyro = CompGyroZ;// - (double)((float)RX_Snapshot[RXChannel_RUD]/4.0f);
 		gyroYaw =  //(double)(CompGyroZ);// * (float)Sensors_dt / 100.0f); // CompGyroZ;
 				PID_Calculate (Config.GyroParams[1], &PID_GyroTerms[2],NavGyro); 
 
