@@ -15,20 +15,20 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_16A45B9C41FA49CB7870604E1BA8F431"
-        "OwnerKey" = "8:_4699E7874E5F4974AAA574F935FB3CB6"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_4699E7874E5F4974AAA574F935FB3CB6"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
+        "MsmKey" = "8:_9851BE316F07A249D87C15DCEC89B480"
+        "OwnerKey" = "8:_4699E7874E5F4974AAA574F935FB3CB6"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_D0D7C0FD32FC99C1CBF19F34441249FE"
-        "OwnerKey" = "8:_16A45B9C41FA49CB7870604E1BA8F431"
+        "OwnerKey" = "8:_9851BE316F07A249D87C15DCEC89B480"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -41,18 +41,18 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_4699E7874E5F4974AAA574F935FB3CB6"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_9851BE316F07A249D87C15DCEC89B480"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_D0D7C0FD32FC99C1CBF19F34441249FE"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_16A45B9C41FA49CB7870604E1BA8F431"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -160,13 +160,18 @@
         }
         "File"
         {
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_16A45B9C41FA49CB7870604E1BA8F431"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_9851BE316F07A249D87C15DCEC89B480"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:HefnyCopter.CommunicationProtocol, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_9851BE316F07A249D87C15DCEC89B480"
+                    {
+                    "Name" = "8:HefnyCopter.CommunicationProtocol.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:HefnyCopter.CommunicationProtocol.dll"
             "TargetName" = "8:"
@@ -193,6 +198,11 @@
             "AssemblyAsmDisplayName" = "8:DynamicDataDisplay, Version=0.3.0.0, Culture=neutral, PublicKeyToken=5b7d744a7263923f, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_D0D7C0FD32FC99C1CBF19F34441249FE"
+                    {
+                    "Name" = "8:DynamicDataDisplay.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:DynamicDataDisplay.dll"
             "TargetName" = "8:"
@@ -287,7 +297,7 @@
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:0.9.1"
+        "ProductVersion" = "8:0.9.2"
         "Manufacturer" = "8:HefnyCopter"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -815,7 +825,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_4699E7874E5F4974AAA574F935FB3CB6"
             {
-            "SourcePath" = "8:..\\QuadCopterTool\\obj\\x86\\Release\\QuadCopterTool.exe"
+            "SourcePath" = "8:..\\QuadCopterTool\\obj\\x86\\Debug\\QuadCopterTool.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_B3EF8CA75F0C4687A496EE62ADA1F1A0"

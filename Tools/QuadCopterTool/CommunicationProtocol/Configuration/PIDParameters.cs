@@ -5,6 +5,12 @@ using System.Text;
 
 namespace HefnyCopter.CommunicationProtocol
 {
+    /// <summary>
+    /// _P,_PLimit, 
+	///	_I, _ILimit, 
+	///	_D, _DLimit, 
+	///	ComplementaryFilterAlpha
+    /// </summary>
     public class PIDParameters
     {
 
@@ -57,5 +63,7 @@ namespace HefnyCopter.CommunicationProtocol
 
         #endregion 
 
+
+      
     }
 }

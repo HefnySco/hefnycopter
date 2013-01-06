@@ -10,7 +10,7 @@
 #define VERSION_H_
 
 
-static const prog_char strVersionInfo[] = "HefnyCopter2 v0.8.3";
+static const prog_char strVersionInfo[] = "HefnyCopter2 v0.8.4";
 
 /*
 version 0.1
@@ -91,12 +91,12 @@ version 0.7
 *	. Update Landing Logic.
 *	. Acc_Z =0 instead of 100 as a default value.
 *	. Increase (I) only when there is a condition: if (abs(Value) > abs(PID_Term->Error))
-*	. Update Logic for PID_ACC to ZERO I....removed lated it caused whobbles. 
+*	. Update Logic for PID_ACC to ZERO I....removed lated it caused wobbles. 
 * Function:
-*	. Adjusting ESC Calibration... was not working correct... now the signal comes from ISR of RX to M1..4 directly to gurantee correct programming signal length.
+*	. Adjusting ESC Calibration... was not working correct... now the signal comes from ISR of RX to M1..4 directly to guarantee correct programming signal length.
 *	. RX_Main handles acts as buttons even if RX_Trainer is selected..
 *		.. You can arm only with the active RX.
-*		.. Even if RX_Main is selected you cannor ARM if RX_Trainer signal does not exist.
+*		.. Even if RX_Main is selected you cannot ARM if RX_Trainer signal does not exist.
 *
 
 version 0.8
@@ -109,7 +109,11 @@ version 0.8
 
 version 0.8.1
 * IMU:
-*	. Adding Deffirential Value in I instead of Value.
+*	. Adding Differential Value in I instead of Value.
+
+version 0.8.4
+* UART
+*	. Fixing minor issue in RX logic.
 
 =========================================================================================
 * Move voltage port to default (ADC0) connected to VCC by default to free ADC1

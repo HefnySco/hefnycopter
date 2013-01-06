@@ -69,7 +69,6 @@ ISR (USART1_RX_vect)
 			    if (RXIndex==SERIAL_BUFFERSIZE_1)
 				{
 					ParseCommand();
-					c_state = IDLE;
 				}
 				else
 				{
@@ -85,6 +84,7 @@ ISR (USART1_RX_vect)
 	 if (RXIndex==SERIAL_BUFFERSIZE) 
 	 {
 		RXIndex=0;
+		c_state = IDLE;
 	 }		
 }
 
@@ -122,19 +122,19 @@ void ParseCommand ()
 				}
 			break;
 			case SERIAL_HEADER_SETVALUE:
-				LED_FlashOrangeLED (LED_SHORT_TOGGLE,4);
+				//LED_FlashOrangeLED (LED_SHORT_TOGGLE,4);
 				memcpy ((void *)&Config + RXBuffer[SERIAL_DATA_OFFSET] + (RXBuffer[SERIAL_DATA_OFFSET+1] * 0xff),(void *) &RXBuffer[SERIAL_DATA_VALUE], (int8_t) RXBuffer[SERIAL_DATA_LENGHT]);
 			break;
+		default:
+			memcpy(DisplayBuffer,"ERR",3);
+			break;
 		}
-		
-		c_state = IDLE;
-		RXIndex=0;
 	}
 	else
 	{
 
-		DisplayBuffer[1]+='0';
-		//memcpy(DisplayBuffer,"ERR",3);
+		//DisplayBuffer[1]+='0';
+		memcpy(DisplayBuffer,"CRC",3);
 	}		
 	
 	

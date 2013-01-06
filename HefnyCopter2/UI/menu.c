@@ -934,20 +934,15 @@ void _hDebug()
 			//send_byte(0x00);send_byte(0x00);send_byte(0x00);
 			//send_byte(0x00);send_byte(0x00);send_byte(0x00);
 			//send_byte('J');
-			send_byte('V');  // X Copter
-			send_byte(0x09);send_byte(0x01);
-			send_byte(0x01);
-			send_byte(0x01);send_byte(0x00);send_byte(0x00);send_byte(0x00);
-			send_byte(98);
+			//send_byte('V');  // X Copter
+			//send_byte(0x09);send_byte(0x01);
+			//send_byte(0x01);
+			//send_byte(0x01);send_byte(0x00);send_byte(0x00);send_byte(0x00);
+			//send_byte(98);
 	
 		}
 		if (KEY3)
 		{
-			send_byte('V');  // X Copter
-			send_byte(0x09);send_byte(0x00);
-			send_byte(0x01);
-			send_byte(0x01);send_byte(0x00);send_byte(0x00);send_byte(0x00);
-			send_byte(97);
 			gyroXangle=0;
 			YAWAngle=0;
 		}	

@@ -143,6 +143,15 @@ namespace HefnyCopter.CommunicationProtocol
 
 
 
+        public override void SendCommand(HefnyCopterCommand HefnyCopterCommand)
+        {
+            byte[] Command = HefnyCopterCommand.CommandBytes;
+
+            if (Command.Length != 9) return;
+            mSerialPort.Write(Command,0,Command.Length);
+        }
+
+
         /// <summary>
         /// Sensor Protocol:
         /// S,GX,GY,GZ,AccX,AccY,AccZ,Bat,M1,M2,M3,M4,E
@@ -164,7 +173,7 @@ namespace HefnyCopter.CommunicationProtocol
 
             for (int i = 0; i < array.Length; ++i) // j; ++i)
             {
-                // Sensors Start Tag
+                // Sensors Start Tag .... Data of Gyros & Acc readinsg while flying is being recived.
                 if ((!bStartCopy) && (array[i] == 'S'))
                 {
                     mRxDataType = ENUM_RxDataType.Sensors;
@@ -172,7 +181,7 @@ namespace HefnyCopter.CommunicationProtocol
                     Idx = 0;
                     continue;
                 }
-                // Configuration Start Tag
+                // Configuration Start Tag .... Data of Config structure is being received
                 if ((!bStartCopy) && (array[i] == 'C'))
                 {
                     mRxDataType = ENUM_RxDataType.Settings;
@@ -239,20 +248,11 @@ namespace HefnyCopter.CommunicationProtocol
                             }
                             cArray[Idx] = array[i];
                             break;
-                            
-
-                    }
-
+                   }
                     Idx += 1;
                 }
-
-                ExpectEOF = false;
+               ExpectEOF = false;
             }
-
-
         }
-
-
-
     }
 }

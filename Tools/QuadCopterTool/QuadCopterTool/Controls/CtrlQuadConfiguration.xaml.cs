@@ -22,6 +22,9 @@ namespace QuadCopterTool.Controls
     /// </summary>
     public partial class CtrlQuadConfiguration : UserControl
     {
+        public event EventHandler OnReadRequest;
+        public event EventHandler OnWriteRequest;
+        public event EventHandler OnSaveEPROMRequest;
 
         protected QuadConfigStructure mQuadConfigStructure;
 
@@ -71,6 +74,66 @@ namespace QuadCopterTool.Controls
             ctrlSensorGyroPitchRoll.Parameters = mQuadConfigStructure.GyroParams[0];
             ctrlSensorGyroYaw.Parameters = mQuadConfigStructure.GyroParams[1];
 
+        }
+
+
+        public void UpdateQuadConfigStructure()
+        {
+            mQuadConfigStructure.VoltageAlarm  = byte.Parse(txtVoltageAlram.Text);
+            mQuadConfigStructure.AccParams[0]  = ctrlSensorAccPitchRoll.Parameters;
+            mQuadConfigStructure.AccParams[1]  = ctrlSensorAccZ.Parameters;
+            mQuadConfigStructure.GyroParams[0] = ctrlSensorGyroPitchRoll.Parameters;
+            mQuadConfigStructure.GyroParams[1] = ctrlSensorGyroYaw.Parameters;
+        }
+
+        private void btnRead_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                btnRead.IsEnabled = false;
+                //  (((sender as Button).Parent as Grid).Parent as CustomButton).Click(sender, e);
+                OnReadRequest(sender, e);
+            }
+            catch
+            {
+            }
+            finally
+            {
+                btnRead.IsEnabled = true;
+            }
+        }
+
+        private void btnWrite_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                btnWrite.IsEnabled = false;
+                UpdateQuadConfigStructure();
+                OnWriteRequest(sender, e);
+            }
+            catch
+            {
+            }
+            finally
+            {
+                btnWrite.IsEnabled = true;
+            }
+        }
+
+        private void btnSaveEPROM_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                btnSaveEPROM.IsEnabled = false;
+                OnSaveEPROMRequest(sender, e);
+            }
+            catch
+            {
+            }
+            finally
+            {
+                btnSaveEPROM.IsEnabled = true;
+            }
         }
     }
 }

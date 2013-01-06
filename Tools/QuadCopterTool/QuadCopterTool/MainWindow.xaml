@@ -27,6 +27,9 @@
                     <TextBox Height="26" HorizontalAlignment="Left" Margin="75,204,0,0" Name="txtVideoConnection" VerticalAlignment="Top" Width="270" TextChanged="txtVideoConnection_TextChanged" />
                     <Label Content="Video COM" Height="28" HorizontalAlignment="Left" Margin="5,202,0,0" Name="label12" VerticalAlignment="Top" />
                     <CheckBox Content="Simulate Fake Port" Height="21" HorizontalAlignment="Left" Margin="75,92,0,0" Name="chkPortFake" VerticalAlignment="Top" Width="134" />
+                    <Button Height="32" HorizontalAlignment="Left" Margin="353,22,0,0" Name="btnTestConnection" ToolTip="Test Connection" VerticalAlignment="Top" Width="32" Click="btnTestConnection_Click">
+                       
+                    </Button>
                 </Grid>
             </TabItem>
             <TabItem Header="Attitude Data" Name="tabItemRealTimeData" Background="#FF65B0CB" OpacityMask="#FF65B0CB">
@@ -75,7 +78,7 @@
             </TabItem>
             <TabItem Header="Configuration" Name="tabItem1" Background="#FF65B0CB" OpacityMask="#FF65B0CB">
                 <Grid>
-                    <my1:CtrlQuadConfiguration Margin="6,6,394,405" x:Name="octrlQuadConfiguration" Height="338" Width="412" />
+                    <my1:CtrlQuadConfiguration Margin="6,6,0,0" x:Name="octrlQuadConfiguration" Height="494" Width="779" HorizontalAlignment="Left" VerticalAlignment="Top" OnWriteRequest="octrlQuadConfiguration_OnWriteRequest" OnReadRequest="octrlQuadConfiguration_OnReadRequest" OnSaveEPROMRequest="octrlQuadConfiguration_OnSaveEPROMRequest" />
                 </Grid>
             </TabItem>
         </TabControl>

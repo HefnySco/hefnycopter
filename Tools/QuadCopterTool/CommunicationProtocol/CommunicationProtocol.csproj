@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="Configuration\PIDParameters.cs" />
     <Compile Include="HefnyCopterBaseConnection.cs" />
+    <Compile Include="HefnyCopterCommandFormatter.cs" />
     <Compile Include="HefnyCopterDummySerial.cs" />
     <Compile Include="Configuration\QuadConfigStructure.cs" />
     <Compile Include="Configuration\QuadConfigurationManager.cs" />

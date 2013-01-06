@@ -166,11 +166,11 @@ typedef struct
 	//int16_t minSource,maxSource;
 	//int16_t minDest,maxDest;
 	float P,			// float value of pid_param_t._P * Value
-	float I,
-	float D,			
-	float Error,		// Old value (n-1)
-	float D2,
-	float D2Error
+	 I,
+	 D,			
+	 Error,		// Old value (n-1)
+	 D2,
+	 D2Error;
 } pid_terms_t;
 
 
@@ -235,15 +235,15 @@ typedef struct
 	uint8_t AutoDisarm;				//	offset: +5	
 	uint8_t IsESCCalibration;		//	offset: +6	
 	uint8_t ReceiverMode;			//	offset: +7	
-	uint8_t BoardOrientationMode;				//	offset: +8	
+	uint8_t BoardOrientationMode;	//	offset: +8	
 	uint8_t QuadFlyingMode;			//	offset: +9	
 	uint8_t LCDContrast;			//	offset: +10	
 	uint8_t ThrottleMin;			//	offset: +11	
-	uint8_t StickScaling;	//	offset: +12	
-	uint8_t LVA;					//	offset: +14	
-	pid_param_t GyroParams[2];		//	offset: +15 Length	 + 28
-	pid_param_t AccParams[2];		//	offset: +43	Length	 + 28
-	uint8_t VoltageAlarm;			//	offset: 71
+	uint8_t StickScaling;			//	offset: +12	
+	uint8_t LVA;					//	offset: +13	
+	pid_param_t GyroParams[2];		//	offset: +14 Length	 + 28
+	pid_param_t AccParams[2];		//	offset: +42	Length	 + 28
+	uint8_t VoltageAlarm;			//	offset: 70
 	//model_t Mixer;
 	uint16_t RX_Mid[2][RXChannels]; //	offset: 72	Length	+
 	uint16_t RX_Min[2][RXChannels];

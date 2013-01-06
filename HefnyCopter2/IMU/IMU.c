@@ -146,8 +146,8 @@ void IMU_P2D (void)
 		{	/*NOTE if u USE CompACCY & X u should use it in negative sign*/
 			
 				
-			NavY = -CompAccX ;
-			NavX = -CompAccY ;	
+			NavY = (double)(0.8 * (NavY + Sensors_GetGyroRate(GYRO_Y_Index))) - (double)(0.2 * Sensors_GetAccAngle(ACC_X_Index) - ((float)RX_Snapshot[RXChannel_ELE] / 32.0f)); //-CompAccX ;
+			NavX = (double)(0.8 * (NavX + Sensors_GetGyroRate(GYRO_X_Index))) - (double)(0.2 * Sensors_GetAccAngle(ACC_Y_Index) - ((float)RX_Snapshot[RXChannel_AIL] / 32.0f)); //-CompAccY ;	
 			
 			//gyroPitch = PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[0],CompGyroY + NavY * 2);	// here sticks are rate
 			//gyroRoll  = PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[1],CompGyroX + NavX * 2); 
@@ -190,8 +190,8 @@ void IMU_P2D (void)
 			//gyroPitch =	PID_Calculate (Config.AccParams[0], &PID_AccTerms[0],CompGyroY + (NavY - PID_GyroTerms[0].D2 ) * 2);	// here sticks are rate
 			//gyroRoll  = PID_Calculate (Config.AccParams[0], &PID_AccTerms[1],CompGyroX + (NavX - PID_GyroTerms[1].D2 ) * 2); 
 			
-			gyroPitch =	PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[0],CompGyroY);	
-			gyroRoll  = PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[1],CompGyroX); 
+			//gyroPitch =	PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[0],CompGyroY);	
+			//gyroRoll  = PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[1],CompGyroX); 
 		
 			gyroPitch += PID_Calculate_ACC (Config.AccParams[0], &PID_AccTerms[0],NavY );//- PID_GyroTerms[0].D2 ); //-CompAccX );
 			gyroRoll  += PID_Calculate_ACC (Config.AccParams[0], &PID_AccTerms[1],NavX );//- PID_GyroTerms[1].D2); //-CompAccY );

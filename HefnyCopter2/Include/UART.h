@@ -12,12 +12,12 @@
 /*
 Protocol:
 #CMD#: 1 byte
-		'V'		: SETVALUE:   1 byte
+		'V'		: SETVALUE:   0 byte
 					DataOffset: 2 bytes		[0-65536]
 					DataLength: 1 byte		[0,1,2,3,4]
 					DataValue:  4 bytes		[Word-32]
 					CHKSUM:		1 byte
-		'C'		: SETCMD
+		'C'		: SETCMD      0 byte
 					CMD:		1 byte
 								0	--		DISARM	
 								1   --		BLINK
