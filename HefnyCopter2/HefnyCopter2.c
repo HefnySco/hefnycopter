@@ -380,25 +380,6 @@ void MainLoop(void)
 			
 			
 	
-			/*
-			*
-			*	Self Leveling
-			*/
-				
-				/*
-				if (Config.SelfLevelMode == IMU_SelfLevelMode)
-				{
-					IMU_Kalman();
-				}
-				else
-				{
-					
-					IMU_P2D();
-				}
-				*/
-				//gyroPitch = gyroPitch * (-1);
-				//gyroRoll  = gyroRoll  * (-1);
-				
 				if (Config.BoardOrientationMode==QuadFlyingMode_X)
 				{
 					MotorOut[0] -= gyroRoll ;
@@ -537,7 +518,7 @@ void HandleSticksForArming (void)
 		// DisArm Check
 		if (IsArmed == true) 
 		{
-			if (RX_Latest[ActiveRXIndex][RXChannel_RUD] < STICK_RIGHT)
+			if (RX_Latest[ActiveRXIndex][RXChannel_RUD] > STICK_LEFT)
 			{ // Check DisArming manually.
 				bResetTCNR1_X  = false;
 				if ( (CurrentTCNT1_X - TCNT1_X_snapshot1) > STICKPOSITION_LONG_TIME )
@@ -561,7 +542,7 @@ void HandleSticksForArming (void)
 		
 		if (IsArmed == false) 
 		{
-			if (RX_Latest[ActiveRXIndex][RXChannel_RUD] > STICK_LEFT)
+			if (RX_Latest[ActiveRXIndex][RXChannel_RUD] < STICK_RIGHT)
 			{	// Armin Check
 				bResetTCNR1_X = false;
 				if ( (CurrentTCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_LONG_TIME )

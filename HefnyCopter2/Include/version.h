@@ -10,7 +10,7 @@
 #define VERSION_H_
 
 
-static const prog_char strVersionInfo[] = "HefnyCopter2 v0.8.4";
+static const prog_char strVersionInfo[] = "HefnyCopter2 v0.8.5";
 
 /*
 version 0.1
@@ -114,7 +114,11 @@ version 0.8.1
 version 0.8.4
 * UART
 *	. Fixing minor issue in RX logic.
+*	. Update values from UART TX...GUI Tool on windows have been updated and tested.
 
+version 0.8.5
+*IMU:
+*	. Adding Trims for ACC
 =========================================================================================
 * Move voltage port to default (ADC0) connected to VCC by default to free ADC1
 

@@ -808,7 +808,7 @@ void _hMiscSettings()
 */ 
 void _hStabilization()
 {
-	
+	LCD_WriteString_Pex(5,0,PSTR("                "),16,false);    
 	NOKEYRETURN;
 	PageKey(8);
 	
@@ -853,26 +853,39 @@ void _hStabilization()
 	LCD_WriteValue(2,84,Config.GyroParams[subindex]._ILimit,3,4==subpage);
 	LCD_WriteValue(3,30,Config.GyroParams[subindex]._D,3,5==subpage);
 	LCD_WriteValue(3,84,Config.GyroParams[subindex]._DLimit,3,6==subpage);
-	LCD_WriteValue(5,84,Config.GyroParams[subindex].ComplementaryFilterAlpha,3,7==subpage);
+	LCD_WriteValue(4,84,Config.GyroParams[subindex].ComplementaryFilterAlpha,3,7==subpage);
 }
 
 
 
 void _hSelfLeveling()
 {
-
+	
 	
 	NOKEYRETURN;
-	PageKey(8);
+	PageKey(10);
+	
+	if ((subindex!=0) && (subpage>7)) subpage=0;
+		
+	
 	
 	if (KEY4)
 	{
 		if (subpage!=0) bValueChanged = true;
 		currentPage.softkeys = _skMENUSAVE;
-		
 		switch (subpage)
 		{
-			case 0: if (subindex==0) subindex=1; else subindex=0; break;
+			case 0: if (subindex==0) 
+					{
+						subindex=1; 
+						LCD_WriteString_Pex(5,0,PSTR("                "),16,false);    
+					}
+					else
+					{
+						subindex=0; 
+						LCD_WriteString_Pex(5,0,PSTR("Trim P:    R:"),13,false);
+					}				
+					break;		
 			case 1: startEditMode(&(Config.AccParams[subindex]._P),-500,500,TYPE_INT16); return ;
 			case 2: startEditMode(&(Config.AccParams[subindex]._PLimit),0,500,TYPE_INT16); return ;
 			case 3: startEditMode(&(Config.AccParams[subindex]._I),-500,500,TYPE_INT16);  return ;
@@ -880,9 +893,10 @@ void _hSelfLeveling()
 			case 5: startEditMode(&(Config.AccParams[subindex]._D),-500,500,TYPE_INT16);  return ; // negative D
 			case 6: startEditMode(&(Config.AccParams[subindex]._DLimit),0,500,TYPE_INT16); return ;
 			case 7: startEditMode(&(Config.AccParams[subindex].ComplementaryFilterAlpha),0,999,TYPE_INT16); return ;
+			case 8: startEditMode(&(Config.Acc_Pitch_Trim),-25,25,TYPE_INT8);  return ; 
+			case 9: startEditMode(&(Config.Acc_Roll_Trim),-25,25,TYPE_INT8); return ;
+		
 		}
-		
-		
 	}
 	
 	if (KEY1)
@@ -894,11 +908,15 @@ void _hSelfLeveling()
 	if (subindex==0)
 	{
 		strcpy_P(sXDeg,PSTR("ACC X & Y    "));
+		LCD_WriteValue(5,42,Config.Acc_Pitch_Trim,3,8==subpage);
+		LCD_WriteValue(5,78,Config.Acc_Roll_Trim,3,9==subpage);
 	}
 	else
 	{
 		strcpy_P(sXDeg,PSTR("ACC-Z damping"));
+		//LCD_WriteValue(5,84,Config.Acc_Pitch_Trim,3,9==subpage);
 	}
+	
 	LCD_WriteStringex (0,0,sXDeg,0==subpage);
 	LCD_WriteValue(1,30,Config.AccParams[subindex]._P,3,1==subpage);
 	LCD_WriteValue(1,84,Config.AccParams[subindex]._PLimit,3,2==subpage);
@@ -906,7 +924,7 @@ void _hSelfLeveling()
 	LCD_WriteValue(2,84,Config.AccParams[subindex]._ILimit,3,4==subpage);
 	LCD_WriteValue(3,30,Config.AccParams[subindex]._D,3,5==subpage);
 	LCD_WriteValue(3,84,Config.AccParams[subindex]._DLimit,3,6==subpage);
-	LCD_WriteValue(5,84,Config.AccParams[subindex].ComplementaryFilterAlpha,3,7==subpage);
+	LCD_WriteValue(4,84,Config.AccParams[subindex].ComplementaryFilterAlpha,3,7==subpage);
 	
 }
 
@@ -943,6 +961,8 @@ void _hDebug()
 		}
 		if (KEY3)
 		{
+			gyroZangle=0;
+			gyroYangle=0;
 			gyroXangle=0;
 			YAWAngle=0;
 		}	
@@ -972,14 +992,15 @@ void _hDebug()
 	//LCD_WriteValue_double_ex(3,48,gyroYangle,9,false);
 	static double OldAngle;
 	
-	YAWAngle+=Sensors_GetGyroRate(2);
-	LCD_WriteValue(5,0,YAWAngle,5,false);
+	YAWAngle+=Sensors_GetGyroRate(GYRO_Z_Index);
 	//LCD_WriteValue_double_ex(5,48,gyroYangle - (double)((float)RX_Snapshot[RXChannel_ELE] / 4.0f),9,false);
 	OldAngle = -CompAccX;
 	
-	LCD_WriteValue(2,0,-Sensors_Latest[ACC_X_Index],5,false);
-	LCD_WriteValue(3,0,-Sensors_GetAccAngle(ACC_X_Index),5,false);
-	LCD_WriteValue_double_ex(4,0,CompAccX,9,false);
+	LCD_WriteValue(2,0,gyroZangle,5,false);
+	LCD_WriteValue_double_ex(3,0,NavY,9,false);		// Angle + trim	
+	LCD_WriteValue_double_ex(4,0,CompAccX,9,false); // Angle
+	LCD_WriteValue_double_ex(5,0,gyroPitch,9,false);// PID OUTPUT
+	LCD_WriteValue_double_ex(6,0,gyroYangle,9,false);// ANGLE
 	
 	//LCD_WriteValue(4,48,PID_AccTerms[0].I,4,false);
 	//LCD_WriteValue(5,48,PID_AccTerms[0].D,4,false);

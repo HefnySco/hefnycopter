@@ -90,12 +90,14 @@ int16_t P2D_Calculate (pid_param_t PID_Params, pid_terms_t PID_Term, int16_t  Gy
 
 float PID_Calculate_ACC (pid_param_t PID_Params, pid_terms_t *PID_Term, double  Value)
 {
+	#define ACC_I_MIN	4
+		
 	float Output;
 		
+		double AbsValue = abs (Value);
 		// Calculate Terms 
+		if (AbsValue > 1)
 	    PID_Term->P  = ((float)(Value * PID_Params._P) / 10.0f);						
-		
-		// Increment by 1 always ... dont use value to increment.
 		
 		
 		//double AbsValue = abs (Value);
@@ -111,22 +113,21 @@ float PID_Calculate_ACC (pid_param_t PID_Params, pid_terms_t *PID_Term, double  
 		//}
 		//else 
 		int16_t DeltaError = (Value - PID_Term->Error);
-		
-		if (Value > 0)
+		if (Value > ACC_I_MIN)
 		{
 			PID_Term->I += (float)(PID_Params._I / 100.0f);						    		
 		}
-		else if (Value < 0)
+		else if (Value < -ACC_I_MIN)
 		{	
 			PID_Term->I -= (float)(PID_Params._I / 100.0f );						    		
 		}
-		//else
-		//{
-			//PID_Term->I -= (float)(PID_Term->I * PID_I_LEAK_RATE);
-		//}			
+		else
+		{
+			PID_Term->I -= (float)(PID_Term->I * PID_I_LEAK_RATE);
+		}			
 				
 		
-		PID_Term->D= (float)((float)(DeltaError) * (float)PID_Params._D) / 5.0f ;
+		PID_Term->D= (float)((float)(DeltaError) * (float)PID_Params._D) / 20.0f ;
 		PID_Term->Error = Value;	
 		
 				

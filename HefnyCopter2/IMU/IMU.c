@@ -74,7 +74,7 @@
 ////}
 
 
-double NavY, NavX;
+
 
 void IMU_P2D (void)
 {
@@ -87,29 +87,23 @@ void IMU_P2D (void)
 		float Beta = 1- Alpha;
 		
 		CompGyroY = (double) (Alpha * CompGyroY) + (double) (Beta * Sensors_Latest[GYRO_Y_Index]);
-		if ((CompGyroY<=1) && (CompGyroY>=-1)) CompGyroY=0;
-		gyroYangle += CompGyroY/20.83; //.83333333 * (double)((float)Sensors_dt / 1000.0f);
+		gyroYangle+=CompGyroY; 
 		
 		CompGyroX = (double) (Alpha * CompGyroX) + (double) (Beta * Sensors_Latest[GYRO_X_Index]);
-		if ((CompGyroX<=1) && (CompGyroX>=-1)) CompGyroX=0;
-		gyroXangle += CompGyroX /20.83; // 45.83333333 * Sensors_dt;
-		
+		gyroXangle+=CompGyroX; 
 		
 		Alpha = Config.GyroParams[1].ComplementaryFilterAlpha / 1000;
 		Beta = 1- Alpha;
 		
 		CompGyroZ = (double) (Alpha * CompGyroZ) + (double) (Beta * Sensors_Latest[GYRO_Z_Index]);
-		if ((CompGyroZ<=1) && (CompGyroZ>=-1)) CompGyroZ=0;
-		/////gyroZangle += CompGyroZ/41.66;
+		gyroZangle+=CompGyroZ; //gyroZangle ranges from -1200 to 1200 for 360 deg so div by 10 when u use to match angles.
 		
 		
 		
 		Alpha = Config.AccParams[0].ComplementaryFilterAlpha / 1000;
 		Beta = 1- Alpha;
-		CompAccY = (double) (Alpha * CompAccY) + (double) (Beta * (Sensors_Latest[ACC_Y_Index] )); // no Dynamic calibration - ACC_Y_Offset));
-		CompAccX = (double) (Alpha * CompAccX) + (double) (Beta * (Sensors_Latest[ACC_X_Index] )); // no Dynamic calibration - ACC_X_Offset));
-		gyroXangle = gyroXangle + (double)((0.2) * (-CompAccY - gyroXangle));
-		gyroYangle = gyroYangle + (double)((0.2) * (-CompAccX - gyroYangle));
+		CompAccY = (double) (Alpha * CompAccY) + (double) (Beta * (Sensors_GetAccAngle(ACC_Y_Index) )); // no Dynamic calibration - ACC_Y_Offset));
+		CompAccX = (double) (Alpha * CompAccX) + (double) (Beta * (Sensors_GetAccAngle(ACC_X_Index))); // no Dynamic calibration - ACC_X_Offset));
 		
 		
 		
@@ -119,19 +113,8 @@ void IMU_P2D (void)
 		//////////////////////////////		
 		
 		
-		//// PITCH
-		//gyroPitch =	PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[0],CompGyroY);//  -  ((float)RX_Snapshot[RXChannel_ELE] / 32.0f))
-			//
-		//
-		//// ROLL
-		//gyroRoll = PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[1],CompGyroX); //)
-			//
 		//
 		// YAW
-		if ((Sensors_Latest[GYRO_Z_Index]>=-2) && (Sensors_Latest[GYRO_Z_Index]<=2))
-		{
-			Sensors_Latest[GYRO_Z_Index]=0;
-		}
 		double NavGyro = CompGyroZ;// - (double)((float)RX_Snapshot[RXChannel_RUD]/4.0f);
 		gyroYaw =  //(double)(CompGyroZ);// * (float)Sensors_dt / 100.0f); // CompGyroZ;
 				PID_Calculate (Config.GyroParams[1], &PID_GyroTerms[2],NavGyro); 
@@ -145,10 +128,6 @@ void IMU_P2D (void)
 		else
 		{	/*NOTE if u USE CompACCY & X u should use it in negative sign*/
 			
-				
-			NavY = (double)(0.8 * (NavY + Sensors_GetGyroRate(GYRO_Y_Index))) - (double)(0.2 * Sensors_GetAccAngle(ACC_X_Index) - ((float)RX_Snapshot[RXChannel_ELE] / 32.0f)); //-CompAccX ;
-			NavX = (double)(0.8 * (NavX + Sensors_GetGyroRate(GYRO_X_Index))) - (double)(0.2 * Sensors_GetAccAngle(ACC_Y_Index) - ((float)RX_Snapshot[RXChannel_AIL] / 32.0f)); //-CompAccY ;	
-			
 			//gyroPitch = PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[0],CompGyroY + NavY * 2);	// here sticks are rate
 			//gyroRoll  = PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[1],CompGyroX + NavX * 2); 
 			
@@ -160,44 +139,66 @@ void IMU_P2D (void)
 							+								X
 							+								+		
 			*/
+			NavY=-CompAccX - (double)(Config.Acc_Pitch_Trim); 
+			NavX=-CompAccY - (double)(Config.Acc_Roll_Trim);
+			
+			
 			
 			if ((Config.BoardOrientationMode==QuadFlyingMode_PLUS) && (Config.QuadFlyingMode==QuadFlyingMode_X))
 			{
-				NavY += ( -  (double)((float)RX_Snapshot[RXChannel_AIL]  / 4.0f));
-				NavY += ( -  (double)((float)RX_Snapshot[RXChannel_ELE]  / 4.0f));	
-				NavX += ( -  (double)((float)RX_Snapshot[RXChannel_AIL]  / 4.0f));
-				NavX += ( +  (double)((float)RX_Snapshot[RXChannel_ELE]  / 4.0f));	
+				NavY += ( -  (double)((float)RX_Snapshot[RXChannel_AIL]  / 6.0f));
+				NavY += ( -  (double)((float)RX_Snapshot[RXChannel_ELE]  / 6.0f));	
+				NavX += ( -  (double)((float)RX_Snapshot[RXChannel_AIL]  / 6.0f));
+				NavX += ( +  (double)((float)RX_Snapshot[RXChannel_ELE]  / 6.0f));	
 			}
 			else if ((Config.BoardOrientationMode==QuadFlyingMode_PLUS) && (Config.QuadFlyingMode==QuadFlyingMode_PLUS))
 			{
-				NavY += ( - (double)((float)RX_Snapshot[RXChannel_ELE] / 4.0f));	
-				NavX += ( - (double)((float)RX_Snapshot[RXChannel_AIL] / 4.0f));
+				NavY += ( - (double)((float)RX_Snapshot[RXChannel_ELE] / 6.0f));	
+				NavX += ( - (double)((float)RX_Snapshot[RXChannel_AIL] / 6.0f));
 			}					
 			else if ((Config.BoardOrientationMode==QuadFlyingMode_X) && (Config.QuadFlyingMode==QuadFlyingMode_X))
 			{
-				NavY += ( - (double)((float)RX_Snapshot[RXChannel_ELE] / 4.0f));	
-				NavX += ( - (double)((float)RX_Snapshot[RXChannel_AIL] / 4.0f));
+				NavY += ( - (double)((float)RX_Snapshot[RXChannel_ELE] / 6.0f));	
+				NavX += ( - (double)((float)RX_Snapshot[RXChannel_AIL] / 6.0f));
 		
 			}
 			else if ((Config.BoardOrientationMode==QuadFlyingMode_X) && (Config.QuadFlyingMode==QuadFlyingMode_PLUS))
 			{
-				NavY += ( +  (double)((float)RX_Snapshot[RXChannel_AIL]  / 4.0f));
-				NavY += ( +  (double)((float)RX_Snapshot[RXChannel_ELE]  / 4.0f));	
-				NavX += ( +  (double)((float)RX_Snapshot[RXChannel_AIL]  / 4.0f));
-				NavX += ( -  (double)((float)RX_Snapshot[RXChannel_ELE]  / 4.0f));	
+				NavY += ( +  (double)((float)RX_Snapshot[RXChannel_AIL]  / 6.0f));
+				NavY += ( +  (double)((float)RX_Snapshot[RXChannel_ELE]  / 6.0f));	
+				NavX += ( +  (double)((float)RX_Snapshot[RXChannel_AIL]  / 6.0f));
+				NavX += ( -  (double)((float)RX_Snapshot[RXChannel_ELE]  / 6.0f));	
 			}
+			
+			
+			//gyroYangle = (double)(Alpha * gyroYangle /10) + (double)(Beta *  (NavY)); //-CompAccX ;
+			//gyroXangle = (double)(Alpha * gyroXangle /10) + (double)(Beta *  (NavX)); //-CompAccY ;	
+			
+			 
 			
 			//gyroPitch =	PID_Calculate (Config.AccParams[0], &PID_AccTerms[0],CompGyroY + (NavY - PID_GyroTerms[0].D2 ) * 2);	// here sticks are rate
 			//gyroRoll  = PID_Calculate (Config.AccParams[0], &PID_AccTerms[1],CompGyroX + (NavX - PID_GyroTerms[1].D2 ) * 2); 
 			
-			//gyroPitch =	PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[0],CompGyroY);	
-			//gyroRoll  = PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[1],CompGyroX); 
+			
+			gyroPitch =	PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[0],CompGyroY);	// rates
+			gyroRoll  = PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[1],CompGyroX); 
 		
-			gyroPitch += PID_Calculate_ACC (Config.AccParams[0], &PID_AccTerms[0],NavY );//- PID_GyroTerms[0].D2 ); //-CompAccX );
-			gyroRoll  += PID_Calculate_ACC (Config.AccParams[0], &PID_AccTerms[1],NavX );//- PID_GyroTerms[1].D2); //-CompAccY );
 		
-			PID_AccTerms[0].D2 = NavY;
-			PID_AccTerms[1].D2 = NavX;
+			//NavY = PID_Calculate_ACC (Config.AccParams[0], &PID_AccTerms[0],NavY );//- PID_GyroTerms[0].D2 ); //-CompAccX ); // angels
+			//NavX = PID_Calculate_ACC (Config.AccParams[0], &PID_AccTerms[1],NavX );//- PID_GyroTerms[1].D2); //-CompAccY );
+		
+			
+			gyroPitch += PID_Calculate_ACC (Config.AccParams[0], &PID_AccTerms[0],NavY);	
+			gyroRoll  += PID_Calculate_ACC (Config.AccParams[0], &PID_AccTerms[1],NavX); 
+			
+			//gyroPitch += PID_AccTerms[0].I+ PID_AccTerms[0].D;
+			//gyroRoll += PID_AccTerms[1].I + PID_AccTerms[1].D;
+			
+			PID_GyroTerms[0].D2 = CompGyroY;
+			PID_GyroTerms[1].D2 = CompGyroX;
+			
+			PID_AccTerms[0].D2 = PID_AccTerms[0].P;
+			PID_AccTerms[1].D2 = PID_AccTerms[1].P;
 			
 			//gyroPitch += PID_Calculate_ACC (Config.AccParams[0], &PID_AccTerms[0],NavY); //-CompAccX );
 			//gyroRoll  += PID_Calculate_ACC (Config.AccParams[0], &PID_AccTerms[1],NavX); //-CompAccY );

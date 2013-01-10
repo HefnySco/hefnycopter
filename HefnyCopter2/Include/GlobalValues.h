@@ -107,13 +107,13 @@ int16_t gyroRoll;
 int16_t gyroYaw;
 
 
-
+double NavY, NavX;
 ///////////////////////////////////////////////////
 // Intermediate results for IMU_CalculateAngles
 //gyros
 	double gyroXangle;
 	double gyroYangle;
-	double gyroZangle;
+	volatile double gyroZangle;
 
 	//accelerometers
 	//double accXangle;
@@ -244,6 +244,8 @@ typedef struct
 	pid_param_t GyroParams[2];		//	offset: +14 Length	 + 28
 	pid_param_t AccParams[2];		//	offset: +42	Length	 + 28
 	uint8_t VoltageAlarm;			//	offset: 70
+	int8_t	Acc_Pitch_Trim;
+	int8_t	Acc_Roll_Trim;
 	//model_t Mixer;
 	uint16_t RX_Mid[2][RXChannels]; //	offset: 72	Length	+
 	uint16_t RX_Min[2][RXChannels];

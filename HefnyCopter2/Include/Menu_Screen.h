@@ -101,8 +101,8 @@ P_STR scrStabilization[]=
 	"P:       Lim:\n"
 	"I:       Lim:\n"
 	"D:       Lim:\n"
-	"\n"
-	"Noise Filter:"
+	"Noise Filter:\n"
+	"Trim P:    R:"    
 	;
 
 P_STR scrReceiverTest[] = 
