@@ -10,7 +10,7 @@
 #define VERSION_H_
 
 
-static const prog_char strVersionInfo[] = "HefnyCopter2 v0.8.5";
+static const prog_char strVersionInfo[] = "HefnyCopter2 v0.9.0";
 
 /*
 version 0.1
@@ -119,6 +119,12 @@ version 0.8.4
 version 0.8.5
 *IMU:
 *	. Adding Trims for ACC
+
+version 0.9.0
+*Function:
+*	. Motors Layout is compatible with KK2 M1,M2,M3,M4 TOP,RIGHT,BOTTOM,LEFT
+*	. You can save default flying mode X or Plus so u no longer to switch to X each time if u fly X constantly.
+
 =========================================================================================
 * Move voltage port to default (ADC0) connected to VCC by default to free ADC1
 

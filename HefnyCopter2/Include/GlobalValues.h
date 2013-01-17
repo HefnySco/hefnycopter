@@ -16,7 +16,7 @@
 ///////////////////////////// Define Section
 
 
-#define PID_I_LEAK_RATE	0.1
+#define PID_I_LEAK_RATE	0.01
 
 int8_t SystemErrorType; 
 #define SYS_ERR_NON				0b00000000
@@ -121,17 +121,20 @@ double NavY, NavX;
 	//float accZangle;
 ///////////////////////////////////////////////////
 
-double CompGyroX;
-double CompGyroY;
+double CompGyroRoll;
+double CompGyroPitch;
 double CompGyroZ;	
 	
 
-double CompAccX;
-double CompAccY;
+double CompAccRoll;
+double CompAccPitch;
 double CompAccZ;	
 
-int8_t ACC_X_Offset;
-int8_t ACC_Y_Offset;
+double AngleRoll;
+double AnglePitch;
+
+int8_t ACC_Pitch_Offset;
+int8_t ACC_Roll_Offset;
 
 #define GYRO_MIN	-10
 #define GYRO_MAX	10
@@ -192,11 +195,11 @@ BOOL bResetTCNR1_X;
 
 // ADC Values
 // Order is aligned with Menu Screens
-#define ACC_X_Index			3   // affected by Pitch and is in reverse direction with GyroY .... it is positive when backword.
-#define ACC_Y_Index			4	// affected by Roll and is in reverse direction with GyroX .... it is positive when right.	
+#define ACC_PITCH_Index			3   // affected by Pitch and is in reverse direction with GyroY .... it is positive when backword.
+#define ACC_ROLL_Index			4	// affected by Roll and is in reverse direction with GyroX .... it is positive when right.	
 #define ACC_Z_Index			5
-#define GYRO_X_Index		0
-#define GYRO_Y_Index		1
+#define GYRO_ROLL_Index		0
+#define GYRO_PITCH_Index		1
 #define GYRO_Z_Index		2
 #define V_BAT_Index			6
 #define SENSORS_ALL			7

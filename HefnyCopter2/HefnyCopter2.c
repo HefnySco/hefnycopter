@@ -79,7 +79,7 @@ void Setup (void)
 	
 	Initial_EEPROM_Config_Load();
 	
-	Config.QuadFlyingMode = QuadFlyingMode_PLUS;
+	//Config.QuadFlyingMode = QuadFlyingMode_PLUS;
 	
 	RX_Init();
 	// Motors
@@ -129,7 +129,7 @@ if (Config.RX_mode==RX_mode_UARTMode)
 	
 	sei();
 	
-	//delay_ms(20);
+	delay_ms(20);
     
 }
 
@@ -245,7 +245,7 @@ void MainLoop(void)
       CurrentTCNT1_X = TCNT1_X;
     }
 
-	IMU_P2D(); 
+	IMU(); 
 	bResetTCNR1_X = true;
 	
 	
@@ -327,7 +327,7 @@ void MainLoop(void)
 		
 		// Stop motors if Throttle Stick is less than minimum.
 		ZEROMotors();
-		
+		ZERO_Is();
 		// Send Setting Data only when Throttle is down.
 		/*if (Config.RX_mode==RX_mode_UARTMode)
 		{
@@ -342,7 +342,7 @@ void MainLoop(void)
 		if (IsArmed==false)
 		{  // However we are still DisArmed
 			ZEROMotors();
-			ZERO_Is();
+			
 			// Sticks as Keyboard --- we are already disarmed to reach here.
 			HandleSticksAsKeys();
 			
@@ -361,57 +361,52 @@ void MainLoop(void)
 			RX_Snapshot   [RXChannel_ELE] = (RX_Latest[ActiveRXIndex][RXChannel_ELE] * Config.StickScaling / 10); //* 3) / 5;
 			RX_Snapshot   [RXChannel_RUD] = (RX_Latest[ActiveRXIndex][RXChannel_RUD] * Config.StickScaling / 10); //* 3) / 5 ;
 			
-			int16_t Landing;
 			
 		
-			if (nFlyingModes == FLYINGMODE_ACRO)
-			{
-				Landing =0;
-			}
-			else
-			{
-				IMU_HeightKeeping();
-			}	
+			//if (nFlyingModes == FLYINGMODE_ACRO)
+			//{
+				//Landing =0;
+			//}
+			//else
+			//{
+				//IMU_HeightKeeping();
+			//}	
 			
-			MotorOut[0] = RX_Snapshot[RXChannel_THR] + Landing;
-			MotorOut[1] = RX_Snapshot[RXChannel_THR] + Landing;
-			MotorOut[2] = RX_Snapshot[RXChannel_THR] + Landing;
-			MotorOut[3] = RX_Snapshot[RXChannel_THR] + Landing;		
+			MotorOut[0] = RX_Snapshot[RXChannel_THR];
+			MotorOut[1] = RX_Snapshot[RXChannel_THR];
+			MotorOut[2] = RX_Snapshot[RXChannel_THR];
+			MotorOut[3] = RX_Snapshot[RXChannel_THR];		
 			
 			
 	
-				if (Config.BoardOrientationMode==QuadFlyingMode_X)
-				{
-					MotorOut[0] -= gyroRoll ;
-					MotorOut[1] -= gyroRoll ;
-					MotorOut[2] += gyroRoll ;
-					MotorOut[3] += gyroRoll ;
+			if (Config.BoardOrientationMode==QuadFlyingMode_X)
+			{
+				MotorOut[0] -= gyroRoll ;
+				MotorOut[3] -= gyroRoll ;
+				MotorOut[1] += gyroRoll ;
+				MotorOut[2] += gyroRoll ;
 				
-					MotorOut[0] -= gyroPitch;
-					MotorOut[1] += gyroPitch;
-					MotorOut[2] -= gyroPitch;
-					MotorOut[3] += gyroPitch;
-				
-					MotorOut[0] += gyroYaw;
-					MotorOut[1] -= gyroYaw;
-					MotorOut[2] -= gyroYaw;
-					MotorOut[3] += gyroYaw;
-				}
-				else
-				{
-					MotorOut[0] -= gyroPitch ;
-					MotorOut[3] += gyroPitch ; 
+				MotorOut[0] -= gyroPitch;
+				MotorOut[1] -= gyroPitch;
+				MotorOut[2] += gyroPitch;
+				MotorOut[3] += gyroPitch;
 					
-					MotorOut[1] -= gyroRoll  ;
-					MotorOut[2] += gyroRoll  ;
+			}
+			else
+			{
+				MotorOut[0] -= gyroPitch ;
+				MotorOut[2] += gyroPitch ; 
 					
-					MotorOut[0] += gyroYaw;
-					MotorOut[3] += gyroYaw;
-					MotorOut[1] -= gyroYaw;
-					MotorOut[2] -= gyroYaw;
-				}
+				MotorOut[1] += gyroRoll  ;
+				MotorOut[3] -= gyroRoll  ;
+					
+			}
 				
-		
+			MotorOut[0] -= gyroYaw;
+			MotorOut[2] -= gyroYaw;
+			MotorOut[1] += gyroYaw;
+			MotorOut[3] += gyroYaw;
+			
 			
 			/*
 			*
@@ -426,33 +421,44 @@ void MainLoop(void)
 					RX_Snapshot[RXChannel_ELE] = RX_Snapshot[RXChannel_ELE] * 0.7;
 					
 					MotorOut[0] += RX_Snapshot[RXChannel_AIL] ;
-					MotorOut[1] += RX_Snapshot[RXChannel_AIL] ;
+					MotorOut[3] += RX_Snapshot[RXChannel_AIL] ;
+					MotorOut[1] -= RX_Snapshot[RXChannel_AIL] ;
 					MotorOut[2] -= RX_Snapshot[RXChannel_AIL] ;
-					MotorOut[3] -= RX_Snapshot[RXChannel_AIL] ;
 				
 					MotorOut[0] += RX_Snapshot[RXChannel_ELE];
-					MotorOut[1] -= RX_Snapshot[RXChannel_ELE];
-					MotorOut[2] += RX_Snapshot[RXChannel_ELE];
+					MotorOut[1] += RX_Snapshot[RXChannel_ELE];
+					MotorOut[2] -= RX_Snapshot[RXChannel_ELE];
 					MotorOut[3] -= RX_Snapshot[RXChannel_ELE];
-				
+					
 				}
 				else
 				{
 				
-					MotorOut[1] += RX_Snapshot[RXChannel_AIL] ;
-					MotorOut[2] -= RX_Snapshot[RXChannel_AIL] ;
-				
-					MotorOut[0] += RX_Snapshot[RXChannel_ELE] ;
-					MotorOut[3] -= RX_Snapshot[RXChannel_ELE] ;
+					MotorOut[0] += RX_Snapshot[RXChannel_ELE] ; 
+					MotorOut[2] -= RX_Snapshot[RXChannel_ELE] ; 
+			
+					MotorOut[1] -= RX_Snapshot[RXChannel_AIL] ; 
+					MotorOut[3] += RX_Snapshot[RXChannel_AIL] ;  
 								
 				}
+			}
+			else
+			{
+				
+				double Landing;
+			
+				Landing = IMU_HeightKeeping();
+				MotorOut[0] += Landing;
+				MotorOut[1] += Landing;
+				MotorOut[2] += Landing;
+				MotorOut[3] += Landing;		
 			
 			}						
 			
-				MotorOut[0] -= RX_Snapshot[RXChannel_RUD] ;
-				MotorOut[1] += RX_Snapshot[RXChannel_RUD] ;
-				MotorOut[2] += RX_Snapshot[RXChannel_RUD] ;
-				MotorOut[3] -= RX_Snapshot[RXChannel_RUD] ;
+			//MotorOut[0] += RX_Snapshot[RXChannel_RUD] ;
+			//MotorOut[2] += RX_Snapshot[RXChannel_RUD] ;
+			//MotorOut[1] -= RX_Snapshot[RXChannel_RUD] ;
+			//MotorOut[3] -= RX_Snapshot[RXChannel_RUD] ;
 			
 			// Save motors from turning-off
             if (MotorOut[0]<MOTORS_IDLE_VALUE) MotorOut[0]=MOTORS_IDLE_VALUE;

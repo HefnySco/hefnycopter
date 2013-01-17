@@ -22,6 +22,6 @@
 
 //void IMU_Kalman (void);
 //void IMU_CalculateAngles (void);
-void IMU_P2D (void);
+void IMU (void);
 double IMU_HeightKeeping ();
 #endif /* IMU_H_ */

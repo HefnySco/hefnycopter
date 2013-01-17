@@ -126,6 +126,7 @@ P_STR scrSensorTest[] =
 P_STR scrModeSettings[] = 
 	"Buddy System:\n"
 	"Board Dir:\n"
+	"Fly   Dir:\n"
 	;
 
 //P_STR scrStickScaling[] = 

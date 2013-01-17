@@ -31,12 +31,12 @@ P_STR strFail[] ="Fail";
 
 void Sensors_Init(void)
 {
-	ACC_X  = INPUT;
-	ACC_Y  = INPUT;
+	ACC_PITCH  = INPUT;
+	ACC_ROLL  = INPUT;
 	ACC_Z  = INPUT;
 	
-	GYRO_X = INPUT;
-	GYRO_Y = INPUT;
+	GYRO_ROLL = INPUT;
+	GYRO_PITCH = INPUT;
 	GYRO_Z = INPUT;
 	
 	//for (int i=0; i<20;++i)
@@ -78,10 +78,10 @@ int Sensors_GetAccAngle(int8_t Acc_Index) {
   //return arctan2(-Sensors_Latest[ACC_Z_Index],-Sensors_Latest[Acc_Index]) + 256;    // in Quid: 1024/(2*PI))
 //arctan2(accelData[PITCH] * sign[PITCH], sqrt((long(accelData[ROLL]) * accelData[ROLL]) + (long(accelData[ZAXIS]) * accelData[ZAXIS])));
 	//return arctan2 (-Sensors_Latest[Acc_Index] , sqrt((long())))
-	//if (Acc_Index == ACC_X_Index) return arctan2(-Sensors_Latest[ACC_X_Index],Sensors_Latest[ACC_Z_Index]+100) * 0.4275;
-	//if (Acc_Index == ACC_Y_Index) return arctan2(-Sensors_Latest[ACC_Y_Index],Sensors_Latest[ACC_Z_Index]+100) * 0.4275;
-	if (Acc_Index == ACC_X_Index) return arctan2(Sensors_Latest[ACC_X_Index],(int16_t)CompGyroZ+100) * 0.84609375;
-	if (Acc_Index == ACC_Y_Index) return arctan2(Sensors_Latest[ACC_Y_Index],(int16_t)CompGyroZ+100) * 0.84609375;
+	//if (Acc_Index == ACC_PITCH_Index) return arctan2(-Sensors_Latest[ACC_PITCH_Index],Sensors_Latest[ACC_Z_Index]+100) * 0.4275;
+	//if (Acc_Index == ACC_ROLL_Index) return arctan2(-Sensors_Latest[ACC_ROLL_Index],Sensors_Latest[ACC_Z_Index]+100) * 0.4275;
+	if (Acc_Index == ACC_PITCH_Index) return arctan2(Sensors_Latest[ACC_PITCH_Index],(int16_t)CompGyroZ+100) * 0.84609375;
+	if (Acc_Index == ACC_ROLL_Index) return arctan2(Sensors_Latest[ACC_ROLL_Index],(int16_t)CompGyroZ+100) * 0.84609375;
 	
 }
 
@@ -105,17 +105,15 @@ void Sensors_Calibrate (void)
 	}
 	
 	// check: http://www.x-firm.com/?page_id=191
-	
 	for (int i=0;i<25;++i)
 	{
-		nResult[ACC_X_Index] += ADCPort_Get(ACC_X_PNUM);
-		nResult[ACC_Y_Index] += ADCPort_Get(ACC_Y_PNUM);
+		nResult[ACC_PITCH_Index] += ADCPort_Get(ACC_PITCH_PNUM);
+		nResult[ACC_ROLL_Index] += ADCPort_Get(ACC_ROLL_PNUM);
 		nResult[ACC_Z_Index] += ADCPort_Get(ACC_Z_PNUM);
 		
-		nResult[GYRO_X_Index] += ADCPort_Get(GYRO_X_PNUM);
-		nResult[GYRO_Y_Index] += ADCPort_Get(GYRO_Y_PNUM);
+		nResult[GYRO_ROLL_Index] += ADCPort_Get(GYRO_ROLL_PNUM);
+		nResult[GYRO_PITCH_Index] += ADCPort_Get(GYRO_PITCH_PNUM);
 		nResult[GYRO_Z_Index] += ADCPort_Get(GYRO_Z_PNUM); 
-		
 		_delay_ms(40);
 		LED_Orange =~LED_Orange;
 	}
@@ -145,22 +143,22 @@ void Sensors_ReadAll (void)
    uint16_t *T;
    ATOMIC_BLOCK(ATOMIC_FORCEON)
    {
-		TX= TCNT1;
-		TX1= TCNT1_X;
+		TX1= TCNT1;
+		TX= TCNT1_X;
    }   
 
 	//T = &LastLoopTime[0];
 	//T[0]= TX;
 	//T[1]= TX1;
 	
-	Sensors_Latest[ACC_X_Index] = ADCPort_Get(ACC_X_PNUM)-Config.Sensor_zero[ACC_X_Index]; // - ACC_X_Offset == Gyro Y in negative Direction
-	Sensors_Latest[ACC_Y_Index] = ADCPort_Get(ACC_Y_PNUM)-Config.Sensor_zero[ACC_Y_Index]; // - ACC_Y_Offset == Gyro X in negative Direction
+	Sensors_Latest[ACC_PITCH_Index] = ADCPort_Get(ACC_PITCH_PNUM)-Config.Sensor_zero[ACC_PITCH_Index]; // - ACC_Pitch_Offset == Gyro Y in negative Direction
+	Sensors_Latest[ACC_ROLL_Index] = ADCPort_Get(ACC_ROLL_PNUM)-Config.Sensor_zero[ACC_ROLL_Index]; // - ACC_Roll_Offset == Gyro X in negative Direction
 	Sensors_Latest[ACC_Z_Index] = ADCPort_Get(ACC_Z_PNUM)-Config.Sensor_zero[ACC_Z_Index];
 		
-	Sensors_Latest[GYRO_X_Index] = ADCPort_Get(GYRO_X_PNUM)-Config.Sensor_zero[GYRO_X_Index];
-	if (abs(Sensors_Latest[GYRO_X_Index])< DEAD_BAND_GYRO) Sensors_Latest[GYRO_X_Index] = 0;
-	Sensors_Latest[GYRO_Y_Index] = ADCPort_Get(GYRO_Y_PNUM)-Config.Sensor_zero[GYRO_Y_Index];
-	if (abs(Sensors_Latest[GYRO_Y_Index])< DEAD_BAND_GYRO) Sensors_Latest[GYRO_Y_Index] = 0;
+	Sensors_Latest[GYRO_ROLL_Index] = ADCPort_Get(GYRO_ROLL_PNUM)-Config.Sensor_zero[GYRO_ROLL_Index];
+	if (abs(Sensors_Latest[GYRO_ROLL_Index])< DEAD_BAND_GYRO) Sensors_Latest[GYRO_ROLL_Index] = 0;
+	Sensors_Latest[GYRO_PITCH_Index] = ADCPort_Get(GYRO_PITCH_PNUM)-Config.Sensor_zero[GYRO_PITCH_Index];
+	if (abs(Sensors_Latest[GYRO_PITCH_Index])< DEAD_BAND_GYRO) Sensors_Latest[GYRO_PITCH_Index] = 0;
 	Sensors_Latest[GYRO_Z_Index] = ADCPort_Get(GYRO_Z_PNUM)-Config.Sensor_zero[GYRO_Z_Index];
 	if (abs(Sensors_Latest[GYRO_Z_Index])< DEAD_BAND_GYRO) Sensors_Latest[GYRO_Z_Index] = 0;
 	
@@ -179,7 +177,7 @@ void Sensors_ReadAll (void)
 	*/
 	if (TX2 > TX1)
 	{
-		Sensors_dt = (0xffff - TX1) +  TX2;
+		//Sensors_dt = (0xffff - TX1) +  TX2;
 	}
 	else
 	{
@@ -212,13 +210,13 @@ int16_t  Sensor_GetBattery(void)
 	///* 
 	//// Dynamic calibration of ACC
 	//*/
-	//if ((Sensors_Latest[ACC_X_Index] >= ACC_MIN) && (Sensors_Latest[ACC_X_Index] < ACC_MAX))
+	//if ((Sensors_Latest[ACC_PITCH_Index] >= ACC_MIN) && (Sensors_Latest[ACC_PITCH_Index] < ACC_MAX))
 	//{
-		//StabilityMatrix_GX[Sensors_Latest[ACC_X_Index]-ACC_MIN]+=1;
+		//StabilityMatrix_GX[Sensors_Latest[ACC_PITCH_Index]-ACC_MIN]+=1;
 	//}
-	//if ((Sensors_Latest[ACC_Y_Index] >= ACC_MIN) && (Sensors_Latest[ACC_Y_Index] < ACC_MAX))
+	//if ((Sensors_Latest[ACC_ROLL_Index] >= ACC_MIN) && (Sensors_Latest[ACC_ROLL_Index] < ACC_MAX))
 	//{
-		//StabilityMatrix_GY[Sensors_Latest[ACC_Y_Index]-ACC_MIN]+=1;
+		//StabilityMatrix_GY[Sensors_Latest[ACC_ROLL_Index]-ACC_MIN]+=1;
 	//}
 	//
 	//uint16_t maxX=0, maxY=0;
@@ -237,6 +235,6 @@ int16_t  Sensor_GetBattery(void)
 		//
 	//}
 	//
-	//ACC_X_Offset = maxX + ACC_MIN;	/* Range from -10 to 9 */
-	//ACC_Y_Offset = maxY + ACC_MIN;	/* Range from -10 to 9 */
+	//ACC_Pitch_Offset = maxX + ACC_MIN;	/* Range from -10 to 9 */
+	//ACC_Roll_Offset = maxY + ACC_MIN;	/* Range from -10 to 9 */
 //}

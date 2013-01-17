@@ -4,16 +4,16 @@
  * Created: 14-Sep-12 4:33:21 AM
  *  Author: M.Hefny
  */ 
-
-#include <avr/io.h>
-#include <util/delay.h>
-#include <util/atomic.h>
-
-
-#include "../Include/typedefs.h"
-#include "../Include/GlobalValues.h"
-#include "../Include/Kalman.h"
-
+//
+//#include <avr/io.h>
+//#include <util/delay.h>
+//#include <util/atomic.h>
+//
+//
+//#include "../Include/typedefs.h"
+//#include "../Include/GlobalValues.h"
+//#include "../Include/Kalman.h"
+//
 // --- Kalman filter module  ----------------------------------------------------------------------------
 /*
 double Q_angle[2]	=  {0.001,0.001}; //0.001

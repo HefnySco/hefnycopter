@@ -166,30 +166,30 @@ PCINT23 - PC7 - OUTPUT 8
 #define RXChannels				5
 
 ///////////// Sensors
-#define ACC_X				REGISTER_BIT(PORTA,5)		
-#define ACC_Y				REGISTER_BIT(PORTA,6)		
+#define ACC_PITCH			REGISTER_BIT(PORTA,5)   //X		
+#define ACC_ROLL			REGISTER_BIT(PORTA,6)	//Y	
 #define ACC_Z				REGISTER_BIT(PORTA,7)		
-#define GYRO_X				REGISTER_BIT(PORTA,1)		
-#define GYRO_Y				REGISTER_BIT(PORTA,4)		
+#define GYRO_ROLL			REGISTER_BIT(PORTA,1)	//X	
+#define GYRO_PITCH			REGISTER_BIT(PORTA,4)	//Y	
 #define GYRO_Z				REGISTER_BIT(PORTA,2)		
 #define V_BAT				REGISTER_BIT(PORTA,3)		
 #define V_VCC				REGISTER_BIT(PORTA,0)	
 
-#define ACC_X_PNUM			5
-#define ACC_Y_PNUM			6
+#define ACC_PITCH_PNUM		5
+#define ACC_ROLL_PNUM		6
 #define ACC_Z_PNUM			7
-#define GYRO_X_PNUM			1
-#define GYRO_Y_PNUM			4
+#define GYRO_ROLL_PNUM		1
+#define GYRO_PITCH_PNUM		4
 #define GYRO_Z_PNUM			2
 #define V_BAT_PNUM			3
 
 
 
 ///////////// Motors
-#define M1		  				REGISTER_BIT(PORTC,6)
-#define M2		  				REGISTER_BIT(PORTC,4)
-#define M3		  				REGISTER_BIT(PORTC,2)
-#define M4		  				REGISTER_BIT(PORTC,3)
+#define M1		  				REGISTER_BIT(PORTC,6)		// M1
+#define M2		  				REGISTER_BIT(PORTC,4)// 4)	// M3
+#define M3		  				REGISTER_BIT(PORTC,2)// 2)	// M4
+#define M4		  				REGISTER_BIT(PORTC,3)// 3)	// M2
 #define M5		  				REGISTER_BIT(PORTC,1)
 #define M6		  				REGISTER_BIT(PORTC,0)
 #define M7		  				REGISTER_BIT(PORTC,5)
