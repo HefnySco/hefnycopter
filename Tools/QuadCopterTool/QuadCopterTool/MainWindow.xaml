@@ -6,7 +6,7 @@
         <TabControl HorizontalAlignment="Stretch" Name="tabControl1" VerticalAlignment="Stretch" Background="#FF65B0CB">
             <TabItem Header="Communication" Name="tabConnection" ForceCursor="True" Background="#FF65B0CB" OpacityMask="#FF65B0CB">
                 <Grid>
-                    <ComboBox Height="23" HorizontalAlignment="Left" Margin="75,22,0,0" Name="cmbCOMPorts" VerticalAlignment="Top" Width="205" />
+                     <ComboBox Height="23" HorizontalAlignment="Left" Margin="75,22,0,0" Name="cmbCOMPorts" VerticalAlignment="Top" Width="205" />
                     <Button Height="32" HorizontalAlignment="Left" Margin="310,22,0,0" Name="btnConnect" VerticalAlignment="Top" Width="32" Click="btnConnect_Click" ToolTip="Connect to XBEE">
                         <Button.Background>
                             <ImageBrush ImageSource="/QuadCopterTool;component/Icons/keyboard2_cordless.png" />
@@ -34,20 +34,20 @@
             </TabItem>
             <TabItem Header="Attitude Data" Name="tabItemRealTimeData" Background="#FF65B0CB" OpacityMask="#FF65B0CB">
                 <Grid Margin="0,0,0,0" Background="#FF65B0CB">
-                      <Image Margin="580,26,53,0" Name="imgLive" Stretch="Fill" ToolTip="Live Video" FlowDirection="LeftToRight" Source="/QuadCopterTool;component/Icons/logo.jpg" Height="273" VerticalAlignment="Top" />
-                    <Button Margin="0,58,15,0" Name="btnVideoOnOff" HorizontalAlignment="Right" Width="32" Click="btnVideoOnOff_Click" FontSize="10" ToolTip="Video Capture" Height="32" VerticalAlignment="Top" Grid.Column="1" HorizontalContentAlignment="Right" VerticalContentAlignment="Top" FlowDirection="RightToLeft">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Image Grid.Column="0" Grid.Row="0" Margin="580,26,53,0" Name="imgLive" Stretch="Fill" ToolTip="Live Video" FlowDirection="LeftToRight" Source="/QuadCopterTool;component/Icons/logo.jpg" Height="273" VerticalAlignment="Top" />
+                    <Button Grid.Column="0" Grid.Row="0" Margin="0,58,15,0" Name="btnVideoOnOff" HorizontalAlignment="Right" Width="32" Click="btnVideoOnOff_Click" FontSize="10" ToolTip="Video Capture" Height="32" VerticalAlignment="Top"  HorizontalContentAlignment="Right" VerticalContentAlignment="Top" FlowDirection="RightToLeft">
                         <Button.Background>
                             <ImageBrush ImageSource="/QuadCopterTool;component/Icons/videocamera.png" />
                         </Button.Background>
                     </Button>
-                    <my:CtrlPosition x:Name="ctrlACC" Margin="66,107,0,0" Title="Acc" HorizontalAlignment="Left" Width="113" Height="156" VerticalAlignment="Top" Grid.Column="1"></my:CtrlPosition>
-                    <my1:CtrlMeterMiddle Height="153" Margin="24,110,0,0" x:Name="meterAccZ" VerticalAlignment="Top" MaxValue="100" CurrentValue="-400" HorizontalAlignment="Left" Width="23" MinValue="-100" Grid.Column="1"></my1:CtrlMeterMiddle>
-                    <Label Content="G" Height="28" HorizontalAlignment="Left" Margin="24,269,0,0" Name="label6" VerticalAlignment="Top" Width="32" Grid.Column="1" />
-                    <d3:ChartPlotter Margin="24,556,15,6" Name="chartPlotterGyro" HorizontalContentAlignment="Stretch" FontSize="8" VerticalContentAlignment="Stretch">
-                        <d3:Header Content="Gyroscopes" FontSize="12" />
-                        <d3:VerticalAxisTitle Content="Gyro [G]" FontSize="10" />
-                    </d3:ChartPlotter>
-                    <GroupBox Grid.Column="1" Header="Gyros" Height="212" Margin="205,87,0,0" Name="groupBox1" VerticalAlignment="Top" FontSize="10" FontWeight="Normal" HorizontalAlignment="Left" Width="173">
+                    <my:CtrlPosition Grid.Column="0" Grid.Row="0"  x:Name="ctrlACC" Margin="66,107,0,0" Title="Acc" HorizontalAlignment="Left" Width="113" Height="156" VerticalAlignment="Top"></my:CtrlPosition>
+                    <my1:CtrlMeterMiddle Grid.Column="0" Grid.Row="0" Height="153" Margin="24,110,0,0" x:Name="meterAccZ" VerticalAlignment="Top" MaxValue="100" CurrentValue="-400" HorizontalAlignment="Left" Width="23" MinValue="-100" ></my1:CtrlMeterMiddle>
+                    <Label Grid.Column="0" Grid.Row="0" Content="G" Height="28" HorizontalAlignment="Left" Margin="24,269,0,0" Name="label6" VerticalAlignment="Top" Width="32" />
+                     <GroupBox Grid.Column="0" Grid.Row="0" Header="Gyros" Height="212" Margin="205,87,0,0" Name="groupBox1" VerticalAlignment="Top" FontSize="10" FontWeight="Normal" HorizontalAlignment="Left" Width="173">
                         <Grid Height="185" Width="162">
                             <my1:CtrlMeterMiddle CurrentValue="0" Height="140" MaxValue="100" MinValue="-100" x:Name="meterGyroZ" Width="25" Margin="113,16,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
                             <my1:CtrlMeterMiddle CurrentValue="0" Height="140" Margin="68,16,0,0" MaxValue="100" x:Name="meterGyroY" VerticalAlignment="Top" HorizontalAlignment="Left" Width="25" MinValue="-100"></my1:CtrlMeterMiddle>
@@ -57,7 +57,7 @@
                             <Label Content="Yaw" FontSize="8" FontWeight="Bold" Height="19" HorizontalAlignment="Left" Margin="110,161,0,0" Name="label8" VerticalAlignment="Top" Width="33" />
                         </Grid>
                     </GroupBox>
-                    <GroupBox FontSize="10" FontWeight="Normal" Grid.Column="1" Header="Motors" Height="209" HorizontalAlignment="Left" Margin="393,90,0,0" Name="groupBox2" VerticalAlignment="Top" Width="181">
+                    <GroupBox Grid.Column="0" Grid.Row="0" FontSize="10" FontWeight="Normal" Header="Motors" Height="209" HorizontalAlignment="Left" Margin="393,90,0,0" Name="groupBox2" VerticalAlignment="Top" Width="181">
                         <Grid Height="178" Width="163">
                             <my1:Meter CurrentValue="0" Height="140" MaxValue="1000" x:Name="meterMotor4" Width="20" Margin="128,13,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
                             <my1:Meter Height="140" HorizontalAlignment="Left" Margin="16,13,0,0" x:Name="meterMotor1" VerticalAlignment="Top" Width="20" MaxValue="1000" CurrentValue="0"></my1:Meter>
@@ -69,14 +69,19 @@
                             <Label Content="M4" Height="20" Name="label5" Margin="127,155,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="27" FontSize="8" FontWeight="Bold" />
                         </Grid>
                     </GroupBox>
-                    <d3:ChartPlotter FontSize="8" HorizontalContentAlignment="Stretch" Margin="24,363,15,199" Name="chartPlotterAcc" VerticalContentAlignment="Stretch">
+                    <d3:ChartPlotter Grid.Row="1" Margin="24,178,15,0" Name="chartPlotterGyro" HorizontalContentAlignment="Stretch" FontSize="8" VerticalContentAlignment="Stretch" Height="192" VerticalAlignment="Top">
+                        <d3:Header Content="Gyroscopes" FontSize="12" />
+                        <d3:VerticalAxisTitle Content="Gyro [G]" FontSize="10" />
+                    </d3:ChartPlotter>
+                    <d3:ChartPlotter Grid.Row="1" FontSize="8" HorizontalContentAlignment="Stretch" Margin="24,16,15,0" Name="chartPlotterAcc" VerticalContentAlignment="Stretch" Height="156" VerticalAlignment="Top">
                         <d3:Header Content="Accelerometers" FontSize="12" />
                         <d3:VerticalAxisTitle Content="Acc [F]" FontSize="11" />
                     </d3:ChartPlotter>
-                    <my:SimulationPanel Grid.Column="1" HorizontalAlignment="Left" Margin="24,6,0,0" x:Name="simulationPanel1" VerticalAlignment="Top" OnImageReceived="simulationPanel1_OnImageReceived" OnFileRun="simulationPanel1_OnFileRun" />
+                    <my:SimulationPanel Grid.Row="0" HorizontalAlignment="Left" Margin="24,6,0,0" x:Name="simulationPanel1" VerticalAlignment="Top" OnImageReceived="simulationPanel1_OnImageReceived" OnFileRun="simulationPanel1_OnFileRun" />
                 </Grid>
             </TabItem>
-            <TabItem Header="Configuration" Name="tabItem1" Background="#FF65B0CB" OpacityMask="#FF65B0CB">
+            <TabItem Header="Configuration" Name="tabConfiguration" Background="#FF65B0CB" OpacityMask="#FF65B0CB">
+                        
                 <Grid>
                     <my1:CtrlQuadConfiguration Margin="6,6,0,0" x:Name="octrlQuadConfiguration" Height="494" Width="779" HorizontalAlignment="Left" VerticalAlignment="Top" OnWriteRequest="octrlQuadConfiguration_OnWriteRequest" OnReadRequest="octrlQuadConfiguration_OnReadRequest" OnSaveEPROMRequest="octrlQuadConfiguration_OnSaveEPROMRequest" />
                 </Grid>

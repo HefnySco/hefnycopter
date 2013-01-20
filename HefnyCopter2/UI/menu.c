@@ -91,6 +91,20 @@ void _helper_DisplayRXStatus(uint8_t Row)
 	
 }
 
+
+void _helper_DisplayBuddyMode (int8_t row, int8_t col, int8_t Mode, BOOL LCDReverse )
+{
+	if (Mode == RX_mode_BuddyMode)
+	{
+		LCD_WriteString_Pex(row,col,PSTR("Buddy"),5,(subpage==0));
+	}
+	else
+	{
+		LCD_WriteString_Pex(row,col,PSTR("UART "),5,(subpage==0));
+	}
+}
+
+	
 void _helper_DisplayQuadStatus (int8_t row, int8_t col, int8_t Mode, BOOL LCDReverse )
 {
 	if (Mode == QuadFlyingMode_PLUS)
@@ -426,6 +440,9 @@ void _hHomePage()
 	{
 		LCD_WriteString_P(PSTR("STABLE"));
 	}
+	
+	_helper_DisplayBuddyMode  (3,84,Config.RX_mode,0);
+	
 	_helper_DisplayRXStatus(5);
 	
 		
@@ -760,15 +777,8 @@ void _hModeSettings ()
 		}
 	}
 	
-	if (Config.RX_mode == RX_mode_BuddyMode)
-	{
-		LCD_WriteString_Pex(0,84,PSTR("Buddy"),5,(subpage==0));
-	}
-	else
-	{
-		LCD_WriteString_Pex(0,84,PSTR("UART "),5,(subpage==0));
-	}
 	
+	_helper_DisplayBuddyMode  (0,84,Config.RX_mode,(subpage==0));
 	_helper_DisplayQuadStatus (1,84,Config.BoardOrientationMode,(subpage==1));
 	_helper_DisplayQuadStatus (2,84,Config.QuadFlyingMode,(subpage==2));
 	
@@ -1005,9 +1015,9 @@ void _hDebug()
 	OldAngle += (Sensors_Latest[GYRO_Z_Index] * 0.042);		
 				
 	LCD_WriteValue_double_ex(2,0,AnglePitch,9,false);
-	LCD_WriteValue_double_ex(3,0,CompGyroPitch,9,false);		
-	LCD_WriteValue_double_ex(4,0,CompAccPitch,9,false); // Angle
-	LCD_WriteValue_double_ex(5,0,YAWAngle ,9,false);// PID OUTPUT
+	LCD_WriteValue_double_ex(3,0,AngleRoll,9,false);		
+	LCD_WriteValue_double_ex(4,0,gyroZangle,9,false); // Angle
+	//LCD_WriteValue_double_ex(5,0,YAWAngle ,9,false);// PID OUTPUT
 	//LCD_WriteValue_double_ex(6,0,gyroYangle,9,false);// ANGLE
 	
 	//LCD_WriteValue(4,48,PID_AccTerms[0].I,4,false);

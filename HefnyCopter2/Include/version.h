@@ -10,7 +10,7 @@
 #define VERSION_H_
 
 
-static const prog_char strVersionInfo[] = "HefnyCopter2 v0.9.0";
+static const prog_char strVersionInfo[] = "HefnyCopter2 v0.9.1";
 
 /*
 version 0.1
@@ -117,13 +117,20 @@ version 0.8.4
 *	. Update values from UART TX...GUI Tool on windows have been updated and tested.
 
 version 0.8.5
-*IMU:
+* IMU:
 *	. Adding Trims for ACC
 
 version 0.9.0
-*Function:
+* Function:
 *	. Motors Layout is compatible with KK2 M1,M2,M3,M4 TOP,RIGHT,BOTTOM,LEFT
 *	. You can save default flying mode X or Plus so u no longer to switch to X each time if u fly X constantly.
+
+version 0.9.1
+* IMU:
+*	. Tuning Gyro & ACC reading in leveling mode.
+*	. fixing Board X & Flying Plus.
+* Function:
+*	. Disable command when armed.
 
 =========================================================================================
 * Move voltage port to default (ADC0) connected to VCC by default to free ADC1

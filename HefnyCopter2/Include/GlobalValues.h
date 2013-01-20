@@ -113,7 +113,7 @@ double NavY, NavX;
 //gyros
 	double gyroXangle;
 	double gyroYangle;
-	volatile double gyroZangle;
+	double gyroZangle;
 
 	//accelerometers
 	//double accXangle;
@@ -159,7 +159,7 @@ typedef struct
 			_P,_PLimit, 
 			_I, _ILimit, 
 			_D, _DLimit, 
-			ComplementaryFilterAlpha   // this value ranges from 0 [no filter] to 999[smoothest] ... this is the complementry filter ALPHA
+			ComplementaryFilterAlpha;   // this value ranges from 0 [no filter] to 999[smoothest] ... this is the complementry filter ALPHA
 } pid_param_t;
 
 

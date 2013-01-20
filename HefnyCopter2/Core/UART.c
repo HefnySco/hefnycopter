@@ -20,6 +20,7 @@
 #include "../Include/eepROM.h"
 #include "../Include/Arming.h"
 #include "../Include/Sensors.h"
+#include "../Include/LED.h"
 
 volatile uint8_t  RXIndex=0;
 volatile uint16_t LastRXTime;
@@ -91,6 +92,11 @@ ISR (USART1_RX_vect)
 
 void ParseCommand ()
 {
+	if (IsArmed==true)
+	{
+		//Just ignore for safty reasons....some commands generate beeps or flash led that call delay function which will crash your quadcopter if called.
+		return ;
+	}		
 	int8_t CRC=0;
 	for (int i=0;i < SERIAL_BUFFERSIZE_1; ++i)
 	{
@@ -104,9 +110,7 @@ void ParseCommand ()
 				switch (RXBuffer[SERIAL_CMD_ID])
 				{
 					case SERIAL_CMD_LED_BLINK: // never  call while ARMED .... calling delay function will affect motor speed.
-						LED_FlashOrangeLED (LED_SHORT_TOGGLE,1);
-						DisplayBuffer[4]=0;
-						memcpy(DisplayBuffer,"LED",3);
+						LED_FlashOrangeLED (LED_SHORT_TOGGLE,4);
 					break;
 					case SERIAL_CMD_READ_CONFIG:
 						Send_Data("C",1);
@@ -126,15 +130,16 @@ void ParseCommand ()
 				memcpy ((void *)&Config + RXBuffer[SERIAL_DATA_OFFSET] + (RXBuffer[SERIAL_DATA_OFFSET+1] * 0xff),(void *) &RXBuffer[SERIAL_DATA_VALUE], (int8_t) RXBuffer[SERIAL_DATA_LENGHT]);
 			break;
 		default:
-			memcpy(DisplayBuffer,"ERR",3);
+			// COMMAND ERROR
+			//memcpy(DisplayBuffer,"ERR",3);
 			break;
 		}
 	}
 	else
 	{
-
+		// UART ERROR
 		//DisplayBuffer[1]+='0';
-		memcpy(DisplayBuffer,"CRC",3);
+		//memcpy(DisplayBuffer,"CRC",3);
 	}		
 	
 	
@@ -144,7 +149,7 @@ void UART_Init( unsigned int ubrr)
 {
 	if (Config.RX_mode==RX_mode_UARTMode)
 	{
-		memcpy(DisplayBuffer,"STR",3);
+		//memcpy(DisplayBuffer,"STR",3);
 		RXIndex=0;
 		/*Set baud rate */
 		UBRR1H = (unsigned char)(ubrr>>8);	

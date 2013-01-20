@@ -14,6 +14,6 @@
         <my:CtrlSensorParameters Caption="Acc Z-Axis" HorizontalAlignment="Left" Margin="209,191,0,0" x:Name="ctrlSensorAccZ" VerticalAlignment="Top" />
         <Button Content="Read" Height="23" HorizontalAlignment="Left" Margin="267,15,0,0" Name="btnRead" VerticalAlignment="Top" Width="49" Click="btnRead_Click" />
         <Button Content="Write" Height="23" Margin="322,15,0,0" Name="btnWrite" VerticalAlignment="Top" Click="btnWrite_Click" HorizontalAlignment="Left" Width="49" />
-        <Button Content="EPROM" Height="23" HorizontalAlignment="Left" Margin="377,15,0,0" Name="btnSaveEPROM" VerticalAlignment="Top" Width="49" ToolTip="Save into EPROM" Click="btnSaveEPROM_Click" />
+        <Button Content="Save" Height="23" HorizontalAlignment="Left" Margin="377,15,0,0" Name="btnSaveEPROM" VerticalAlignment="Top" Width="49" ToolTip="Save into EPROM" Click="btnSaveEPROM_Click" />
     </Grid>
 </UserControl>

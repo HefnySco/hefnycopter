@@ -224,9 +224,6 @@
     <Compile Include="Include\Timer.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Include\TriGonometry.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="Include\typedefs.h">
       <SubType>compile</SubType>
     </Compile>
@@ -240,9 +237,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Math\Math.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="Math\TriGonometry.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Math\Vector3D.c">
