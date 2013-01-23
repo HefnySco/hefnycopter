@@ -46,12 +46,12 @@ static config_t const defaultConfig PROGMEM =
 {
 	.signature = HEFNYCOPTER2_SIGNATURE,
 	.IsCalibrated=0,
-	.RX_mode=RX_mode_BuddyMode,
+	.RX_mode=RX_mode_UARTMode,
 	.BoardOrientationMode = QuadFlyingMode_PLUS,
 	.QuadFlyingMode = QuadFlyingMode_PLUS,
-	.GyroParams[0] = {25,80,0,0,-2,30,200},	// pitch roll gyro.
-	.GyroParams[1] = {20,50,3,50,0,20,600},	// Yaw gyro
-	.AccParams[0]  = {15,90,0,0,-2,30,0},		// ACC_PITCH & Y
+	.GyroParams[0] = {20,10,0,0,0,20,0},	// pitch roll gyro.
+	.GyroParams[1] = {10,50,1,35,-1,20,200},	// Yaw gyro
+	.AccParams[0]  = {7,40,1,20,2,50,990},		// ACC_PITCH & Y
 	.AccParams[1]  = {20,30,0,0,0,30,600},	// ACC_Z
 	.RX_mode = 0, //RX_MODE_CPPM,
 	//.Sensor_zero[GYRO_ROLL_Index] = 548,

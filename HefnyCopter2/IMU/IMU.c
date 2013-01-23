@@ -53,8 +53,8 @@ void IMU (void)
 			
 			Alpha = Config.AccParams[0].ComplementaryFilterAlpha / 1000.0;
 			Beta = 1- Alpha;
-			AnglePitch = Beta * (AnglePitch + (double)Sensors_Latest[GYRO_PITCH_Index] * 0.042) + Alpha * APitch;
-			AngleRoll =  Beta * (AngleRoll  + (double)Sensors_Latest[GYRO_ROLL_Index]  * 0.042) + Alpha * ARoll;
+			AnglePitch = Alpha * (AnglePitch + (double)Sensors_Latest[GYRO_PITCH_Index] * 0.042) + Beta * APitch;
+			AngleRoll =  Alpha * (AngleRoll  + (double)Sensors_Latest[GYRO_ROLL_Index]  * 0.042) + Beta * ARoll;
 			
 		
 			NavY = AnglePitch;
@@ -68,27 +68,27 @@ void IMU (void)
 			
 			if ((Config.BoardOrientationMode==QuadFlyingMode_PLUS) && (Config.QuadFlyingMode==QuadFlyingMode_X))
 			{
-				NavY += ( -  (double)((float)RX_Snapshot[RXChannel_AIL]  / 3.0f));
-				NavY += ( -  (double)((float)RX_Snapshot[RXChannel_ELE]  / 3.0f));	
-				NavX += ( -  (double)((float)RX_Snapshot[RXChannel_AIL]  / 3.0f));
-				NavX += ( +  (double)((float)RX_Snapshot[RXChannel_ELE]  / 3.0f));	
+				NavY += ( -  (double)((float)RX_Snapshot[RXChannel_AIL]  / 2.5f));
+				NavY += ( -  (double)((float)RX_Snapshot[RXChannel_ELE]  / 2.5f));	
+				NavX += ( -  (double)((float)RX_Snapshot[RXChannel_AIL]  / 2.5f));
+				NavX += ( +  (double)((float)RX_Snapshot[RXChannel_ELE]  / 2.5f));	
 			}
 			else if ((Config.BoardOrientationMode==QuadFlyingMode_PLUS) && (Config.QuadFlyingMode==QuadFlyingMode_PLUS))
 			{
-				NavY += ( - (double)((float)RX_Snapshot[RXChannel_ELE] / 3.0f));	
-				NavX += ( - (double)((float)RX_Snapshot[RXChannel_AIL] / 3.0f));
+				NavY += ( - (double)((float)RX_Snapshot[RXChannel_ELE] / 2.5f));	
+				NavX += ( - (double)((float)RX_Snapshot[RXChannel_AIL] / 2.5f));
 			}					
 			else if ((Config.BoardOrientationMode==QuadFlyingMode_X) && (Config.QuadFlyingMode==QuadFlyingMode_X))
 			{
-				NavY += ( - (double)((float)RX_Snapshot[RXChannel_ELE] / 3.0f));	
-				NavX += ( - (double)((float)RX_Snapshot[RXChannel_AIL] / 3.0f));
+				NavY += ( - (double)((float)RX_Snapshot[RXChannel_ELE] / 2.5f));	
+				NavX += ( - (double)((float)RX_Snapshot[RXChannel_AIL] / 2.5f));
 			}
 			else if ((Config.BoardOrientationMode==QuadFlyingMode_X) && (Config.QuadFlyingMode==QuadFlyingMode_PLUS))
 			{
-				NavY += ( +  (double)((float)RX_Snapshot[RXChannel_AIL]  / 3.0f));
-				NavY += ( +  (double)((float)RX_Snapshot[RXChannel_ELE]  / 3.0f));	
-				NavX += ( +  (double)((float)RX_Snapshot[RXChannel_AIL]  / 3.0f));
-				NavX += ( -  (double)((float)RX_Snapshot[RXChannel_ELE]  / 3.0f));	
+				NavY += ( +  (double)((float)RX_Snapshot[RXChannel_AIL]  / 2.5f));
+				NavY += ( -  (double)((float)RX_Snapshot[RXChannel_ELE]  / 2.5f));	
+				NavX += ( -  (double)((float)RX_Snapshot[RXChannel_AIL]  / 2.5f));
+				NavX += ( -  (double)((float)RX_Snapshot[RXChannel_ELE]  / 2.5f));	
 			}
 				
 			double Error;
@@ -105,7 +105,7 @@ void IMU (void)
 		Alpha = Config.GyroParams[1].ComplementaryFilterAlpha / 1000.0;
 		Beta = 1- Alpha;
 		CompGyroZ = (double) (Alpha * CompGyroZ) + (double) (Beta * Sensors_Latest[GYRO_Z_Index]);
-		gyroYaw = PID_Calculate (Config.GyroParams[1], &PID_GyroTerms[2],CompGyroZ -((double)((float)RX_Snapshot[RXChannel_RUD]  / 3.0f))); 
+		gyroYaw = PID_Calculate (Config.GyroParams[1], &PID_GyroTerms[2],CompGyroZ -((double)((float)RX_Snapshot[RXChannel_RUD]  / 2.0f))); 
 	
 }
 

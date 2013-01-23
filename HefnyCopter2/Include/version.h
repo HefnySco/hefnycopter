@@ -10,7 +10,7 @@
 #define VERSION_H_
 
 
-static const prog_char strVersionInfo[] = "HefnyCopter2 v0.9.1";
+static const prog_char strVersionInfo[] = "HefnyCopter2 v0.9.2";
 
 /*
 version 0.1
@@ -132,6 +132,11 @@ version 0.9.1
 * Function:
 *	. Disable command when armed.
 
+
+version 0.9.2
+* IMU:
+*	. update rate of RX divide by 2.5 -sensitivity settings-.
+*	. Allow flying Plus mode while board orientation is X. 
 =========================================================================================
 * Move voltage port to default (ADC0) connected to VCC by default to free ADC1
 
