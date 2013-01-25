@@ -5,6 +5,8 @@
  *  Author: hefny
  */ 
 
+#define F_CPU	20000000UL	// 20 MHz
+
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <avr/delay.h>
@@ -35,6 +37,7 @@
 #include "Include/Math.h"
 #include "Include/Arming.h"
 #include "Include/UART.h"
+#include "Include/PID.h"
 #include "Include/Menu_Screen.h"
 
 /*

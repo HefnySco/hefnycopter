@@ -41,6 +41,7 @@ volatile uint8_t RX_Good;
 #define RX_TRAINER					0
 
 void rxInit							(uint8_t mode);
+void RX_Init						(void);
 void RX_StickCenterCalibrationInit	(uint8_t RXIndex);
 void RX_StickCenterCalibration		(uint8_t RXIndex);
 int16_t RX_GetReceiverThrottleValue (uint8_t RXIndex);

@@ -266,7 +266,7 @@ PGM_P tsmMain(uint8_t);
 PGM_P tsmLoadModelLayout(uint8_t);
 
 static uint8_t page, subpage,subindex;
-static uint16_t _tStart;
+//static uint16_t _tStart;
 static page_t currentPage;
 static menu_t mnuMain = {length(lstMenu), tsmMain};
 static menu_t mnuMLayout = {22, tsmLoadModelLayout};

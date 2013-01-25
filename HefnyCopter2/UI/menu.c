@@ -7,6 +7,8 @@
  * $Id: menu.c 27 2012-08-15 18:18:23Z olischulz24@googlemail.com $
  */ 
 
+#include "../Include/typedefs.h"
+
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
@@ -15,10 +17,10 @@
 #include <stdlib.h>
 #include <avr/wdt.h>
 
-#include "../Include/typedefs.h"
 #include "../Include/GlobalValues.h"
 #include "../Include/IO_config.h"
 #include "../Include/Lcd.h"
+#include "../include/LED.h"
 #include "../Include/Keyboard.h"
 #include "../Include/ADC_PORT.h"
 #include "../Include/Receiver.h"
@@ -117,16 +119,16 @@ void _helper_DisplayQuadStatus (int8_t row, int8_t col, int8_t Mode, BOOL LCDRev
 	}
 }
 
-static void writeList(const element_t list[], uint8_t len)
-{
-	for (uint8_t i = 0; i < len; i++)
-	{
-		element_t e;
-		memcpy_P(&e, &list[i], sizeof(e));
-		LCD_SetPos(e.posX, e.posY);
-		LCD_WriteString_P(e.text);
-	}
-}
+//static void writeList(const element_t list[], uint8_t len)
+//{
+	//for (uint8_t i = 0; i < len; i++)
+	//{
+		//element_t e;
+		//memcpy_P(&e, &list[i], sizeof(e));
+		//LCD_SetPos(e.posX, e.posY);
+		//LCD_WriteString_P(e.text);
+	//}
+//}
 
 static void writeSoftkeys(const char* sk)
 {
