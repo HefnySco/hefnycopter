@@ -143,7 +143,7 @@ int main(void)
 	
 	UIEnableStickCommands=false;  
 	Setup();
-	
+	SystemActions = SYS_ACT_NON;
     SystemErrorType = SYS_ERR_NON;
 	nFlyingModes = FLYINGMODE_ACRO;
 	

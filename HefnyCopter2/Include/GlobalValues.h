@@ -17,6 +17,18 @@
 
 
 #define PID_I_LEAK_RATE	0.01
+int8_t SystemActions;
+#define SYS_ACT_NON					0b00000000
+#define SET_SYS_ACT_NON				(SystemActions & 0b00000000)
+#define SYS_ACT_REBOOT				0b00000001
+#define IS_SYS_ACT_REBOOT			(SystemActions & 0b00000001)
+#define SET_SYS_ACT_REBOOT			(SystemActions | 0b00000001)
+#define CLR_SYS_ACT_REBOOT			(SystemActions & 0b11111110)
+#define SYS_ACT_DISARM				0b00000010
+#define IS_SYS_ACT_DISARM			(SystemActions & 0b00000010)
+#define SET_SYS_ACT_DISARM			(SystemActions | 0b00000010)
+#define CLR_SYS_ACT_DISARM			(SystemActions & 0b11111101)
+
 
 int8_t SystemErrorType; 
 #define SYS_ERR_NON				0b00000000
@@ -206,7 +218,7 @@ BOOL bResetTCNR1_X;
 volatile int16_t Sensors_Latest [8];
 
 // TEMP
-volatile char Result[5]; 
+volatile char Result[8]; 
 //volatile char Result2[10]; 
 volatile uint16_t nResult[8];
 volatile uint16_t nTemp16;

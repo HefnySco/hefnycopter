@@ -10,7 +10,7 @@
 #define VERSION_H_
 
 
-static const prog_char strVersionInfo[] = "HefnyCopter2 v0.9.2";
+static const prog_char strVersionInfo[] = "HefnyCopter2 v0.9.3";
 
 /*
 version 0.1
@@ -137,6 +137,18 @@ version 0.9.2
 * IMU:
 *	. update rate of RX divide by 2.5 -sensitivity settings-.
 *	. Allow flying Plus mode while board orientation is X. 
+
+version 0.9.3
+* Function:
+*	. Change default mode to UART mode -UART 1 receiver + optional data AUX controls ACRO or STABLE-
+*	. Stop motor from starting if you select ESC Calibration menu using smart sticks -TX Sticks-.
+* UI
+*	. Sensor test: can you fix strange dots behind numbers.... thanks Samsog in RcGroup [http://www.rcgroups.com/forums/showthread.php?t=1735340&page=5#post23981357]
+*	. HomePage: display volt in v units using floating point.
+*	. ESC Calibration Mode: update screen text to tell we are in ESC Cal Mode.
+
+
+
 =========================================================================================
 * Move voltage port to default (ADC0) connected to VCC by default to free ADC1
 

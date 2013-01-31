@@ -112,7 +112,7 @@ ISR (RX2_ALL_vect)
 		}
 		else
 		{
-			if ((Config.IsESCCalibration==ESCCalibration_ON) && (IS_TX2_GOOD))
+			if ((Config.IsESCCalibration==ESCCalibration_ON) && (IS_TX2_GOOD) && (!IS_SYS_ACT_DISARM))
 			{M1=0;M2=0;M3=0;M4=0;}
 			CalculateSignalLength2 (RXChannel_THR);
 			RX2_LastValidSignal_timestamp = TCNT1_X;

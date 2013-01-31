@@ -87,7 +87,7 @@ P_STR scrHomePageArmedESCCalibration[] =
 	"\n"
 	"M1:       M4:\n"
 	"M2:       M3:\n"
-	;
+    "ESC Calibration mode\n";
 
 	
 P_STR scrSelfLeveling[] =

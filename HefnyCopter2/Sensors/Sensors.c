@@ -24,7 +24,7 @@
 
 
 
-P_STR strOK[] ="OK";
+P_STR strOK[] ="OK  ";
 P_STR strFail[] ="Fail";
 	
 
@@ -59,14 +59,14 @@ char *Sensors_Test(uint8_t channel, uint16_t LowLimit ,uint16_t HighLimit)
 	  
 	utoa (nResult[channel],Result,10);
 	
-	if ((nResult[channel]  > LowLimit)  
-	 || (nResult[channel]  < HighLimit))
+	if ((nResult[channel]  >= LowLimit)  
+	 && (nResult[channel]  <= HighLimit))
 	{
-		strcpy (&Result[3],strOK);  
+		strcat (Result, ("  "));  
 	}
 	else
 	{
-		strcpy (&Result[3],&strFail);  
+		strcat (Result, (" X"));  
 	}
 	  
 	return Result;

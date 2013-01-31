@@ -432,7 +432,9 @@ void _hHomePage()
 	
 	// Write Voltage
 	//LCD_SetPos(2, 30);
-	LCD_WriteValue(2,36,Sensor_GetBattery(),4,IS_SYS_ERR_VOLTAGE);
+	double volt = (double)(Sensor_GetBattery()/10.0f);
+	LCD_WriteValue_double_ex(2,36,volt,6,IS_SYS_ERR_VOLTAGE);
+	//LCD_WriteValue(2,36,Sensor_GetBattery(),4,IS_SYS_ERR_VOLTAGE);
 	LCD_SetPos (3,12);
 	if (nFlyingModes == FLYINGMODE_ACRO)
 	{
@@ -740,6 +742,7 @@ void _hESCCalibration()
 	{
 		if ((Config.IsCalibrated & CALIBRATED_SENSOR) && ((Config.IsCalibrated & CALIBRATED_Stick_SECONDARY)==CALIBRATED_Stick_SECONDARY))
 		{
+			SystemActions = SYS_ACT_DISARM;
 			Config.IsESCCalibration=ESCCalibration_ON;
 			Save_Config_to_EEPROM();
 			Menu_LoadPage(PAGE_RESTART);
