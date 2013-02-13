@@ -10,7 +10,7 @@
 #define VERSION_H_
 
 
-static const prog_char strVersionInfo[] = "HefnyCopter2 v0.9.3";
+static const prog_char strVersionInfo[] = "HefnyCopter2 v0.9.4";
 
 /*
 version 0.1
@@ -147,6 +147,13 @@ version 0.9.3
 *	. HomePage: display volt in v units using floating point.
 *	. ESC Calibration Mode: update screen text to tell we are in ESC Cal Mode.
 
+version 0.9.4
+* Function:
+*	. Allow SONAR for altitude hold.
+*	. Allow switching to LEVELING & ACRO using ELE Stick up & down even in Buddy mode ... thanks Samog in RCGroup
+* UI
+*	. Fix Highlighted RX numbers ... active is highlighted ... thanks Samog in RCGroup
+*	. Fix voltage > 9.99 display issue ...  thanks Samog in RCGroup
 
 
 =========================================================================================

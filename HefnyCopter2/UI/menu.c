@@ -55,9 +55,9 @@ PROGMEM const prog_char* scrESCCal[] =
 //////////////////////////////////////////////////////////////////////////
 
 	
-void _helper_DisplayBiStateText(uint8_t Row, uint8_t Col, PGM_P strTrue, PGM_P strFalse, bool Condition )
+void _helper_DisplayBiStateText(uint8_t Row, uint8_t Col, PGM_P strTrue, PGM_P strFalse, bool Condition, BOOL LCDReverse )
 {
-
+		lcdReverse(LCDReverse);
 		LCD_SetPos(Row, Col);
 		if (Condition==true) 
 		{
@@ -67,6 +67,7 @@ void _helper_DisplayBiStateText(uint8_t Row, uint8_t Col, PGM_P strTrue, PGM_P s
 		{
 			LCD_WriteString_P(strFalse);
 		}	
+		lcdReverse(false);
 }
 
 
@@ -83,11 +84,10 @@ void _helper_SaveinEEPROM_ifChanged()
 void _helper_DisplayRXStatus(uint8_t Row)
 {
 	// Write RX Status
-	lcdReverse((ActiveRXIndex!=0));
-	_helper_DisplayBiStateText(Row,18,str1,strX,IS_TX1_GOOD);
+	// FIX: highlighted is the selected one.
+	_helper_DisplayBiStateText(Row,18,str1,strX,IS_TX1_GOOD,(ActiveRXIndex!=1));
 	
-	lcdReverse((ActiveRXIndex!=1));
-	_helper_DisplayBiStateText(Row,30,str2,strX,IS_TX2_GOOD);
+	_helper_DisplayBiStateText(Row,30,str2,strX,IS_TX2_GOOD,(ActiveRXIndex!=0));
 	
 	lcdReverse(false);
 	
@@ -415,12 +415,12 @@ void _hHomePage()
 		LCD_SetPos(0,0);
 		LCD_WriteString_P(strVersionInfo);
 		// Sensors
-		_helper_DisplayBiStateText(5, 60, strOK, strErr, (Config.IsCalibrated & CALIBRATED_SENSOR));
+		_helper_DisplayBiStateText(5, 60, strOK, strErr, (Config.IsCalibrated & CALIBRATED_SENSOR),false);
 		
 		//Stick Centering & Calibration
-		_helper_DisplayBiStateText(5, 102, str1, strX, (Config.IsCalibrated & CALIBRATED_Stick_PRIMARY));
+		_helper_DisplayBiStateText(5, 102, str1, strX, (Config.IsCalibrated & CALIBRATED_Stick_PRIMARY),false);
 		
-		_helper_DisplayBiStateText(5, 114, str2, strX, (Config.IsCalibrated & CALIBRATED_Stick_SECONDARY));
+		_helper_DisplayBiStateText(5, 114, str2, strX, (Config.IsCalibrated & CALIBRATED_Stick_SECONDARY),false);
 		
 	}
 	
@@ -433,7 +433,7 @@ void _hHomePage()
 	// Write Voltage
 	//LCD_SetPos(2, 30);
 	double volt = (double)(Sensor_GetBattery()/10.0f);
-	LCD_WriteValue_double_ex(2,36,volt,6,IS_SYS_ERR_VOLTAGE);
+	LCD_WriteValue_double_ex(2,36,volt,8,IS_SYS_ERR_VOLTAGE); // FIX: 8 to display 2 digits volt besides floating point
 	//LCD_WriteValue(2,36,Sensor_GetBattery(),4,IS_SYS_ERR_VOLTAGE);
 	LCD_SetPos (3,12);
 	if (nFlyingModes == FLYINGMODE_ACRO)
@@ -761,7 +761,7 @@ bool bNeedRestart=false;
 void _hModeSettings ()
 {
 	NOKEYRETURN;
-	PageKey(3);
+	PageKey(4);
 	
 	if ((KEY1) && (bValueChanged==true))
 	{
@@ -779,6 +779,7 @@ void _hModeSettings ()
 			case 0: Config.RX_mode=~Config.RX_mode; bNeedRestart = true; break;
 			case 1: Config.BoardOrientationMode=((~Config.BoardOrientationMode) & 0x01); /* value either 0 or 1*/break;
 			case 2: Config.QuadFlyingMode = ((~Config.QuadFlyingMode) & 0x01); /* value either 0 or 1*/break;
+			case 3: Config.MiscSensors =  ((~Config.MiscSensors) & 0x01); break; // this condition should be rewritten if another sensor is added.
 		}
 	}
 	
@@ -786,7 +787,7 @@ void _hModeSettings ()
 	_helper_DisplayBuddyMode  (0,84,Config.RX_mode,(subpage==0));
 	_helper_DisplayQuadStatus (1,84,Config.BoardOrientationMode,(subpage==1));
 	_helper_DisplayQuadStatus (2,84,Config.QuadFlyingMode,(subpage==2));
-	
+	_helper_DisplayBiStateText(3,84, strYes, strNo, (IS_MISC_SENSOR_SONAR_ENABLED ==true),(subpage==3));
 }
 
 
@@ -982,12 +983,12 @@ void _hDebug()
 		}
 		if (KEY3)
 		{
-			
+			OldAngle=0;
 			//gyroZangle=0;
 			//gyroYangle=0;
 			//gyroXangle=0;
-			YAWAngle=0;
-			OldAngle=0;
+			//YAWAngle=0;
+			//OldAngle=0;
 		}	
 	//IMU_CalculateAngles();
 	//
@@ -1001,10 +1002,22 @@ void _hDebug()
 	//	RX_Snapshot[RXChannel_AIL] = (RX_Latest[ActiveRXIndex][RXChannel_AIL] * 3) / 5 ;
 	
 			//RX_Snapshot[RXChannel_RUD] = (RX_Latest[ActiveRXIndex][RXChannel_RUD] * 3) / 5 ;
-		
+	if ((Config.RX_mode==RX_mode_UARTMode) && (IS_MISC_SENSOR_SONAR_ENABLED==true))
+	{
+     //RX_SONAR_TRIGGER = HIGH;
 	DisplayBuffer[9]=0;
-	LCD_WriteStringex(0,0,DisplayBuffer,false);   // UART RX
-	//LCD_WriteValue(0,48,PID_AccTerms[0].P,4,false);
+	
+	//LCD_WriteStringex(0,0,DisplayBuffer,false);   // UART RX
+	LCD_WriteValue(0,48,IMU_HeightKeeping(),6,false);
+	LCD_WriteValue(1,48, AltDiff,6,false);
+	LCD_WriteValue(2,48, LastAltitudeHold,6,false);
+	//if (RX_SONAR_RAW < 500)
+//	{
+	//	OldAngle += (YAWAngle -RX_SONAR_RAW);
+//		YAWAngle =RX_SONAR_RAW;
+//	}	
+	//RX_SONAR_TRIGGER = LOW;
+	}	
 	//LCD_WriteValue(1,48,ACC_Pitch_Offset,4,false); 
 	//LCD_WriteValue(2,48,Sensors_Latest[ACC_PITCH_Index],4,false);
 	//char s[12];
@@ -1014,14 +1027,14 @@ void _hDebug()
 	//LCD_WriteValue_double_ex(2,48,CompAccRoll,9,false);
 	//LCD_WriteValue_double_ex(3,48,gyroYangle,9,false);
 	//LCD_WriteValue_double_ex(5,48,gyroYangle - (double)((float)RX_Snapshot[RXChannel_ELE] / 4.0f),9,false);
-	double Tau;
-	Tau = (Config.GyroParams[1].ComplementaryFilterAlpha / (1000.0 - Config.GyroParams[1].ComplementaryFilterAlpha)) * 0.042;
-	YAWAngle +=  Tau * CompGyroZ  ;
-	OldAngle += (Sensors_Latest[GYRO_Z_Index] * 0.042);		
+	//double Tau;
+	//Tau = (Config.GyroParams[1].ComplementaryFilterAlpha / (1000.0 - Config.GyroParams[1].ComplementaryFilterAlpha)) * 0.042;
+	//YAWAngle +=  Tau * CompGyroZ  ;
+	//OldAngle += (Sensors_Latest[GYRO_Z_Index] * 0.042);		
 				
-	LCD_WriteValue_double_ex(2,0,AnglePitch,9,false);
-	LCD_WriteValue_double_ex(3,0,AngleRoll,9,false);		
-	LCD_WriteValue_double_ex(4,0,gyroZangle,9,false); // Angle
+	//LCD_WriteValue_double_ex(2,0,AnglePitch,9,false);
+	//LCD_WriteValue_double_ex(3,0,AngleRoll,9,false);		
+	//LCD_WriteValue_double_ex(4,0,gyroZangle,9,false); // Angle
 	//LCD_WriteValue_double_ex(5,0,YAWAngle ,9,false);// PID OUTPUT
 	//LCD_WriteValue_double_ex(6,0,gyroYangle,9,false);// ANGLE
 	

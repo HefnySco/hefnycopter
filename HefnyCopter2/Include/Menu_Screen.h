@@ -56,7 +56,7 @@ typedef struct
 P_STR scrHomePage[] = 
 	"\n"
 	"\n"
-	"Batt:     v\n"
+	"Batt:       v\n"
 	"\n"
 	"\n"
 	"RX: -  SN:    ST: -\n"
@@ -127,6 +127,7 @@ P_STR scrModeSettings[] =
 	"Buddy System:\n"
 	"Board Dir:\n"
 	"Fly   Dir:\n"
+	"Sonar:"
 	;
 
 //P_STR scrStickScaling[] = 

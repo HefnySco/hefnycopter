@@ -16,6 +16,7 @@
 
 //#include "../Include/GlobalValues.h"
 #include "../Include/IO_config.h"
+#include "../Include/GlobalValues.h"
 #include "../Include/Sensors.h"
 #include "../Include/lcd.h"
 #include "../Include/fonts.h"
@@ -76,6 +77,7 @@ static void setPos(uint8_t line, uint8_t column)
 __attribute__ ((section(".lowtext")))
 ISR(TIMER0_OVF_vect, ISR_NOBLOCK)
 {
+	TCNT0_X +=1;
 	static uint16_t offset;
 	
 	if (offset % LCDWIDTH == 0)

@@ -54,13 +54,13 @@ char sXDeg[20];
 
 ////////////////// STICK READINGS
 // Stick Arming - enable this line to enable Stick arming
-#define STICK_LEFT				 400	//  the total range is from [-500, 500]
-#define STICK_RIGHT				-400	
-#define STICKThrottle_HIGH			850	//  the total range is from [ 0, 1000]
-#define STICKThrottle_ARMING		50	//  the total range is from [ 0, 1000]
-#define STICKPOSITION_LONG_TIME		305  // minimum time duration for stick to accept a command.
-#define STICKPOSITION_SHORT_TIME	80
-#define STICK_DEADBAND				15
+#define STICK_LEFT					 400	//  the total range is from [-500, 500]
+#define STICK_RIGHT					-400	
+#define STICKThrottle_HIGH			 850	//  the total range is from [ 0, 1000]
+#define STICKThrottle_ARMING		  50	//  the total range is from [ 0, 1000]
+#define STICKPOSITION_LONG_TIME		 305  // minimum time duration for stick to accept a command.
+#define STICKPOSITION_SHORT_TIME	  80
+#define STICK_DEADBAND				  15
 #define DISARM_TIME					1000
 ///////////////// EOD STICK READINGS
 
@@ -194,6 +194,7 @@ pid_terms_t PID_GyroTerms[3], PID_AccTerms[3];
 
 // TIMERS
 uint16_t CurrentTCNT1_X;				// equal to TCNT1_X value -- read every loop entry [it provide a safe read for TCNT1_X... it is updated only @ start of the loop
+volatile uint16_t TCNT0_X;
 volatile uint16_t TCNT1_X;				// TCNT1_X click every 0.0032768 sec [1 sec = 305.17578125 TCNT1_X]
 volatile uint16_t TCNT2_X;				// TCNT2  overflows every  3.2us x 0xff = 0.0008192 sec,  TCNT2_X value tick every 819.2 us and overflow every 53.6870912 sec
 //volatile uint16_t OCR0A_X;
@@ -209,17 +210,30 @@ BOOL bResetTCNR1_X;
 // Order is aligned with Menu Screens
 #define ACC_PITCH_Index			3   // affected by Pitch and is in reverse direction with GyroY .... it is positive when backword.
 #define ACC_ROLL_Index			4	// affected by Roll and is in reverse direction with GyroX .... it is positive when right.	
-#define ACC_Z_Index			5
-#define GYRO_ROLL_Index		0
+#define ACC_Z_Index				5
+#define GYRO_ROLL_Index			0
 #define GYRO_PITCH_Index		1
-#define GYRO_Z_Index		2
-#define V_BAT_Index			6
-#define SENSORS_ALL			7
+#define GYRO_Z_Index			2
+#define V_BAT_Index				6
+#define SENSORS_ALL				7
 volatile int16_t Sensors_Latest [8];
+/////////////////////////////////////////
+
+// MISC SENSORS
+
+#define NO_MISC_SENSORS					0
+#define SET_MISC_SENSOR_SONAR_ENABLED	(Config.MiscSensors	| 0b00000001)
+#define SET_MISC_SENSOR_SONAR_DISABLED	(Config.MiscSensors	& 0b11111110)
+#define IS_MISC_SENSOR_SONAR_ENABLED	(Config.MiscSensors	& 0b00000001)
+#define SONAR_TO_cm_Convert				27.6233f		
+#define SONAR_TO_cm_Convert_BIG			(27.6233f * 256.0f)		
+#define SONAR_ALTITUDE_HOLD_REGION		20
+uint16_t LastAltitudeHold;
+double AltDiff;
+/////////////////////////////////////////
 
 // TEMP
 volatile char Result[8]; 
-//volatile char Result2[10]; 
 volatile uint16_t nResult[8];
 volatile uint16_t nTemp16;
 
@@ -232,7 +246,6 @@ volatile uint16_t nTemp16;
 #define CALIBRATED_SENSOR			4
 
 // eeProm data structure
-
 #define IMU_SelfLevelMode	1
 #define RX_mode_UARTMode	0xff
 #define RX_mode_BuddyMode	0x00
@@ -255,7 +268,7 @@ typedef struct
 	uint8_t LCDContrast;			//	offset: +10	
 	uint8_t ThrottleMin;			//	offset: +11	
 	uint8_t StickScaling;			//	offset: +12	
-	uint8_t LVA;					//	offset: +13	
+	uint8_t MiscSensors;			//	offset: +13	0b00000001		bit0: true/false SONAR
 	pid_param_t GyroParams[2];		//	offset: +14 Length	 + 28
 	pid_param_t AccParams[2];		//	offset: +42	Length	 + 28
 	uint8_t VoltageAlarm;			//	offset: 70

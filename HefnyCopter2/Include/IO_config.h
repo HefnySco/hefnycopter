@@ -68,8 +68,18 @@
 
 
 ///////////// Digital Inputs
-// inputs from receiver
+// SONAR
 
+#define RX_SONAR_TRIGGER		REGISTER_BIT(PIND,0)	
+#define RX_SONAR_TRIGGER_DIR   	REGISTER_BIT(DDRD,0)
+
+#define RX_SONAR_vect			INT2_vect
+#define RX_SONAR   				REGISTER_BIT(PINB,2)    
+#define RX_SONAR_DIR   			REGISTER_BIT(DDRB,2)
+#define RX_SONAR_RAW			(uint16_t)(RX_Length[0][RXChannel_RUD])
+
+
+// inputs from receiver
 #define PWM_MIN				800		// was 922
 #define PWM_LOW				1120	// used if output = 0
 #define PWM_MID				1520
@@ -78,8 +88,8 @@
 #define PPM_SYNC_LENGTH		3000
 
 //#define UART_ENABLED
-//#define ORIGINAL_INPUT_CABLES		// use original input pins with normal wiring    [AIL-ELE-THR-RUD-AUD]
-#define PRIMARY_INPUT_RX			// use original input pins but with smart wiring [THR-ALI-ELE-RUD-AUX]
+//#define ORIGINAL_INPUT_CABLES		// use original input pins with normal wiring    [AIL-ELE-THR-RUD-AUX]
+#define PRIMARY_INPUT_RX			// use original input pins but with smart wiring [THR-ALI-ELE-RUD]
 #define SECONDARY_INPUT_RX			// use Motor [5-6-7-8] as input smart wiring     [RUD - ELE - ALI - THR ] AUX is the same standard pin
 
 #ifdef SECONDARY_INPUT_RX
@@ -112,7 +122,7 @@ PCINT23 - PC7 - OUTPUT 8
 
 #ifdef PRIMARY_INPUT_RX
 #ifdef ORIGINAL_INPUT_CABLES
-
+// NOT USED
 #define RX1_ROLL_vect		INT1_vect
 #define RX1_ROLL    		REGISTER_BIT(PIND,3)	
 #define RX1_ROLL_DIR   		REGISTER_BIT(DDRD,3)
@@ -130,7 +140,6 @@ PCINT23 - PC7 - OUTPUT 8
 #define RX1_YAW_DIR   		REGISTER_BIT(DDRB,2)
 
 #else
-
 // Reduced cables configurations:
 #define RX1_ROLL_vect		INT0_vect
 #define RX1_ROLL    		REGISTER_BIT(PIND,2)  // RXD1	
@@ -150,6 +159,7 @@ PCINT23 - PC7 - OUTPUT 8
 
 #endif   //ORIGINAL_INPUT_CABLES
 #endif  //PRIMARY_INPUT_RX
+
 
 #define RX_AUX_vect			PCINT1_vect
 #define RX_AUX    			REGISTER_BIT(PINB,0)    

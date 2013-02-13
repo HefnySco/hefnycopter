@@ -73,7 +73,7 @@ Quad-X
 */
 
 
-
+static uint8_t FlyingModesToggle;
 
 void Setup (void)
 {
@@ -85,6 +85,10 @@ void Setup (void)
 	//Config.QuadFlyingMode = QuadFlyingMode_PLUS;
 	
 	RX_Init();
+	if ((Config.RX_mode==RX_mode_UARTMode) && (IS_MISC_SENSOR_SONAR_ENABLED==true))
+	{
+		Ultrasonic_Init();
+	}		
 	// Motors
 	M1_DIR = OUTPUT;
 	M2_DIR = OUTPUT;
@@ -146,8 +150,8 @@ int main(void)
 	SystemActions = SYS_ACT_NON;
     SystemErrorType = SYS_ERR_NON;
 	nFlyingModes = FLYINGMODE_ACRO;
+	FlyingModesToggle = HIGH;
 	
-
 	DataPtr = (uint8_t *) (&Sensors_Latest);
 	DataCounter=0;
 	
@@ -236,7 +240,7 @@ void MainLoop(void)
 {
 	
 	RX_CopyLatestReceiverValues();
-	RX_Snapshot_1 [RXChannel_THR]= RX_Snapshot[RXChannel_THR];
+	//RX_Snapshot_1 [RXChannel_THR]= RX_Snapshot[RXChannel_THR];
 	RX_Snapshot   [RXChannel_THR]= RX_Latest[ActiveRXIndex][RXChannel_THR];
 	Sensors_ReadAll();	
 	
@@ -248,7 +252,8 @@ void MainLoop(void)
       CurrentTCNT1_X = TCNT1_X;
     }
 
-	IMU(); 
+	IMU();
+ 
 	bResetTCNR1_X = true;
 	
 	
@@ -301,15 +306,17 @@ void MainLoop(void)
 		
 		if (Config.RX_mode==RX_mode_UARTMode)
 		{
-			if ( RX_Latest[RX_MAIN][RXChannel_AUX] < STICK_RIGHT )
-			{
-				nFlyingModes = FLYINGMODE_LEVEL;
-			}
-			else
-			{
-				//LED_Orange=ON;
-				nFlyingModes = FLYINGMODE_ACRO;
-			}
+				if ((FlyingModesToggle == HIGH) && ( RX_Latest[RX_MAIN][RXChannel_AUX] < STICK_RIGHT ))
+				{
+					nFlyingModes = FLYINGMODE_LEVEL;
+					FlyingModesToggle = LOW;
+				}
+				if ((FlyingModesToggle == LOW) && ( RX_Latest[RX_MAIN][RXChannel_AUX] > STICK_LEFT ))
+				{
+					//LED_Orange=ON;
+					nFlyingModes = FLYINGMODE_ACRO;
+					FlyingModesToggle = HIGH;
+				}
 		}		
 		//if ((IsArmed == true) && (RX_Snapshot[RXChannel_THR] < STICKThrottle_ARMING+160))
 		//{ // calibrate when start flying
@@ -357,16 +364,16 @@ void MainLoop(void)
 			TCNT_X_snapshotAutoDisarm = 0; // ZERO [user may disarm then fly slowly..in this case the qud will disarm once he turned off the stick...because the counter counts once the quad is armed..e.g. if it takes n sec to disarm automatically..user took n-1 sec keeping the stick low after arming then it will take 1 sec to disarm again after lowing the stick under STICKThrottle_ARMING
 			
 			// Armed & Throttle Stick > MIN . . . We should Fly now.
-			RX_Snapshot_1 [RXChannel_AIL]= RX_Snapshot[RXChannel_AIL];
-			RX_Snapshot_1 [RXChannel_ELE]= RX_Snapshot[RXChannel_ELE];
-			RX_Snapshot_1 [RXChannel_RUD]= RX_Snapshot[RXChannel_RUD];
+			//RX_Snapshot_1 [RXChannel_AIL]= RX_Snapshot[RXChannel_AIL];
+			//RX_Snapshot_1 [RXChannel_ELE]= RX_Snapshot[RXChannel_ELE];
+			//RX_Snapshot_1 [RXChannel_RUD]= RX_Snapshot[RXChannel_RUD];
 			RX_Snapshot	  [RXChannel_AIL] = (RX_Latest[ActiveRXIndex][RXChannel_AIL] * Config.StickScaling / 10);
 			RX_Snapshot   [RXChannel_ELE] = (RX_Latest[ActiveRXIndex][RXChannel_ELE] * Config.StickScaling / 10); //* 3) / 5;
 			RX_Snapshot   [RXChannel_RUD] = (RX_Latest[ActiveRXIndex][RXChannel_RUD] * Config.StickScaling / 10); //* 3) / 5 ;
 			
 			
 		
-			//if (nFlyingModes == FLYINGMODE_ACRO)
+			//if (nFlyingModes == FLYINGMODE_ACRO) 
 			//{
 				//Landing =0;
 			//}
@@ -576,9 +583,7 @@ void HandleSticksForArming (void)
 					TCNT1_X_snapshot1 =0; // reset timer
 				}
 			}			
-			else 
-			{
-			 if ((RX_Latest[ActiveRXIndex][RXChannel_AIL]  < STICK_RIGHT))
+			else if ((RX_Latest[ActiveRXIndex][RXChannel_AIL]  < STICK_RIGHT))
 				{	// QUAD COPTER MODE
 					bResetTCNR1_X = false;
 					if ( (CurrentTCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_LONG_TIME )
@@ -589,8 +594,30 @@ void HandleSticksForArming (void)
 					}		
 			
 				} 
-			}			
+				
+			// set mode ACRO , Leveling
+			else if ((RX_Latest[ActiveRXIndex][RXChannel_ELE]  < STICK_RIGHT))
+				{	//nFlyingModes = FLYINGMODE_LEVEL;
+					bResetTCNR1_X = false;
+					if ( (CurrentTCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_LONG_TIME )
+					{
+						nFlyingModes = FLYINGMODE_LEVEL;
+						LED_FlashOrangeLED (LED_LONG_TOGGLE,8);
+						TCNT1_X_snapshot1 =0; // reset timer
+					}		
 			
+				} 
+			else if ((RX_Latest[ActiveRXIndex][RXChannel_ELE]  > STICK_LEFT))
+				{	//nFlyingModes = FLYINGMODE_ACRO;
+					bResetTCNR1_X = false;
+					if ( (CurrentTCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_LONG_TIME )
+					{
+						nFlyingModes = FLYINGMODE_ACRO;
+						LED_FlashOrangeLED (LED_LONG_TOGGLE,4);
+						TCNT1_X_snapshot1 =0; // reset timer
+					}		
+			
+				} 
 		}
 	
 }

@@ -51,12 +51,26 @@ void IMU (void)
 			double APitch = - Sensors_Latest[ACC_PITCH_Index] - Config.Acc_Pitch_Trim;
 			double ARoll  = - Sensors_Latest[ACC_ROLL_Index]  - Config.Acc_Roll_Trim;
 			
-			Alpha = Config.AccParams[0].ComplementaryFilterAlpha / 1000.0;
+			// Calculate Angle using Gyro
+			AnglePitch = (AnglePitch + (double)Sensors_Latest[GYRO_PITCH_Index] * 0.042) ;
+			AngleRoll =  (AngleRoll  + (double)Sensors_Latest[GYRO_ROLL_Index]  * 0.042) ;
+			Alpha = Config.AccParams[0].ComplementaryFilterAlpha / 1000.0; // TODO: optimize
 			Beta = 1- Alpha;
-			AnglePitch = Alpha * (AnglePitch + (double)Sensors_Latest[GYRO_PITCH_Index] * 0.042) + Beta * APitch;
-			AngleRoll =  Alpha * (AngleRoll  + (double)Sensors_Latest[GYRO_ROLL_Index]  * 0.042) + Beta * ARoll;
-			
+			#define ACC_SMALL_ANGLE	40
+			// if small angle then correct using ACC
+			if ((APitch < ACC_SMALL_ANGLE) && (APitch > -ACC_SMALL_ANGLE)) 
+			{
+				AnglePitch = Alpha * AnglePitch + Beta * APitch;
+			}
 		
+			if ((ARoll  < ACC_SMALL_ANGLE) && (ARoll  > -ACC_SMALL_ANGLE))
+			{
+				AngleRoll =  Alpha * AngleRoll + Beta * ARoll;
+			
+			}
+		
+			
+			
 			NavY = AnglePitch;
 			NavX = AngleRoll;
 			
@@ -110,6 +124,7 @@ void IMU (void)
 }
 
 
+	
 double IMU_HeightKeeping ()
 {
 	/*
@@ -117,12 +132,29 @@ double IMU_HeightKeeping ()
 	Landing *= Config.AccParams[1]._P; // PID_Terms[2].I not used for YAW 
 	Limiter(Landing , Config.AccParams[1]._PLimit);
 	*/
-	double Landing =0;
-	if ((CompAccZ > 2) || (CompAccZ < -2))
+	double Landing =0.0f;
+	double Temp;
+	if ((Config.RX_mode==RX_mode_UARTMode) && (IS_MISC_SENSOR_SONAR_ENABLED==true))
 	{
-		Landing = PID_Calculate_ACC (Config.AccParams[1], &PID_AccTerms[2],-CompAccZ);
-	}
-	
+		RX_SONAR_TRIGGER = HIGH;
+		ATOMIC_BLOCK(ATOMIC_FORCEON)
+		{	
+			Temp = RX_SONAR_RAW; 
+		}
+		if (Temp < 500)
+		{
+			if (((Temp - LastAltitudeHold) > SONAR_ALTITUDE_HOLD_REGION) || ((Temp - LastAltitudeHold) < -SONAR_ALTITUDE_HOLD_REGION))
+			{
+				LastAltitudeHold = Temp;
+			}
+			AltDiff = LastAltitudeHold - Temp;	
+			//AltDiff = PID_AccTerms[2].D2  - AltDiff ;
+
+		}
+		RX_SONAR_TRIGGER = LOW;
+	}	
+	//Landing = AltDiff * PID_AccTerms[2].P;
+	Landing = PID_Calculate_ACC (Config.AccParams[1], &PID_AccTerms[2],-CompAccZ + AltDiff);
 	
 	return Landing;
 	

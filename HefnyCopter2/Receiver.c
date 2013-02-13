@@ -107,13 +107,19 @@ ISR (RX2_ALL_vect)
 		if (RX2_COLL)
 		{
 			RX_raw[1][RXChannel_THR]=TCNT1;
+			
 			if (Config.IsESCCalibration==ESCCalibration_ON)
-			{M1=1;M2=1;M3=1;M4=1;}
+			{
+				M1=1;M2=1;M3=1;M4=1;
+			}
 		}
 		else
 		{
 			if ((Config.IsESCCalibration==ESCCalibration_ON) && (IS_TX2_GOOD) && (!IS_SYS_ACT_DISARM))
-			{M1=0;M2=0;M3=0;M4=0;}
+			{
+				M1=0;M2=0;M3=0;M4=0;
+			}
+				
 			CalculateSignalLength2 (RXChannel_THR);
 			RX2_LastValidSignal_timestamp = TCNT1_X;
 			RX_Good = TX2_CONNECTED_ERR;  // CLR bit 5 ---  Status = OK
@@ -133,6 +139,7 @@ ISR (RX2_ALL_vect)
 	}
 	
 }
+
 #endif
 
 //#ifdef BUDDY_CONFIG
@@ -192,21 +199,48 @@ ISR (RX1_PITCH_vect)
 	}
 }
 
-
+volatile uint16_t LongTime;
+volatile uint16_t ShortTime;
 __attribute__ ((section(".lowtext")))
 ISR (RX1_YAW_vect)
-{
-	if (RX1_YAW)
+{   
+	// SONAR IS HERE IN UART MODE
+	// SONAR RAW VALUE = RX_Length[0][RXChannel_RUD]
+	if ((Config.RX_mode==RX_mode_UARTMode) && (IS_MISC_SENSOR_SONAR_ENABLED==true))
 	{
-		RX_raw[0][RXChannel_RUD]=TCNT1;
+		if (RX1_YAW)
+		{
+			ShortTime = TCNT1;
+			LongTime = TCNT0_X;
+		}
+		else
+		{
+			RX_Length[0][RXChannel_RUD] = (TCNT0_X - LongTime) ; // * SONAR_TO_cm_Convert_BIG + (TCNT1 - ShortTime) * SONAR_TO_cm_Convert;
+			//CalculateSignalLength1(RXChannel_RUD);
+		}
+
 	}
 	else
 	{
-		CalculateSignalLength1(RXChannel_RUD);
-	}
+		
+		if (RX1_YAW)
+		{
+			RX_raw[0][RXChannel_RUD]=TCNT1;
+		}
+		else
+		{
+			CalculateSignalLength1(RXChannel_RUD);
+		}
+	}	
 }
 //#endif
+
+
+
+
+
 #endif
+
 
 
 __attribute__ ((section(".lowtext")))
@@ -223,6 +257,7 @@ ISR (RX_AUX_vect)
 		CalculateSignalLength2(RXChannel_AUX);
 		RX_Length[0][RXChannel_AUX]=RX_Length[1][RXChannel_AUX];
 	}
+
 }
 
 
