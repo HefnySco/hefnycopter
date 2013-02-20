@@ -43,13 +43,11 @@ P_STR strMiscSettings[] = "Misc. Settings";
 
 P_STR strSelflevel[] = "Self Leveling";
 P_STR strSensorTest[] = "Sensor Test";
+P_STR strAltitudeHold[]= "Altitude Hold";
 P_STR strSensorCalibration[] = "Sensor Calibration";
 //P_STR strCPPMSettings[] = "CPPM Settings";
 P_STR strESCCalibration[] = "ESC Calibration";
 
-P_STR strMixerEditor[] = "Mixer Editor";
-P_STR strShowMotorLayout[] = "Show Model Layout";
-P_STR strLoadMotorLayout[] = "Load Model Layout";
 P_STR strDebug[] = "Debug";
 P_STR strFactoryReset[] = "Factory Reset";
 

@@ -186,9 +186,10 @@ int main(void)
 // as in this case crash is a must.
 void LoopCalibration (void)
 {
-	menuEnabled[PAGE_STABILIZATION]=0;
-	menuEnabled[PAGE_SELF_LEVELING]=0;
-	menuEnabled[PAGE_MISC_SETTING] =0;
+	menuEnabled[PAGE_STABILIZATION] =0;
+	menuEnabled[PAGE_SELF_LEVELING] =0;
+	menuEnabled[PAGE_ALT_HOLD]		=0;
+	menuEnabled[PAGE_MISC_SETTING]  =0;
 	menuEnabled[PAGE_ESC_CALIBRATION]=0; // u cannot make ESC Calibration as sticks are not ready for testing.
 		
 	while (!(Config.IsCalibrated & CALIBRATED_SENSOR) || !(Config.IsCalibrated & CALIBRATED_Stick_SECONDARY))
@@ -306,17 +307,24 @@ void MainLoop(void)
 		
 		if (Config.RX_mode==RX_mode_UARTMode)
 		{
-				if ((FlyingModesToggle == HIGH) && ( RX_Latest[RX_MAIN][RXChannel_AUX] < STICK_RIGHT ))
+				if ((FlyingModesToggle != LOW) && ( RX_Latest[RX_MAIN][RXChannel_AUX] < STICK_RIGHT ))
 				{
-					nFlyingModes = FLYINGMODE_LEVEL;
+					nFlyingModes = FLYINGMODE_ALTHOLD;
 					FlyingModesToggle = LOW;
-				}
-				if ((FlyingModesToggle == LOW) && ( RX_Latest[RX_MAIN][RXChannel_AUX] > STICK_LEFT ))
+				} else
+				if ((FlyingModesToggle != HIGH) && (RX_Latest[RX_MAIN][RXChannel_AUX] > STICK_LEFT ))
 				{
 					//LED_Orange=ON;
 					nFlyingModes = FLYINGMODE_ACRO;
 					FlyingModesToggle = HIGH;
+				} else
+				if ((FlyingModesToggle != MID) && (RX_Latest[RX_MAIN][RXChannel_AUX]< STICK_LEFT) && ( RX_Latest[RX_MAIN][RXChannel_AUX] > STICK_RIGHT ))
+				{
+					nFlyingModes = FLYINGMODE_LEVEL;
+					FlyingModesToggle = MID;
+					
 				}
+				
 		}		
 		//if ((IsArmed == true) && (RX_Snapshot[RXChannel_THR] < STICKThrottle_ARMING+160))
 		//{ // calibrate when start flying
@@ -388,7 +396,7 @@ void MainLoop(void)
 			MotorOut[3] = RX_Snapshot[RXChannel_THR];		
 			
 			
-	
+			
 			if (Config.BoardOrientationMode==QuadFlyingMode_X)
 			{
 				MotorOut[0] -= gyroRoll ;
@@ -412,10 +420,6 @@ void MainLoop(void)
 					
 			}
 				
-			MotorOut[0] -= gyroYaw;
-			MotorOut[2] -= gyroYaw;
-			MotorOut[1] += gyroYaw;
-			MotorOut[3] += gyroYaw;
 			
 			
 			/*
@@ -465,10 +469,11 @@ void MainLoop(void)
 			
 			}						
 			
-			//MotorOut[0] += RX_Snapshot[RXChannel_RUD] ;
-			//MotorOut[2] += RX_Snapshot[RXChannel_RUD] ;
-			//MotorOut[1] -= RX_Snapshot[RXChannel_RUD] ;
-			//MotorOut[3] -= RX_Snapshot[RXChannel_RUD] ;
+			MotorOut[0] -= gyroYaw;
+			MotorOut[2] -= gyroYaw;
+			MotorOut[1] += gyroYaw;
+			MotorOut[3] += gyroYaw;
+			
 			
 			// Save motors from turning-off
             if (MotorOut[0]<MOTORS_IDLE_VALUE) MotorOut[0]=MOTORS_IDLE_VALUE;

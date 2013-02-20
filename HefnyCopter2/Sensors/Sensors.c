@@ -73,24 +73,24 @@ char *Sensors_Test(uint8_t channel, uint16_t LowLimit ,uint16_t HighLimit)
 }
 
 
-  
-int Sensors_GetAccAngle(int8_t Acc_Index) {
-  //return arctan2(-Sensors_Latest[ACC_Z_Index],-Sensors_Latest[Acc_Index]) + 256;    // in Quid: 1024/(2*PI))
-//arctan2(accelData[PITCH] * sign[PITCH], sqrt((long(accelData[ROLL]) * accelData[ROLL]) + (long(accelData[ZAXIS]) * accelData[ZAXIS])));
-	//return arctan2 (-Sensors_Latest[Acc_Index] , sqrt((long())))
-	//if (Acc_Index == ACC_PITCH_Index) return arctan2(-Sensors_Latest[ACC_PITCH_Index],Sensors_Latest[ACC_Z_Index]+100) * 0.4275;
-	//if (Acc_Index == ACC_ROLL_Index) return arctan2(-Sensors_Latest[ACC_ROLL_Index],Sensors_Latest[ACC_Z_Index]+100) * 0.4275;
-	if (Acc_Index == ACC_PITCH_Index) return arctan2(Sensors_Latest[ACC_PITCH_Index],(int16_t)CompGyroZ+100) * 0.84609375;
-	if (Acc_Index == ACC_ROLL_Index) return arctan2(Sensors_Latest[ACC_ROLL_Index],(int16_t)CompGyroZ+100) * 0.84609375;
-	
-}
-
+  //
+//int Sensors_GetAccAngle(int8_t Acc_Index) {
+  ////return arctan2(-Sensors_Latest[ACC_Z_Index],-Sensors_Latest[Acc_Index]) + 256;    // in Quid: 1024/(2*PI))
+////arctan2(accelData[PITCH] * sign[PITCH], sqrt((long(accelData[ROLL]) * accelData[ROLL]) + (long(accelData[ZAXIS]) * accelData[ZAXIS])));
+	////return arctan2 (-Sensors_Latest[Acc_Index] , sqrt((long())))
+	////if (Acc_Index == ACC_PITCH_Index) return arctan2(-Sensors_Latest[ACC_PITCH_Index],Sensors_Latest[ACC_Z_Index]+100) * 0.4275;
+	////if (Acc_Index == ACC_ROLL_Index) return arctan2(-Sensors_Latest[ACC_ROLL_Index],Sensors_Latest[ACC_Z_Index]+100) * 0.4275;
+	//if (Acc_Index == ACC_PITCH_Index) return arctan2(Sensors_Latest[ACC_PITCH_Index],(int16_t)CompGyroZ+100) * 0.84609375;
+	//if (Acc_Index == ACC_ROLL_Index) return arctan2(Sensors_Latest[ACC_ROLL_Index],(int16_t)CompGyroZ+100) * 0.84609375;
+	//
+//}
+//
 // divide by 10 after reading
-int16_t Sensors_GetGyroRate(int8_t Gyro_Index) {
-	int16_t t= Sensors_Latest[Gyro_Index];	                                            // ARef=3.3V, Gyro sensitivity=2mV/(deg/sec)
-	if ((t<=1) && (t>=-1)) return 0;
-  return (int16_t)(t * 0.4583333333);							// in quid/sec:(1024/360)/1024 * 3.3/0.002)
-}
+//int16_t Sensors_GetGyroRate(int8_t Gyro_Index) {
+	//int16_t t= Sensors_Latest[Gyro_Index];	                                            // ARef=3.3V, Gyro sensitivity=2mV/(deg/sec)
+	//if ((t<=1) && (t>=-1)) return 0;
+  //return (int16_t)(t * 0.4583333333);							// in quid/sec:(1024/360)/1024 * 3.3/0.002)
+//}
 
 /*
 // Calibrate Sensors and return result in nResult global variable.
@@ -135,24 +135,20 @@ void Sensors_Calibrate (void)
 }
 
 #define DEAD_BAND_GYRO	2
-uint32_t LastLoopTime[2];
-uint16_t TX,TX1,TX2;
+//uint32_t LastLoopTime[2];
+//uint16_t TX,TX1,TX2;
 void Sensors_ReadAll (void)
 {
    
-   uint16_t *T;
-   ATOMIC_BLOCK(ATOMIC_FORCEON)
-   {
-		TX1= TCNT1;
-		TX= TCNT1_X;
-   }   
-
-	//T = &LastLoopTime[0];
-	//T[0]= TX;
-	//T[1]= TX1;
-	
-	Sensors_Latest[ACC_PITCH_Index] = ADCPort_Get(ACC_PITCH_PNUM)-Config.Sensor_zero[ACC_PITCH_Index]; // - ACC_Pitch_Offset == Gyro Y in negative Direction
-	Sensors_Latest[ACC_ROLL_Index] = ADCPort_Get(ACC_ROLL_PNUM)-Config.Sensor_zero[ACC_ROLL_Index]; // - ACC_Roll_Offset == Gyro X in negative Direction
+   //uint16_t *T;
+   //ATOMIC_BLOCK(ATOMIC_FORCEON)
+   //{
+		//TX1= TCNT1;
+		//TX= TCNT1_X;
+   //}   
+	//
+	Sensors_Latest[ACC_PITCH_Index] = ADCPort_Get(ACC_PITCH_PNUM)-Config.Sensor_zero[ACC_PITCH_Index]; 
+	Sensors_Latest[ACC_ROLL_Index] = ADCPort_Get(ACC_ROLL_PNUM)-Config.Sensor_zero[ACC_ROLL_Index];
 	Sensors_Latest[ACC_Z_Index] = ADCPort_Get(ACC_Z_PNUM)-Config.Sensor_zero[ACC_Z_Index];
 		
 	Sensors_Latest[GYRO_ROLL_Index] = ADCPort_Get(GYRO_ROLL_PNUM)-Config.Sensor_zero[GYRO_ROLL_Index];
@@ -175,15 +171,15 @@ void Sensors_ReadAll (void)
 		
 	LastLoopTime[1] = LastLoopTime[0]; // in 100 us unit
 	*/
-	if (TX2 > TX1)
-	{
-		//Sensors_dt = (0xffff - TX1) +  TX2;
-	}
-	else
-	{
-		Sensors_dt = TX1 - TX2;
-	}
-	TX2=TX1;
+	//if (TX2 > TX1)
+	//{
+		////Sensors_dt = (0xffff - TX1) +  TX2;
+	//}
+	//else
+	//{
+		//Sensors_dt = TX1 - TX2;
+	//}
+	//TX2=TX1;
 }
 
 

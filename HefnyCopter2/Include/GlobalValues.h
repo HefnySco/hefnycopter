@@ -109,8 +109,12 @@ int16_t MotorOut[4];
 
 
 int8_t nFlyingModes;   
-#define FLYINGMODE_ACRO		0
-#define FLYINGMODE_LEVEL	1
+#define FLYINGMODE_ACRO			0b00000001
+#define FLYINGMODE_LEVEL		0b00000010
+#define FLYINGMODE_ALTHOLD		0b00000100	// ALT HOLD & LEVEL
+#define IS_FLYINGMODE_LEVEL			(nFlyingModes & FLYINGMODE_LEVEL)
+#define IS_FLYINGMODE_ACRO			(nFlyingModes & FLYINGMODE_ACRO)
+#define IS_FLYINGMODE_ALTHOLD		(nFlyingModes & FLYINGMODE_ALTHOLD)
 
 
 // Holds final calculated values of Pitch, Roll, Yaw based on the sensors and stabilization algorithm
@@ -123,9 +127,9 @@ double NavY, NavX;
 ///////////////////////////////////////////////////
 // Intermediate results for IMU_CalculateAngles
 //gyros
-	double gyroXangle;
-	double gyroYangle;
-	double gyroZangle;
+	//double gyroXangle;
+	//double gyroYangle;
+	//double gyroZangle;
 
 	//accelerometers
 	//double accXangle;
@@ -138,12 +142,13 @@ double CompGyroPitch;
 double CompGyroZ;	
 	
 
-double CompAccRoll;
-double CompAccPitch;
-double CompAccZ;	
+//double CompAccRoll;
+//double CompAccPitch;
+//double CompAccZ;	
 
 double AngleRoll;
 double AnglePitch;
+double AngleZ;
 
 int8_t ACC_Pitch_Offset;
 int8_t ACC_Roll_Offset;
@@ -190,7 +195,7 @@ typedef struct
 
 
 // Structure that hold PID calculated values for Gyro & ACC
-pid_terms_t PID_GyroTerms[3], PID_AccTerms[3];
+pid_terms_t PID_GyroTerms[3], PID_AccTerms[3], PID_SonarTerms[1];
 
 // TIMERS
 uint16_t CurrentTCNT1_X;				// equal to TCNT1_X value -- read every loop entry [it provide a safe read for TCNT1_X... it is updated only @ start of the loop
@@ -216,6 +221,8 @@ BOOL bResetTCNR1_X;
 #define GYRO_Z_Index			2
 #define V_BAT_Index				6
 #define SENSORS_ALL				7
+#define ACC_Z_1G				256;
+#define	GYRO_RATE				0.082
 volatile int16_t Sensors_Latest [8];
 /////////////////////////////////////////
 
@@ -227,9 +234,12 @@ volatile int16_t Sensors_Latest [8];
 #define IS_MISC_SENSOR_SONAR_ENABLED	(Config.MiscSensors	& 0b00000001)
 #define SONAR_TO_cm_Convert				27.6233f		
 #define SONAR_TO_cm_Convert_BIG			(27.6233f * 256.0f)		
-#define SONAR_ALTITUDE_HOLD_REGION		20
+#define SONAR_ALTITUDE_HOLD_REGION		15.0f
+#define THROTTLE_DEAD_RANGE				20;
 uint16_t LastAltitudeHold;
+double Landing;							
 double AltDiff;
+
 /////////////////////////////////////////
 
 // TEMP
@@ -271,11 +281,12 @@ typedef struct
 	uint8_t MiscSensors;			//	offset: +13	0b00000001		bit0: true/false SONAR
 	pid_param_t GyroParams[2];		//	offset: +14 Length	 + 28
 	pid_param_t AccParams[2];		//	offset: +42	Length	 + 28
-	uint8_t VoltageAlarm;			//	offset: 70
+	pid_param_t SonarParams[1];		//  offset: +70 Length	 + 14
+	uint8_t VoltageAlarm;			//	offset: +84
 	int8_t	Acc_Pitch_Trim;
 	int8_t	Acc_Roll_Trim;
 	//model_t Mixer;
-	uint16_t RX_Mid[2][RXChannels]; //	offset: 72	Length	+
+	uint16_t RX_Mid[2][RXChannels]; 
 	uint16_t RX_Min[2][RXChannels];
 	uint8_t Reserved[4];
 	uint16_t Sensor_zero[SENSORS_ALL];

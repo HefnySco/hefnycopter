@@ -10,7 +10,7 @@
 #define VERSION_H_
 
 
-static const prog_char strVersionInfo[] = "HefnyCopter2 v0.9.4";
+static const prog_char strVersionInfo[] = "HefnyCopter2 v0.9.6";
 
 /*
 version 0.1
@@ -154,6 +154,19 @@ version 0.9.4
 * UI
 *	. Fix Highlighted RX numbers ... active is highlighted ... thanks Samog in RCGroup
 *	. Fix voltage > 9.99 display issue ...  thanks Samog in RCGroup
+
+
+
+version 0.9.5
+* Function:
+*	. Adding AltHold Mode.
+
+version 0.9.6
+* IMU:
+*	. Update stick factors on Level to 2
+*	. Adding new PID section for Sonar
+* UI:
+*	. New menu Item for SONAR
 
 
 =========================================================================================

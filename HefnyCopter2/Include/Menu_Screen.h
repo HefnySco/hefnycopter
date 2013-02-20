@@ -147,13 +147,6 @@ P_STR scrMiscSettings[] =
 
 
 
-P_STR scrCPPMSettings[] = 
-	"Roll (Ail):\n"
-	"Pitch (Ele):\n"
-	"Yaw (Rud):\n"
-	"Throttle:\n"
-	"Aux:";
-
 
 P_STR scrESCCal0[] = 
 	"-TAKE OFF PROPELLERS!!\n"
@@ -211,13 +204,12 @@ void _hHomeArmedESC();
 void _hHomeRestart();
 void _hStabilization();
 void _hSelfLeveling();
+void _hAltitudeHold();
 void _hReceiverTest();
 void _hSensorTest();
 void _hSensorCalibration();
 void _hESCCalibration();
 void _hStickCentering();
-void _hShowModelLayout();
-//void _hLoadModelLayout();
 void _hModeSettings ();
 void _hMiscSettings ();
 void _hDebug();
@@ -231,6 +223,7 @@ static const page_t pages[] PROGMEM = {
 /*	4 */	{ _skSAVE, _hHomeRestart, scrHomePageRestart},				// non-menu item
 { _skMENU, _hStabilization, scrStabilization},			// in case of extra adding non menu items  MENU_START_INDEX constant should be updated to indicate the start of the menu
 { _skMENU, _hSelfLeveling, scrStabilization},	
+{ _skMENU, _hAltitudeHold, scrStabilization},	
 { _skMENU, _hModeSettings, scrModeSettings},
 { _skPAGE, _hMiscSettings, scrMiscSettings},
 { _skBACK, _hSensorTest, scrSensorTest},
@@ -250,6 +243,7 @@ static const page_t pages[] PROGMEM = {
 static const prog_char *lstMenu[] PROGMEM = {
 	strStabilization,
 	strSelflevel,
+	strAltitudeHold,
 	strModeSettings,
 	strMiscSettings,
 	strSensorTest,
@@ -261,7 +255,8 @@ static const prog_char *lstMenu[] PROGMEM = {
 	strFactoryReset,
 };
 
-int8_t menuEnabled[16];
+#define MENU_ITEMS_COUNT	17
+int8_t menuEnabled[MENU_ITEMS_COUNT];
 
 PGM_P tsmMain(uint8_t);
 PGM_P tsmLoadModelLayout(uint8_t);

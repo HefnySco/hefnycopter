@@ -17,15 +17,16 @@
 
 #define PAGE_STABILIZATION			5
 #define PAGE_SELF_LEVELING			6
-#define PAGE_MODE_SETTING			7
-#define PAGE_MISC_SETTING			8
-#define PAGE_SENSOR_TEST			9
-#define PAGE_RECEIVER_TEST			10
-#define PAGE_SENSOR_CALIBRATION		11
-#define PAGE_STICK_CENTER			12
-#define PAGE_ESC_CALIBRATION		13
-#define PAGE_DEBUG					14
-#define PAGE_SHOW_LAYOUT			14
+#define PAGE_ALT_HOLD				7
+#define PAGE_MODE_SETTING			8
+#define PAGE_MISC_SETTING			9
+#define PAGE_SENSOR_TEST			10
+#define PAGE_RECEIVER_TEST			11
+#define PAGE_SENSOR_CALIBRATION		12
+#define PAGE_STICK_CENTER			13
+#define PAGE_ESC_CALIBRATION		14
+#define PAGE_DEBUG					15
+#define PAGE_FACTORY_RESET			16
 
 
 #define P_STR static const prog_char
@@ -43,6 +44,7 @@
 #define OUTPUT	1
 #define LOW		0
 #define HIGH	1
+#define MID		11
 #define ON		1
 #define OFF		0	
 

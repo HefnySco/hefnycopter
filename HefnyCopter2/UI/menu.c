@@ -355,56 +355,6 @@ void _hMenu()
 }
 
 
-void _hShowModelLayout()
-{
-	if (ANYKEY)
-	{
-		if (KEY2)	// NEXT
-			subpage = (subpage + 1) % 9;
-		
-		LCD_Clear();
-		LCD_WriteString_P(strOutput);
-		lcdWriteChar(32);
-		if (subpage == 0)
-		{
-			LCD_WriteString_P(strALL);
-			for (uint8_t i = 0; i < 8; i++)
-			{
-			}				
-				//showMotor(i, 0);
-		}			
-		else
-		{
-			lcdWriteChar(subpage + '0');
-			//showMotor(subpage - 1, 1);
-		}
-		writeSoftkeys(NULL);
-	}
-}
-
-//void _hLoadModelLayout()
-//{
-	////if (IS_INIT)
-		////mnuMLayout.marked = Config.BoardOrientationMode;
-////
-	////if (subpage == 0)
-	////{
-		////if (doMenu(&mnuMLayout))
-		////{
-			////LCD_Clear();
-			////LCD_SetPos(3, 18);
-			////LCD_WriteString_P(strAreYouSure);
-			////writeSoftkeys(_skCANCELYES);
-			////subpage = 1;
-		////}
-	////}		
-	////else if (KEY4)		// YES
-	////{
-		////mixerLoadTable(mnuMLayout.marked);
-		////configSave();
-		////Menu_LoadPage(PAGE_SHOW_LAYOUT);
-	////}
-//}
 
 void _hHomePage()
 {
@@ -440,9 +390,13 @@ void _hHomePage()
 	{
 		LCD_WriteString_P(PSTR("ACRO  "));
 	}
-	else
+	else if (nFlyingModes == FLYINGMODE_LEVEL)
 	{
 		LCD_WriteString_P(PSTR("STABLE"));
+	}
+	else if (nFlyingModes == FLYINGMODE_ALTHOLD)
+	{
+		LCD_WriteString_P(PSTR("ALTHLD"));
 	}
 	
 	_helper_DisplayBuddyMode  (3,84,Config.RX_mode,0);
@@ -949,6 +903,45 @@ void _hSelfLeveling()
 	
 }
 
+
+
+
+void _hAltitudeHold()
+{
+	
+	NOKEYRETURN;
+	PageKey(6);
+	
+	
+	if (KEY4)
+	{
+		if (subpage!=0) bValueChanged = true;
+		currentPage.softkeys = _skMENUSAVE;
+		switch (subpage)
+		{
+			case 0: startEditMode(&(Config.SonarParams[0]._P),-500,500,TYPE_INT16); return ;
+			case 1: startEditMode(&(Config.SonarParams[0]._PLimit),0,500,TYPE_INT16); return ;
+			case 2: startEditMode(&(Config.SonarParams[0]._I),-500,500,TYPE_INT16);  return ;
+			case 3: startEditMode(&(Config.SonarParams[0]._ILimit),0,500,TYPE_INT16); return ;
+			case 4: startEditMode(&(Config.SonarParams[0]._D),-500,500,TYPE_INT16);  return ; // negative D
+			case 5: startEditMode(&(Config.SonarParams[0]._DLimit),0,500,TYPE_INT16); return ;
+		}
+	}
+	
+	if (KEY1)
+	{
+		_helper_SaveinEEPROM_ifChanged();
+	}
+	
+	LCD_WriteValue(1,30,Config.SonarParams[0]._P,3,0==subpage);
+	LCD_WriteValue(1,84,Config.SonarParams[0]._PLimit,3,1==subpage);
+	LCD_WriteValue(2,30,Config.SonarParams[0]._I,3,2==subpage);
+	LCD_WriteValue(2,84,Config.SonarParams[0]._ILimit,3,3==subpage);
+	LCD_WriteValue(3,30,Config.SonarParams[0]._D,3,4==subpage);
+	LCD_WriteValue(3,84,Config.SonarParams[0]._DLimit,3,5==subpage);
+	LCD_WriteString_Pex(5,0,PSTR("                "),16,false);    
+				
+}
 //int16_t AccTotal;
 //int16_t OldAcc;
 
@@ -987,8 +980,8 @@ void _hDebug()
 			//gyroZangle=0;
 			//gyroYangle=0;
 			//gyroXangle=0;
-			//YAWAngle=0;
-			//OldAngle=0;
+			YAWAngle=0;
+			OldAngle=0;
 		}	
 	//IMU_CalculateAngles();
 	//
@@ -1006,11 +999,15 @@ void _hDebug()
 	{
      //RX_SONAR_TRIGGER = HIGH;
 	DisplayBuffer[9]=0;
-	
+	YAWAngle += (double)Sensors_Latest[GYRO_PITCH_Index] * GYRO_RATE;
+	OldAngle += (double)Sensors_Latest[GYRO_Z_Index] * GYRO_RATE;
 	//LCD_WriteStringex(0,0,DisplayBuffer,false);   // UART RX
-	LCD_WriteValue(0,48,IMU_HeightKeeping(),6,false);
-	LCD_WriteValue(1,48, AltDiff,6,false);
-	LCD_WriteValue(2,48, LastAltitudeHold,6,false);
+	LCD_WriteValue(0,48, AnglePitch,6,false);
+	LCD_WriteValue(1,48, AngleRoll,6,false);
+	LCD_WriteValue(2,48, NavY,6,false);
+	LCD_WriteValue(3,48, YAWAngle,6,false);
+	LCD_WriteValue(4,48, OldAngle,6,false);
+	LCD_WriteValue(5,48, - Sensors_Latest[ACC_PITCH_Index] - Config.Acc_Pitch_Trim,6,false);
 	//if (RX_SONAR_RAW < 500)
 //	{
 	//	OldAngle += (YAWAngle -RX_SONAR_RAW);
@@ -1028,9 +1025,9 @@ void _hDebug()
 	//LCD_WriteValue_double_ex(3,48,gyroYangle,9,false);
 	//LCD_WriteValue_double_ex(5,48,gyroYangle - (double)((float)RX_Snapshot[RXChannel_ELE] / 4.0f),9,false);
 	//double Tau;
-	//Tau = (Config.GyroParams[1].ComplementaryFilterAlpha / (1000.0 - Config.GyroParams[1].ComplementaryFilterAlpha)) * 0.042;
+	//Tau = (Config.GyroParams[1].ComplementaryFilterAlpha / (1000.0 - Config.GyroParams[1].ComplementaryFilterAlpha)) * GYRO_RATE;
 	//YAWAngle +=  Tau * CompGyroZ  ;
-	//OldAngle += (Sensors_Latest[GYRO_Z_Index] * 0.042);		
+	//OldAngle += (Sensors_Latest[GYRO_Z_Index] * GYRO_RATE);		
 				
 	//LCD_WriteValue_double_ex(2,0,AnglePitch,9,false);
 	//LCD_WriteValue_double_ex(3,0,AngleRoll,9,false);		
@@ -1042,7 +1039,7 @@ void _hDebug()
 	//LCD_WriteValue(5,48,Sensors_dt,5,false);
 	//LCD_WriteValue(0,0,PID_GyroTerms[0].P,4,false);
 	//LCD_WriteValue(4,0,PID_GyroTerms[0].I,4,false);
-	LCD_WriteValue(6,0,Sensors_Latest[GYRO_Z_Index],4,false);
+	//LCD_WriteValue(6,0,Sensors_Latest[GYRO_Z_Index],4,false);
 	
 	//
 	//LCD_WriteValue_double(3,48,CompAccRoll,false);
@@ -1181,7 +1178,7 @@ PGM_P tsmLoadModelLayout(uint8_t index)
 void Menu_EnableAllItems ()
 {
 	
-	for (int i=0;i <16;++i)
+	for (int i=0;i <MENU_ITEMS_COUNT;++i)
 	{
 		
 		menuEnabled[i]=1;
