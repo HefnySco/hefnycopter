@@ -150,11 +150,7 @@ void IMU (void)
 double IMU_HeightKeeping ()
 {
 	static bool bALTHOLD = false;
-	/*
-	int16_t Landing = (100 - CompAccZ) ;
-	Landing *= Config.AccParams[1]._P; // PID_Terms[2].I not used for YAW 
-	Limiter(Landing , Config.AccParams[1]._PLimit);
-	*/
+
 	double Temp;
 	int16_t ThrottleTemp=RX_Snapshot[RXChannel_THR]; 
 	
@@ -165,23 +161,22 @@ double IMU_HeightKeeping ()
 		{	
 			Temp = RX_SONAR_RAW; 
 		}
-		if (Temp < 500)
+		if (Temp < 550)
 		{
 			
 			if (nFlyingModes == FLYINGMODE_ALTHOLD)
 			{
 				if ((bALTHOLD == false))
-				{
-					LastAltitudeHold = Temp;
-					PID_SonarTerms[0].I=0;
+				{   // first time to switch to ALTHOLD
+					LastAltitudeHold = Temp; // measure Altitude
+					PID_SonarTerms[0].I=0;   // ZERO I
 					bALTHOLD = true;
 				}
 				AltDiff = LastAltitudeHold - Temp;
-				//if (AltDiff==0) PID_AccTerms[2].I=0;
-					
 				//PID_AccTerms[2].P= ((AltDiff * (RX_Snapshot[RXChannel_THR] >>3))/ (Config.AccParams[1]._P * SONAR_ALTITUDE_HOLD_REGION)) ;
 				//Landing = Limiterf(PID_AccTerms[2].P, Config.AccParams[1]._PLimit);
 				Landing = PID_Calculate (Config.SonarParams[0], &PID_SonarTerms[0],AltDiff) ;
+				
 			}				
 			else
 			{
@@ -192,6 +187,8 @@ double IMU_HeightKeeping ()
 		}
 		RX_SONAR_TRIGGER = LOW;
 	}
+	
+	Landing += PID_Calculate (Config.AccParams[1], &PID_AccTerms[2],-Sensors_Latest[ACC_Z_Index]) ;
 	//Landing = Limiterf(PID_AccTerms[2].P, Config.AccParams[1]._PLimit);
 	//AltDiff = AltDiff;// - CompAccZ;
 	//Landing = AltDiff * PID_AccTerms[2].P;
