@@ -272,7 +272,6 @@ void RX_Init(void)
 	{
 	
 		ActiveRXIndex=0;
-
 		RX1_ROLL_DIR 		= INPUT;
 		RX1_PITCH_DIR 		= INPUT;
 		RX1_COLL_DIR   		= INPUT;
@@ -295,7 +294,6 @@ void RX_Init(void)
 #ifdef SECONDARY_INPUT_RX
 
 	ActiveRXIndex=1;
-	
 	RX2_ROLL_DIR 		= INPUT;
 	RX2_PITCH_DIR 		= INPUT;
 	RX2_COLL_DIR   		= INPUT;

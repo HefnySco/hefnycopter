@@ -346,6 +346,8 @@ void MainLoop(void)
 		// Stop motors if Throttle Stick is less than minimum.
 		ZEROMotors();
 		ZERO_Is();
+		IMU_Reset(); // reset angles for gyro [STABLE MODE]
+
 		// Send Setting Data only when Throttle is down.
 		/*if (Config.RX_mode==RX_mode_UARTMode)
 		{

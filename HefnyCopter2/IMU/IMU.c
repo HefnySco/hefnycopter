@@ -39,6 +39,14 @@
 //}
 //
 
+
+void IMU_Reset()
+{
+	
+	AnglePitch=0;
+	AngleRoll=0;
+	
+}
 //////////////////////////////////////////////////////////////////////////
 // inspired by link: http://scolton.blogspot.com/2012/09/a-bit-more-kk20-modding.html
 // Although I implement PID and super position in http://hefnycopter.net/index.php/developing-source-code/22-quadcopter-control-function-layers.html
@@ -74,6 +82,7 @@ void IMU (void)
 			//double AZ	  =   Sensors_Latest[ACC_Z_Index] + ACC_Z_1G;//	  - Config.Acc_Roll_Trim;
 			// Calculate Angle using Gyro
 			//RotateV();
+			//double GRate = Config.AccParams[1].ComplementaryFilterAlpha / 1000.0;
 			AnglePitch = (AnglePitch + (double)Sensors_Latest[GYRO_PITCH_Index] * GYRO_RATE) ;
 			AngleRoll =  (AngleRoll  + (double)Sensors_Latest[GYRO_ROLL_Index]  * GYRO_RATE) ;
 			//AnglePitch += (AngleRoll  * 0.000733 * Sensors_Latest[GYRO_Z_Index] );
@@ -153,7 +162,7 @@ double IMU_HeightKeeping ()
 
 	double Temp;
 	int16_t ThrottleTemp=RX_Snapshot[RXChannel_THR]; 
-	
+	Landing=0;	
 	if ((Config.RX_mode==RX_mode_UARTMode) && (IS_MISC_SENSOR_SONAR_ENABLED==true))
 	{
 		RX_SONAR_TRIGGER = HIGH;
@@ -173,10 +182,8 @@ double IMU_HeightKeeping ()
 					bALTHOLD = true;
 				}
 				AltDiff = LastAltitudeHold - Temp;
-				//PID_AccTerms[2].P= ((AltDiff * (RX_Snapshot[RXChannel_THR] >>3))/ (Config.AccParams[1]._P * SONAR_ALTITUDE_HOLD_REGION)) ;
-				//Landing = Limiterf(PID_AccTerms[2].P, Config.AccParams[1]._PLimit);
 				Landing = PID_Calculate (Config.SonarParams[0], &PID_SonarTerms[0],AltDiff) ;
-				
+				Landing += PID_Calculate (Config.AccParams[1], &PID_AccTerms[2],-Sensors_Latest[ACC_Z_Index]) ;
 			}				
 			else
 			{
@@ -188,12 +195,5 @@ double IMU_HeightKeeping ()
 		RX_SONAR_TRIGGER = LOW;
 	}
 	
-	Landing += PID_Calculate (Config.AccParams[1], &PID_AccTerms[2],-Sensors_Latest[ACC_Z_Index]) ;
-	//Landing = Limiterf(PID_AccTerms[2].P, Config.AccParams[1]._PLimit);
-	//AltDiff = AltDiff;// - CompAccZ;
-	//Landing = AltDiff * PID_AccTerms[2].P;
-	//Landing = PID_Calculate (Config.AccParams[1], &PID_AccTerms[2],AltDiff) ;
-	
 	return Landing;
-	
 }

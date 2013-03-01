@@ -889,7 +889,6 @@ void _hSelfLeveling()
 	else
 	{
 		strcpy_P(sXDeg,PSTR("ACC-Z damping"));
-		//LCD_WriteValue(5,84,Config.Acc_Pitch_Trim,3,9==subpage);
 	}
 	
 	LCD_WriteStringex (0,0,sXDeg,0==subpage);

@@ -90,6 +90,7 @@ char sXDeg[20];
 
 // Receiver Signal Values
 volatile uint8_t ActiveRXIndex;			// 0: primary rx, 1: secondary rx, 3: buddy mode [primary & secondary] 
+
 volatile uint16_t RX_Length   [2][RXChannels];
 volatile int16_t  RX_Latest   [2][RXChannels];   // the actual RX values that are used for calculations.
 int16_t			  RX_Snapshot    [RXChannels];
@@ -97,7 +98,7 @@ int16_t			  RX_Snapshot_1  [RXChannels];
 // used for calibration...not initialized... true values are in Config in case IsCalibrated & Stick = True.
 uint16_t RX_MAX_raw			  [2][RXChannels];
 uint16_t RX_MIN_raw			  [2][RXChannels];
-
+	
 
 BOOL	UIEnableStickCommands;
 BOOL	IsArmed;
@@ -222,7 +223,7 @@ BOOL bResetTCNR1_X;
 #define V_BAT_Index				6
 #define SENSORS_ALL				7
 #define ACC_Z_1G				256;
-#define	GYRO_RATE				0.082
+#define	GYRO_RATE				0.045
 volatile int16_t Sensors_Latest [8];
 /////////////////////////////////////////
 
