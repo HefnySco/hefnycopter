@@ -74,9 +74,10 @@ void CalculateSignalLength2(uint8_t ChannelIndex)
 __attribute__ ((section(".lowtext")))
 ISR (RX2_ALL_vect)
 {
-	uint8_t Changes = PINC ^ OldPortCValue;
+	uint8_t Changes = PINC ^ OldPortCValue;  // capture changed bit
 	OldPortCValue = PINC;
 	
+	// if there is a signal change in ROLL
 	if ((Changes & RX2_ROLL_PIN)!=0)
 	{
 		if (RX2_ROLL)
@@ -91,6 +92,7 @@ ISR (RX2_ALL_vect)
 			RX_Good = TX2_FOUND_ERR;  // CLR bit 6 ---  Status = OK
 		}	
 	}
+	// if there is a signal change in PITCH
 	if ((Changes & RX2_PITCH_PIN)!=0)
 	{
 		if (RX2_PITCH)
@@ -102,6 +104,7 @@ ISR (RX2_ALL_vect)
 			CalculateSignalLength2 (RXChannel_ELE);
 		}	
 	}
+	// if there is a signal change in THR
 	if ((Changes & RX2_COLL_PIN)!=0)
 	{
 		if (RX2_COLL)
@@ -125,6 +128,7 @@ ISR (RX2_ALL_vect)
 			RX_Good = TX2_CONNECTED_ERR;  // CLR bit 5 ---  Status = OK
 		}	
 	}
+	// if there is a signal change in YAW
 	if ((Changes & RX2_YAW_PIN) !=0)
 	{
 		if (RX2_YAW)
