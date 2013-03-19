@@ -39,7 +39,6 @@ volatile uint16_t RX1_LastValidSignal_timestampAux;
 volatile uint16_t RX2_LastValidSignal_timestamp;
 volatile uint16_t RX2_LastValidSignal_timestampAux;
 
-#define RX_Div_Factor	16	// div by 16
 
 
 void CalculateSignalLength1(uint8_t ChannelIndex)
@@ -352,7 +351,7 @@ void RX_Init(void)
 		_t = ((int)(RX_Length[RXIndex][Channel]));
 	}		
 	_t -= Config.RX_Mid[RXIndex][Channel];
-	_t /=RX_Div_Factor;
+	_t /=Config.RX_DiV_Value[RXIndex][Channel]; //RX_Div_Factor;
 	return _t;
 }
 
@@ -402,7 +401,7 @@ int16_t RX_GetReceiverThrottleValue (uint8_t RXIndex)
 	}		
 	
 	iTemp16 -= Config.RX_Min[RXIndex][RXChannel_THR];
-	iTemp16 /= RX_Div_Factor;
+	iTemp16 /= Config.RX_DiV_Value[RXIndex][RXChannel_THR]; //RX_Div_Factor;
 	 
 	return iTemp16;
 }

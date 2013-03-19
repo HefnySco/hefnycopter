@@ -72,26 +72,16 @@ void IMU (void)
 		gyroRoll  = PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[1],CompGyroRoll); 
 		gyroYaw   = PID_Calculate (Config.GyroParams[1], &PID_GyroTerms[2],CompGyroZ -((double)((float)RX_Snapshot[RXChannel_RUD]  / 2.0f))); 
 	
-		if (IS_FLYINGMODE_ACRO==0)
-		{	// Level or ALT HOLD
+		//if (IS_FLYINGMODE_ACRO==0)
+		//{	// Level or ALT HOLD
 			
 			// Read ACC and Trims
 			// ACC directions are same as GYRO direction [we added "-" for this purpose] 
 			double APitch = - Sensors_Latest[ACC_PITCH_Index] - Config.Acc_Pitch_Trim;
 			double ARoll  = - Sensors_Latest[ACC_ROLL_Index]  - Config.Acc_Roll_Trim;
-			//double AZ	  =   Sensors_Latest[ACC_Z_Index] + ACC_Z_1G;//	  - Config.Acc_Roll_Trim;
-			// Calculate Angle using Gyro
-			//RotateV();
-			//double GRate = Config.AccParams[1].ComplementaryFilterAlpha / 1000.0;
+		
 			AnglePitch = (AnglePitch + (double)Sensors_Latest[GYRO_PITCH_Index] * GYRO_RATE) ;
 			AngleRoll =  (AngleRoll  + (double)Sensors_Latest[GYRO_ROLL_Index]  * GYRO_RATE) ;
-			//AnglePitch += (AngleRoll  * 0.000733 * Sensors_Latest[GYRO_Z_Index] );
-			//AngleRoll  += (AnglePitch * 0.000733 * Sensors_Latest[GYRO_Z_Index] );
-			
-			//AngleZ     += (-(Sensors_Latest[GYRO_ROLL_Index] * AngleRoll)  + ( Sensors_Latest[GYRO_PITCH_Index] * AnglePitch)) * GYRO_RATE;
-			//AngleRoll  += ((Sensors_Latest[GYRO_ROLL_Index]  * AngleZ)     - ( Sensors_Latest[GYRO_Z_Index]     * AnglePitch)) * GYRO_RATE;
-			//AnglePitch += ((Sensors_Latest[GYRO_PITCH_Index] * AngleZ)	   + ( Sensors_Latest[GYRO_Z_Index]	    * AngleRoll )) * GYRO_RATE;
-
 			
 			// Correct Drift using ACC
 			Alpha = Config.AccParams[0].ComplementaryFilterAlpha / 1000.0; // TODO: optimize
@@ -108,11 +98,8 @@ void IMU (void)
 				AngleRoll =  Alpha * AngleRoll + Beta * ARoll;
 			
 			}
-			//AngleZ = Alpha * AngleZ + Beta * AZ;
 			
 			
-			//NavY = arctan2(AnglePitch,AngleZ);
-			//NavX = arctan2(AngleRoll,AngleZ);
 			NavY = AnglePitch;
 			NavX = AngleRoll;
 			
@@ -144,7 +131,8 @@ void IMU (void)
 				NavX += ( -  (double)((float)RX_Snapshot[RXChannel_ELE]  / 2.0f));	
 			}
 				
-			double Error;
+		if (IS_FLYINGMODE_ACRO==0)
+		{
 			
 			gyroPitch+=	PID_Calculate_ACC (Config.AccParams[0], &PID_AccTerms[0],NavY); //AnglePitch);	
 			gyroRoll += PID_Calculate_ACC (Config.AccParams[0], &PID_AccTerms[1],NavX); //AngleRoll); 

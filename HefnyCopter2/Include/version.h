@@ -10,7 +10,7 @@
 #define VERSION_H_
 
 
-static const prog_char strVersionInfo[] = "HefnyCopter2 v0.9.6";
+static const prog_char strVersionInfo[] = "HefnyCopter2 v0.9.7";
 
 /*
 version 0.1
@@ -167,6 +167,14 @@ version 0.9.6
 *	. Adding new PID section for Sonar
 * UI:
 *	. New menu Item for SONAR
+
+
+version 0.9.7
+* Function:
+*	. Reduce sensitivity for ACRO than STABLE mode under same scale.
+*   . True scaling of stick position to avoid different TX ranges.
+IMU:
+*	. Make accelerometer works always even in ACRO mode to enable good balancing switch when switching back to Stable mode.
 
 
 =========================================================================================

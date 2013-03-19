@@ -88,6 +88,8 @@ char sXDeg[20];
 
 ////////////////////////////// Variables Section
 
+//#define RX_Div_Factor	16	// div by 16
+
 // Receiver Signal Values
 volatile uint8_t ActiveRXIndex;			// 0: primary rx, 1: secondary rx, 3: buddy mode [primary & secondary] 
 
@@ -291,6 +293,7 @@ typedef struct
 	uint16_t RX_Min[2][RXChannels];
 	uint8_t Reserved[4];
 	uint16_t Sensor_zero[SENSORS_ALL];
+	int8_t   RX_DiV_Value[2][RXChannels];
 } config_t;
 
 config_t Config;

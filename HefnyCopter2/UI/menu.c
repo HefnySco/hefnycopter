@@ -608,6 +608,7 @@ void _hStickCentering()
 			{
 				Config.RX_Mid[ActiveRXIndex][i] = (RX_MAX_raw[ActiveRXIndex][i]+RX_MIN_raw[ActiveRXIndex][i])/2;
 				Config.RX_Min[ActiveRXIndex][i] = RX_MIN_raw[ActiveRXIndex][i];
+				Config.RX_DiV_Value[ActiveRXIndex][i] = ((RX_MAX_raw[ActiveRXIndex][i] - RX_MIN_raw[ActiveRXIndex][i]) / 1000);
 				
 			}		
 			

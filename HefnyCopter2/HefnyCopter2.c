@@ -136,7 +136,7 @@ if (Config.RX_mode==RX_mode_UARTMode)
 	
 	sei();
 	
-	delay_ms(20);
+	delay_ms(30);
     
 }
 
@@ -433,8 +433,8 @@ void MainLoop(void)
 			{
 				if (Config.QuadFlyingMode==QuadFlyingMode_X)
 				{
-					RX_Snapshot[RXChannel_AIL] = RX_Snapshot[RXChannel_AIL] * 0.7;		
-					RX_Snapshot[RXChannel_ELE] = RX_Snapshot[RXChannel_ELE] * 0.7;
+					RX_Snapshot[RXChannel_AIL] = RX_Snapshot[RXChannel_AIL] * 0.63;		// 0.9 * 0.7  0.7: because we fly X
+					RX_Snapshot[RXChannel_ELE] = RX_Snapshot[RXChannel_ELE] * 0.63;
 					
 					MotorOut[0] += RX_Snapshot[RXChannel_AIL] ;
 					MotorOut[3] += RX_Snapshot[RXChannel_AIL] ;
@@ -450,6 +450,9 @@ void MainLoop(void)
 				else
 				{
 				
+					RX_Snapshot[RXChannel_AIL] = RX_Snapshot[RXChannel_AIL] * 0.9;		// 0.9: to reduce sensitivity more than STABLE mode
+					RX_Snapshot[RXChannel_ELE] = RX_Snapshot[RXChannel_ELE] * 0.9;
+					
 					MotorOut[0] += RX_Snapshot[RXChannel_ELE] ; 
 					MotorOut[2] -= RX_Snapshot[RXChannel_ELE] ; 
 			
@@ -565,7 +568,8 @@ void HandleSticksForArming (void)
 		
 		if (IsArmed == false) 
 		{
-			if (RX_Latest[ActiveRXIndex][RXChannel_RUD] < STICK_RIGHT)
+			//int16_t Stick = (Config.RX_Mid[ActiveRXIndex][RXChannel_RUD] + RX_Latest[ActiveRXIndex][RXChannel_RUD] * RX_Div_Factor);
+			if (RX_Latest[ActiveRXIndex][RXChannel_RUD]  < STICK_RIGHT)
 			{	// Armin Check
 				bResetTCNR1_X = false;
 				if ( (CurrentTCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_LONG_TIME )
