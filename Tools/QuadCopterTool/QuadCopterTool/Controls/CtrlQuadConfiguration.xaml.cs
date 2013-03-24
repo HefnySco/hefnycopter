@@ -73,6 +73,7 @@ namespace QuadCopterTool.Controls
             ctrlSensorAccZ.Parameters = mQuadConfigStructure.AccParams[1];
             ctrlSensorGyroPitchRoll.Parameters = mQuadConfigStructure.GyroParams[0];
             ctrlSensorGyroYaw.Parameters = mQuadConfigStructure.GyroParams[1];
+            ctrlSensorSonar.Parameters = mQuadConfigStructure.SonarParams[0];
 
         }
 
@@ -84,6 +85,7 @@ namespace QuadCopterTool.Controls
             mQuadConfigStructure.AccParams[1]  = ctrlSensorAccZ.Parameters;
             mQuadConfigStructure.GyroParams[0] = ctrlSensorGyroPitchRoll.Parameters;
             mQuadConfigStructure.GyroParams[1] = ctrlSensorGyroYaw.Parameters;
+            mQuadConfigStructure.SonarParams[0] = ctrlSensorSonar.Parameters;
         }
 
         private void btnRead_Click(object sender, RoutedEventArgs e)

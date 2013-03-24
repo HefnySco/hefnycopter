@@ -57,16 +57,26 @@ namespace HefnyCopter.CommunicationProtocol
         ACC_PARAMS_PITCH_D_LIM      = 52,
         ACC_PARAMS_PITCH_FILTER     = 54,
 
-        ACC_PARAMS_Z_P            = 56,
-        ACC_PARAMS_Z_P_LIM        = 58,
-        ACC_PARAMS_Z_I            = 60,
-        ACC_PARAMS_Z_I_LIM        = 62,
-        ACC_PARAMS_Z_D            = 64,
-        ACC_PARAMS_Z_D_LIM        = 66,
-        ACC_PARAMS_Z_FILTER       = 68,
+        ACC_PARAMS_Z_P              = 56,
+        ACC_PARAMS_Z_P_LIM          = 58,
+        ACC_PARAMS_Z_I              = 60,
+        ACC_PARAMS_Z_I_LIM          = 62,
+        ACC_PARAMS_Z_D              = 64,
+        ACC_PARAMS_Z_D_LIM          = 66,
+        ACC_PARAMS_Z_FILTER         = 68,
+
+        // Altitude Sonar
+        SNR_PARAMS_Z_P              = 70,            
+        SNR_PARAMS_Z_P_LIM          = 72,
+        SNR_PARAMS_Z_I              = 74,
+        SNR_PARAMS_Z_I_LIM          = 76,
+        SNR_PARAMS_Z_D              = 78,
+        SNR_PARAMS_Z_D_LIM          = 80,
+        SNR_PARAMS_Z_FILTER         = 82,
+
 
         ACC_PARAMS          = 42,
-        VOLTAGE_ALARM       = 70,
+        VOLTAGE_ALARM       = 84,
     }
 
 

@@ -188,7 +188,7 @@ namespace QuadCopterTool
 
                     mVideoFileWriter = new VideoFileWriter(VideoFile);
                     mVideoFileWriter.Create();
-                    btnConnect.Content = "Disconnect";
+                    btnConnect.ToolTip = "Disconnect";
                     btnConnect.Tag = false;
                     simulationPanel1.IsEnabled = false;
                 }
@@ -209,7 +209,7 @@ namespace QuadCopterTool
                     mVideoFileWriter = null;
                     mCSVLogFileWriter.Close();
                     mCSVLogFileWriter=null;
-                    btnConnect.Content = "Connect";
+                    btnConnect.ToolTip = "Connect";
                     btnConnect.Tag = true;
                     simulationPanel1.IsEnabled = true;
                 }
@@ -308,7 +308,17 @@ namespace QuadCopterTool
                 QuadConfigurationManager.QuadConfigStructure.AccParams[1].D= BitConverter.ToInt16(vArray, 64);
                 QuadConfigurationManager.QuadConfigStructure.AccParams[1].D_Limit = BitConverter.ToInt16(vArray, 66);
                 QuadConfigurationManager.QuadConfigStructure.AccParams[1].ComplementartuFilterAlpha = BitConverter.ToInt16(vArray, 68);
-                QuadConfigurationManager.QuadConfigStructure.VoltageAlarm = vArray[70];
+               
+                
+                QuadConfigurationManager.QuadConfigStructure.SonarParams[0].P = BitConverter.ToInt16(vArray, 70);
+                QuadConfigurationManager.QuadConfigStructure.SonarParams[0].P_Limit = BitConverter.ToInt16(vArray, 72);
+                QuadConfigurationManager.QuadConfigStructure.SonarParams[0].I = BitConverter.ToInt16(vArray, 74);
+                QuadConfigurationManager.QuadConfigStructure.SonarParams[0].I_Limit = BitConverter.ToInt16(vArray, 76);
+                QuadConfigurationManager.QuadConfigStructure.SonarParams[0].D= BitConverter.ToInt16(vArray, 78);
+                QuadConfigurationManager.QuadConfigStructure.SonarParams[0].D_Limit = BitConverter.ToInt16(vArray, 80);
+                QuadConfigurationManager.QuadConfigStructure.SonarParams[0].ComplementartuFilterAlpha = BitConverter.ToInt16(vArray, 82);
+               
+                QuadConfigurationManager.QuadConfigStructure.VoltageAlarm = vArray[84];
                 mFlagUpdateSettings = true;
                 break;
             }
@@ -501,6 +511,24 @@ namespace QuadCopterTool
 
 
            mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.ACC_PARAMS_Z_FILTER, 2, octrlQuadConfiguration.QuadConfigStructure.AccParams[1].ComplementartuFilterAlpha));
+           Thread.Sleep(n);
+
+
+
+           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.SNR_PARAMS_Z_P, 2, octrlQuadConfiguration.QuadConfigStructure.SonarParams[0].P));
+           Thread.Sleep(n);
+           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.SNR_PARAMS_Z_P_LIM, 2, octrlQuadConfiguration.QuadConfigStructure.SonarParams[0].P_Limit));
+           Thread.Sleep(n);
+           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.SNR_PARAMS_Z_I, 2, octrlQuadConfiguration.QuadConfigStructure.SonarParams[0].I));
+           Thread.Sleep(n);
+           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.SNR_PARAMS_Z_I_LIM, 2, octrlQuadConfiguration.QuadConfigStructure.SonarParams[0].I_Limit));
+           Thread.Sleep(n);
+           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.SNR_PARAMS_Z_D, 2, octrlQuadConfiguration.QuadConfigStructure.SonarParams[0].D));
+           Thread.Sleep(n);
+           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.SNR_PARAMS_Z_D_LIM, 2, octrlQuadConfiguration.QuadConfigStructure.SonarParams[0].D_Limit));
+
+
+           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.SNR_PARAMS_Z_FILTER, 2, octrlQuadConfiguration.QuadConfigStructure.SonarParams[0].ComplementartuFilterAlpha));
            Thread.Sleep(n);
 
             

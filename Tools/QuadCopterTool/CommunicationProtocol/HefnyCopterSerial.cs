@@ -238,7 +238,7 @@ namespace HefnyCopter.CommunicationProtocol
                                 }
                             }
 
-                            if (Idx == 72)
+                            if (Idx == 86)
                             {
                                 Idx = 0;
                                 bStartCopy = false;
@@ -253,6 +253,7 @@ namespace HefnyCopter.CommunicationProtocol
                 }
                ExpectEOF = false;
             }
+        //   Idx += 1; // FIX bug when DataMisalignedException comes CONST_FIRMWARE_SIGNATURE two chunks cArray was shifted by one.
         }
     }
 }

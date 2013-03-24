@@ -10,7 +10,7 @@ namespace HefnyCopter.CommunicationProtocol
 
         #region "Attributes"
 
-        protected static PIDParameters[] mGyroParams , mAccParams ;
+        protected static PIDParameters[] mGyroParams , mAccParams, mSonarParams ;
 
         #endregion 
 
@@ -118,6 +118,14 @@ namespace HefnyCopter.CommunicationProtocol
             }
         }
 
+        public  PIDParameters[] SonarParams
+        {
+            get
+            {
+                return mSonarParams;
+            }
+        }
+
         public  byte VoltageAlarm
         {
             set;
@@ -133,10 +141,14 @@ namespace HefnyCopter.CommunicationProtocol
         {
             mGyroParams = new PIDParameters[2];
             mAccParams = new PIDParameters[2];
+            mSonarParams = new PIDParameters[1];
+
+            mSonarParams[0] = new PIDParameters();
             for (int i = 0; i < 2; ++i)
             {
                 mGyroParams[i] = new PIDParameters();
                 mAccParams[i] = new PIDParameters();
+                
             }
                 
         }
