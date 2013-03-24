@@ -915,7 +915,7 @@ void _hAltitudeHold()
 	
 	if (KEY4)
 	{
-		if (subpage!=0) bValueChanged = true;
+		bValueChanged = true;
 		currentPage.softkeys = _skMENUSAVE;
 		switch (subpage)
 		{
@@ -997,17 +997,23 @@ void _hDebug()
 			//RX_Snapshot[RXChannel_RUD] = (RX_Latest[ActiveRXIndex][RXChannel_RUD] * 3) / 5 ;
 	if ((Config.RX_mode==RX_mode_UARTMode) && (IS_MISC_SENSOR_SONAR_ENABLED==true))
 	{
-     //RX_SONAR_TRIGGER = HIGH;
-	DisplayBuffer[9]=0;
-	YAWAngle += (double)Sensors_Latest[GYRO_PITCH_Index] * GYRO_RATE;
-	OldAngle += (double)Sensors_Latest[GYRO_Z_Index] * GYRO_RATE;
+    uint16_t Temp;
+	IMU_HeightKeeping();
+	ATOMIC_BLOCK(ATOMIC_FORCEON)
+		{	
+			Temp = RX_SONAR_RAW; 
+		}
+	//RX_SONAR_TRIGGER = HIGH;
+	//DisplayBuffer[9]=0;
+	//YAWAngle += (double)Sensors_Latest[GYRO_PITCH_Index] * GYRO_RATE;
+	//OldAngle += (double)Sensors_Latest[GYRO_Z_Index] * GYRO_RATE;
 	//LCD_WriteStringex(0,0,DisplayBuffer,false);   // UART RX
-	LCD_WriteValue(0,48, AnglePitch,6,false);
-	LCD_WriteValue(1,48, AngleRoll,6,false);
-	LCD_WriteValue(2,48, NavY,6,false);
-	LCD_WriteValue(3,48, YAWAngle,6,false);
-	LCD_WriteValue(4,48, OldAngle,6,false);
-	LCD_WriteValue(5,48, - Sensors_Latest[ACC_PITCH_Index] - Config.Acc_Pitch_Trim,6,false);
+	LCD_WriteValue(0,48, Temp,6,false);
+	LCD_WriteValue(1,48, PID_SonarTerms[0].P,6,false);
+	LCD_WriteValue(2,48, PID_SonarTerms[0].I,6,false);
+	LCD_WriteValue(3,48, PID_SonarTerms[0].D,6,false);
+	//LCD_WriteValue(4,48, OldAngle,6,false);
+	//LCD_WriteValue(5,48, - Sensors_Latest[ACC_PITCH_Index] - Config.Acc_Pitch_Trim,6,false);
 	//if (RX_SONAR_RAW < 500)
 //	{
 	//	OldAngle += (YAWAngle -RX_SONAR_RAW);
@@ -1015,6 +1021,7 @@ void _hDebug()
 //	}	
 	//RX_SONAR_TRIGGER = LOW;
 	}	
+
 	//LCD_WriteValue(1,48,ACC_Pitch_Offset,4,false); 
 	//LCD_WriteValue(2,48,Sensors_Latest[ACC_PITCH_Index],4,false);
 	//char s[12];

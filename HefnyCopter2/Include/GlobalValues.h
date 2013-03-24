@@ -147,11 +147,11 @@ double CompGyroZ;
 
 //double CompAccRoll;
 //double CompAccPitch;
-//double CompAccZ;	
+double CompAccZ;	
 
 double AngleRoll;
 double AnglePitch;
-double AngleZ;
+//double AngleZ;
 
 int8_t ACC_Pitch_Offset;
 int8_t ACC_Roll_Offset;

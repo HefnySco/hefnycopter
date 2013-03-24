@@ -119,6 +119,7 @@ void ZERO_Is()
 //	PID_GyroTerms[2].I=0;
 	PID_AccTerms[0].I=0;
 	PID_AccTerms[1].I=0;
+	PID_SonarTerms[0].I=0;
 }
 
 

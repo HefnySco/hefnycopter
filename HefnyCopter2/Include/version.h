@@ -175,6 +175,7 @@ version 0.9.7
 *   . True scaling of stick position to avoid different TX ranges.
 IMU:
 *	. Make accelerometer works always even in ACRO mode to enable good balancing switch when switching back to Stable mode.
+*   . Improve Sonar Logic
 
 
 =========================================================================================

@@ -56,6 +56,11 @@ void IMU (void)
 		double Alpha;	
 		double Beta;
 	
+	    // calculate ACC-Z
+		Alpha = Config.AccParams[1].ComplementaryFilterAlpha / 1000.0;
+		Beta = 1- Alpha; // complementary filter to remove noise
+		CompAccZ = (double) (Alpha * CompGyroZ) + (double) (Beta * Sensors_Latest[ACC_Z_Index]);
+		
 		// calculate YAW
 		Alpha = Config.GyroParams[1].ComplementaryFilterAlpha / 1000.0;
 		Beta = 1- Alpha; // complementary filter to remove noise
@@ -144,44 +149,92 @@ void IMU (void)
 
 
 	
+
+	
 double IMU_HeightKeeping ()
 {
 	static bool bALTHOLD = false;
-
+	static int16_t ThrottleTemp = 0;
+	static int16_t ThrottleZERO = 0;
+	static int8_t	IgnoreTimeOut=0;
+	
 	double Temp;
-	int16_t ThrottleTemp=RX_Snapshot[RXChannel_THR]; 
-	Landing=0;	
-	if ((Config.RX_mode==RX_mode_UARTMode) && (IS_MISC_SENSOR_SONAR_ENABLED==true))
+//	ThrottleTemp = RX_Snapshot[RXChannel_THR];
+	
+	// calculate damping
+	
+	Landing = PID_Calculate (Config.AccParams[1], &PID_AccTerms[2],-CompAccZ) ;
+			
+			
+	// Calculate Altitude Hold
+	if ((Config.RX_mode==RX_mode_UARTMode) && (IS_MISC_SENSOR_SONAR_ENABLED==true) && (nFlyingModes == FLYINGMODE_ALTHOLD))
 	{
 		RX_SONAR_TRIGGER = HIGH;
 		ATOMIC_BLOCK(ATOMIC_FORCEON)
 		{	
 			Temp = RX_SONAR_RAW; 
 		}
-		if (Temp < 550)
+	
+		if (Temp < 550) // if SONAR Reading is VALID - not BEYOND maximum range
 		{
 			
-			if (nFlyingModes == FLYINGMODE_ALTHOLD)
-			{
-				if ((bALTHOLD == false))
-				{   // first time to switch to ALTHOLD
-					LastAltitudeHold = Temp; // measure Altitude
-					PID_SonarTerms[0].I=0;   // ZERO I
-					bALTHOLD = true;
+			if ((bALTHOLD == false))
+			{   
+				if (ThrottleTemp<3)
+				{ // current altitude is the old one
+					ThrottleTemp+=1;
+					return Landing ;
 				}
-				AltDiff = LastAltitudeHold - Temp;
-				Landing = PID_Calculate (Config.SonarParams[0], &PID_SonarTerms[0],AltDiff) ;
-				Landing += PID_Calculate (Config.AccParams[1], &PID_AccTerms[2],-Sensors_Latest[ACC_Z_Index]) ;
-			}				
-			else
-			{
-				bALTHOLD = false;
-				Landing=0;
+				// first time to switch to ALTHOLD
+				LastAltitudeHold = Temp; // measure Altitude
+				PID_SonarTerms[0].I=0;   // ZERO I
+				bALTHOLD = true;
 			}
+			
+			AltDiff = LastAltitudeHold - Temp;
+			if ((AltDiff<50) && (AltDiff>-50)) // no sudden change or false read
+			{
+				IgnoreTimeOut=0;
+				ThrottleTemp = PID_Calculate (Config.SonarParams[0], &PID_SonarTerms[0],AltDiff) ;	
+				if (AltDiff==0) 
+				{
+					ThrottleZERO = ThrottleTemp;
 						
+				}
+			}
+				//else
+				//{
+					//if (IgnoreTimeOut>200)
+					//{
+						//// assuming there is a sudden change in ALT which means an obstacle under quad ...eg. table ... so take the new ALT 
+						//// as the new measure ,,, thus keep the quad at its absolute level regardless of surface change.
+						//LastAltitudeHold = Temp; // measure Altitude
+					//}
+					//else
+					//{
+						//IgnoreTimeOut = IgnoreTimeOut +1;
+					//}						
+				//
+				//}
+				
+							
+			Landing += ThrottleTemp;
 		}
+		else
+		{
+			Landing += ThrottleZERO;
+		}
+		
 		RX_SONAR_TRIGGER = LOW;
 	}
+	else
+	{
+			ThrottleTemp=0;
+			bALTHOLD=false;
+	}
+	
+	
+	
 	
 	return Landing;
 }

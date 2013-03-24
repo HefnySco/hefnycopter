@@ -114,7 +114,7 @@ void ParseCommand ()
 					break;
 					case SERIAL_CMD_READ_CONFIG:
 						Send_Data("C",1);
-						Send_Data(&Config,72);
+						Send_Data(&Config,86);
 						Send_Data("E",1);
 					break;
 					case SERIAL_CMD_SAVE_CONFIG:
