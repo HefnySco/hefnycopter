@@ -84,16 +84,16 @@ void IMU (void)
 			// ACC directions are same as GYRO direction [we added "-" for this purpose] 
 			double APitch = - Sensors_Latest[ACC_PITCH_Index] - Config.Acc_Pitch_Trim;
 			double ARoll  = - Sensors_Latest[ACC_ROLL_Index]  - Config.Acc_Roll_Trim;
-			double DT_YAW =  (double)Sensors_Latest[GYRO_YAW_Index] * GYRO_RATE_x_IVR_RAD;
+			double DT_YAW =  (double)Sensors_Latest[GYRO_Z_Index] * GYRO_RATE_x_IVR_RAD;
 			
 			
 			// Do the Magic of IMU LEVELING here
 			// check also : http://scolton.blogspot.com/2012/09/fun-with-complementary-filter-multiwii.html
 			AnglePitch = AnglePitch 
-			           + (double)Sensors_Latest[GYRO_PITCH_Index] * GYRO_RATE 
+			           + (double)Sensors_Latest[GYRO_PITCH_Index] * GYRO_RATE ;
 					   + AngleRoll * DT_YAW; // integrate component of yaw rate into pitch angle
 			AngleRoll =  AngleRoll  
-					   + (double)Sensors_Latest[GYRO_ROLL_Index]  * GYRO_RATE) 
+					   + (double)Sensors_Latest[GYRO_ROLL_Index]  * GYRO_RATE ; 
 					   - AnglePitch * DT_YAW; // integrate component of yaw rate into roll angle
 			
 			// Correct Drift using ACC

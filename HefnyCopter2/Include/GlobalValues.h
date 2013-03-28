@@ -226,7 +226,7 @@ BOOL bResetTCNR1_X;
 #define SENSORS_ALL				7
 #define ACC_Z_1G				256;
 #define	GYRO_RATE				0.045
-#define GYRO_RATE_x_IVR_RAD		0.001413	// = GYRO_RATE * (3.14/100)
+#define GYRO_RATE_x_IVR_RAD		0.00123	// = GYRO_RATE * (3.14/100)
 volatile int16_t Sensors_Latest [8];
 /////////////////////////////////////////
 

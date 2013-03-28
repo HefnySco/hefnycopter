@@ -997,21 +997,22 @@ void _hDebug()
 			//RX_Snapshot[RXChannel_RUD] = (RX_Latest[ActiveRXIndex][RXChannel_RUD] * 3) / 5 ;
 	if ((Config.RX_mode==RX_mode_UARTMode) && (IS_MISC_SENSOR_SONAR_ENABLED==true))
 	{
-    uint16_t Temp;
-	IMU_HeightKeeping();
-	ATOMIC_BLOCK(ATOMIC_FORCEON)
-		{	
-			Temp = RX_SONAR_RAW; 
-		}
+    double Temp;
 	//RX_SONAR_TRIGGER = HIGH;
 	//DisplayBuffer[9]=0;
 	//YAWAngle += (double)Sensors_Latest[GYRO_PITCH_Index] * GYRO_RATE;
 	//OldAngle += (double)Sensors_Latest[GYRO_Z_Index] * GYRO_RATE;
 	//LCD_WriteStringex(0,0,DisplayBuffer,false);   // UART RX
-	LCD_WriteValue(0,48, Temp,6,false);
-	LCD_WriteValue(1,48, PID_SonarTerms[0].P,6,false);
-	LCD_WriteValue(2,48, PID_SonarTerms[0].I,6,false);
-	LCD_WriteValue(3,48, PID_SonarTerms[0].D,6,false);
+				//SONAR
+				//IMU_HeightKeeping();
+				//ATOMIC_BLOCK(ATOMIC_FORCEON)
+				//{	
+					//Temp = RX_SONAR_RAW; 
+				//}
+				//LCD_WriteValue(0,48, Temp,6,false);
+				//LCD_WriteValue(1,48, PID_SonarTerms[0].P,6,false);
+				//LCD_WriteValue(2,48, PID_SonarTerms[0].I,6,false);
+				//LCD_WriteValue(3,48, PID_SonarTerms[0].D,6,false);
 	//LCD_WriteValue(4,48, OldAngle,6,false);
 	//LCD_WriteValue(5,48, - Sensors_Latest[ACC_PITCH_Index] - Config.Acc_Pitch_Trim,6,false);
 	//if (RX_SONAR_RAW < 500)
@@ -1037,9 +1038,12 @@ void _hDebug()
 	//OldAngle += (Sensors_Latest[GYRO_Z_Index] * GYRO_RATE);		
 				
 	//LCD_WriteValue_double_ex(2,0,AnglePitch,9,false);
-	//LCD_WriteValue_double_ex(3,0,AngleRoll,9,false);		
-	//LCD_WriteValue_double_ex(4,0,gyroZangle,9,false); // Angle
-	//LCD_WriteValue_double_ex(5,0,YAWAngle ,9,false);// PID OUTPUT
+	//LCD_WriteValue_double_ex(3,0,AngleRoll,9,false);	
+	 YAWAngle+= (double)Sensors_Latest[GYRO_Z_Index] * GYRO_RATE ;	
+	LCD_WriteValue_double_ex(1,0,YAWAngle,9,false); // Angle
+	LCD_WriteValue_double_ex(2,0,CompAccZ,9,false);// PID OUTPUT
+	LCD_WriteValue_double_ex(3,0,Sensors_Latest[ACC_PITCH_Index],9,false);// PID OUTPUT
+	LCD_WriteValue_double_ex(4,0,Sensors_Latest[ACC_ROLL_Index],9,false);// PID OUTPUT
 	//LCD_WriteValue_double_ex(6,0,gyroYangle,9,false);// ANGLE
 	
 	//LCD_WriteValue(4,48,PID_AccTerms[0].I,4,false);
