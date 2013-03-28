@@ -10,7 +10,7 @@
 #define VERSION_H_
 
 
-static const prog_char strVersionInfo[] = "HefnyCopter2 v0.9.7";
+static const prog_char strVersionInfo[] = "HefnyCopter2 v0.9.8";
 
 /*
 version 0.1
@@ -176,6 +176,11 @@ version 0.9.7
 IMU:
 *	. Make accelerometer works always even in ACRO mode to enable good balancing switch when switching back to Stable mode.
 *   . Improve Sonar Logic
+
+
+version 0.9.8
+IMU:
+*	.YAW decoupling ... pls check http://scolton.blogspot.com/2012/09/fun-with-complementary-filter-multiwii.html
 
 
 =========================================================================================
