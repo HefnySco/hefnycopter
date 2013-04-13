@@ -90,11 +90,13 @@ void IMU (void)
 			// Do the Magic of IMU LEVELING here
 			// check also : http://scolton.blogspot.com/2012/09/fun-with-complementary-filter-multiwii.html
 			AnglePitch = AnglePitch 
-			           + (double)Sensors_Latest[GYRO_PITCH_Index] * GYRO_RATE ;
-					   + AngleRoll * DT_YAW; // integrate component of yaw rate into pitch angle
+			           + (double)Sensors_Latest[GYRO_PITCH_Index] * GYRO_RATE 
+					   + AngleRoll * DT_YAW // integrate component of yaw rate into pitch angle
+						;
 			AngleRoll =  AngleRoll  
-					   + (double)Sensors_Latest[GYRO_ROLL_Index]  * GYRO_RATE ; 
-					   - AnglePitch * DT_YAW; // integrate component of yaw rate into roll angle
+					   + (double)Sensors_Latest[GYRO_ROLL_Index]  * GYRO_RATE
+					   - AnglePitch * DT_YAW // integrate component of yaw rate into roll angle
+					   ; 
 			
 			// Correct Drift using ACC
 			Alpha = Config.AccParams[0].ComplementaryFilterAlpha / 1000.0; // TODO: optimize
