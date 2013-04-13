@@ -55,13 +55,14 @@ void CalculateSignalLength1(uint8_t ChannelIndex)
 }
 void CalculateSignalLength2(uint8_t ChannelIndex)
 {
-	if (TCNT1 > RX_raw[1][ChannelIndex] )
+	uint16_t TCNT1_TEMP = TCNT1;
+	if (TCNT1_TEMP > RX_raw[1][ChannelIndex] )
 	{
-		RX_Length[1][ChannelIndex] = TCNT1 - RX_raw[1][ChannelIndex] ;	
+		RX_Length[1][ChannelIndex] = TCNT1_TEMP - RX_raw[1][ChannelIndex] ;	
 	}
 	else
 	{
-		RX_Length[1][ChannelIndex] = (0xffff - RX_raw[1][ChannelIndex] + TCNT1 );	
+		RX_Length[1][ChannelIndex] = (0xffff - RX_raw[1][ChannelIndex] + TCNT1_TEMP);	
 	}
 	
 }
@@ -75,13 +76,13 @@ ISR (RX2_ALL_vect)
 {
 	uint8_t Changes = PINC ^ OldPortCValue;  // capture changed bit
 	OldPortCValue = PINC;
-	
+	uint16_t TCNT1_TEMP = TCNT1;
 	// if there is a signal change in ROLL
 	if ((Changes & RX2_ROLL_PIN)!=0)
 	{
 		if (RX2_ROLL)
 		{
-			RX_raw[1][RXChannel_AIL]=TCNT1;
+			RX_raw[1][RXChannel_AIL]=TCNT1_TEMP;
 		}
 		else
 		{
@@ -96,7 +97,7 @@ ISR (RX2_ALL_vect)
 	{
 		if (RX2_PITCH)
 		{
-			RX_raw[1][RXChannel_ELE]=TCNT1;
+			RX_raw[1][RXChannel_ELE]=TCNT1_TEMP;
 		}
 		else
 		{
@@ -108,10 +109,10 @@ ISR (RX2_ALL_vect)
 	{
 		if (RX2_COLL)
 		{
-			RX_raw[1][RXChannel_THR]=TCNT1;
+			RX_raw[1][RXChannel_THR]=TCNT1_TEMP;
 			
 			if (Config.IsESCCalibration==ESCCalibration_ON)
-			{
+			{ 
 				M1=1;M2=1;M3=1;M4=1;
 			}
 		}
@@ -132,7 +133,7 @@ ISR (RX2_ALL_vect)
 	{
 		if (RX2_YAW)
 		{
-			RX_raw[1][RXChannel_RUD]=TCNT1;
+			RX_raw[1][RXChannel_RUD]=TCNT1_TEMP;
 		}
 		else
 		{
@@ -213,7 +214,7 @@ ISR (RX1_YAW_vect)
 	{
 		if (RX1_YAW)
 		{
-			ShortTime = TCNT1;
+			//ShortTime = TCNT1;
 			LongTime = TCNT0_X;
 		}
 		else
