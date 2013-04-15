@@ -950,7 +950,7 @@ void _hAltitudeHold()
 
 	static double YAWAngle;
 static double OldAngle;
-	
+	static double YAWAngle2;
 void _hDebug()
 {
 
@@ -976,10 +976,12 @@ void _hDebug()
 		}
 		if (KEY3)
 		{
-			OldAngle=0;
 			//gyroZangle=0;
 			//gyroYangle=0;
 			//gyroXangle=0;
+			AnglePitch=0;
+			AngleRoll=0;
+			YAWAngle2=0;
 			YAWAngle=0;
 			OldAngle=0;
 		}	
@@ -995,12 +997,14 @@ void _hDebug()
 	//	RX_Snapshot[RXChannel_AIL] = (RX_Latest[ActiveRXIndex][RXChannel_AIL] * 3) / 5 ;
 	
 			//RX_Snapshot[RXChannel_RUD] = (RX_Latest[ActiveRXIndex][RXChannel_RUD] * 3) / 5 ;
-	if ((Config.RX_mode==RX_mode_UARTMode) && (IS_MISC_SENSOR_SONAR_ENABLED==true))
-	{
+	///if ((Config.RX_mode==RX_mode_UARTMode) && (IS_MISC_SENSOR_SONAR_ENABLED==true))
+	//{
     double Temp;
 	//RX_SONAR_TRIGGER = HIGH;
 	//DisplayBuffer[9]=0;
-	//YAWAngle += (double)Sensors_Latest[GYRO_PITCH_Index] * GYRO_RATE;
+	//IMU();
+	double DT_YAW =  (double)Sensors_Latest[GYRO_Z_Index] * GYRO_RATE; 
+	YAWAngle +=  (double)Sensors_Latest[GYRO_PITCH_Index] * GYRO_RATE;// + (AngleRoll * DEG_TO_RAD * DT_YAW)  ;
 	//OldAngle += (double)Sensors_Latest[GYRO_Z_Index] * GYRO_RATE;
 	//LCD_WriteStringex(0,0,DisplayBuffer,false);   // UART RX
 				//SONAR
@@ -1010,9 +1014,10 @@ void _hDebug()
 					//Temp = RX_SONAR_RAW; 
 				//}
 				//LCD_WriteValue(0,48, Temp,6,false);
-				//LCD_WriteValue(1,48, PID_SonarTerms[0].P,6,false);
-				//LCD_WriteValue(2,48, PID_SonarTerms[0].I,6,false);
-				//LCD_WriteValue(3,48, PID_SonarTerms[0].D,6,false);
+				LCD_WriteValue_double_ex(1,48, AnglePitch,9,false);
+				LCD_WriteValue_double_ex(2,48, AngleRoll,9,false);
+				//LCD_WriteValue_double_ex(3,48, OldAngle,9,false);
+				LCD_WriteValue_double_ex(4,48, YAWAngle,9,false);
 	//LCD_WriteValue(4,48, OldAngle,6,false);
 	//LCD_WriteValue(5,48, - Sensors_Latest[ACC_PITCH_Index] - Config.Acc_Pitch_Trim,6,false);
 	//if (RX_SONAR_RAW < 500)
@@ -1021,7 +1026,7 @@ void _hDebug()
 //		YAWAngle =RX_SONAR_RAW;
 //	}	
 	//RX_SONAR_TRIGGER = LOW;
-	}	
+	//}	
 
 	//LCD_WriteValue(1,48,ACC_Pitch_Offset,4,false); 
 	//LCD_WriteValue(2,48,Sensors_Latest[ACC_PITCH_Index],4,false);
@@ -1039,11 +1044,11 @@ void _hDebug()
 				
 	//LCD_WriteValue_double_ex(2,0,AnglePitch,9,false);
 	//LCD_WriteValue_double_ex(3,0,AngleRoll,9,false);	
-	 YAWAngle+= (double)Sensors_Latest[GYRO_Z_Index] * GYRO_RATE ;	
-	LCD_WriteValue_double_ex(1,0,YAWAngle,9,false); // Angle
-	LCD_WriteValue_double_ex(2,0,CompAccZ,9,false);// PID OUTPUT
-	LCD_WriteValue_double_ex(3,0,Sensors_Latest[ACC_PITCH_Index],9,false);// PID OUTPUT
-	LCD_WriteValue_double_ex(4,0,Sensors_Latest[ACC_ROLL_Index],9,false);// PID OUTPUT
+	 YAWAngle2+= (double)Sensors_Latest[GYRO_Z_Index] * GYRO_RATE ;	
+	LCD_WriteValue_double_ex(1,0,YAWAngle2,9,false); // Angle
+	LCD_WriteValue_double_ex(2,0,DT_YAW,9,false);// PID OUTPUT
+	LCD_WriteValue_double_ex(3,0,- Sensors_Latest[ACC_PITCH_Index] - Config.Acc_Pitch_Trim,9,false);// PID OUTPUT
+	LCD_WriteValue_double_ex(4,0,- Sensors_Latest[ACC_ROLL_Index]  - Config.Acc_Roll_Trim,9,false);// PID OUTPUT
 	//LCD_WriteValue_double_ex(6,0,gyroYangle,9,false);// ANGLE
 	
 	//LCD_WriteValue(4,48,PID_AccTerms[0].I,4,false);

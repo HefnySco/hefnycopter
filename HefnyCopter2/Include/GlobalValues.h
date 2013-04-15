@@ -149,8 +149,8 @@ double CompGyroZ;
 //double CompAccPitch;
 double CompAccZ;	
 
-double AngleRoll;
-double AnglePitch;
+volatile double AngleRoll;
+volatile double AnglePitch;
 //double AngleZ;
 
 int8_t ACC_Pitch_Offset;
@@ -225,8 +225,10 @@ BOOL bResetTCNR1_X;
 #define V_BAT_Index				6
 #define SENSORS_ALL				7
 #define ACC_Z_1G				256;
-#define	GYRO_RATE				0.045
-#define GYRO_RATE_x_IVR_RAD		0.00123	// = GYRO_RATE * (3.14/100)
+#define	GYRO_RATE				0.027  //0.045
+#define RAD_TO_DEG				57.324
+#define DEG_TO_RAD				0.01308		//(PI/2 = 120)
+#define GYRO_RATE_x_IVR_RAD		0.00058875	// = GYRO_RATE * ((3.14/2)/100) //0.01744444444444444444444444444444
 volatile int16_t Sensors_Latest [8];
 /////////////////////////////////////////
 

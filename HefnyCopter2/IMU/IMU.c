@@ -84,19 +84,19 @@ void IMU (void)
 			// ACC directions are same as GYRO direction [we added "-" for this purpose] 
 			double APitch = - Sensors_Latest[ACC_PITCH_Index] - Config.Acc_Pitch_Trim;
 			double ARoll  = - Sensors_Latest[ACC_ROLL_Index]  - Config.Acc_Roll_Trim;
-			double DT_YAW =  (double)Sensors_Latest[GYRO_Z_Index] * GYRO_RATE_x_IVR_RAD;
+			double DT_YAW =  (double)Sensors_Latest[GYRO_Z_Index] * GYRO_RATE; 
 			
 			
 			// Do the Magic of IMU LEVELING here
 			// check also : http://scolton.blogspot.com/2012/09/fun-with-complementary-filter-multiwii.html
-			AnglePitch = AnglePitch 
-			           + (double)Sensors_Latest[GYRO_PITCH_Index] * GYRO_RATE 
-					   + AngleRoll * DT_YAW // integrate component of yaw rate into pitch angle
+			AnglePitch = AnglePitch
+					   + (double)Sensors_Latest[GYRO_PITCH_Index] * GYRO_RATE
+					  // + (sin(AngleRoll * DEG_TO_RAD) * DT_YAW)  // integrate component of yaw rate into pitch angle
 						;
-			AngleRoll =  AngleRoll  
-					   + (double)Sensors_Latest[GYRO_ROLL_Index]  * GYRO_RATE
-					   - AnglePitch * DT_YAW // integrate component of yaw rate into roll angle
-					   ; 
+			AngleRoll = AngleRoll  
+					  + (double)Sensors_Latest[GYRO_ROLL_Index]  * GYRO_RATE
+					 // - (sin(AnglePitch * DEG_TO_RAD) * DT_YAW)  // integrate component of yaw rate into roll angle
+					  ; 
 			
 			// Correct Drift using ACC
 			Alpha = Config.AccParams[0].ComplementaryFilterAlpha / 1000.0; // TODO: optimize
@@ -130,13 +130,13 @@ void IMU (void)
 			}
 			else if ((Config.BoardOrientationMode==QuadFlyingMode_PLUS) && (Config.QuadFlyingMode==QuadFlyingMode_PLUS))
 			{
-				NavY += ( - (double)((float)RX_Snapshot[RXChannel_ELE] / 2.0f));	
-				NavX += ( - (double)((float)RX_Snapshot[RXChannel_AIL] / 2.0f));
+				NavY += ( -  (double)((float)RX_Snapshot[RXChannel_ELE] / 2.0f));	
+				NavX += ( -  (double)((float)RX_Snapshot[RXChannel_AIL] / 2.0f));
 			}					
 			else if ((Config.BoardOrientationMode==QuadFlyingMode_X) && (Config.QuadFlyingMode==QuadFlyingMode_X))
 			{
-				NavY += ( - (double)((float)RX_Snapshot[RXChannel_ELE] / 2.0f));	
-				NavX += ( - (double)((float)RX_Snapshot[RXChannel_AIL] / 2.0f));
+				NavY += ( -  (double)((float)RX_Snapshot[RXChannel_ELE] / 2.0f));	
+				NavX += ( -  (double)((float)RX_Snapshot[RXChannel_AIL] / 2.0f));
 			}
 			else if ((Config.BoardOrientationMode==QuadFlyingMode_X) && (Config.QuadFlyingMode==QuadFlyingMode_PLUS))
 			{
