@@ -1,0 +1,289 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>6.0</ProjectVersion>
+    <ToolchainName>com.Atmel.AVRGCC8</ToolchainName>
+    <ProjectGuid>{0c355de8-118a-4aee-a335-5a9b1b3f3af3}</ProjectGuid>
+    <avrdevice>ATmega324PA</avrdevice>
+    <avrdeviceseries>none</avrdeviceseries>
+    <OutputType>Executable</OutputType>
+    <Language>C</Language>
+    <OutputFileName>$(MSBuildProjectName)</OutputFileName>
+    <OutputFileExtension>.elf</OutputFileExtension>
+    <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
+    <AssemblyName>HefnyCopter v2.0</AssemblyName>
+    <Name>HefnyCopter 2</Name>
+    <RootNamespace>HefnyCopter v2.0</RootNamespace>
+    <ToolchainFlavour>Native</ToolchainFlavour>
+    <AsfVersion>2.11.1</AsfVersion>
+    <avrtoolinterface />
+    <avrtool>com.atmel.avrdbg.tool.simulator</avrtool>
+    <com_atmel_avrdbg_tool_simulator>
+      <ToolType xmlns="">com.atmel.avrdbg.tool.simulator</ToolType>
+      <ToolName xmlns="">AVR Simulator</ToolName>
+      <ToolNumber xmlns="">
+      </ToolNumber>
+      <Channel xmlns="">
+        <host>127.0.0.1</host>
+        <port>23066</port>
+        <ssl>False</ssl>
+      </Channel>
+    </com_atmel_avrdbg_tool_simulator>
+    <KeepTimersRunning>true</KeepTimersRunning>
+    <OverrideVtor>false</OverrideVtor>
+    <OverrideVtorValue />
+    <eraseonlaunchrule>0</eraseonlaunchrule>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <ToolchainSettings>
+      <AvrGcc>
+        <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
+        <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
+        <avrgcc.compiler.optimization.level>Optimize for size (-Os)</avrgcc.compiler.optimization.level>
+        <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
+        <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
+        <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
+        <avrgcc.linker.libraries.Libraries>
+          <ListValues>
+            <Value>m</Value>
+          </ListValues>
+        </avrgcc.linker.libraries.Libraries>
+      </AvrGcc>
+    </ToolchainSettings>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <ToolchainSettings>
+      <AvrGcc>
+        <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
+        <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
+        <avrgcc.compiler.optimization.level>Optimize for size (-Os)</avrgcc.compiler.optimization.level>
+        <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
+        <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
+        <avrgcc.compiler.optimization.DebugLevel>Default (-g2)</avrgcc.compiler.optimization.DebugLevel>
+        <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
+        <avrgcc.linker.libraries.Libraries>
+          <ListValues>
+            <Value>m</Value>
+          </ListValues>
+        </avrgcc.linker.libraries.Libraries>
+      </AvrGcc>
+    </ToolchainSettings>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'HefnyCopter2-Debug Buddy' ">
+    <ToolchainSettings>
+      <AvrGcc>
+        <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
+        <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
+        <avrgcc.compiler.symbols.DefSymbols>
+          <ListValues>
+            <Value>BUDDY_CONFIG</Value>
+          </ListValues>
+        </avrgcc.compiler.symbols.DefSymbols>
+        <avrgcc.compiler.optimization.level>Optimize (-O1)</avrgcc.compiler.optimization.level>
+        <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
+        <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
+        <avrgcc.compiler.optimization.DebugLevel>Maximum (-g3)</avrgcc.compiler.optimization.DebugLevel>
+        <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
+        <avrgcc.linker.libraries.Libraries>
+          <ListValues>
+            <Value>m</Value>
+          </ListValues>
+        </avrgcc.linker.libraries.Libraries>
+        <avrgcc.assembler.debugging.DebugLevel>Default (-Wa,-g)</avrgcc.assembler.debugging.DebugLevel>
+      </AvrGcc>
+    </ToolchainSettings>
+    <OutputPath>bin\HefnyCopter2-Debug Buddy\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Accessories\Beeper.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Accessories\KeyBoard.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Accessories\LCD.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Accessories\LED.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Accessories\Misc.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Accessories\Ultrasonic.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Arming.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Core\eepROM.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Core\Timer.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Core\UART.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="GFX\font12x16.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="GFX\font6x8.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="GFX\Fonts.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="GFX\glyphs.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="GFX\logo.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HefnyCopter2.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="IMU\DCM.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="IMU\PID.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="IMU\IMU.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="IMU\Kalman.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Include\ADC_PORT.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Include\Beeper.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Include\DCM.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Include\eepROM.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Include\fonts.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Include\GlobalValues.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Include\Glyphs.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Include\IMU.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Include\Kalman.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Include\Math.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Include\PID.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Include\Sensors.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Include\HefnyCopter2.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Include\IO_config.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Include\KeyBoard.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Include\LCD.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Include\LED.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Include\Menu.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Include\Menu_Screen.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Include\Menu_Text.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Include\Misc.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Include\Motor.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Include\Receiver.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Include\Arming.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Include\Timer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Include\typedefs.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Include\UART.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Include\Ultrasonic.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Include\Vector3D.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Include\version.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Math\Math.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Math\Vector3D.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Motor.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Receiver.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sensors\Sensors.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sensors\ADC_PORT.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="UI\menu.c">
+      <SubType>compile</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Core" />
+    <Folder Include="Accessories" />
+    <Folder Include="GFX" />
+    <Folder Include="IMU\" />
+    <Folder Include="Include" />
+    <Folder Include="DevDocs" />
+    <Folder Include="IMU" />
+    <Folder Include="Math" />
+    <Folder Include="UI" />
+    <Folder Include="Sensors" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DevDocs\ScreenStructure.txt">
+      <SubType>compile</SubType>
+    </None>
+  </ItemGroup>
+  <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
+</Project>
