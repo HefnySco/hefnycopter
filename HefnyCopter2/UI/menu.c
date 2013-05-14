@@ -94,30 +94,54 @@ void _helper_DisplayRXStatus(uint8_t Row)
 }
 
 
-void _helper_DisplayBuddyMode (int8_t row, int8_t col, int8_t Mode, BOOL LCDReverse )
+void _helper_Words (int8_t row, int8_t col,  BOOL LCDReverse, bool Condition, PGM_P TrueString, PGM_P FalseString, int8_t Len)
 {
-	if (Mode == RX_mode_BuddyMode)
+	if (Condition== TRUE)
 	{
-		LCD_WriteString_Pex(row,col,PSTR("Buddy"),5,(subpage==0));
+		LCD_WriteString_Pex(row,col,TrueString,Len,LCDReverse);
 	}
 	else
 	{
-		LCD_WriteString_Pex(row,col,PSTR("UART "),5,(subpage==0));
+		LCD_WriteString_Pex(row,col,FalseString,Len,LCDReverse);
 	}
 }
 
+//void _helper_FrameTypeMode (int8_t row, int8_t col, int8_t FrameType, BOOL LCDReverse )
+//{
+	//if (FrameType== FRAMETYPE_QUADCOPTER)
+	//{
+		//LCD_WriteString_Pex(row,col,PSTR("Quad"),5,LCDReverse);
+	//}
+	//else
+	//{
+		//LCD_WriteString_Pex(row,col,PSTR("TRI "),5,LCDReverse);
+	//}
+//}
+//
+//void _helper_DisplayBuddyMode (int8_t row, int8_t col, int8_t Mode, BOOL LCDReverse )
+//{
+	//if (Mode == RX_mode_BuddyMode)
+	//{
+		//LCD_WriteString_Pex(row,col,PSTR("Buddy"),5,LCDReverse);
+	//}
+	//else
+	//{
+		//LCD_WriteString_Pex(row,col,PSTR("UART "),5,LCDReverse);
+	//}
+//}
+
 	
-void _helper_DisplayQuadStatus (int8_t row, int8_t col, int8_t Mode, BOOL LCDReverse )
-{
-	if (Mode == QuadFlyingMode_PLUS)
-	{
-		LCD_WriteString_Pex(row,col,PSTR("+ Quad"),6,LCDReverse);
-	}
-	else
-	{
-		LCD_WriteString_Pex(row,col,PSTR("X Quad"),6,LCDReverse);
-	}
-}
+//void _helper_DisplayQuadStatus (int8_t row, int8_t col, int8_t Mode, BOOL LCDReverse )
+//{
+	//if (Mode == QuadFlyingMode_PLUS)
+	//{
+		//LCD_WriteString_Pex(row,col,PSTR("+ Quad"),6,LCDReverse);
+	//}
+	//else
+	//{
+		//LCD_WriteString_Pex(row,col,PSTR("X Quad"),6,LCDReverse);
+	//}
+//}
 
 //static void writeList(const element_t list[], uint8_t len)
 //{
@@ -172,9 +196,9 @@ void defaultHandler()
 		}
 		
 		if (currentPage.handler)
-
+		{
 			currentPage.handler();
-		
+		}		
 	}			
 }
 
@@ -372,6 +396,7 @@ void _hHomePage()
 		
 		_helper_DisplayBiStateText(5, 114, str2, strX, (Config.IsCalibrated & CALIBRATED_Stick_SECONDARY),false);
 		
+		
 	}
 	
 	if (KEY4)	// MENU
@@ -385,7 +410,7 @@ void _hHomePage()
 	double volt = (double)(Sensor_GetBattery()/10.0f);
 	LCD_WriteValue_double_ex(2,36,volt,8,IS_SYS_ERR_VOLTAGE); // FIX: 8 to display 2 digits volt besides floating point
 	//LCD_WriteValue(2,36,Sensor_GetBattery(),4,IS_SYS_ERR_VOLTAGE);
-	LCD_SetPos (3,12);
+	LCD_SetPos (3,6);
 	if (nFlyingModes == FLYINGMODE_ACRO)
 	{
 		LCD_WriteString_P(PSTR("ACRO  "));
@@ -399,7 +424,8 @@ void _hHomePage()
 		LCD_WriteString_P(PSTR("ALTHLD"));
 	}
 	
-	_helper_DisplayBuddyMode  (3,84,Config.RX_mode,0);
+	_helper_Words (3,48,  0,(Config.FrameType== FRAMETYPE_QUADCOPTER),PSTR("Quad"),PSTR("TRI "),5);
+	_helper_Words (3,84,0,(Config.RX_mode == RX_mode_BuddyMode),PSTR("Buddy"),PSTR("UART "),5);
 	
 	_helper_DisplayRXStatus(5);
 	
@@ -407,13 +433,28 @@ void _hHomePage()
 	///////// Flying Mode
 	LCD_SetPos (6,24);
 	LCD_SelectFont (&font12x16);
+	
 	if (Config.QuadFlyingMode==QuadFlyingMode_X)
 	{
-		LCD_WriteString_P(PSTR ("X"));
+		if (Config.FrameType == FRAMETYPE_QUADCOPTER)
+		{
+			LCD_WriteString_P(PSTR ("X"));
+		}
+		else
+		{
+			LCD_WriteString_P(PSTR ("A"));
+		}			
 	}
 	else
 	{
-		LCD_WriteString_P(PSTR ("+"));
+		if (Config.FrameType == FRAMETYPE_QUADCOPTER)
+		{
+			LCD_WriteString_P(PSTR ("+"));
+		}
+		else
+		{
+			LCD_WriteString_P(PSTR ("Y"));
+		}			
 	}
 	
 	LCD_SetPos (6,80);
@@ -716,7 +757,7 @@ bool bNeedRestart=false;
 void _hModeSettings ()
 {
 	NOKEYRETURN;
-	PageKey(4);
+	PageKey(5);
 	
 	if ((KEY1) && (bValueChanged==true))
 	{
@@ -731,18 +772,26 @@ void _hModeSettings ()
 		//currentPage.softkeys = _skMENUSAVE;
 		switch (subpage)
 		{
-			case 0: Config.RX_mode=~Config.RX_mode; bNeedRestart = true; break;
-			case 1: Config.BoardOrientationMode=((~Config.BoardOrientationMode) & 0x01); /* value either 0 or 1*/break;
-			case 2: Config.QuadFlyingMode = ((~Config.QuadFlyingMode) & 0x01); /* value either 0 or 1*/break;
-			case 3: Config.MiscSensors =  ((~Config.MiscSensors) & 0x01); break; // this condition should be rewritten if another sensor is added.
+			case 0: if (Config.FrameType==FRAMETYPE_QUADCOPTER) Config.FrameType=FRAMETYPE_TRICOPTER; else Config.FrameType=FRAMETYPE_QUADCOPTER; break;
+			case 1: Config.RX_mode=~Config.RX_mode; bNeedRestart = true; break;
+			case 2: Config.BoardOrientationMode=((~Config.BoardOrientationMode) & 0x01); /* value either 0 or 1*/break;
+			case 3: Config.QuadFlyingMode = ((~Config.QuadFlyingMode) & 0x01); /* value either 0 or 1*/break;
+			case 4: Config.MiscSensors =  ((~Config.MiscSensors) & 0x01); break; // this condition should be rewritten if another sensor is added.
 		}
 	}
 	
-	
-	_helper_DisplayBuddyMode  (0,84,Config.RX_mode,(subpage==0));
-	_helper_DisplayQuadStatus (1,84,Config.BoardOrientationMode,(subpage==1));
-	_helper_DisplayQuadStatus (2,84,Config.QuadFlyingMode,(subpage==2));
-	_helper_DisplayBiStateText(3,84, strYes, strNo, (IS_MISC_SENSOR_SONAR_ENABLED ==true),(subpage==3));
+	_helper_Words  (0,84,(subpage==0),(Config.FrameType== FRAMETYPE_QUADCOPTER),PSTR("Quad"),PSTR("TRI "),5);
+	_helper_Words  (1,84,(subpage==1),(Config.RX_mode== RX_mode_BuddyMode),PSTR("Buddy"),PSTR("UART "),5);
+	_helper_Words (2,84,(subpage==2),(Config.BoardOrientationMode == QuadFlyingMode_PLUS),PSTR("+ Quad"),PSTR("X Quad"),6);
+	if (Config.FrameType == FRAMETYPE_QUADCOPTER)
+	{
+		_helper_Words (3,84,(subpage==3),(Config.QuadFlyingMode == QuadFlyingMode_PLUS),PSTR("+ Quad"),PSTR("X Quad"),6);
+	}
+	else
+	{
+		_helper_Words (3,84,(subpage==3),(Config.QuadFlyingMode == QuadFlyingMode_PLUS),PSTR("Y Tri "),PSTR("A Tri "),6);
+	}	
+	_helper_DisplayBiStateText(4,84, strYes, strNo, (IS_MISC_SENSOR_SONAR_ENABLED ==true),(subpage==4));
 }
 
 
@@ -762,7 +811,7 @@ void _hMiscSettings()
 			case 0: startEditMode(&(Config.AutoDisarm),0,10,TYPE_UINT8); return ;
 			case 1: startEditMode(&(Config.VoltageAlarm),0,100,TYPE_UINT8);  return ;
 			case 2: startEditMode(&(Config.ThrottleMin),0,255,TYPE_UINT8);  return ;
-			case 3: startEditMode(&(Config.StickScaling),1,10,TYPE_UINT8);  return ;
+			case 3: startEditMode(&(Config.StickScaling),1,20,TYPE_UINT8);  return ;
 		}
 		
 	}
@@ -784,9 +833,8 @@ void _hMiscSettings()
 */ 
 void _hStabilization()
 {
-	LCD_WriteString_Pex(5,0,PSTR("                "),16,false);    
 	NOKEYRETURN;
-	PageKey(8);
+	PageKey(9);
 	
 	if (KEY4)
 	{
@@ -803,6 +851,7 @@ void _hStabilization()
 			case 5: startEditMode(&(Config.GyroParams[subindex]._D),-500,500,TYPE_INT16);  return ; 
 			case 6: startEditMode(&(Config.GyroParams[subindex]._DLimit),0,500,TYPE_INT16); return ;
 			case 7: startEditMode(&(Config.GyroParams[subindex].ComplementaryFilterAlpha),0,999,TYPE_INT16); return ;
+			case 8: if (Config.ReverseYAW==GYRO_NORMAL) Config.ReverseYAW =GYRO_REVERSE; else Config.ReverseYAW = GYRO_NORMAL; break; // update the UI
 		}
 		
 		
@@ -817,10 +866,20 @@ void _hStabilization()
 	if (subindex==0)
 	{
 		strcpy_P(sXDeg,PSTR("Pitch & Roll"));
+		LCD_WriteString_Pex(5,0,PSTR("                "),16,false);    
+	
 	}
 	else
 	{
 		strcpy_P(sXDeg,PSTR("YAW         "));
+		if (Config.FrameType == FRAMETYPE_TRICOPTER)
+		{
+			LCD_WriteStringex (0,0,sXDeg,0==subpage);
+			LCD_WriteString_Pex(5,0,PSTR("Reverse GYRO"),12,false);    
+			
+			_helper_DisplayBiStateText(5,84 ,PSTR("N"), PSTR("R"), Config.ReverseYAW==GYRO_NORMAL, 8==subpage);
+		}		
+
 	}
 	LCD_WriteStringex (0,0,sXDeg,0==subpage);
 	LCD_WriteValue(1,30,Config.GyroParams[subindex]._P,3,1==subpage);
@@ -830,6 +889,7 @@ void _hStabilization()
 	LCD_WriteValue(3,30,Config.GyroParams[subindex]._D,3,5==subpage);
 	LCD_WriteValue(3,84,Config.GyroParams[subindex]._DLimit,3,6==subpage);
 	LCD_WriteValue(4,84,Config.GyroParams[subindex].ComplementaryFilterAlpha,3,7==subpage);
+	
 }
 
 
@@ -1003,8 +1063,14 @@ void _hDebug()
 	//RX_SONAR_TRIGGER = HIGH;
 	//DisplayBuffer[9]=0;
 	//IMU();
-	double DT_YAW =  (double)Sensors_Latest[GYRO_Z_Index] * GYRO_RATE; 
-	YAWAngle +=  (double)Sensors_Latest[GYRO_PITCH_Index] * GYRO_RATE;// + (AngleRoll * DEG_TO_RAD * DT_YAW)  ;
+		RX_Snapshot   [RXChannel_RUD] = (RX_Latest[ActiveRXIndex][RXChannel_RUD] * Config.StickScaling / 20); // version 0.9.9 
+		
+				gyroYaw = gyroYaw * 4;
+				//LowpassOutYaw = (3 * LowpassOutYaw + gyroYaw) / 4;
+				MotorOut[3]  = gyroYaw + SERVO_IN_MIDDLE - (RX_Snapshot[RXChannel_RUD] / 2.0); //( 2.0 * MotorOut[3] +  gyroYaw + SERVO_IN_MIDDLE) / 3.0;
+				//MotorOut[3]  = MotorOut[3] + (RX_Snapshot[RXChannel_RUD] / 2.0);
+	//double DT_YAW =  (double)Sensors_Latest[GYRO_Z_Index] * GYRO_RATE; 
+	//YAWAngle +=  (double)Sensors_Latest[GYRO_PITCH_Index] * GYRO_RATE;// + (AngleRoll * DEG_TO_RAD * DT_YAW)  ;
 	//OldAngle += (double)Sensors_Latest[GYRO_Z_Index] * GYRO_RATE;
 	//LCD_WriteStringex(0,0,DisplayBuffer,false);   // UART RX
 				//SONAR
@@ -1014,10 +1080,10 @@ void _hDebug()
 					//Temp = RX_SONAR_RAW; 
 				//}
 				//LCD_WriteValue(0,48, Temp,6,false);
-				LCD_WriteValue_double_ex(1,48, AnglePitch,9,false);
-				LCD_WriteValue_double_ex(2,48, AngleRoll,9,false);
+				LCD_WriteValue(1,48, gyroYaw,9,false);
+				LCD_WriteValue(2,48, RX_Snapshot[RXChannel_RUD],9,false);
 				//LCD_WriteValue_double_ex(3,48, OldAngle,9,false);
-				LCD_WriteValue_double_ex(4,48, YAWAngle,9,false);
+				LCD_WriteValue(4,48, MotorOut[3],9,false);
 	//LCD_WriteValue(4,48, OldAngle,6,false);
 	//LCD_WriteValue(5,48, - Sensors_Latest[ACC_PITCH_Index] - Config.Acc_Pitch_Trim,6,false);
 	//if (RX_SONAR_RAW < 500)
@@ -1044,11 +1110,11 @@ void _hDebug()
 				
 	//LCD_WriteValue_double_ex(2,0,AnglePitch,9,false);
 	//LCD_WriteValue_double_ex(3,0,AngleRoll,9,false);	
-	 YAWAngle2+= (double)Sensors_Latest[GYRO_Z_Index] * GYRO_RATE ;	
-	LCD_WriteValue_double_ex(1,0,YAWAngle2,9,false); // Angle
-	LCD_WriteValue_double_ex(2,0,DT_YAW,9,false);// PID OUTPUT
-	LCD_WriteValue_double_ex(3,0,- Sensors_Latest[ACC_PITCH_Index] - Config.Acc_Pitch_Trim,9,false);// PID OUTPUT
-	LCD_WriteValue_double_ex(4,0,- Sensors_Latest[ACC_ROLL_Index]  - Config.Acc_Roll_Trim,9,false);// PID OUTPUT
+	 //YAWAngle2+= (double)Sensors_Latest[GYRO_Z_Index] * GYRO_RATE ;	
+	//LCD_WriteValue_double_ex(1,0,YAWAngle2,9,false); // Angle
+	//LCD_WriteValue_double_ex(2,0,DT_YAW,9,false);// PID OUTPUT
+	//LCD_WriteValue_double_ex(3,0,- Sensors_Latest[ACC_PITCH_Index] - Config.Acc_Pitch_Trim,9,false);// PID OUTPUT
+	//LCD_WriteValue_double_ex(4,0,- Sensors_Latest[ACC_ROLL_Index]  - Config.Acc_Roll_Trim,9,false);// PID OUTPUT
 	//LCD_WriteValue_double_ex(6,0,gyroYangle,9,false);// ANGLE
 	
 	//LCD_WriteValue(4,48,PID_AccTerms[0].I,4,false);

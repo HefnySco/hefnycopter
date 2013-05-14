@@ -35,6 +35,14 @@ void Disarm (void)
 
 void Arm (void)
 {
+	if ((Config.FrameType == FRAMETYPE_TRICOPTER) && (Config.BoardOrientationMode==QuadFlyingMode_X))
+	{ // NOT VALID CONFIGURATION
+		Disarm();
+		
+		return;
+	}
+	
+			
 	IsArmed = true;
 	LED_FlashOrangeLED (LED_SHORT_TOGGLE,4);
 	LED_Orange = ON;

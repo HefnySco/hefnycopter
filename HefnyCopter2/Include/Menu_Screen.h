@@ -124,6 +124,7 @@ P_STR scrSensorTest[] =
 	"Batt:";
 
 P_STR scrModeSettings[] = 
+	"Frame Type:\n"
 	"Buddy System:\n"
 	"Board Dir:\n"
 	"Fly   Dir:\n"

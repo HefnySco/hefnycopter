@@ -46,6 +46,7 @@ static config_t const defaultConfig PROGMEM =
 {
 	.signature = HEFNYCOPTER2_SIGNATURE,
 	.IsCalibrated=0,
+	.FrameType = FRAMETYPE_QUADCOPTER,
 	.RX_mode=RX_mode_UARTMode,
 	.BoardOrientationMode = QuadFlyingMode_PLUS,
 	.QuadFlyingMode = QuadFlyingMode_PLUS,
@@ -54,6 +55,7 @@ static config_t const defaultConfig PROGMEM =
 	.AccParams[0]  = {10,90,20,15,-2,50,990},		// ACC_PITCH & Y
 	.AccParams[1]  = {15,30,0,0,0,0,600},	// ACC_Z
 	.SonarParams[0] ={15,25,0,0,0,0,0},
+	.ReverseYAW = GYRO_NORMAL,
 	//.RX_mode = 0, //RX_MODE_CPPM,
 	//.Sensor_zero[GYRO_ROLL_Index] = 548,
 	//.Sensor_zero[GYRO_PITCH_Index] = 548,

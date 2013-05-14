@@ -44,5 +44,6 @@ void lcdWriteGlyph_P(const glyph_t *glyph, uint8_t mode);
 #define ROP_COPY	0
 #define ROP_PAINT	1
 #define ROP_INVERT	2
-
+#define LCD_COMMAND 0
+#define LCD_DATA    1
 #endif /* LCD_H_ */

@@ -15,7 +15,6 @@
 #include "../Include/Math.h"
 #include "../Include/IMU.h"
 #include "../Include/PID.h"
-//#include "../Include/TriGonometry.h"
 #include "../Include/DCM.h"
 
 
@@ -123,11 +122,20 @@ void IMU (void)
 			
 			if ((Config.BoardOrientationMode==QuadFlyingMode_PLUS) && (Config.QuadFlyingMode==QuadFlyingMode_X))
 			{
-				NavY += ( -  (double)((float)RX_Snapshot[RXChannel_AIL]  / 2.0f));
-				NavY += ( -  (double)((float)RX_Snapshot[RXChannel_ELE]  / 2.0f));	
-				NavX += ( -  (double)((float)RX_Snapshot[RXChannel_AIL]  / 2.0f));
-				NavX += ( +  (double)((float)RX_Snapshot[RXChannel_ELE]  / 2.0f));	
+				if (Config.FrameType == FRAMETYPE_QUADCOPTER)
+				{	
+					NavY += ( -  (double)((float)RX_Snapshot[RXChannel_AIL]  / 2.0f));
+					NavY += ( -  (double)((float)RX_Snapshot[RXChannel_ELE]  / 2.0f));	
+					NavX += ( -  (double)((float)RX_Snapshot[RXChannel_AIL]  / 2.0f));
+					NavX += ( +  (double)((float)RX_Snapshot[RXChannel_ELE]  / 2.0f));	
+				}
+				else
+				{	// if TRI Copter Fly in A mode.
+					NavY += ( +  (double)((float)RX_Snapshot[RXChannel_ELE] / 2.0f));	
+					NavX += ( +  (double)((float)RX_Snapshot[RXChannel_AIL] / 2.0f));
+				}				
 			}
+			/*
 			else if ((Config.BoardOrientationMode==QuadFlyingMode_PLUS) && (Config.QuadFlyingMode==QuadFlyingMode_PLUS))
 			{
 				NavY += ( -  (double)((float)RX_Snapshot[RXChannel_ELE] / 2.0f));	
@@ -138,8 +146,14 @@ void IMU (void)
 				NavY += ( -  (double)((float)RX_Snapshot[RXChannel_ELE] / 2.0f));	
 				NavX += ( -  (double)((float)RX_Snapshot[RXChannel_AIL] / 2.0f));
 			}
+			*/
+			else if (Config.BoardOrientationMode==Config.QuadFlyingMode)  // ver 0.9.9 code optimization
+			{ // for [BoardOrientationMode==QuadFlyingMode_X] this is considered invalid for Tricopter
+				NavY += ( -  (double)((float)RX_Snapshot[RXChannel_ELE] / 2.0f));	
+				NavX += ( -  (double)((float)RX_Snapshot[RXChannel_AIL] / 2.0f));
+			}
 			else if ((Config.BoardOrientationMode==QuadFlyingMode_X) && (Config.QuadFlyingMode==QuadFlyingMode_PLUS))
-			{
+			{  // !!INVALID mode for TRICOPTER
 				NavY += ( +  (double)((float)RX_Snapshot[RXChannel_AIL]  / 2.0f));
 				NavY += ( -  (double)((float)RX_Snapshot[RXChannel_ELE]  / 2.0f));	
 				NavX += ( -  (double)((float)RX_Snapshot[RXChannel_AIL]  / 2.0f));

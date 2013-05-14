@@ -72,6 +72,7 @@ char sXDeg[20];
 // trimming value for motors when generating PWM signals.
 #define MOTORS_HIGH_VALUE	1150 //1100 = 2.0 
 #define MOTORS_IDLE_VALUE	100
+#define SERVO_IN_MIDDLE		550
 // Defines output rate to ESC/Servo
 // either define by setting ESC_RATE (Max is approx 495Hz)
 // uses Timer 1 ticks to control output rate.
@@ -210,6 +211,7 @@ uint16_t TCNT1_X_snapshot1;
 uint16_t TCNT_X_snapshot2;
 uint16_t TCNT_X_snapshotAutoDisarm;
 //uint16_t TCNT1_X_GlobalTimer;
+volatile BOOL UpdateServo;
 BOOL bResetTCNR1_X;
 
 
@@ -248,11 +250,26 @@ double AltDiff;
 
 /////////////////////////////////////////
 
+
+// BAUD RATES
+// Thanks to Retlaw: http://www.rcgroups.com/forums/showpost.php?p=24904574&postcount=258
+
+#define BAUD_115200		10 	
+#define BAUD_57600		20 	
+#define BAUD_38400		30 
+#define BAUD_19200		60 
+#define BAUD_14400		80
+#define BAUD_9600		120 
+
+#define SERIAL_BAUD_RATE	BAUD_115200
+
 // TEMP
 volatile char Result[8]; 
 volatile uint16_t nResult[8];
 volatile uint16_t nTemp16;
 
+#define FRAMETYPE_QUADCOPTER		1
+#define FRAMETYPE_TRICOPTER			2
 
 
 #define CALIBRATED_ALL				7
@@ -267,8 +284,29 @@ volatile uint16_t nTemp16;
 #define RX_mode_BuddyMode	0x00
 #define ESCCalibration_ON	1
 #define ESCCalibration_OFF	0
-#define QuadFlyingMode_PLUS 0
+#define QuadFlyingMode_PLUS 0 
 #define QuadFlyingMode_X	1
+#define TRIFlyingMode_Y		0 
+#define TRIFlyingMode_A		1
+
+/*typedef struct
+{
+	double Pitch[4];
+	double Roll[4];
+	double Rudder[4];
+} Mixer_t;
+
+static Mixer_t Mixer[3];
+#define Mixer_Quad_PLUS		0
+#define Mixer_Quad_X		1
+#define Mixer_TRI			2
+*/
+
+
+
+#define GYRO_NORMAL			 1
+#define GYRO_REVERSE		-1
+
 typedef struct  
 {
 	uint8_t signature;				//	offset: +0		
@@ -278,7 +316,7 @@ typedef struct
 	uint8_t ArmingMode;				//	offset: +4	
 	uint8_t AutoDisarm;				//	offset: +5	
 	uint8_t IsESCCalibration;		//	offset: +6	
-	uint8_t ReceiverMode;			//	offset: +7	
+	uint8_t FrameType;				//	offset: +7	
 	uint8_t BoardOrientationMode;	//	offset: +8	
 	uint8_t QuadFlyingMode;			//	offset: +9	
 	uint8_t LCDContrast;			//	offset: +10	
@@ -297,6 +335,8 @@ typedef struct
 	uint8_t Reserved[4];
 	uint16_t Sensor_zero[SENSORS_ALL];
 	int8_t   RX_DiV_Value[2][RXChannels];
+	int8_t	ReverseYAW;
+	
 } config_t;
 
 config_t Config;

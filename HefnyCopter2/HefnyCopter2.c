@@ -69,6 +69,17 @@ Quad-X
           M2 CCW        M4 CW
 		  
 		  NOTE: X-QUAD motors order are different from many other code on Internet such as XXController & QuadControllerV#_#
+		  
+		  
+TRI
+		
+		M1					M2
+	          \        / 
+               \ ---  /
+				  |
+				  |
+				  |
+				  M3 / M4 (servo)	
 
 */
 
@@ -116,7 +127,7 @@ void Setup (void)
 
 if (Config.RX_mode==RX_mode_UARTMode)
 {
-	UART_Init(10); //57600 = 20   115200=10
+	UART_Init(SERIAL_BAUD_RATE); //57600 = 20   115200=10
 }	
 
 
@@ -169,6 +180,13 @@ int main(void)
 		LoopESCCalibration ();
 		
 	}			 
+
+/*
+	Mixer[Mixer_Quad_PLUS].Pitch[4] = {-1.0,0,1.0,0};
+	Mixer[Mixer_Quad_PLUS].Roll[4]  = {0,-1.0,0,1.0};
+//#define Mixer_Quad_X		1
+//#define Mixer_TRI			2
+*/
 
 	Menu_EnableAllItems();
 	
@@ -237,6 +255,8 @@ void Loop(void)
 /*
 	This is the main loop of the application.
 */
+
+static uint16_t LowpassOutYaw;
 void MainLoop(void)
 {
 	
@@ -347,17 +367,9 @@ void MainLoop(void)
 		ZEROMotors();
 		ZERO_Is();
 		IMU_Reset(); // reset angles for gyro [STABLE MODE]
-
-		// Send Setting Data only when Throttle is down.
-		/*if (Config.RX_mode==RX_mode_UARTMode)
-		{
-			Send_Data("C",1);
-			Send_Data(&Config,72);
-			Send_Data("E",1);
-		}*/
 	}
 	else
-	{	// Throttle stick is NOT Down
+	{	// Throttle stick is NOT Down .... TAKE CARE
 		
 		if (IsArmed==false)
 		{  // However we are still DisArmed
@@ -368,7 +380,7 @@ void MainLoop(void)
 			
 		}
 		else
-		{	// MOTORS ARE ON HERE
+		{	// MOTORS ARE ON HERE .... DANGEROUS
 			
 			
 			TCNT_X_snapshotAutoDisarm = 0; // ZERO [user may disarm then fly slowly..in this case the qud will disarm once he turned off the stick...because the counter counts once the quad is armed..e.g. if it takes n sec to disarm automatically..user took n-1 sec keeping the stick low after arming then it will take 1 sec to disarm again after lowing the stick under STICKThrottle_ARMING
@@ -377,114 +389,192 @@ void MainLoop(void)
 			//RX_Snapshot_1 [RXChannel_AIL]= RX_Snapshot[RXChannel_AIL];
 			//RX_Snapshot_1 [RXChannel_ELE]= RX_Snapshot[RXChannel_ELE];
 			//RX_Snapshot_1 [RXChannel_RUD]= RX_Snapshot[RXChannel_RUD];
-			RX_Snapshot	  [RXChannel_AIL] = (RX_Latest[ActiveRXIndex][RXChannel_AIL] * Config.StickScaling / 10);
-			RX_Snapshot   [RXChannel_ELE] = (RX_Latest[ActiveRXIndex][RXChannel_ELE] * Config.StickScaling / 10); //* 3) / 5;
-			RX_Snapshot   [RXChannel_RUD] = (RX_Latest[ActiveRXIndex][RXChannel_RUD] * Config.StickScaling / 10); //* 3) / 5 ;
+			RX_Snapshot	  [RXChannel_AIL] = (RX_Latest[ActiveRXIndex][RXChannel_AIL] * Config.StickScaling * 0.05 );
+			RX_Snapshot   [RXChannel_ELE] = (RX_Latest[ActiveRXIndex][RXChannel_ELE] * Config.StickScaling * 0.05 ); 
+			RX_Snapshot   [RXChannel_RUD] = (RX_Latest[ActiveRXIndex][RXChannel_RUD] * Config.StickScaling * 0.05 ); // version 0.9.9 
 			
 			
 		
-			//if (nFlyingModes == FLYINGMODE_ACRO) 
-			//{
-				//Landing =0;
-			//}
-			//else
-			//{
-				//IMU_HeightKeeping();
-			//}	
 			
+			// Add Throttle to Motors
 			MotorOut[0] = RX_Snapshot[RXChannel_THR];
 			MotorOut[1] = RX_Snapshot[RXChannel_THR];
-			MotorOut[2] = RX_Snapshot[RXChannel_THR];
-			MotorOut[3] = RX_Snapshot[RXChannel_THR];		
-			
-			
-			
-			if (Config.BoardOrientationMode==QuadFlyingMode_X)
+			if (Config.FrameType == FRAMETYPE_QUADCOPTER)
 			{
-				MotorOut[0] -= gyroRoll ;
-				MotorOut[3] -= gyroRoll ;
-				MotorOut[1] += gyroRoll ;
-				MotorOut[2] += gyroRoll ;
-				
-				MotorOut[0] -= gyroPitch;
-				MotorOut[1] -= gyroPitch;
-				MotorOut[2] += gyroPitch;
-				MotorOut[3] += gyroPitch;
-					
+				MotorOut[2] = RX_Snapshot[RXChannel_THR];
+				MotorOut[3] = RX_Snapshot[RXChannel_THR];	
 			}
 			else
 			{
-				MotorOut[0] -= gyroPitch ;
-				MotorOut[2] += gyroPitch ; 
-					
-				MotorOut[1] += gyroRoll  ;
-				MotorOut[3] -= gyroRoll  ;
-					
+				MotorOut[2] = RX_Snapshot[RXChannel_THR];
 			}
+
+			
+			// Add IMU control.
+			if (Config.FrameType == FRAMETYPE_QUADCOPTER)
+			{	// Quadcopter
+				/*
+				* The logic below depends on board orientation i.e. sensor orientation compared to motor directions.
+				* the IMU in ACHRO mode is totally independent from user sticks ... so it does not matter how the user
+				* flies his quad i.e. in X or PLUS .... it does not matter because it is handled in another code lines not here.
+				* here we handle board orientation only.
+				*/
+				if (Config.BoardOrientationMode==QuadFlyingMode_X)
+				{	// Board Orientation in X-Mode
+					// {-1,1,1,-1} QUAD_ROL_X
+					MotorOut[0] -= gyroRoll ;
+					MotorOut[3] -= gyroRoll ;
+					MotorOut[1] += gyroRoll ;
+					MotorOut[2] += gyroRoll ;
+					
+					// {-1,-1,1,1} QUAD_AIL_X
+					MotorOut[0] -= gyroPitch;
+					MotorOut[1] -= gyroPitch;
+					MotorOut[2] += gyroPitch;
+					MotorOut[3] += gyroPitch;
+					
+				}
+				else
+				{	// Board Orientation in Plus-Mode
+					// {0,1,0,-1} QUAD_ROL_PLUS
+					MotorOut[1] += gyroRoll  ;
+					MotorOut[3] -= gyroRoll  ;
 				
+					// {-1,0,1,0} QUAD_AIL_PLUS
+					MotorOut[0] -= gyroPitch ;
+					MotorOut[2] += gyroPitch ; 
+				
+				}
+			}
+			else
+			{	// Balance Tri-Copter
+				// NOT VALID if Board Orientation is X
+					
+				MotorOut[2] += gyroPitch; // * 1.0;
+					
+				gyroPitch    = gyroPitch * 0.5; // distribute pitch on two front motors .... half the effect. 
+				MotorOut[0] -= gyroPitch  ;
+				MotorOut[1] -= gyroPitch  ;
+					
+				gyroRoll = gyroRoll; // * 0.85;
+				MotorOut[0] -= gyroRoll  ;
+				MotorOut[1] += gyroRoll  ;
+			}				
 			
 			
 			/*
 			*
 			*	Pilot Control Logic.
-			*	
+			*	Handles signals from remote control in ACRO mode.
+			*	in stabilization mode controls are added in IMU logic as angles.
 			*/
 			if (nFlyingModes == FLYINGMODE_ACRO)
 			{
-				if (Config.QuadFlyingMode==QuadFlyingMode_X)
+				if (Config.FrameType == FRAMETYPE_QUADCOPTER)
 				{
-					RX_Snapshot[RXChannel_AIL] = RX_Snapshot[RXChannel_AIL] * 0.63;		// 0.9 * 0.7  0.7: because we fly X
-					RX_Snapshot[RXChannel_ELE] = RX_Snapshot[RXChannel_ELE] * 0.63;
-					
-					MotorOut[0] += RX_Snapshot[RXChannel_AIL] ;
-					MotorOut[3] += RX_Snapshot[RXChannel_AIL] ;
-					MotorOut[1] -= RX_Snapshot[RXChannel_AIL] ;
-					MotorOut[2] -= RX_Snapshot[RXChannel_AIL] ;
 				
-					MotorOut[0] += RX_Snapshot[RXChannel_ELE];
-					MotorOut[1] += RX_Snapshot[RXChannel_ELE];
-					MotorOut[2] -= RX_Snapshot[RXChannel_ELE];
-					MotorOut[3] -= RX_Snapshot[RXChannel_ELE];
+					if (Config.QuadFlyingMode==QuadFlyingMode_X)
+					{
+						RX_Snapshot[RXChannel_AIL] = RX_Snapshot[RXChannel_AIL] * 0.63;		// because we fly X
+						RX_Snapshot[RXChannel_ELE] = RX_Snapshot[RXChannel_ELE] * 0.63;
 					
+						// {0.63,-0.63,-0.63,0.63} QUAD_AIL_X
+						MotorOut[0] += RX_Snapshot[RXChannel_AIL] ;
+						MotorOut[3] += RX_Snapshot[RXChannel_AIL] ;
+						MotorOut[1] -= RX_Snapshot[RXChannel_AIL] ;
+						MotorOut[2] -= RX_Snapshot[RXChannel_AIL] ;
+				
+						// {0.63,0.63,-0.63,-0.63} QUAD_ELE_X
+						MotorOut[0] += RX_Snapshot[RXChannel_ELE];
+						MotorOut[1] += RX_Snapshot[RXChannel_ELE];
+						MotorOut[2] -= RX_Snapshot[RXChannel_ELE];
+						MotorOut[3] -= RX_Snapshot[RXChannel_ELE];
+					
+					}
+					else
+					{
+				
+						RX_Snapshot[RXChannel_AIL] = RX_Snapshot[RXChannel_AIL] * 0.9;		// 0.9: to reduce sensitivity more than STABLE mode
+						RX_Snapshot[RXChannel_ELE] = RX_Snapshot[RXChannel_ELE] * 0.9;
+						// {0.9,0,-0.9,0} QUAD_ELE_PLUS
+						MotorOut[0] += RX_Snapshot[RXChannel_ELE] ; 
+						MotorOut[2] -= RX_Snapshot[RXChannel_ELE] ; 
+						// {0,-0.9,0,0.9} QUAD_AIL_PLUS	
+						MotorOut[1] -= RX_Snapshot[RXChannel_AIL] ; 
+						MotorOut[3] += RX_Snapshot[RXChannel_AIL] ;  
+								
+					}
 				}
 				else
-				{
-				
-					RX_Snapshot[RXChannel_AIL] = RX_Snapshot[RXChannel_AIL] * 0.9;		// 0.9: to reduce sensitivity more than STABLE mode
-					RX_Snapshot[RXChannel_ELE] = RX_Snapshot[RXChannel_ELE] * 0.9;
+				{ // TRICopter
 					
-					MotorOut[0] += RX_Snapshot[RXChannel_ELE] ; 
-					MotorOut[2] -= RX_Snapshot[RXChannel_ELE] ; 
-			
-					MotorOut[1] -= RX_Snapshot[RXChannel_AIL] ; 
-					MotorOut[3] += RX_Snapshot[RXChannel_AIL] ;  
-								
-				}
+						int8_t inv=1; // Flying in Y mode
+						if (Config.QuadFlyingMode==QuadFlyingMode_X)
+						{ // Flying in A mode
+							inv = -1;
+						}							
+							// {0.5,0.5,1.1,X} TRI_ELE_FRONT
+							MotorOut[2] -= inv * (RX_Snapshot[RXChannel_ELE] * 1.1); 
+							RX_Snapshot[RXChannel_ELE] = inv * RX_Snapshot[RXChannel_ELE] * 0.5;
+							MotorOut[0] += RX_Snapshot[RXChannel_ELE] ; 
+							MotorOut[1] += RX_Snapshot[RXChannel_ELE] ; 
+						
+							// {1,-1,0,X} TRI_AIL_FRONT
+							RX_Snapshot[RXChannel_AIL] = inv * RX_Snapshot[RXChannel_AIL];
+							MotorOut[0] += RX_Snapshot[RXChannel_AIL] ; 
+							MotorOut[1] -= RX_Snapshot[RXChannel_AIL] ;  
+				}					
 			}
-			else
+			
+			// ACC-Z & SONAR
+			if (nFlyingModes != FLYINGMODE_ACRO)
 			{
+				// in stabilization mode ... activate Acc-Z & Sonar if enabled.
 				
 				double Landing;
-			
+				
 				Landing = IMU_HeightKeeping();
 				MotorOut[0] += Landing;
 				MotorOut[1] += Landing;
-				MotorOut[2] += Landing;
-				MotorOut[3] += Landing;		
+				if (Config.FrameType == FRAMETYPE_QUADCOPTER)
+				{
+					
+					MotorOut[2] += Landing;
+					MotorOut[3] += Landing;		
+				}
+				else
+				{
+					MotorOut[2] += Landing;
+				}
+													
+										
+			}
 			
+									
+			if (Config.FrameType == FRAMETYPE_QUADCOPTER)
+			{
+				MotorOut[0] -= gyroYaw;
+				MotorOut[2] -= gyroYaw;
+				MotorOut[1] += gyroYaw;
+				MotorOut[3] += gyroYaw;
+			}
+			else
+			{
+			
+				MotorOut[3]  = (Config.ReverseYAW * gyroYaw) + SERVO_IN_MIDDLE; 
+				MotorOut[3]  = MotorOut[3] - (Config.ReverseYAW * RX_Snapshot[RXChannel_RUD] * 0.2);
 			}						
-			
-			MotorOut[0] -= gyroYaw;
-			MotorOut[2] -= gyroYaw;
-			MotorOut[1] += gyroYaw;
-			MotorOut[3] += gyroYaw;
-			
 			
 			// Save motors from turning-off
             if (MotorOut[0]<MOTORS_IDLE_VALUE) MotorOut[0]=MOTORS_IDLE_VALUE;
             if (MotorOut[1]<MOTORS_IDLE_VALUE) MotorOut[1]=MOTORS_IDLE_VALUE;
             if (MotorOut[2]<MOTORS_IDLE_VALUE) MotorOut[2]=MOTORS_IDLE_VALUE;
-            if (MotorOut[3]<MOTORS_IDLE_VALUE) MotorOut[3]=MOTORS_IDLE_VALUE;
+            
+									
+			if (Config.FrameType == FRAMETYPE_QUADCOPTER)
+			{
+				if (MotorOut[3]<MOTORS_IDLE_VALUE) MotorOut[3]=MOTORS_IDLE_VALUE;
+			}
 			
 		
 			// Sending Sensors & Motor Data 
@@ -696,6 +786,14 @@ void ZEROMotors()
 	MotorOut[0] = 0;
 	MotorOut[1] = 0;
 	MotorOut[2] = 0;
-	MotorOut[3] = 0;
+	if (Config.FrameType == FRAMETYPE_TRICOPTER)
+	{
+		MotorOut[3] = SERVO_IN_MIDDLE;
+	}	
+	else
+	{
+		MotorOut[3] = 0;
+	}		
+		
 	Motor_GenerateOutputSignal();
 }

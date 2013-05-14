@@ -10,7 +10,7 @@
 #define VERSION_H_
 
 
-static const prog_char strVersionInfo[] = "HefnyCopter2 v0.9.8";
+static const prog_char strVersionInfo[] = "HefnyCopter2 v0.9.9b";
 
 /*
 version 0.1
@@ -182,6 +182,20 @@ version 0.9.8
 IMU:
 *	.YAW decoupling ... pls check http://scolton.blogspot.com/2012/09/fun-with-complementary-filter-multiwii.html
 
+version 0.9.9
+Function:
+*	. TRI copter support.															: tested
+*	. YAW DIRECTION																	: tested
+*	. Flyi ing in A & Y mode.															: tested
+*	. Change scale to 1 .. 20 ....[users may need to update stick sensitivity]
+*   . Refuse Arming when configuration is TRI & Board is in X orientation.			: tested
+*	. Fix LCD startup issue.
+*	. Adding baud_rate variable based on [http://www.rcgroups.com/forums/showpost.php?p=24904574&postcount=258] ... requires compiling the code.
+
+UI
+*	. Adding YAW Direction. .... known bug {N & R doesnot change until we move the cursor}
+*	. Mode: A & Y mode for TRI 
+*	. Mode: A & Y mode in HomePage for TRI
 
 =========================================================================================
 * Move voltage port to default (ADC0) connected to VCC by default to free ADC1

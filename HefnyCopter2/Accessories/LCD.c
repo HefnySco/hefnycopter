@@ -51,27 +51,27 @@ static void sendByte(uint8_t byte)
 	}
 }
 
-static void sendCommand(uint8_t command)
-{
-	LCD_CS = 0;
-	LCD_A0 = 0;
-	sendByte(command);
-	LCD_CS = 1;
-}
+//static void sendCommand(uint8_t command)
+//{
+	//LCD_CS = 0;
+	//LCD_A0 = 0;
+	//sendByte(command);
+	//LCD_CS = 1;
+//}
 
-static void sendData(uint8_t data)
+static void sendData(uint8_t data, uint8_t CommandorData)
 {
 	LCD_CS = 0;
-	LCD_A0 = 1;
+	LCD_A0 = CommandorData;
 	sendByte(data);
 	LCD_CS = 1;
 }
 
 static void setPos(uint8_t line, uint8_t column)
 {
-	sendCommand(0xB0 | (line & 0x07));
-	sendCommand(0x10 | (column >> 4));
-	sendCommand(column & 0x0f);
+	sendData(0xB0 | (line & 0x07), LCD_COMMAND);
+	sendData(0x10 | (column >> 4), LCD_COMMAND);
+	sendData(column & 0x0f, LCD_COMMAND);
 }
 
 __attribute__ ((section(".lowtext")))
@@ -83,7 +83,7 @@ ISR(TIMER0_OVF_vect, ISR_NOBLOCK)
 	if (offset % LCDWIDTH == 0)
 		setPos(offset / LCDWIDTH, 0);
 		
-	sendData(*(_screen + offset++));
+	sendData(*(_screen + offset++), LCD_DATA);
 	offset %= sizeof(_screen);
 }
 
@@ -327,8 +327,8 @@ void lcdSetContrast(uint8_t contrast)
 {
 	uint8_t t = TIMSK0;
 	LCD_Disable();
-	sendCommand(0x81);
-	sendCommand(contrast & 0x3F); 
+	sendData(0x81, LCD_COMMAND);
+	sendData(contrast & 0x3F, LCD_COMMAND); 
 	TIMSK0 = t;
 }
 
@@ -353,6 +353,7 @@ void LCD_SelectFont(const fontdescriptor_t *font)
 }
 
 static const prog_uchar _initSeq[] = {
+	
 	0xA2, // set bias to 1/9
 	0xA0, // SEG output direction = normal
 	0xC8, // COM output direction = reversed
@@ -365,6 +366,24 @@ static const prog_uchar _initSeq[] = {
 	0x20, // -> to 31
 	0xAF, // Display on
 	0x00, // (terminator)
+	/*
+	0xAF, // Display on
+	0x40, // start line = 0
+	0xA0, // SEG output direction = normal
+	0xA6, // Normal Display
+	0xA4, // display all points = OFF
+	0xA2, // set bias to 1/9
+	0xee, // NEW
+	0xC8, // COM output direction = reversed
+	0x2F, // Power Control Set
+	0x24, // set ra/rb
+	0xac,
+	0x00, // (terminator)
+	0xf8,
+	0x00,
+	0xe3,
+	0xff // end of array
+	*/
 };
 
 void LCD_Init()
@@ -378,15 +397,16 @@ void LCD_Init()
 
 	// init display
 	LCD_RST = 0;
-	_delay_ms(1);
+	_delay_ms(1);	// version 0.9.9
 	LCD_RST = 1;
-	_delay_ms(1);
+	_delay_ms(1); // version 0.9.9
 	
 	const unsigned char* ptr = _initSeq;
 	uint8_t c;
 	while ((c = pgm_read_byte(ptr++)))
-		sendCommand(c);
-	
+	{
+		sendData(c, LCD_COMMAND);
+	}	
 	LCD_SelectFont(NULL);		// select default font
 	
 	// use timer0 with clk/8 and overflow

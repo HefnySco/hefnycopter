@@ -254,7 +254,7 @@ ISR (RX_AUX_vect)
 	if (RX_AUX)
 	{
 		RX_raw[1][RXChannel_AUX]=TCNT1;
-		//RX_raw[0][RXChannel_AUX]=TCNT1;
+		UpdateServo=true;
 	}
 	else
 	{

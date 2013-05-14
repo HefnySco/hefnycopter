@@ -36,6 +36,7 @@ volatile uint16_t m1,m2,m3,m4;
 uint16_t tempTCNT1;
 uint8_t tempTCNT2;
 
+static  uint8_t times=0;
 
 
 void Motor_GenerateOutputSignal(void)
@@ -76,12 +77,13 @@ void Motor_GenerateOutputSignal(void)
 			}
 			else
 			{   //
-				while (TCNT2 < 5); //=8us
-				PMW_Pulse_Interval -=8;
+				///////////while (TCNT2 < 5); //=8us
+				PMW_Pulse_Interval -=1;
 			}
 			
 	}
 	
+	times+=1;
 	
 	// Set motor limits (0 -> MOTORS_HIGH_VALUE)
 	if ( MotorOut[0] < 0 ) m1 = 0;
@@ -108,8 +110,21 @@ void Motor_GenerateOutputSignal(void)
 	M1 = 1;
 	M2 = 1;
 	M3 = 1;
-	M4 = 1;
-
+	if (Config.FrameType== FRAMETYPE_QUADCOPTER) 
+	{
+		M4 =1;
+	}
+	else if (Config.FrameType== FRAMETYPE_TRICOPTER)
+	{
+		if (times==5)
+		{
+			M4 = 1;		// time to update servo
+			//UpdateServo = FALSE;
+			times=0;	// reset time divider
+		} // else keep it zero.			
+	} 
+	
+	
 	// Minimum pulse width we want to make is 1ms, max is 2ms
 	PMW_Pulse_Interval = BASE_PULSE + Config.ThrottleMin;
 	while (PMW_Pulse_Interval > 0)
@@ -123,8 +138,8 @@ void Motor_GenerateOutputSignal(void)
 			}
 			else
 			{   //
-				while (TCNT2 < 5); //=8us
-				PMW_Pulse_Interval -=8;
+				//////while (TCNT2 < 5); //=8us
+				PMW_Pulse_Interval -=1;
 			}
 	}
 		
@@ -140,7 +155,6 @@ void Motor_GenerateOutputSignal(void)
 		if (i>=m2) M2 = 0;
 		if (i>=m3) M3 = 0;
 		if (i>=m4) M4 = 0;
-		
 	}
 	// Measure period of ESC rate from here
     ATOMIC_BLOCK(ATOMIC_FORCEON)
