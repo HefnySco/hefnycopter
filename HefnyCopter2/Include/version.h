@@ -10,7 +10,7 @@
 #define VERSION_H_
 
 
-static const prog_char strVersionInfo[] = "HefnyCopter2 v0.9.9b";
+static const prog_char strVersionInfo[] = "HefnyCopter2 v0.9.9";
 
 /*
 version 0.1
