@@ -302,6 +302,10 @@ static Mixer_t Mixer[3];
 #define Mixer_TRI			2
 */
 
+#define PITCH_INDEX	0
+#define ROLL_INDEX	1
+#define YAW_INDEX	2
+#define Z_INDEX		2
 
 
 #define GYRO_NORMAL			 1
@@ -323,10 +327,10 @@ typedef struct
 	uint8_t ThrottleMin;			//	offset: +11	
 	uint8_t StickScaling;			//	offset: +12	
 	uint8_t MiscSensors;			//	offset: +13	0b00000001		bit0: true/false SONAR
-	pid_param_t GyroParams[2];		//	offset: +14 Length	 + 28
-	pid_param_t AccParams[2];		//	offset: +42	Length	 + 28
-	pid_param_t SonarParams[1];		//  offset: +70 Length	 + 14
-	uint8_t VoltageAlarm;			//	offset: +84
+	pid_param_t GyroParams[3];		//	offset: +14 Length	 + 42
+	pid_param_t AccParams[3];		//	offset: +56	Length	 + 42
+	pid_param_t SonarParams[1];		//  offset: +98 Length	 + 14
+	uint8_t VoltageAlarm;			//	offset: +112
 	int8_t	Acc_Pitch_Trim;
 	int8_t	Acc_Roll_Trim;
 	//model_t Mixer;
@@ -334,8 +338,10 @@ typedef struct
 	uint16_t RX_Min[2][RXChannels];
 	uint8_t Reserved[4];
 	uint16_t Sensor_zero[SENSORS_ALL];
-	int8_t   RX_DiV_Value[2][RXChannels];
+	int8_t  RX_DiV_Value[2][RXChannels];
 	int8_t	ReverseYAW;
+	int8_t	PitchRollLinked;
+	
 	
 } config_t;
 

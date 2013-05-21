@@ -52,11 +52,11 @@ void Arm (void)
 	TCNT_X_snapshotAutoDisarm=0;				
 	Menu_LoadPage (PAGE_HOME_ARMED);
 	
-	PID_GyroTerms[0].I=0;
-	PID_GyroTerms[1].I=0;
-	PID_GyroTerms[2].I=0;
-	PID_AccTerms [0].I=0;
-	PID_AccTerms [1].I=0;
-	PID_AccTerms [2].I=0;
+	PID_GyroTerms[PITCH_INDEX].I=0;
+	PID_GyroTerms[ROLL_INDEX].I=0;
+	PID_GyroTerms[YAW_INDEX].I=0;
+	PID_AccTerms [PITCH_INDEX].I=0;
+	PID_AccTerms [ROLL_INDEX].I=0;
+	PID_AccTerms [Z_INDEX].I=0;
 		
 }

@@ -54,8 +54,45 @@ PROGMEM const prog_char* scrESCCal[] =
 	};
 //////////////////////////////////////////////////////////////////////////
 
-	
-void _helper_DisplayBiStateText(uint8_t Row, uint8_t Col, PGM_P strTrue, PGM_P strFalse, bool Condition, BOOL LCDReverse )
+void _helper_DisplayPitchRollYaw (const uint8_t subindex)
+{
+	switch (subindex)
+	{
+		case 0:	
+			if (Config.PitchRollLinked==0)
+			{
+				strcpy_P(sXDeg,PSTR("Pitch       "));
+			}
+			else
+			{
+				strcpy_P(sXDeg,PSTR("Pitch & Roll"));
+			}
+			break;
+		case 1:	
+				strcpy_P(sXDeg,PSTR("Roll        "));
+			break;
+		case 2:	
+				strcpy_P(sXDeg,PSTR("YAW         "));
+			break;
+	}
+}
+
+void _helper_SwitchPitchRollYaw (uint8_t *subindex)
+{
+	switch (subindex[0])
+	{
+		case 0:	if (Config.PitchRollLinked==0) subindex[0]=1; else subindex[0]=2;
+		break;
+		case 1:	subindex[0] +=1;
+		break;
+		case 2: subindex[0]=0;
+		break;	
+	}
+
+	return;	
+}	
+
+void _helper_DisplayBiStateText(const uint8_t Row, const uint8_t Col, PGM_P strTrue, PGM_P strFalse, const bool Condition, const BOOL LCDReverse )
 {
 		lcdReverse(LCDReverse);
 		LCD_SetPos(Row, Col);
@@ -81,7 +118,7 @@ void _helper_SaveinEEPROM_ifChanged()
 	}
 }
 
-void _helper_DisplayRXStatus(uint8_t Row)
+void _helper_DisplayRXStatus(const uint8_t Row)
 {
 	// Write RX Status
 	// FIX: highlighted is the selected one.
@@ -94,7 +131,7 @@ void _helper_DisplayRXStatus(uint8_t Row)
 }
 
 
-void _helper_Words (int8_t row, int8_t col,  BOOL LCDReverse, bool Condition, PGM_P TrueString, PGM_P FalseString, int8_t Len)
+void _helper_Words (const int8_t row, const int8_t col,  const BOOL LCDReverse, const bool Condition, PGM_P TrueString, PGM_P FalseString, int8_t Len)
 {
 	if (Condition== TRUE)
 	{
@@ -168,7 +205,7 @@ static void writeSoftkeys(const char* sk)
 /*
 //	Put screen into CurrentPage ==> MemoryScreen
 */
-void Menu_LoadPage(uint8_t pageIndex)
+void Menu_LoadPage(const uint8_t pageIndex)
 {
 	memcpy_P(&currentPage, &pages[pageIndex], sizeof(currentPage));
 	page = pageIndex;
@@ -203,7 +240,7 @@ void defaultHandler()
 }
 
 
-void PageKey(uint8_t num)
+void PageKey(const uint8_t num)
 {
 	if (KEY2)	// PREV
 		subpage = subpage == 0 ? num - 1 : subpage - 1;
@@ -798,7 +835,7 @@ void _hModeSettings ()
 void _hMiscSettings()
 {
 	NOKEYRETURN;
-	PageKey(4);
+	PageKey(5);
 	
 		
 	if (KEY4)
@@ -812,6 +849,7 @@ void _hMiscSettings()
 			case 1: startEditMode(&(Config.VoltageAlarm),0,100,TYPE_UINT8);  return ;
 			case 2: startEditMode(&(Config.ThrottleMin),0,255,TYPE_UINT8);  return ;
 			case 3: startEditMode(&(Config.StickScaling),1,20,TYPE_UINT8);  return ;
+			case 4:	Config.PitchRollLinked=  ((~Config.PitchRollLinked) & 0x01); break; 
 		}
 		
 	}
@@ -825,6 +863,8 @@ void _hMiscSettings()
 	LCD_WriteValue(1,84,Config.VoltageAlarm,3,1==subpage);
 	LCD_WriteValue(2,84,Config.ThrottleMin,3,2==subpage);
 	LCD_WriteValue(3,84,Config.StickScaling,3,3==subpage);
+	_helper_Words (4,84,(4==subpage),(Config.PitchRollLinked),PSTR("yes"),PSTR("no "),5);
+	
 		
 }
 
@@ -843,7 +883,7 @@ void _hStabilization()
 		
 		switch (subpage)
 		{
-			case 0: if (subindex==0) subindex=1; else subindex=0; break;
+			case 0: _helper_SwitchPitchRollYaw(&subindex); break;
 			case 1: startEditMode(&(Config.GyroParams[subindex]._P),-500,500,TYPE_INT16); return ;
 			case 2: startEditMode(&(Config.GyroParams[subindex]._PLimit),0,500,TYPE_INT16); return ;
 			case 3: startEditMode(&(Config.GyroParams[subindex]._I),-500,500,TYPE_INT16);  return ;
@@ -859,28 +899,25 @@ void _hStabilization()
 	
 	if (KEY1)
 	{
+		if (Config.PitchRollLinked==1)
+		{
+			memcpy(&(Config.GyroParams[ROLL_INDEX]),&(Config.GyroParams[PITCH_INDEX]), sizeof(pid_param_t));
+		}
+		
 		_helper_SaveinEEPROM_ifChanged();
 	}
 	
 	lcdReverse(subpage == 0);
-	if (subindex==0)
-	{
-		strcpy_P(sXDeg,PSTR("Pitch & Roll"));
-		LCD_WriteString_Pex(5,0,PSTR("                "),16,false);    
+	_helper_DisplayPitchRollYaw(subindex);
+	LCD_WriteString_Pex(5,0,PSTR("                "),16,false);    
 	
-	}
-	else
+	if ((subindex==2) && (Config.FrameType == FRAMETYPE_TRICOPTER))
 	{
-		strcpy_P(sXDeg,PSTR("YAW         "));
-		if (Config.FrameType == FRAMETYPE_TRICOPTER)
-		{
-			LCD_WriteStringex (0,0,sXDeg,0==subpage);
-			LCD_WriteString_Pex(5,0,PSTR("Reverse GYRO"),12,false);    
-			
-			_helper_DisplayBiStateText(5,84 ,PSTR("N"), PSTR("R"), Config.ReverseYAW==GYRO_NORMAL, 8==subpage);
-		}		
+		LCD_WriteString_Pex(5,0,PSTR("Reverse GYRO"),12,false);    
+		_helper_DisplayBiStateText(5,84 ,PSTR("N"), PSTR("R"), Config.ReverseYAW==GYRO_NORMAL, 8==subpage);
+	}		
 
-	}
+	
 	LCD_WriteStringex (0,0,sXDeg,0==subpage);
 	LCD_WriteValue(1,30,Config.GyroParams[subindex]._P,3,1==subpage);
 	LCD_WriteValue(1,84,Config.GyroParams[subindex]._PLimit,3,2==subpage);
@@ -890,18 +927,17 @@ void _hStabilization()
 	LCD_WriteValue(3,84,Config.GyroParams[subindex]._DLimit,3,6==subpage);
 	LCD_WriteValue(4,84,Config.GyroParams[subindex].ComplementaryFilterAlpha,3,7==subpage);
 	
+	
 }
 
 
 
 void _hSelfLeveling()
 {
-	
-	
 	NOKEYRETURN;
 	PageKey(10);
 	
-	if ((subindex!=0) && (subpage>7)) subpage=0;
+	if ((subindex==2) && (subpage>7)) subpage=0;
 		
 	
 	
@@ -909,16 +945,16 @@ void _hSelfLeveling()
 	{
 		if (subpage!=0) bValueChanged = true;
 		currentPage.softkeys = _skMENUSAVE;
+		
 		switch (subpage)
 		{
-			case 0: if (subindex==0) 
+			case 0: _helper_SwitchPitchRollYaw(&subindex); 
+					if (subindex==2) 
 					{
-						subindex=1; 
 						LCD_WriteString_Pex(5,0,PSTR("                "),16,false);    
 					}
 					else
 					{
-						subindex=0; 
 						LCD_WriteString_Pex(5,0,PSTR("Trim P:    R:"),13,false);
 					}				
 					break;		
@@ -931,19 +967,23 @@ void _hSelfLeveling()
 			case 7: startEditMode(&(Config.AccParams[subindex].ComplementaryFilterAlpha),0,999,TYPE_INT16); return ;
 			case 8: startEditMode(&(Config.Acc_Pitch_Trim),-25,25,TYPE_INT8);  return ; 
 			case 9: startEditMode(&(Config.Acc_Roll_Trim),-25,25,TYPE_INT8); return ;
-		
 		}
 	}
 	
 	if (KEY1)
 	{
+		if (Config.PitchRollLinked==1)
+		{ 
+			memcpy(&(Config.AccParams[ROLL_INDEX]),&(Config.AccParams[PITCH_INDEX]), sizeof(pid_param_t));
+		}
+		
 		_helper_SaveinEEPROM_ifChanged();
 	}
 	
 	lcdReverse(subpage == 0);
-	if (subindex==0)
+	_helper_DisplayPitchRollYaw(subindex);
+	if (subindex<2)
 	{
-		strcpy_P(sXDeg,PSTR("ACC X & Y    "));
 		LCD_WriteValue(5,42,Config.Acc_Pitch_Trim,3,8==subpage);
 		LCD_WriteValue(5,78,Config.Acc_Roll_Trim,3,9==subpage);
 	}

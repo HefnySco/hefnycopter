@@ -186,7 +186,7 @@ version 0.9.9
 Function:
 *	. TRI copter support.															: tested
 *	. YAW DIRECTION																	: tested
-*	. Flyi ing in A & Y mode.															: tested
+*	. Flyi ing in A & Y mode.														: tested
 *	. Change scale to 1 .. 20 ....[users may need to update stick sensitivity]
 *   . Refuse Arming when configuration is TRI & Board is in X orientation.			: tested
 *	. Fix LCD startup issue.
@@ -197,6 +197,10 @@ UI
 *	. Mode: A & Y mode for TRI 
 *	. Mode: A & Y mode in HomePage for TRI
 
+version 1.0.0
+Function:
+*	. Pitch & Roll separated.
+*	.ACC-Z complementary filter issue fixed.
 =========================================================================================
 * Move voltage port to default (ADC0) connected to VCC by default to free ADC1
 

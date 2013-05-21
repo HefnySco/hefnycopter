@@ -19,7 +19,7 @@
 
 
 
-float PID_Calculate_ACC (pid_param_t PID_Params, pid_terms_t *PID_Term, double  Value)
+float PID_Calculate_ACC (const pid_param_t PID_Params, pid_terms_t *PID_Term, const double  Value)
 {
 	#define ACC_I_MIN	4
 		
@@ -71,7 +71,7 @@ float PID_Calculate_ACC (pid_param_t PID_Params, pid_terms_t *PID_Term, double  
 		return  Output; 
 }
 
-float PID_Calculate (pid_param_t PID_Params, pid_terms_t *PID_Term, double  Value)
+float PID_Calculate (const pid_param_t PID_Params, pid_terms_t *PID_Term, const double  Value)
 {
 		float Output;
 		
@@ -114,11 +114,13 @@ float PID_Calculate (pid_param_t PID_Params, pid_terms_t *PID_Term, double  Valu
 
 void ZERO_Is()
 {
-	PID_GyroTerms[0].I=0;
-	PID_GyroTerms[1].I=0;
-//	PID_GyroTerms[2].I=0;
-	PID_AccTerms[0].I=0;
-	PID_AccTerms[1].I=0;
+	PID_GyroTerms[PITCH_INDEX].I=0;
+	PID_GyroTerms[ROLL_INDEX].I=0;
+	PID_GyroTerms[YAW_INDEX].I=0;
+	PID_AccTerms[PITCH_INDEX].I=0;
+	PID_AccTerms[ROLL_INDEX].I=0;
+	PID_AccTerms[Z_INDEX].I=0;
+
 	PID_SonarTerms[0].I=0;
 }
 

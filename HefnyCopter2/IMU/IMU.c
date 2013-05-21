@@ -56,115 +56,117 @@ void IMU (void)
 		double Beta;
 	
 	    // calculate ACC-Z
-		Alpha = Config.AccParams[1].ComplementaryFilterAlpha / 1000.0;
+		Alpha = Config.AccParams[Z_INDEX].ComplementaryFilterAlpha / 1000.0;
 		Beta = 1- Alpha; // complementary filter to remove noise
-		CompAccZ = (double) (Alpha * CompGyroZ) + (double) (Beta * Sensors_Latest[ACC_Z_Index]);
+		CompAccZ = (double) (Alpha * CompAccZ) + (double) (Beta * Sensors_Latest[ACC_Z_Index]);
 		
 		// calculate YAW
-		Alpha = Config.GyroParams[1].ComplementaryFilterAlpha / 1000.0;
+		Alpha = Config.GyroParams[YAW_INDEX].ComplementaryFilterAlpha / 1000.0;
 		Beta = 1- Alpha; // complementary filter to remove noise
 		CompGyroZ = (double) (Alpha * CompGyroZ) + (double) (Beta * Sensors_Latest[GYRO_Z_Index]);
 		
-		Alpha = Config.GyroParams[0].ComplementaryFilterAlpha / 1000.0;
+		Alpha = Config.GyroParams[PITCH_INDEX].ComplementaryFilterAlpha / 1000.0;
 		Beta = 1- Alpha; // complementary filter to remove noise
 		CompGyroPitch = (double) (Alpha * CompGyroPitch) + (double) (Beta * Sensors_Latest[GYRO_PITCH_Index]);
+		Alpha = Config.GyroParams[ROLL_INDEX].ComplementaryFilterAlpha / 1000.0;
+		Beta = 1- Alpha; // complementary filter to remove noise
 		CompGyroRoll  = (double) (Alpha * CompGyroRoll)  + (double) (Beta * Sensors_Latest[GYRO_ROLL_Index]);
 		
 					
 		// GYRO Always calculated.
-		gyroPitch =	PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[0],CompGyroPitch);	
-		gyroRoll  = PID_Calculate (Config.GyroParams[0], &PID_GyroTerms[1],CompGyroRoll); 
-		gyroYaw   = PID_Calculate (Config.GyroParams[1], &PID_GyroTerms[2],CompGyroZ -((double)((float)RX_Snapshot[RXChannel_RUD]  / 2.0f))); 
+		gyroPitch =	PID_Calculate (Config.GyroParams[PITCH_INDEX],	&PID_GyroTerms[PITCH_INDEX],CompGyroPitch);	
+		gyroRoll  = PID_Calculate (Config.GyroParams[ROLL_INDEX],	&PID_GyroTerms[ROLL_INDEX],CompGyroRoll); 
+		gyroYaw   = PID_Calculate (Config.GyroParams[YAW_INDEX],	&PID_GyroTerms[YAW_INDEX],CompGyroZ -((double)((float)RX_Snapshot[RXChannel_RUD]  / 2.0f))); 
 	
-		//if (IS_FLYINGMODE_ACRO==0)
-		//{	// Level or ALT HOLD
 			
-			// Read ACC and Trims
-			// ACC directions are same as GYRO direction [we added "-" for this purpose] 
-			double APitch = - Sensors_Latest[ACC_PITCH_Index] - Config.Acc_Pitch_Trim;
-			double ARoll  = - Sensors_Latest[ACC_ROLL_Index]  - Config.Acc_Roll_Trim;
-			double DT_YAW =  (double)Sensors_Latest[GYRO_Z_Index] * GYRO_RATE; 
+		// Read ACC and Trims
+		// ACC directions are same as GYRO direction [we added "-" for this purpose] 
+		double APitch = - Sensors_Latest[ACC_PITCH_Index] - Config.Acc_Pitch_Trim;
+		double ARoll  = - Sensors_Latest[ACC_ROLL_Index]  - Config.Acc_Roll_Trim;
+		double DT_YAW =  (double)Sensors_Latest[GYRO_Z_Index] * GYRO_RATE; 
 			
 			
-			// Do the Magic of IMU LEVELING here
-			// check also : http://scolton.blogspot.com/2012/09/fun-with-complementary-filter-multiwii.html
-			AnglePitch = AnglePitch
-					   + (double)Sensors_Latest[GYRO_PITCH_Index] * GYRO_RATE
+		// Do the Magic of IMU LEVELING here
+		// check also : http://scolton.blogspot.com/2012/09/fun-with-complementary-filter-multiwii.html
+		AnglePitch = AnglePitch
+				   + (double)Sensors_Latest[GYRO_PITCH_Index] * GYRO_RATE
 					  // + (sin(AngleRoll * DEG_TO_RAD) * DT_YAW)  // integrate component of yaw rate into pitch angle
 						;
-			AngleRoll = AngleRoll  
-					  + (double)Sensors_Latest[GYRO_ROLL_Index]  * GYRO_RATE
+		AngleRoll = AngleRoll  
+				  + (double)Sensors_Latest[GYRO_ROLL_Index]  * GYRO_RATE
 					 // - (sin(AnglePitch * DEG_TO_RAD) * DT_YAW)  // integrate component of yaw rate into roll angle
 					  ; 
 			
-			// Correct Drift using ACC
-			Alpha = Config.AccParams[0].ComplementaryFilterAlpha / 1000.0; // TODO: optimize
-			Beta = 1- Alpha;
-			#define ACC_SMALL_ANGLE	40
-			// if small angle then correct using ACC
-			if ((APitch < ACC_SMALL_ANGLE) && (APitch > -ACC_SMALL_ANGLE)) 
-			{
-				AnglePitch = Alpha * AnglePitch + Beta * APitch;
-			}
+		// Correct Drift using ACC
+		Alpha = Config.AccParams[PITCH_INDEX].ComplementaryFilterAlpha / 1000.0; // TODO: optimize
+		Beta = 1- Alpha;
+		#define ACC_SMALL_ANGLE	40
+		// if small angle then correct using ACC
+		if ((APitch < ACC_SMALL_ANGLE) && (APitch > -ACC_SMALL_ANGLE)) 
+		{
+			AnglePitch = Alpha * AnglePitch + Beta * APitch;
+		}
 		
-			if ((ARoll  < ACC_SMALL_ANGLE) && (ARoll  > -ACC_SMALL_ANGLE))
-			{
-				AngleRoll =  Alpha * AngleRoll + Beta * ARoll;
+		Alpha = Config.AccParams[ROLL_INDEX].ComplementaryFilterAlpha / 1000.0; // TODO: optimize
+		Beta = 1- Alpha;
+		if ((ARoll  < ACC_SMALL_ANGLE) && (ARoll  > -ACC_SMALL_ANGLE))
+		{
+			AngleRoll =  Alpha * AngleRoll + Beta * ARoll;
+		}
+		
 			
+		NavY = AnglePitch;
+		NavX = AngleRoll;
+			
+			
+		// multiwii HEADFREE ... compact formula
+/*
+	if(f.HEADFREE_MODE) 
+	{ //to optimize
+		float radDiff = (heading - headFreeModeHold) * 0.0174533f; // where PI/180 ~= 0.0174533
+		float cosDiff = cos(radDiff);
+		float sinDiff = sin(radDiff);
+		int16_t rcCommand_PITCH = rcCommand[PITCH]*cosDiff + rcCommand[ROLL]*sinDiff;
+		rcCommand[ROLL] =  rcCommand[ROLL]*cosDiff - rcCommand[PITCH]*sinDiff; 
+		rcCommand[PITCH] = rcCommand_PITCH;
+	}
+*/	
+		// BUG:
+		// you should * by 0.7 in case of different directions between board nad flying mode
+		// this is to distribute sticks values and has nothing to do with /2.0 that u can keep.	
+		if ((Config.BoardOrientationMode==QuadFlyingMode_PLUS) && (Config.QuadFlyingMode==QuadFlyingMode_X))
+		{
+			if (Config.FrameType == FRAMETYPE_QUADCOPTER)
+			{	
+				NavY += ( -  (double)((float)RX_Snapshot[RXChannel_AIL]  / 2.0f));
+				NavY += ( -  (double)((float)RX_Snapshot[RXChannel_ELE]  / 2.0f));	
+				NavX += ( -  (double)((float)RX_Snapshot[RXChannel_AIL]  / 2.0f));
+				NavX += ( +  (double)((float)RX_Snapshot[RXChannel_ELE]  / 2.0f));	
 			}
-			
-			
-			NavY = AnglePitch;
-			NavX = AngleRoll;
-			
-			
-			
-			
-			if ((Config.BoardOrientationMode==QuadFlyingMode_PLUS) && (Config.QuadFlyingMode==QuadFlyingMode_X))
-			{
-				if (Config.FrameType == FRAMETYPE_QUADCOPTER)
-				{	
-					NavY += ( -  (double)((float)RX_Snapshot[RXChannel_AIL]  / 2.0f));
-					NavY += ( -  (double)((float)RX_Snapshot[RXChannel_ELE]  / 2.0f));	
-					NavX += ( -  (double)((float)RX_Snapshot[RXChannel_AIL]  / 2.0f));
-					NavX += ( +  (double)((float)RX_Snapshot[RXChannel_ELE]  / 2.0f));	
-				}
-				else
-				{	// if TRI Copter Fly in A mode.
-					NavY += ( +  (double)((float)RX_Snapshot[RXChannel_ELE] / 2.0f));	
-					NavX += ( +  (double)((float)RX_Snapshot[RXChannel_AIL] / 2.0f));
-				}				
-			}
-			/*
-			else if ((Config.BoardOrientationMode==QuadFlyingMode_PLUS) && (Config.QuadFlyingMode==QuadFlyingMode_PLUS))
-			{
+			else
+			{	// if TRI Copter Fly in A mode.
+				NavY += ( +  (double)((float)RX_Snapshot[RXChannel_ELE] / 2.0f));	
+				NavX += ( +  (double)((float)RX_Snapshot[RXChannel_AIL] / 2.0f));
+			}				
+		}
+		else if (Config.BoardOrientationMode==Config.QuadFlyingMode)  // ver 0.9.9 code optimization
+		{ // for [BoardOrientationMode==QuadFlyingMode_X] this is considered invalid for Tricopter
 				NavY += ( -  (double)((float)RX_Snapshot[RXChannel_ELE] / 2.0f));	
 				NavX += ( -  (double)((float)RX_Snapshot[RXChannel_AIL] / 2.0f));
-			}					
-			else if ((Config.BoardOrientationMode==QuadFlyingMode_X) && (Config.QuadFlyingMode==QuadFlyingMode_X))
-			{
-				NavY += ( -  (double)((float)RX_Snapshot[RXChannel_ELE] / 2.0f));	
-				NavX += ( -  (double)((float)RX_Snapshot[RXChannel_AIL] / 2.0f));
-			}
-			*/
-			else if (Config.BoardOrientationMode==Config.QuadFlyingMode)  // ver 0.9.9 code optimization
-			{ // for [BoardOrientationMode==QuadFlyingMode_X] this is considered invalid for Tricopter
-				NavY += ( -  (double)((float)RX_Snapshot[RXChannel_ELE] / 2.0f));	
-				NavX += ( -  (double)((float)RX_Snapshot[RXChannel_AIL] / 2.0f));
-			}
-			else if ((Config.BoardOrientationMode==QuadFlyingMode_X) && (Config.QuadFlyingMode==QuadFlyingMode_PLUS))
-			{  // !!INVALID mode for TRICOPTER
+		}
+		else if ((Config.BoardOrientationMode==QuadFlyingMode_X) && (Config.QuadFlyingMode==QuadFlyingMode_PLUS))
+		{  // !!INVALID mode for TRICOPTER
 				NavY += ( +  (double)((float)RX_Snapshot[RXChannel_AIL]  / 2.0f));
 				NavY += ( -  (double)((float)RX_Snapshot[RXChannel_ELE]  / 2.0f));	
 				NavX += ( -  (double)((float)RX_Snapshot[RXChannel_AIL]  / 2.0f));
 				NavX += ( -  (double)((float)RX_Snapshot[RXChannel_ELE]  / 2.0f));	
-			}
-				
+		}
+			
 		if (IS_FLYINGMODE_ACRO==0)
 		{
 			
-			gyroPitch+=	PID_Calculate_ACC (Config.AccParams[0], &PID_AccTerms[0],NavY); //AnglePitch);	
-			gyroRoll += PID_Calculate_ACC (Config.AccParams[0], &PID_AccTerms[1],NavX); //AngleRoll); 
+			gyroPitch+=	PID_Calculate_ACC (Config.AccParams[PITCH_INDEX], &PID_AccTerms[PITCH_INDEX],NavY); //AnglePitch);	
+			gyroRoll += PID_Calculate_ACC (Config.AccParams[ROLL_INDEX], &PID_AccTerms[ROLL_INDEX],NavX); //AngleRoll); 
 		 
 		}
 		
@@ -187,7 +189,7 @@ double IMU_HeightKeeping ()
 	
 	// calculate damping
 	
-	Landing = PID_Calculate (Config.AccParams[1], &PID_AccTerms[2],-CompAccZ) ;
+	Landing = PID_Calculate (Config.AccParams[Z_INDEX], &PID_AccTerms[Z_INDEX],-CompAccZ) ;
 			
 			
 	// Calculate Altitude Hold
@@ -205,7 +207,7 @@ double IMU_HeightKeeping ()
 			if ((bALTHOLD == false))
 			{   
 				if (ThrottleTemp<3)
-				{ // current altitude is the old one
+				{ // current altitude is the old one so skip readings till update.
 					ThrottleTemp+=1;
 					return Landing ;
 				}
@@ -226,22 +228,7 @@ double IMU_HeightKeeping ()
 						
 				}
 			}
-				//else
-				//{
-					//if (IgnoreTimeOut>200)
-					//{
-						//// assuming there is a sudden change in ALT which means an obstacle under quad ...eg. table ... so take the new ALT 
-						//// as the new measure ,,, thus keep the quad at its absolute level regardless of surface change.
-						//LastAltitudeHold = Temp; // measure Altitude
-					//}
-					//else
-					//{
-						//IgnoreTimeOut = IgnoreTimeOut +1;
-					//}						
-				//
-				//}
-				
-							
+										
 			Landing += ThrottleTemp;
 		}
 		else
@@ -256,8 +243,6 @@ double IMU_HeightKeeping ()
 			ThrottleTemp=0;
 			bALTHOLD=false;
 	}
-	
-	
 	
 	
 	return Landing;

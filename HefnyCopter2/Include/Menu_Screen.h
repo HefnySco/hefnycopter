@@ -143,7 +143,8 @@ P_STR scrMiscSettings[] =
 	"Auto Disarm:\n"
 	"Volt Alarm:      /10v\n"
 	"Throttle min:\n"
-	"Stick Scale:"
+	"Stick Scale:\n"
+	"P-R Linked:"
 	;
 
 

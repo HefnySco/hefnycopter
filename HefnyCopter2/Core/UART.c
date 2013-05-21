@@ -112,7 +112,12 @@ void ParseCommand ()
 					case SERIAL_CMD_LED_BLINK: // never  call while ARMED .... calling delay function will affect motor speed.
 						LED_FlashOrangeLED (LED_SHORT_TOGGLE,4);
 					break;
-					case SERIAL_CMD_READ_CONFIG:
+					case SERIAL_CMD_PID_CONFIG:
+						Send_Data("C",1);
+						Send_Data(&(Config.GyroParams),98);
+						Send_Data("E",1);
+					break;
+					case SERIAL_CMD_READ_CONFIG: // BAD
 						Send_Data("C",1);
 						Send_Data(&Config,86);
 						Send_Data("E",1);
