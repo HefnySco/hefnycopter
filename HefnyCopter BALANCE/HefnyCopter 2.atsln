@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# AvrStudio Solution File, Format Version 11.00
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "HefnyCopter 2", "HefnyCopter 2.cproj", "{0C355DE8-118A-4AEE-A335-5A9B1B3F3AF3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|AVR = Debug|AVR
+		HefnyCopter2-Debug Buddy|AVR = HefnyCopter2-Debug Buddy|AVR
+		Release|AVR = Release|AVR
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0C355DE8-118A-4AEE-A335-5A9B1B3F3AF3}.Debug|AVR.ActiveCfg = Debug|AVR
+		{0C355DE8-118A-4AEE-A335-5A9B1B3F3AF3}.Debug|AVR.Build.0 = Debug|AVR
+		{0C355DE8-118A-4AEE-A335-5A9B1B3F3AF3}.HefnyCopter2-Debug Buddy|AVR.ActiveCfg = HefnyCopter2-Debug Buddy|AVR
+		{0C355DE8-118A-4AEE-A335-5A9B1B3F3AF3}.HefnyCopter2-Debug Buddy|AVR.Build.0 = HefnyCopter2-Debug Buddy|AVR
+		{0C355DE8-118A-4AEE-A335-5A9B1B3F3AF3}.Release|AVR.ActiveCfg = Release|AVR
+		{0C355DE8-118A-4AEE-A335-5A9B1B3F3AF3}.Release|AVR.Build.0 = Release|AVR
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
