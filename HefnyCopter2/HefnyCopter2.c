@@ -147,7 +147,7 @@ if (Config.RX_mode==RX_mode_UARTMode)
 	
 	sei();
 	
-	delay_ms(30);
+	//delay_ms(30);
     
 }
 
@@ -297,8 +297,8 @@ void MainLoop(void)
 	////////// Slow Actions inside
 	// HINT: you can try to skip this if flying to save time for more useful tasks as user cannot access menu when flying
 	
-	if (TCNT_X_snapshot2==0) TCNT_X_snapshot2 = CurrentTCNT1_X;
-	else if ( ((CurrentTCNT1_X- TCNT_X_snapshot2) > 4) )  // TCNT1_X ticks in 32.768us
+	if (TCNT_X_snapshot2 == 0) TCNT_X_snapshot2 = CurrentTCNT1_X;
+	else if ( ((CurrentTCNT1_X - TCNT_X_snapshot2) > 4) )  // TCNT1_X ticks in 32.768us
 	{
 		Menu_MenuShow();
 		
@@ -383,7 +383,7 @@ void MainLoop(void)
 		{	// MOTORS ARE ON HERE .... DANGEROUS
 			
 			
-			TCNT_X_snapshotAutoDisarm = 0; // ZERO [user may disarm then fly slowly..in this case the qud will disarm once he turned off the stick...because the counter counts once the quad is armed..e.g. if it takes n sec to disarm automatically..user took n-1 sec keeping the stick low after arming then it will take 1 sec to disarm again after lowing the stick under STICKThrottle_ARMING
+			TCNT_X_snapshotAutoDisarm = 0; // ZERO [user may disarm then fly slowly..in this case the qude will disarm once he turned off the stick...because the counter counts once the quad is armed..e.g. if it takes n sec to disarm automatically..user took n-1 sec keeping the stick low after arming then it will take 1 sec to disarm again after lowing the stick under STICKThrottle_ARMING
 			
 			// Armed & Throttle Stick > MIN . . . We should Fly now.
 			//RX_Snapshot_1 [RXChannel_AIL]= RX_Snapshot[RXChannel_AIL];
@@ -646,7 +646,8 @@ void HandleSticksForArming (void)
 			
 			if (Config.AutoDisarm!=0)
 			{ // check auto disArm
-				if (TCNT_X_snapshotAutoDisarm==0) TCNT_X_snapshotAutoDisarm = CurrentTCNT1_X;
+				if (TCNT_X_snapshotAutoDisarm > CurrentTCNT1_X ) TCNT_X_snapshotAutoDisarm = 0; // the CurrentTCNT1_X was high so the disarm condition never true.
+				if (TCNT_X_snapshotAutoDisarm==0) TCNT_X_snapshotAutoDisarm = CurrentTCNT1_X; 
 				if ((CurrentTCNT1_X - TCNT_X_snapshotAutoDisarm) > (DISARM_TIME * Config.AutoDisarm))
 				{
 					Disarm();

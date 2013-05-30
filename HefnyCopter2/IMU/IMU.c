@@ -95,7 +95,7 @@ void IMU (void)
 		AngleRoll = AngleRoll  
 				  + (double)Sensors_Latest[GYRO_ROLL_Index]  * GYRO_RATE
 					 // - (sin(AnglePitch * DEG_TO_RAD) * DT_YAW)  // integrate component of yaw rate into roll angle
-					  ; 
+					   ; 
 			
 		// Correct Drift using ACC
 		Alpha = Config.AccParams[PITCH_INDEX].ComplementaryFilterAlpha / 1000.0; // TODO: optimize

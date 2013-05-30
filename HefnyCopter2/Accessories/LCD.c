@@ -7,9 +7,16 @@
  * $Id: lcd.c 27 2012-08-15 18:18:23Z olischulz24@googlemail.com $
 */ 
 
+
+#include "../Include/typedefs.h"
+
+#include <avr/io.h>
+#include <avr/interrupt.h>
 #include <util/delay.h>
-#include <avr/pgmspace.h>
 #include <util/atomic.h>
+#include <avr/pgmspace.h>
+#include <stdlib.h>
+#include <avr/wdt.h>
 
 #include <string.h>
 #include <stdlib.h>
