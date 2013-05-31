@@ -60,19 +60,19 @@ void _helper_DisplayPitchRollYaw (const uint8_t subindex)
 	{
 		case 0:	
 			if (Config.PitchRollLinked==0)
-			{
-				strcpy_P(sXDeg,PSTR("Pitch       "));
+			{				   
+				strcpy_P(sXDeg,PSTR("Pitch        "));
 			}
 			else
 			{
-				strcpy_P(sXDeg,PSTR("Pitch & Roll"));
+				strcpy_P(sXDeg,PSTR("Pitch & Roll "));
 			}
 			break;
 		case 1:	
-				strcpy_P(sXDeg,PSTR("Roll        "));
+				strcpy_P(sXDeg,PSTR("Roll         "));
 			break;
 		case 2:	
-				strcpy_P(sXDeg,PSTR("YAW         "));
+				strcpy_P(sXDeg,PSTR("YAW          "));
 			break;
 	}
 }
@@ -1083,11 +1083,15 @@ void _hDebug()
 			AngleRoll=0;
 			AngleZ =0;
 		}	
+		LCD_SetPos(0, 18);
+		LCD_WriteString_P(PSTR("Meas"));
+		LCD_WriteValue_double_ex(1,48, AnglePitch,9,false);
+		LCD_WriteValue_double_ex(2,48, AngleRoll,9,false);
+		LCD_WriteValue_double_ex(3,48, AngleZ,9,false);
+		LCD_WriteValue_double_ex(4,48, NavX,9,false);
+		LCD_WriteValue(5,48,Sensors_Latest[GYRO_PITCH_Index],4,true);
+		LCD_WriteValue(6,48,TimeDef,4,true);
 		
-		LCD_WriteValue_double_ex(0,48, AnglePitch,9,false);
-		LCD_WriteValue_double_ex(1,48, AngleRoll,9,false);
-		LCD_WriteValue_double_ex(2,48, AngleZ,9,false);
-		LCD_WriteValue_double_ex(3,48, NavX,9,false);
 		//LCD_WriteValue(4,48, MotorOut[3],9,false);
 	}
 }
@@ -1095,7 +1099,7 @@ void _hFactoryReset()
 {
 	if (IS_INIT)
 	{
-		LCD_SetPos(3, 18);
+		;
 		LCD_WriteString_P(strAreYouSure);
 	}
 	else if (KEY4)	// Yes

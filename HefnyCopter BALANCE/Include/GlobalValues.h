@@ -206,6 +206,9 @@ uint16_t CurrentTCNT1_X;				// equal to TCNT1_X value -- read every loop entry [
 volatile uint16_t TCNT0_X;
 volatile uint16_t TCNT1_X;				// TCNT1_X click every 0.0032768 sec [1 sec = 305.17578125 TCNT1_X]
 volatile uint16_t TCNT2_X;				// TCNT2  overflows every  3.2us x 0xff = 0.0008192 sec,  TCNT2_X value tick every 819.2 us and overflow every 53.6870912 sec
+volatile uint16_t TCNT1H_OLD;	
+uint16_t TimeDef ; 	
+		
 //volatile uint16_t OCR0A_X;
 uint16_t TCNT1_X_snapshot1;				
 uint16_t TCNT_X_snapshot2;
@@ -227,7 +230,7 @@ BOOL bResetTCNR1_X;
 #define V_BAT_Index				6
 #define SENSORS_ALL				7
 #define ACC_Z_1G				256;
-#define	GYRO_RATE				0.027  //0.045
+#define	GYRO_RATE				0.00077 //0.027  //0.045
 #define RAD_TO_DEG				57.324
 #define DEG_TO_RAD				0.01308		//(PI/2 = 120)
 #define GYRO_RATE_x_IVR_RAD		0.00058875	// = GYRO_RATE * ((3.14/2)/100) //0.01744444444444444444444444444444

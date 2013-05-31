@@ -201,6 +201,14 @@ version 1.0.0
 Function:
 *	. Pitch & Roll separated.
 *	.ACC-Z complementary filter issue fixed.
+
+
+
+
+
+
+
+
 =========================================================================================
 * Move voltage port to default (ADC0) connected to VCC by default to free ADC1
 

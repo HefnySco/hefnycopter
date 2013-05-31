@@ -494,8 +494,6 @@ void MainLoop(void)
 					else
 					{
 				
-						RX_Snapshot[RXChannel_AIL] = RX_Snapshot[RXChannel_AIL] * 0.9;		// 0.9: to reduce sensitivity more than STABLE mode
-						RX_Snapshot[RXChannel_ELE] = RX_Snapshot[RXChannel_ELE] * 0.9;
 						// {0.9,0,-0.9,0} QUAD_ELE_PLUS
 						MotorOut[0] += RX_Snapshot[RXChannel_ELE] ; 
 						MotorOut[2] -= RX_Snapshot[RXChannel_ELE] ; 
@@ -514,7 +512,7 @@ void MainLoop(void)
 							inv = -1;
 						}							
 							// {0.5,0.5,1.1,X} TRI_ELE_FRONT
-							MotorOut[2] -= inv * (RX_Snapshot[RXChannel_ELE] * 1.1); 
+							MotorOut[2] -= inv * (RX_Snapshot[RXChannel_ELE]); 
 							RX_Snapshot[RXChannel_ELE] = inv * RX_Snapshot[RXChannel_ELE] * 0.5;
 							MotorOut[0] += RX_Snapshot[RXChannel_ELE] ; 
 							MotorOut[1] += RX_Snapshot[RXChannel_ELE] ; 
@@ -562,7 +560,7 @@ void MainLoop(void)
 			{
 			
 				MotorOut[3]  = (Config.ReverseYAW * gyroYaw) + SERVO_IN_MIDDLE; 
-				MotorOut[3]  = MotorOut[3] - (Config.ReverseYAW * RX_Snapshot[RXChannel_RUD] * 0.2);
+				MotorOut[3]  = MotorOut[3] - (Config.ReverseYAW * RX_Snapshot[RXChannel_RUD]);
 			}						
 			
 			// Save motors from turning-off

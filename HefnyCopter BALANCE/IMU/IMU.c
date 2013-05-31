@@ -88,51 +88,58 @@ void IMU (void)
 		double APitch = - Sensors_Latest[ACC_PITCH_Index] - Config.Acc_Pitch_Trim;
 		double ARoll  = - Sensors_Latest[ACC_ROLL_Index]  - Config.Acc_Roll_Trim;
 		double DT_YAW =  (double)Sensors_Latest[GYRO_Z_Index] * GYRO_RATE; 
-			
-			
+		
+		if ( TCNT1H > TCNT1H_OLD) 
+		{
+			TimeDef = TCNT1H - TCNT1H_OLD;
+		}
+		else
+		{
+			TimeDef = 0xffff - TCNT1H_OLD + TCNT1H ;
+		}
+		TCNT1H_OLD += TimeDef;
+		
 		//// Do the Magic of IMU LEVELING here
 		//// check also : http://scolton.blogspot.com/2012/09/fun-with-complementary-filter-multiwii.html
-		//AnglePitch = AnglePitch
-				   //+ (double)Sensors_Latest[GYRO_PITCH_Index] * GYRO_RATE
+		AnglePitch = AnglePitch
+				   + (double)Sensors_Latest[GYRO_PITCH_Index] * GYRO_RATE * TimeDef * 0.001;
 					  //// + (sin(AngleRoll * DEG_TO_RAD) * DT_YAW)  // integrate component of yaw rate into pitch angle
-						//;
-		//AngleRoll = AngleRoll  
-				  //+ (double)Sensors_Latest[GYRO_ROLL_Index]  * GYRO_RATE
+						;
+		AngleRoll = AngleRoll  
+				  + (double)Sensors_Latest[GYRO_ROLL_Index]  * GYRO_RATE * TimeDef * 0.001;
 					 //// - (sin(AnglePitch * DEG_TO_RAD) * DT_YAW)  // integrate component of yaw rate into roll angle
-					  //; 
-		RotateV();	
+					   ; 
+		//RotateV();	
 		// Correct Drift using ACC
-		Alpha = Config.AccParams[PITCH_INDEX].ComplementaryFilterAlpha / 1000.0; // TODO: optimize
-		Beta = 1- Alpha;
-		#define ACC_SMALL_ANGLE	40
-		// if small angle then correct using ACC
-		if ((APitch < ACC_SMALL_ANGLE) && (APitch > -ACC_SMALL_ANGLE)) 
-		{
-			AnglePitch = Alpha * AnglePitch + Beta * APitch  * 10;
-		}
-		
-		Alpha = Config.AccParams[ROLL_INDEX].ComplementaryFilterAlpha / 1000.0; // TODO: optimize
-		Beta = 1- Alpha;
-		if ((ARoll  < ACC_SMALL_ANGLE) && (ARoll  > -ACC_SMALL_ANGLE))
-		{
-			AngleRoll =  Alpha * AngleRoll + Beta * ARoll * 10 ;
-			AngleZ =  Alpha * AngleZ + Beta * CompAccZ * 10;
-
-		}
-		
+		////////////////Alpha = Config.AccParams[PITCH_INDEX].ComplementaryFilterAlpha / 1000.0; // TODO: optimize
+		////////////////Beta = 1- Alpha;
+		////////////////#define ACC_SMALL_ANGLE	40
+		////////////////// if small angle then correct using ACC
+		////////////////if ((APitch < ACC_SMALL_ANGLE) && (APitch > -ACC_SMALL_ANGLE)) 
+		////////////////{
+			////////////////AnglePitch = Alpha * AnglePitch + Beta * APitch  * 10;
+		////////////////}
+		////////////////
+		////////////////Alpha = Config.AccParams[ROLL_INDEX].ComplementaryFilterAlpha / 1000.0; // TODO: optimize
+		////////////////Beta = 1- Alpha;
+		////////////////if ((ARoll  < ACC_SMALL_ANGLE) && (ARoll  > -ACC_SMALL_ANGLE))
+		////////////////{
+			////////////////AngleRoll =  Alpha * AngleRoll + Beta * ARoll * 10 ;
+			////////////////AngleZ =  Alpha * AngleZ + Beta * CompAccZ * 10;
+////////////////
+		////////////////}
+		////////////////
 			
-		//NavY = AnglePitch;
-		//NavX = AngleRoll;
-		// Attitude of the estimated vector
-		int32_t sqGZ = AngleZ * AngleZ;
-		int32_t sqGRoll = AngleRoll * AngleRoll;
-		int32_t sqGPitch = AnglePitch * AnglePitch;
-		int32_t sqGRoll_sqGZ = sqGRoll + sqGZ;
-		float invmagXZ  = InvSqrt(sqGRoll_sqGZ);
-		//invG = InvSqrt(sqGRoll_sqGZ + sqGPitch);
-		NavX = _atan2(AngleRoll , AngleZ) / 100.0f;
-		NavY = _atan2(AnglePitch , invmagXZ*sqGRoll_sqGZ) / 100.0f;
-		
+		////////// Attitude of the estimated vector
+		////////int32_t sqGZ = AngleZ * AngleZ;
+		////////int32_t sqGRoll = AngleRoll * AngleRoll;
+		////////int32_t sqGPitch = AnglePitch * AnglePitch;
+		////////int32_t sqGRoll_sqGZ = sqGRoll + sqGZ;
+		////////float invmagXZ  = InvSqrt(sqGRoll_sqGZ);
+		//////////invG = InvSqrt(sqGRoll_sqGZ + sqGPitch);
+		////////NavX = _atan2(AngleRoll , AngleZ) / 100.0f;
+		////////NavY = _atan2(AnglePitch , invmagXZ*sqGRoll_sqGZ) / 100.0f;
+		////////
 		return ; /// FOR TESTING
 	
 			//

@@ -1155,6 +1155,7 @@ void _hDebug()
 	//LCD_WriteValue_double_ex(2,0,DT_YAW,9,false);// PID OUTPUT
 	//LCD_WriteValue_double_ex(3,0,- Sensors_Latest[ACC_PITCH_Index] - Config.Acc_Pitch_Trim,9,false);// PID OUTPUT
 	//LCD_WriteValue_double_ex(4,0,- Sensors_Latest[ACC_ROLL_Index]  - Config.Acc_Roll_Trim,9,false);// PID OUTPUT
+	LCD_WriteValue_double_ex(5,0,Sensors_Latest[ACC_Z_Index],9,false);// PID OUTPUT
 	//LCD_WriteValue_double_ex(6,0,gyroYangle,9,false);// ANGLE
 	
 	//LCD_WriteValue(4,48,PID_AccTerms[0].I,4,false);
