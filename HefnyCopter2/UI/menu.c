@@ -61,18 +61,18 @@ void _helper_DisplayPitchRollYaw (const uint8_t subindex)
 		case 0:	
 			if (Config.PitchRollLinked==0)
 			{
-				strcpy_P(sXDeg,PSTR("Pitch       "));
+				strcpy_P(sXDeg,PSTR("Pitch        "));
 			}
 			else
 			{
-				strcpy_P(sXDeg,PSTR("Pitch & Roll"));
+				strcpy_P(sXDeg,PSTR("Pitch & Roll "));
 			}
 			break;
 		case 1:	
-				strcpy_P(sXDeg,PSTR("Roll        "));
+				strcpy_P(sXDeg,PSTR("Roll         "));
 			break;
 		case 2:	
-				strcpy_P(sXDeg,PSTR("YAW         "));
+				strcpy_P(sXDeg,PSTR("YAW          "));
 			break;
 	}
 }
@@ -620,24 +620,17 @@ void _hSensorTest()
 	//limits for sensor testing
 	#define AccLowLimit			450
 	#define AccHighLimit		850
-	#define GyroLowLimit		500		
-	#define GyroHighLimit		630
+	#define GyroLowLimit		450 //500		
+	#define GyroHighLimit		850 //630
 
 	
-	LCD_SetPos(0, 48);
-	LCD_WriteString(Sensors_Test(GYRO_ROLL_PNUM,GyroLowLimit,GyroHighLimit));
-	LCD_SetPos(1, 48);
-	LCD_WriteString(Sensors_Test(GYRO_PITCH_PNUM,GyroLowLimit,GyroHighLimit));
-	LCD_SetPos(2, 48);
-	LCD_WriteString(Sensors_Test(GYRO_Z_PNUM,GyroLowLimit,GyroHighLimit));
-	
-	LCD_SetPos(3, 48);
-	LCD_WriteString(Sensors_Test(ACC_PITCH_PNUM,AccLowLimit,AccHighLimit));
-	LCD_SetPos(4, 48);
-	LCD_WriteString(Sensors_Test(ACC_ROLL_PNUM,AccLowLimit,AccHighLimit));
-	LCD_SetPos(5, 48);
-	LCD_WriteString(Sensors_Test(ACC_Z_PNUM,AccLowLimit,AccHighLimit));
-	LCD_SetPos(6, 48);
+	for (int i=0; i<6;++i)
+	{
+		LCD_SetPos(i, 48);
+		LCD_WriteString(Sensors_Test(SensorsIndex[i],GyroLowLimit,GyroHighLimit));
+	}	
+        
+         LCD_SetPos(6, 48);
 	LCD_WriteValue_double(6,48,Sensor_GetBattery(),false);
 }
 
@@ -860,7 +853,9 @@ void _hMiscSettings()
 	}
 	
 	LCD_WriteValue(0,84,Config.AutoDisarm,3,0==subpage);
-	LCD_WriteValue(1,84,Config.VoltageAlarm,3,1==subpage);
+        double volt = (double)(Config.VoltageAlarm/10.0f);
+	LCD_WriteValue_double_ex(1,84,volt,8,1==subpage); 
+	//LCD_WriteValue(1,84,Config.VoltageAlarm,3,1==subpage);
 	LCD_WriteValue(2,84,Config.ThrottleMin,3,2==subpage);
 	LCD_WriteValue(3,84,Config.StickScaling,3,3==subpage);
 	_helper_Words (4,84,(4==subpage),(Config.PitchRollLinked),PSTR("yes"),PSTR("no "),5);

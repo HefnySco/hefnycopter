@@ -166,6 +166,8 @@ int main(void)
 	DataPtr = (uint8_t *) (&Sensors_Latest);
 	DataCounter=0;
 	
+TCNT1H_OLD = TCNT1H;
+
 	// Never go to MainLoop "fly loop" unless Sensors & RX is calibrated.
 	// This loop to protect against any bug that might make the quad start or KB stick click
 	// as in this case crash is a must.

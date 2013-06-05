@@ -11,6 +11,8 @@
 
 
 static const prog_char strVersionInfo[] = "HefnyCopter2 v1.0.0";
+#define VERSION_16INT	0x0190
+#define REQUIRE_FACTORY_RESET	
 
 /*
 version 0.1
@@ -201,7 +203,11 @@ version 1.0.0
 Function:
 *	. Pitch & Roll separated.
 *	.ACC-Z complementary filter issue fixed.
+*	. Enforce Factory Reset when installing some new versions..... ver 1.0.0 requires factory reset.
 
+* UI:
+*	. battery decimal
+*	. Sensor Test ACC-X & Acc-Y syntax error swapped.
 
 
 

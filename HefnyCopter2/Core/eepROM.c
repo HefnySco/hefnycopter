@@ -20,6 +20,8 @@
 #include "../Include/GlobalValues.h"
 #include "../Include/eepROM.h"
 #include "../Include/Beeper.h"
+#include "../Include/version.h"
+
  /*
  PI
  PG:50
@@ -45,6 +47,7 @@
 static config_t const defaultConfig PROGMEM = 
 {
 	.signature = HEFNYCOPTER2_SIGNATURE,
+	.Version = VERSION_16INT,
 	.IsCalibrated=0,
 	.FrameType = FRAMETYPE_QUADCOPTER,
 	.RX_mode=RX_mode_UARTMode,
@@ -53,8 +56,8 @@ static config_t const defaultConfig PROGMEM =
 	.GyroParams[PITCH_INDEX]	= {25,100,0,0,-3,20,0},	// pitch roll gyro.
 	.GyroParams[ROLL_INDEX]		= {25,100,0,0,-3,20,0},	// pitch roll gyro.
 	.GyroParams[YAW_INDEX]		= {50,90,50,90,0,20,200},	// Yaw gyro
-	.AccParams[PITCH_INDEX]		= {10,90,20,15,-2,50,990},		// ACC_PITCH & Y
-	.AccParams[ROLL_INDEX]		= {10,90,20,15,-2,50,990},		// ACC_PITCH & Y
+	.AccParams[PITCH_INDEX]		= {10,90,20,15,-2,50,995},		// ACC_PITCH & Y
+	.AccParams[ROLL_INDEX]		= {10,90,20,15,-2,50,995},		// ACC_PITCH & Y
 	.AccParams[YAW_INDEX]		= {15,30,0,0,0,0,600},	// ACC_Z
 	.SonarParams[0] ={15,25,0,0,0,0,0},
 	.ReverseYAW = GYRO_NORMAL,
@@ -70,7 +73,7 @@ static config_t const defaultConfig PROGMEM =
 	.MiscSensors = NO_MISC_SENSORS,
 	//.LCDContrast = 32,
 	.ThrottleMin = 150,
-	.StickScaling = 4,
+	.StickScaling = 8,
 	.VoltageAlarm=0, // off		[40 means 4 volt]
 	.Acc_Pitch_Trim=0,
 	.Acc_Roll_Trim=0,
@@ -79,8 +82,17 @@ static config_t const defaultConfig PROGMEM =
 
 void Initial_EEPROM_Config_Load(void)
 {
+	
+	eeprom_read_block(&Config, (void*) EEPROM_DATA_START_POS, sizeof(config_t)); 
+	
 	// load up last settings from EEPROM
-	if(eeprom_read_byte((uint8_t*) EEPROM_DATA_START_POS )!=HEFNYCOPTER2_SIGNATURE)
+	if(
+		(Config.signature != HEFNYCOPTER2_SIGNATURE)
+		#ifdef REQUIRE_FACTORY_RESET
+		||		
+		(Config.Version  != VERSION_16INT)
+		#endif
+	  )		
 	{
 		Save_Default_Config_to_EEPROM();
 		
@@ -95,8 +107,7 @@ void Save_Default_Config_to_EEPROM (void)
 	
 	// copy default config to config.
 	Set_EEPROM_Default_Config();
-	
-	
+
 	// Init values.
 	for (uint8_t i = 0; i < RXChannels; i++)
 	{
@@ -104,7 +115,8 @@ void Save_Default_Config_to_EEPROM (void)
 		Config.RX_Min[0][i] = PWM_LOW;
 		Config.RX_Mid[1][i] = PWM_MID;
 		Config.RX_Min[1][i] = PWM_LOW;
-	}	
+	}
+	
 	
 	// write to eeProm
 	Save_Config_to_EEPROM();
