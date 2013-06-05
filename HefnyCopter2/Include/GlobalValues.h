@@ -146,16 +146,12 @@ double CompGyroPitch;
 double CompGyroZ;	
 	
 
-//double CompAccRoll;
-//double CompAccPitch;
 double CompAccZ;	
 
 volatile double AngleRoll;
 volatile double AnglePitch;
 volatile double AngleZ;
 
-int8_t ACC_Pitch_Offset;
-int8_t ACC_Roll_Offset;
 
 #define GYRO_MIN	-10
 #define GYRO_MAX	10
@@ -192,9 +188,8 @@ typedef struct
 	float P,			// float value of pid_param_t._P * Value
 	 I,
 	 D,			
-	 Error,		// Old value (n-1)
-	 D2,
-	 D2Error;
+	 Error;		// Old value (n-1)
+	 
 } pid_terms_t;
 
 
@@ -335,10 +330,12 @@ typedef struct
 	uint8_t ThrottleMin;			//	offset: +11	
 	uint8_t StickScaling;			//	offset: +12	
 	uint8_t MiscSensors;			//	offset: +13	0b00000001		bit0: true/false SONAR
-	pid_param_t GyroParams[3];		//	offset: +14 Length	 + 42
-	pid_param_t AccParams[3];		//	offset: +56	Length	 + 42
-	pid_param_t SonarParams[1];		//  offset: +98 Length	 + 14
-	uint8_t VoltageAlarm;			//	offset: +112
+	
+	pid_param_t GyroParams[3];		
+	pid_param_t AccParams[3];		
+	pid_param_t SonarParams[1];		
+	
+	uint8_t VoltageAlarm;			
 	int8_t	Acc_Pitch_Trim;
 	int8_t	Acc_Roll_Trim;
 	//model_t Mixer;

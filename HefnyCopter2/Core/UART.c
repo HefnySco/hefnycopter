@@ -90,8 +90,11 @@ ISR (USART1_RX_vect)
 }
 
 
+
 void ParseCommand ()
 {
+	uint16_t Length;
+	
 	if (IsArmed==true)
 	{
 		//Just ignore for safty reasons....some commands generate beeps or flash led that call delay function which will crash your quadcopter if called.
@@ -113,14 +116,12 @@ void ParseCommand ()
 						LED_FlashOrangeLED (LED_SHORT_TOGGLE,4);
 					break;
 					case SERIAL_CMD_PID_CONFIG:
-						Send_Data("C",1);
-						Send_Data(&(Config.GyroParams),98);
-						Send_Data("E",1);
-					break;
-					case SERIAL_CMD_READ_CONFIG: // BAD
-						Send_Data("C",1);
-						Send_Data(&Config,86);
-						Send_Data("E",1);
+						Length = sizeof(pid_param_t) * 7;
+						Send_Byte('C');
+						Send_Byte (SERIAL_CMD_PID_CONFIG);
+						Send_Data(&Length,2);
+						Send_Data(&(Config.GyroParams),Length);
+						Send_Byte('E');
 					break;
 					case SERIAL_CMD_SAVE_CONFIG:
 						Save_Config_to_EEPROM();
@@ -172,7 +173,7 @@ void UART_Init( unsigned int ubrr)
 	}
 }
 
-void send_byte(uint8_t u8Data)
+void Send_Byte(uint8_t u8Data)
 {
 
 	// Wait if a byte is being transmitted
@@ -188,17 +189,9 @@ void Send_Data (void * msg, uint8_t len)
 	
 	for (int i=0; i<len;++i)
 	{
-		send_byte (((uint8_t *)msg)[i]);
+		Send_Byte (((uint8_t *)msg)[i]);
 	}
 	
 	
 }
 
-void Send_Data_TEST (void * msg, uint8_t len)
-{
-	for (int i=0; i<len;++i)
-	{
-		send_byte (((uint8_t *)msg)[i]);
-	}
-	
-}

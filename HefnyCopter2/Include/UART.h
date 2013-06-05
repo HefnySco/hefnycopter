@@ -38,10 +38,11 @@ Protocol:
 //#define SERIAL_OFFSET_ThrottleMin	
 #define SERIAL_CMD_LED_BLINK		0x01
 #define SERIAL_CMD_PID_CONFIG		0x02
-#define SERIAL_CMD_READ_CONFIG		0x05
+#define SERIAL_CMD_GETVALUE			0x05
 #define SERIAL_CMD_SAVE_CONFIG		0x06
 #define SERIAL_CMD_CALIBRATE_ACC	0x07
 
+// received commands from PC always has two types either execute a command or save in config.
 #define SERIAL_HEADER_SETVALUE	'V'
 #define	SERIAL_HEADER_DOCMD		'C'
 #define SERIAL_HEADER			0
@@ -57,10 +58,10 @@ volatile uint8_t  RXBuffer[SERIAL_BUFFERSIZE];
 volatile uint8_t  DisplayBuffer [10]; 
 void UART_Init( unsigned int ubrr);
 
-void send_byte(uint8_t u8Data);
+void Send_Byte(uint8_t u8Data);
 
 
-void Send_Data_TEST (void * msg, uint8_t len);
+
 void Send_Data (void * msg, uint8_t len);
 
 //volatile uint8_t UART_Buffer_RTS;

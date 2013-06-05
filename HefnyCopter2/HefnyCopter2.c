@@ -581,10 +581,10 @@ void MainLoop(void)
 			if (Config.RX_mode==RX_mode_UARTMode)
 			{
 				//LED_Orange=~LED_Orange;
-				Send_Data("S",1);
+				Send_Byte('S');
 				Send_Data(Sensors_Latest,12);
 				Send_Data(MotorOut,8);
-				Send_Data("E",1);
+				Send_Byte('E');
 			}
 			
 			
