@@ -839,7 +839,7 @@ void _hMiscSettings()
 		switch (subpage)
 		{
 			case 0: startEditMode(&(Config.AutoDisarm),0,10,TYPE_UINT8); return ;
-			case 1: startEditMode(&(Config.VoltageAlarm),0,100,TYPE_UINT8);  return ;
+			case 1: startEditMode(&(Config.VoltageAlarm),0,120,TYPE_UINT8);  return ;
 			case 2: startEditMode(&(Config.ThrottleMin),0,255,TYPE_UINT8);  return ;
 			case 3: startEditMode(&(Config.StickScaling),1,20,TYPE_UINT8);  return ;
 			case 4:	Config.PitchRollLinked=  ((~Config.PitchRollLinked) & 0x01); break; 
