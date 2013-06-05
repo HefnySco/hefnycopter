@@ -208,7 +208,6 @@ volatile uint16_t TCNT1_X;				// TCNT1_X click every 0.0032768 sec [1 sec = 305.
 volatile uint16_t TCNT2_X;				// TCNT2  overflows every  3.2us x 0xff = 0.0008192 sec,  TCNT2_X value tick every 819.2 us and overflow every 53.6870912 sec
 volatile uint16_t TCNT1H_OLD;	
 uint16_t TimeDef ; 	
-		
 //volatile uint16_t OCR0A_X;
 uint16_t TCNT1_X_snapshot1;				
 uint16_t TCNT_X_snapshot2;
@@ -228,13 +227,17 @@ BOOL bResetTCNR1_X;
 #define GYRO_PITCH_Index		1
 #define GYRO_Z_Index			2
 #define V_BAT_Index				6
+#define SENSORS_IMU				6
 #define SENSORS_ALL				7
+static uint8_t SensorsIndex[SENSORS_ALL] = {GYRO_ROLL_PNUM,GYRO_PITCH_PNUM,GYRO_Z_PNUM,ACC_PITCH_PNUM,ACC_ROLL_PNUM,ACC_Z_PNUM,V_BAT_PNUM};
+
+
 #define ACC_Z_1G				256;
-#define	GYRO_RATE				0.00077 //0.027  //0.045
-#define RAD_TO_DEG				57.324
+#define	GYRO_RATE				0.00077 //0.00077 //0.027  //0.045
+#define RAD_TO_DEG				76.45    //57.324   [for 120]
 #define DEG_TO_RAD				0.01308		//(PI/2 = 120)
 #define GYRO_RATE_x_IVR_RAD		0.00058875	// = GYRO_RATE * ((3.14/2)/100) //0.01744444444444444444444444444444
-volatile int16_t Sensors_Latest [8];
+volatile double  Sensors_Latest [8];
 /////////////////////////////////////////
 
 // MISC SENSORS
@@ -282,15 +285,16 @@ volatile uint16_t nTemp16;
 #define CALIBRATED_SENSOR			4
 
 // eeProm data structure
-#define IMU_SelfLevelMode	1
-#define RX_mode_UARTMode	0xff
-#define RX_mode_BuddyMode	0x00
-#define ESCCalibration_ON	1
-#define ESCCalibration_OFF	0
-#define QuadFlyingMode_PLUS 0 
-#define QuadFlyingMode_X	1
-#define TRIFlyingMode_Y		0 
-#define TRIFlyingMode_A		1
+#define IMU_SelfLevelMode		1
+#define RX_mode_UARTMode		0xff
+#define RX_mode_BuddyMode		0x00
+#define ESCCalibration_ON		1
+#define ESCCalibration_OFF		0
+#define QuadFlyingMode_PLUS		0	 
+#define QuadFlyingMode_X		1
+#define TRIFlyingMode_Y			0 
+#define TRIFlyingMode_A			1
+
 
 /*typedef struct
 {
@@ -316,7 +320,8 @@ static Mixer_t Mixer[3];
 
 typedef struct  
 {
-	uint8_t signature;				//	offset: +0		
+	uint8_t signature;				//	offset: +0
+	uint16_t Version;
 	uint8_t IsCalibrated;			//	offset: +1		
 	uint8_t RX_mode;				//	offset: +2		 01 [Secondary RX only and PD are used of UART"PD2-PD3"]  02[Buddy mode both Primary & Secondary RX are used]
 	uint8_t SelfLevelMode;			//	offset: +3	
@@ -340,7 +345,7 @@ typedef struct
 	uint16_t RX_Mid[2][RXChannels]; 
 	uint16_t RX_Min[2][RXChannels];
 	uint8_t Reserved[4];
-	uint16_t Sensor_zero[SENSORS_ALL];
+	double Sensor_zero[SENSORS_ALL];
 	int8_t  RX_DiV_Value[2][RXChannels];
 	int8_t	ReverseYAW;
 	int8_t	PitchRollLinked;

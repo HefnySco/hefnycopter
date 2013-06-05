@@ -192,7 +192,8 @@ int main(void)
 
 	Menu_EnableAllItems();
 	
-				
+	Menu_LoadPage(PAGE_DEBUG);
+	
 	while(1)
     {
 		//LoopESCCalibration();

@@ -65,6 +65,8 @@ inline uint16_t ADCPort_Get(uint8_t channel)
 {
 	uint16_t _t;
 	ATOMIC_BLOCK(ATOMIC_FORCEON)
+	{
 		_t = ADCValues[channel];
+	}		
 	return _t;
 }

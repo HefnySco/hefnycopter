@@ -620,25 +620,29 @@ void _hSensorTest()
 	//limits for sensor testing
 	#define AccLowLimit			450
 	#define AccHighLimit		850
-	#define GyroLowLimit		500		
-	#define GyroHighLimit		630
-
+	#define GyroLowLimit		450 //500		
+	#define GyroHighLimit		850 //630
 	
-	LCD_SetPos(0, 48);
-	LCD_WriteString(Sensors_Test(GYRO_ROLL_PNUM,GyroLowLimit,GyroHighLimit));
-	LCD_SetPos(1, 48);
-	LCD_WriteString(Sensors_Test(GYRO_PITCH_PNUM,GyroLowLimit,GyroHighLimit));
-	LCD_SetPos(2, 48);
-	LCD_WriteString(Sensors_Test(GYRO_Z_PNUM,GyroLowLimit,GyroHighLimit));
-	
-	LCD_SetPos(3, 48);
-	LCD_WriteString(Sensors_Test(ACC_PITCH_PNUM,AccLowLimit,AccHighLimit));
-	LCD_SetPos(4, 48);
-	LCD_WriteString(Sensors_Test(ACC_ROLL_PNUM,AccLowLimit,AccHighLimit));
-	LCD_SetPos(5, 48);
-	LCD_WriteString(Sensors_Test(ACC_Z_PNUM,AccLowLimit,AccHighLimit));
-	LCD_SetPos(6, 48);
-	LCD_WriteValue_double(6,48,Sensor_GetBattery(),false);
+	for (int i=0; i<6;++i)
+	{
+		LCD_SetPos(i, 48);
+		LCD_WriteString(Sensors_Test(SensorsIndex[i],GyroLowLimit,GyroHighLimit));
+	}	
+	//LCD_SetPos(0, 48);
+	//LCD_WriteString(Sensors_Test(GYRO_ROLL_PNUM,GyroLowLimit,GyroHighLimit));
+	//LCD_SetPos(1, 48);
+	//LCD_WriteString(Sensors_Test(GYRO_PITCH_PNUM,GyroLowLimit,GyroHighLimit));
+	//LCD_SetPos(2, 48);
+	//LCD_WriteString(Sensors_Test(GYRO_Z_PNUM,GyroLowLimit,GyroHighLimit));
+	//
+	//LCD_SetPos(3, 48);
+	//LCD_WriteString(Sensors_Test(ACC_PITCH_PNUM,AccLowLimit,AccHighLimit));
+	//LCD_SetPos(4, 48);
+	//LCD_WriteString(Sensors_Test(ACC_ROLL_PNUM,AccLowLimit,AccHighLimit));
+	//LCD_SetPos(5, 48);
+	//LCD_WriteString(Sensors_Test(ACC_Z_PNUM,AccLowLimit,AccHighLimit));
+	//LCD_SetPos(6, 48);
+	//LCD_WriteValue_double(6,48,Sensor_GetBattery(),false);
 }
 
 void _hReceiverTest()
@@ -762,7 +766,7 @@ void _hSensorCalibration()
 	for (i=0; i<6;++i)
 	{ // order is aligned with ACC_PITCH_Index & GYRO_ROLL_Index
 		LCD_SetPos(i, 48);
-		LCD_WriteValue(i,48,Config.Sensor_zero[i],5,false);
+		LCD_WriteValue_double_ex(i,48,Config.Sensor_zero[i],9,false);
 	}	
 	
 }
@@ -846,7 +850,7 @@ void _hMiscSettings()
 		switch (subpage)
 		{
 			case 0: startEditMode(&(Config.AutoDisarm),0,10,TYPE_UINT8); return ;
-			case 1: startEditMode(&(Config.VoltageAlarm),0,100,TYPE_UINT8);  return ;
+			case 1: startEditMode(&(Config.VoltageAlarm),0,120,TYPE_UINT8);  return ;
 			case 2: startEditMode(&(Config.ThrottleMin),0,255,TYPE_UINT8);  return ;
 			case 3: startEditMode(&(Config.StickScaling),1,20,TYPE_UINT8);  return ;
 			case 4:	Config.PitchRollLinked=  ((~Config.PitchRollLinked) & 0x01); break; 
@@ -860,7 +864,9 @@ void _hMiscSettings()
 	}
 	
 	LCD_WriteValue(0,84,Config.AutoDisarm,3,0==subpage);
-	LCD_WriteValue(1,84,Config.VoltageAlarm,3,1==subpage);
+	double volt = (double)(Config.VoltageAlarm/10.0f);
+	LCD_WriteValue_double_ex(1,84,volt,8,1==subpage); 
+	//LCD_WriteValue(1,84,Config.VoltageAlarm,3,1==subpage);
 	LCD_WriteValue(2,84,Config.ThrottleMin,3,2==subpage);
 	LCD_WriteValue(3,84,Config.StickScaling,3,3==subpage);
 	_helper_Words (4,84,(4==subpage),(Config.PitchRollLinked),PSTR("yes"),PSTR("no "),5);
@@ -1083,14 +1089,18 @@ void _hDebug()
 			AngleRoll=0;
 			AngleZ =0;
 		}	
+		static double lastGyro=0;
+		static double maxdiff=0;
 		LCD_SetPos(0, 18);
 		LCD_WriteString_P(PSTR("Meas"));
 		LCD_WriteValue_double_ex(1,48, AnglePitch,9,false);
 		LCD_WriteValue_double_ex(2,48, AngleRoll,9,false);
 		LCD_WriteValue_double_ex(3,48, AngleZ,9,false);
 		LCD_WriteValue_double_ex(4,48, NavX,9,false);
-		LCD_WriteValue(5,48,Sensors_Latest[GYRO_PITCH_Index],4,true);
-		LCD_WriteValue(6,48,TimeDef,4,true);
+		lastGyro = Sensors_Latest[GYRO_ROLL_Index];
+		if (abs(maxdiff) < abs(lastGyro)) maxdiff = lastGyro;
+		LCD_WriteValue_double_ex(5,48,maxdiff,9,true);
+		LCD_WriteValue_double_ex(6,48,TimeDef,9,false);
 		
 		//LCD_WriteValue(4,48, MotorOut[3],9,false);
 	}

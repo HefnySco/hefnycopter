@@ -29,12 +29,12 @@ void RotateV()
 	  //v->X += delta[ROLL]  * v_tmp.Z - delta[YAW]   * v_tmp.Y;
 	  //v->Y += delta[PITCH] * v_tmp.Z + delta[YAW]   * v_tmp.X; 
 	//*/
-	double oAnglePitch = AnglePitch;
-	double oAngleRoll = AngleRoll;
-	double oAngleZ     = AngleZ     ;
-	AngleZ     -= (CompGyroRoll  * oAngleRoll )  * GYRO_RATE + ( CompGyroPitch * oAnglePitch) * GYRO_RATE;
-	AngleRoll  += (CompGyroRoll  * AngleZ )     * GYRO_RATE - ( CompGyroZ     * oAnglePitch) * GYRO_RATE;
-	AnglePitch += (CompGyroPitch * AngleZ )		* GYRO_RATE + ( CompGyroZ     * oAngleRoll ) * GYRO_RATE;
+	//double oAnglePitch = AnglePitch;
+	//double oAngleRoll = AngleRoll;
+	//double oAngleZ     = AngleZ     ;
+	AngleZ     -= (CompGyroRoll  * AngleRoll )  * GYRO_RATE + ( CompGyroPitch * AnglePitch) * GYRO_RATE;
+	AngleRoll  += (CompGyroRoll  * AngleZ )     * GYRO_RATE - ( CompGyroZ     * AnglePitch) * GYRO_RATE;
+	AnglePitch += (CompGyroPitch * AngleZ )		* GYRO_RATE + ( CompGyroZ     * AngleRoll ) * GYRO_RATE;
 
 }
 
@@ -87,7 +87,7 @@ void IMU (void)
 		// ACC directions are same as GYRO direction [we added "-" for this purpose] 
 		double APitch = - Sensors_Latest[ACC_PITCH_Index] - Config.Acc_Pitch_Trim;
 		double ARoll  = - Sensors_Latest[ACC_ROLL_Index]  - Config.Acc_Roll_Trim;
-		double DT_YAW =  (double)Sensors_Latest[GYRO_Z_Index] * GYRO_RATE; 
+		double DT_YAW =  (double)Sensors_Latest[GYRO_Z_Index] * GYRO_RATE * TimeDef * 0.001; 
 		
 		if ( TCNT1H > TCNT1H_OLD) 
 		{
@@ -102,33 +102,33 @@ void IMU (void)
 		//// Do the Magic of IMU LEVELING here
 		//// check also : http://scolton.blogspot.com/2012/09/fun-with-complementary-filter-multiwii.html
 		AnglePitch = AnglePitch
-				   + (double)Sensors_Latest[GYRO_PITCH_Index] * GYRO_RATE * TimeDef * 0.001;
-					  //// + (sin(AngleRoll * DEG_TO_RAD) * DT_YAW)  // integrate component of yaw rate into pitch angle
+				   + (double)Sensors_Latest[GYRO_PITCH_Index] * GYRO_RATE * TimeDef * 0.001
+					   + (sin(AngleRoll * DEG_TO_RAD) * DT_YAW)  // integrate component of yaw rate into pitch angle
 						;
 		AngleRoll = AngleRoll  
-				  + (double)Sensors_Latest[GYRO_ROLL_Index]  * GYRO_RATE * TimeDef * 0.001;
-					 //// - (sin(AnglePitch * DEG_TO_RAD) * DT_YAW)  // integrate component of yaw rate into roll angle
+				  + (double)Sensors_Latest[GYRO_ROLL_Index]  * GYRO_RATE * TimeDef * 0.001
+					  - (sin(AnglePitch * DEG_TO_RAD) * DT_YAW)  // integrate component of yaw rate into roll angle
 					   ; 
 		//RotateV();	
 		// Correct Drift using ACC
-		////////////////Alpha = Config.AccParams[PITCH_INDEX].ComplementaryFilterAlpha / 1000.0; // TODO: optimize
-		////////////////Beta = 1- Alpha;
-		////////////////#define ACC_SMALL_ANGLE	40
-		////////////////// if small angle then correct using ACC
-		////////////////if ((APitch < ACC_SMALL_ANGLE) && (APitch > -ACC_SMALL_ANGLE)) 
-		////////////////{
-			////////////////AnglePitch = Alpha * AnglePitch + Beta * APitch  * 10;
-		////////////////}
-		////////////////
-		////////////////Alpha = Config.AccParams[ROLL_INDEX].ComplementaryFilterAlpha / 1000.0; // TODO: optimize
-		////////////////Beta = 1- Alpha;
-		////////////////if ((ARoll  < ACC_SMALL_ANGLE) && (ARoll  > -ACC_SMALL_ANGLE))
-		////////////////{
-			////////////////AngleRoll =  Alpha * AngleRoll + Beta * ARoll * 10 ;
-			////////////////AngleZ =  Alpha * AngleZ + Beta * CompAccZ * 10;
-////////////////
-		////////////////}
-		////////////////
+		//Alpha = Config.AccParams[PITCH_INDEX].ComplementaryFilterAlpha / 1000.0; // TODO: optimize
+		//Beta = 1- Alpha;
+		//#define ACC_SMALL_ANGLE	40
+		//// if small angle then correct using ACC
+		//if ((APitch < ACC_SMALL_ANGLE) && (APitch > -ACC_SMALL_ANGLE)) 
+		//{
+			//AnglePitch = Alpha * AnglePitch + Beta * APitch  * 10;
+		//}
+		//
+		//Alpha = Config.AccParams[ROLL_INDEX].ComplementaryFilterAlpha / 1000.0; // TODO: optimize
+		//Beta = 1- Alpha;
+		//if ((ARoll  < ACC_SMALL_ANGLE) && (ARoll  > -ACC_SMALL_ANGLE))
+		//{
+			//AngleRoll =  Alpha * AngleRoll + Beta * ARoll * 10 ;
+			//AngleZ =  Alpha * AngleZ + Beta * CompAccZ * 10;
+//
+		//}
+		//
 			
 		////////// Attitude of the estimated vector
 		////////int32_t sqGZ = AngleZ * AngleZ;

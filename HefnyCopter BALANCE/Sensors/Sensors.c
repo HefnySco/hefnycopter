@@ -26,8 +26,6 @@
 
 P_STR strOK[] ="OK  ";
 P_STR strFail[] ="Fail";
-	
-
 
 void Sensors_Init(void)
 {
@@ -97,6 +95,7 @@ char *Sensors_Test(uint8_t channel, uint16_t LowLimit ,uint16_t HighLimit)
 */
 void Sensors_Calibrate (void)
 {
+	
 	BOOL LEDOLD = LED_Orange;
 	int i;
 	for (i=0;i<6;++i)
@@ -104,37 +103,38 @@ void Sensors_Calibrate (void)
 		nResult [i]=0;
 	}
 	
-	// check: http://www.x-firm.com/?page_id=191
-	for (int i=0;i<25;++i)
-	{
-		nResult[ACC_PITCH_Index] += ADCPort_Get(ACC_PITCH_PNUM);
-		nResult[ACC_ROLL_Index] += ADCPort_Get(ACC_ROLL_PNUM);
-		nResult[ACC_Z_Index] += ADCPort_Get(ACC_Z_PNUM);
 		
-		nResult[GYRO_ROLL_Index] += ADCPort_Get(GYRO_ROLL_PNUM);
-		nResult[GYRO_PITCH_Index] += ADCPort_Get(GYRO_PITCH_PNUM);
-		nResult[GYRO_Z_Index] += ADCPort_Get(GYRO_Z_PNUM); 
-		_delay_ms(40);
-		LED_Orange =~LED_Orange;
-	}
+		// check: http://www.x-firm.com/?page_id=191
+		for (i=0;i<25;++i)
+		{
+			for (int s=0;s<SENSORS_ALL;++s)
+			{
+				nResult[s] += ADCPort_Get(SensorsIndex[s]);		
+			}
+			_delay_ms(40);
+			LED_Orange =~LED_Orange;
+		}
 	
-	LED_Orange = LEDOLD;
+		LED_Orange = LEDOLD;
 	
-	for (i=0;i<6;++i)
-	{
-		nResult[i] /=25;
-	}	
+		for (i=0;i<6;++i)
+		{
+			Config.Sensor_zero[i]  = (double)nResult[i] /25.0;
+		}	
+		
+		
+	
+	
+			
 	
 	Config.IsCalibrated = (Config.IsCalibrated | CALIBRATED_SENSOR);
-	for (i=0;i<6;++i)
-	Config.Sensor_zero[i] = nResult[i];
 		
 	
 	//nResult[ACC_Z_Index]-=100; // Sensor: horizontal, upward ... the caller of this function is responsible for updating Config.Sensor_zero[i] = nResult[i];
 		
 }
 
-#define DEAD_BAND_GYRO	0
+#define DEAD_BAND_GYRO	4
 //uint32_t LastLoopTime[2];
 //uint16_t TX,TX1,TX2;
 void Sensors_ReadAll (void)
@@ -147,16 +147,19 @@ void Sensors_ReadAll (void)
 		//TX= TCNT1_X;
    //}   
 	//
-	Sensors_Latest[ACC_PITCH_Index] = ADCPort_Get(ACC_PITCH_PNUM)-Config.Sensor_zero[ACC_PITCH_Index]; 
-	Sensors_Latest[ACC_ROLL_Index] = ADCPort_Get(ACC_ROLL_PNUM)-Config.Sensor_zero[ACC_ROLL_Index];
-	Sensors_Latest[ACC_Z_Index] = ADCPort_Get(ACC_Z_PNUM)-Config.Sensor_zero[ACC_Z_Index];
-		
-	Sensors_Latest[GYRO_ROLL_Index] = ADCPort_Get(GYRO_ROLL_PNUM)-Config.Sensor_zero[GYRO_ROLL_Index];
-	if (abs(Sensors_Latest[GYRO_ROLL_Index])< DEAD_BAND_GYRO) Sensors_Latest[GYRO_ROLL_Index] = 0;
-	Sensors_Latest[GYRO_PITCH_Index] = ADCPort_Get(GYRO_PITCH_PNUM)-Config.Sensor_zero[GYRO_PITCH_Index];
-	if (abs(Sensors_Latest[GYRO_PITCH_Index])< DEAD_BAND_GYRO) Sensors_Latest[GYRO_PITCH_Index] = 0;
-	Sensors_Latest[GYRO_Z_Index] = ADCPort_Get(GYRO_Z_PNUM)-Config.Sensor_zero[GYRO_Z_Index];
-	if (abs(Sensors_Latest[GYRO_Z_Index])< DEAD_BAND_GYRO) Sensors_Latest[GYRO_Z_Index] = 0;
+	
+	for (int i=0;i<3;++i)  // gyro
+	{
+		Sensors_Latest[i] = ADCPort_Get(SensorsIndex[i])-Config.Sensor_zero[i]; 
+		if (abs(Sensors_Latest[i]) <= DEAD_BAND_GYRO) Sensors_Latest[i]=0;
+	}
+	
+	for (int i=3;i<6;++i)  //ACC
+	{
+		Sensors_Latest[i] = ADCPort_Get(SensorsIndex[i])-Config.Sensor_zero[i]; 
+		//if (abs(Sensors_Latest[i]) <= DEAD_BAND_GYRO) Sensors_Latest[i]=0;
+	}
+	
 	
 	Sensors_Latest[V_BAT_Index] = Sensor_GetBattery(); 
 	

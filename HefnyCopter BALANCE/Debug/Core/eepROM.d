@@ -22,7 +22,7 @@ Core/eepROM.d Core/eepROM.o: ../Core/eepROM.c \
  ../Core/../Include/typedefs.h ../Core/../Include/IO_config.h \
  ../Core/../Include/typedefs.h ../Core/../Include/GlobalValues.h \
  ../Core/../Include/IO_config.h ../Core/../Include/eepROM.h \
- ../Core/../Include/Beeper.h
+ ../Core/../Include/Beeper.h ../Core/../Include/version.h
 
 d:\program\ files\ (x86)\atmel\avr\ studio\ 5.1\extensions\atmel\avrgcc\3.3.1.27\avrtoolchain\bin\../lib/gcc/avr/4.5.1/../../../../avr/include/avr/io.h:
 
@@ -77,3 +77,5 @@ d:\program\ files\ (x86)\atmel\avr\ studio\ 5.1\extensions\atmel\avrgcc\3.3.1.27
 ../Core/../Include/eepROM.h:
 
 ../Core/../Include/Beeper.h:
+
+../Core/../Include/version.h:
