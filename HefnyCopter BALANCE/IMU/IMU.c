@@ -111,23 +111,23 @@ void IMU (void)
 					   ; 
 		//RotateV();	
 		// Correct Drift using ACC
-		//Alpha = Config.AccParams[PITCH_INDEX].ComplementaryFilterAlpha / 1000.0; // TODO: optimize
-		//Beta = 1- Alpha;
-		//#define ACC_SMALL_ANGLE	40
+		Alpha = Config.AccParams[PITCH_INDEX].ComplementaryFilterAlpha / 1000.0; // TODO: optimize
+		Beta = 1- Alpha;
+		#define ACC_SMALL_ANGLE	140
 		//// if small angle then correct using ACC
-		//if ((APitch < ACC_SMALL_ANGLE) && (APitch > -ACC_SMALL_ANGLE)) 
-		//{
-			//AnglePitch = Alpha * AnglePitch + Beta * APitch  * 10;
-		//}
-		//
-		//Alpha = Config.AccParams[ROLL_INDEX].ComplementaryFilterAlpha / 1000.0; // TODO: optimize
-		//Beta = 1- Alpha;
-		//if ((ARoll  < ACC_SMALL_ANGLE) && (ARoll  > -ACC_SMALL_ANGLE))
-		//{
-			//AngleRoll =  Alpha * AngleRoll + Beta * ARoll * 10 ;
+		if ((APitch < ACC_SMALL_ANGLE) && (APitch > -ACC_SMALL_ANGLE)) 
+		{
+			AnglePitch = Alpha * AnglePitch + Beta * APitch ;
+		}
+		
+		Alpha = Config.AccParams[ROLL_INDEX].ComplementaryFilterAlpha / 1000.0; // TODO: optimize
+		Beta = 1- Alpha;
+		if ((ARoll  < ACC_SMALL_ANGLE) && (ARoll  > -ACC_SMALL_ANGLE))
+		{
+			AngleRoll =  Alpha * AngleRoll + Beta * ARoll ;
 			//AngleZ =  Alpha * AngleZ + Beta * CompAccZ * 10;
 //
-		//}
+		}
 		//
 			
 		////////// Attitude of the estimated vector

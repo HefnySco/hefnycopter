@@ -1057,6 +1057,8 @@ void _hAltitudeHold()
 	static double YAWAngle;
 static double OldAngle;
 	static double YAWAngle2;
+	static double maxdiff=0;
+		
 void _hDebug()
 {
 
@@ -1088,19 +1090,20 @@ void _hDebug()
 			AnglePitch=0;
 			AngleRoll=0;
 			AngleZ =0;
+			maxdiff=0;
 		}	
 		static double lastGyro=0;
-		static double maxdiff=0;
 		LCD_SetPos(0, 18);
 		LCD_WriteString_P(PSTR("Meas"));
 		LCD_WriteValue_double_ex(1,48, AnglePitch,9,false);
 		LCD_WriteValue_double_ex(2,48, AngleRoll,9,false);
 		LCD_WriteValue_double_ex(3,48, AngleZ,9,false);
 		LCD_WriteValue_double_ex(4,48, NavX,9,false);
-		lastGyro = Sensors_Latest[GYRO_ROLL_Index];
-		if (abs(maxdiff) < abs(lastGyro)) maxdiff = lastGyro;
-		LCD_WriteValue_double_ex(5,48,maxdiff,9,true);
-		LCD_WriteValue_double_ex(6,48,TimeDef,9,false);
+		//lastGyro = Sensors_Latest[GYRO_ROLL_Index];
+		//if (abs(maxdiff) < abs(lastGyro)) maxdiff = lastGyro;
+		maxdiff = maxdiff + CompAccZ;
+		LCD_WriteValue_double_ex(5,48,AnglePitch,9,true);
+		LCD_WriteValue_double_ex(6,48,Sensors_Latest[ACC_PITCH_Index],9,false);
 		
 		//LCD_WriteValue(4,48, MotorOut[3],9,false);
 	}
