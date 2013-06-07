@@ -630,8 +630,7 @@ void _hSensorTest()
 		LCD_WriteString(Sensors_Test(SensorsIndex[i],GyroLowLimit,GyroHighLimit));
 	}	
         
-         LCD_SetPos(6, 48);
-	LCD_WriteValue_double(6,48,Sensor_GetBattery(),false);
+     LCD_WriteValue_double(6,48,Sensor_GetBattery(),false);
 }
 
 void _hReceiverTest()

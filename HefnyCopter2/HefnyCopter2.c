@@ -391,6 +391,11 @@ void MainLoop(void)
 			//RX_Snapshot_1 [RXChannel_AIL]= RX_Snapshot[RXChannel_AIL];
 			//RX_Snapshot_1 [RXChannel_ELE]= RX_Snapshot[RXChannel_ELE];
 			//RX_Snapshot_1 [RXChannel_RUD]= RX_Snapshot[RXChannel_RUD];
+			double ScalingFactor = 0.05;
+			if (nFlyingModes == FLYINGMODE_ACRO)
+			{
+				ScalingFactor = 0.025;
+			}
 			RX_Snapshot	  [RXChannel_AIL] = (RX_Latest[ActiveRXIndex][RXChannel_AIL] * Config.StickScaling * 0.05 );
 			RX_Snapshot   [RXChannel_ELE] = (RX_Latest[ActiveRXIndex][RXChannel_ELE] * Config.StickScaling * 0.05 ); 
 			RX_Snapshot   [RXChannel_RUD] = (RX_Latest[ActiveRXIndex][RXChannel_RUD] * Config.StickScaling * 0.05 ); // version 0.9.9 
