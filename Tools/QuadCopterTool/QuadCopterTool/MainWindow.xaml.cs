@@ -233,23 +233,25 @@ namespace QuadCopterTool
         }
 
 
-        public void CopyData(HefnyCopter.CommunicationProtocol.ENUM_RxDataType DataType, byte[] vArray)
+        public void CopyData(SerialPacket oSerialPacket)
         {
-            switch (DataType)
+            int Offset;
+            switch (oSerialPacket.DataType)
             {
                 case ENUM_RxDataType.Sensors:
-                SensorManager.Gyro_X.AddValue(BitConverter.ToInt16(vArray, 0));
-                SensorManager.Gyro_Y.AddValue(BitConverter.ToInt16(vArray, 2));
-                SensorManager.Gyro_Z.AddValue(BitConverter.ToInt16(vArray, 4));
-                SensorManager.Acc_X.AddValue(BitConverter.ToInt16(vArray, 6));
-                SensorManager.Acc_Y.AddValue(BitConverter.ToInt16(vArray, 8));
-                Int16 Z = (short)((BitConverter.ToInt16(vArray, 10)) - 100);
+                    Offset = 0;
+                    SensorManager.Gyro_X.AddValue((Int16)(BitConverter.ToSingle(oSerialPacket.Array, 0 + Offset)));
+                    SensorManager.Gyro_Y.AddValue((Int16)BitConverter.ToSingle(oSerialPacket.Array, 4 + Offset));
+                    SensorManager.Gyro_Z.AddValue((Int16)BitConverter.ToSingle(oSerialPacket.Array, 8 + Offset));
+                    SensorManager.Acc_X.AddValue((Int16)BitConverter.ToSingle(oSerialPacket.Array, 12 + Offset));
+                    SensorManager.Acc_Y.AddValue((Int16)BitConverter.ToSingle(oSerialPacket.Array, 16 + Offset));
+                    short Z = (Int16)(BitConverter.ToSingle(oSerialPacket.Array, 20 + Offset) - 100); 
                 SensorManager.Acc_Z.AddValue(Z);
 
-                SensorManager.Motors[0].AddValue(BitConverter.ToInt16(vArray, 12));
-                SensorManager.Motors[1].AddValue(BitConverter.ToInt16(vArray, 14));
-                SensorManager.Motors[2].AddValue(BitConverter.ToInt16(vArray, 16));
-                SensorManager.Motors[3].AddValue(BitConverter.ToInt16(vArray, 18));
+                SensorManager.Motors[0].AddValue(BitConverter.ToInt16(oSerialPacket.Array, 24 + Offset));
+                SensorManager.Motors[1].AddValue(BitConverter.ToInt16(oSerialPacket.Array, 26 + Offset));
+                SensorManager.Motors[2].AddValue(BitConverter.ToInt16(oSerialPacket.Array, 28 + Offset));
+                SensorManager.Motors[3].AddValue(BitConverter.ToInt16(oSerialPacket.Array, 30 + Offset));
 
                 // Log Data into CSV file
                 mCSVLogFileWriter.LogData();
@@ -276,49 +278,21 @@ namespace QuadCopterTool
                 break;
 
                 case ENUM_RxDataType.Settings:
-                
-                QuadConfigurationManager.QuadConfigStructure.GyroParams[0].P = BitConverter.ToInt16(vArray, 14);
-                QuadConfigurationManager.QuadConfigStructure.GyroParams[0].P_Limit = BitConverter.ToInt16(vArray, 16);
-                QuadConfigurationManager.QuadConfigStructure.GyroParams[0].I = BitConverter.ToInt16(vArray, 18);
-                QuadConfigurationManager.QuadConfigStructure.GyroParams[0].I_Limit = BitConverter.ToInt16(vArray, 20);
-                QuadConfigurationManager.QuadConfigStructure.GyroParams[0].D = BitConverter.ToInt16(vArray, 22);
-                QuadConfigurationManager.QuadConfigStructure.GyroParams[0].D_Limit = BitConverter.ToInt16(vArray, 24);
-                QuadConfigurationManager.QuadConfigStructure.GyroParams[0].ComplementartuFilterAlpha = BitConverter.ToInt16(vArray, 26);
-                    
-                QuadConfigurationManager.QuadConfigStructure.GyroParams[1].P = BitConverter.ToInt16(vArray, 28);
-                QuadConfigurationManager.QuadConfigStructure.GyroParams[1].P_Limit = BitConverter.ToInt16(vArray, 30);
-                QuadConfigurationManager.QuadConfigStructure.GyroParams[1].I = BitConverter.ToInt16(vArray, 32);
-                QuadConfigurationManager.QuadConfigStructure.GyroParams[1].I_Limit = BitConverter.ToInt16(vArray, 34);
-                QuadConfigurationManager.QuadConfigStructure.GyroParams[1].D= BitConverter.ToInt16(vArray, 36);
-                QuadConfigurationManager.QuadConfigStructure.GyroParams[1].D_Limit = BitConverter.ToInt16(vArray, 38);
-                QuadConfigurationManager.QuadConfigStructure.GyroParams[1].ComplementartuFilterAlpha = BitConverter.ToInt16(vArray, 40);
+                Offset = 3;
+                QuadConfigurationManager.QuadConfigStructure.GyroParams[0].SetParameters(oSerialPacket.Array, 0 + Offset);
+                QuadConfigurationManager.QuadConfigStructure.GyroParams[1].SetParameters(oSerialPacket.Array, 14 + Offset);
+                QuadConfigurationManager.QuadConfigStructure.GyroParams[2].SetParameters(oSerialPacket.Array, 28 + Offset);
 
-                QuadConfigurationManager.QuadConfigStructure.AccParams[0].P = BitConverter.ToInt16(vArray, 42);
-                QuadConfigurationManager.QuadConfigStructure.AccParams[0].P_Limit = BitConverter.ToInt16(vArray, 44);
-                QuadConfigurationManager.QuadConfigStructure.AccParams[0].I = BitConverter.ToInt16(vArray, 46);
-                QuadConfigurationManager.QuadConfigStructure.AccParams[0].I_Limit = BitConverter.ToInt16(vArray, 48);
-                QuadConfigurationManager.QuadConfigStructure.AccParams[0].D= BitConverter.ToInt16(vArray, 50);
-                QuadConfigurationManager.QuadConfigStructure.AccParams[0].D_Limit = BitConverter.ToInt16(vArray, 52);
-                QuadConfigurationManager.QuadConfigStructure.AccParams[0].ComplementartuFilterAlpha = BitConverter.ToInt16(vArray, 54);
 
-                QuadConfigurationManager.QuadConfigStructure.AccParams[1].P = BitConverter.ToInt16(vArray, 56);
-                QuadConfigurationManager.QuadConfigStructure.AccParams[1].P_Limit = BitConverter.ToInt16(vArray, 58);
-                QuadConfigurationManager.QuadConfigStructure.AccParams[1].I = BitConverter.ToInt16(vArray, 60);
-                QuadConfigurationManager.QuadConfigStructure.AccParams[1].I_Limit = BitConverter.ToInt16(vArray, 62);
-                QuadConfigurationManager.QuadConfigStructure.AccParams[1].D= BitConverter.ToInt16(vArray, 64);
-                QuadConfigurationManager.QuadConfigStructure.AccParams[1].D_Limit = BitConverter.ToInt16(vArray, 66);
-                QuadConfigurationManager.QuadConfigStructure.AccParams[1].ComplementartuFilterAlpha = BitConverter.ToInt16(vArray, 68);
-               
+                QuadConfigurationManager.QuadConfigStructure.AccParams[0].SetParameters(oSerialPacket.Array, 42 + Offset);
+                QuadConfigurationManager.QuadConfigStructure.AccParams[1].SetParameters(oSerialPacket.Array, 56 + Offset);
+                QuadConfigurationManager.QuadConfigStructure.AccParams[2].SetParameters(oSerialPacket.Array, 70 + Offset);
+
+
+                QuadConfigurationManager.QuadConfigStructure.SonarParams[0].SetParameters(oSerialPacket.Array, 84 + Offset);
                 
-                QuadConfigurationManager.QuadConfigStructure.SonarParams[0].P = BitConverter.ToInt16(vArray, 70);
-                QuadConfigurationManager.QuadConfigStructure.SonarParams[0].P_Limit = BitConverter.ToInt16(vArray, 72);
-                QuadConfigurationManager.QuadConfigStructure.SonarParams[0].I = BitConverter.ToInt16(vArray, 74);
-                QuadConfigurationManager.QuadConfigStructure.SonarParams[0].I_Limit = BitConverter.ToInt16(vArray, 76);
-                QuadConfigurationManager.QuadConfigStructure.SonarParams[0].D= BitConverter.ToInt16(vArray, 78);
-                QuadConfigurationManager.QuadConfigStructure.SonarParams[0].D_Limit = BitConverter.ToInt16(vArray, 80);
-                QuadConfigurationManager.QuadConfigStructure.SonarParams[0].ComplementartuFilterAlpha = BitConverter.ToInt16(vArray, 82);
-               
-                QuadConfigurationManager.QuadConfigStructure.VoltageAlarm = vArray[84];
+
+               // QuadConfigurationManager.QuadConfigStructure.VoltageAlarm = vArray[84];
                 mFlagUpdateSettings = true;
                 break;
             }
@@ -461,23 +435,40 @@ namespace QuadCopterTool
            mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.GYRO_PARAMS_PITCH_D_LIM, 2, octrlQuadConfiguration.QuadConfigStructure.GyroParams[0].D_Limit));
            Thread.Sleep(n);
 
-           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.GYRO_PARAMS_PITCH_FILTER, 2, octrlQuadConfiguration.QuadConfigStructure.GyroParams[0].ComplementartuFilterAlpha));
+           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.GYRO_PARAMS_PITCH_FILTER, 2, octrlQuadConfiguration.QuadConfigStructure.GyroParams[0].ComplementartyFilterAlpha));
            Thread.Sleep(n);
-          
-            mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.GYRO_PARAMS_YAW_P, 2, octrlQuadConfiguration.QuadConfigStructure.GyroParams[1].P));
+
+           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.GYRO_PARAMS_ROLL_P, 2, octrlQuadConfiguration.QuadConfigStructure.GyroParams[1].P));
            Thread.Sleep(n);
-           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.GYRO_PARAMS_YAW_P_LIM, 2, octrlQuadConfiguration.QuadConfigStructure.GyroParams[1].P_Limit));
+           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.GYRO_PARAMS_ROLL_P_LIM, 2, octrlQuadConfiguration.QuadConfigStructure.GyroParams[1].P_Limit));
            Thread.Sleep(n);
-           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.GYRO_PARAMS_YAW_I, 2, octrlQuadConfiguration.QuadConfigStructure.GyroParams[1].I));
+           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.GYRO_PARAMS_ROLL_I, 2, octrlQuadConfiguration.QuadConfigStructure.GyroParams[1].I));
            Thread.Sleep(n);
-           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.GYRO_PARAMS_YAW_I_LIM, 2, octrlQuadConfiguration.QuadConfigStructure.GyroParams[1].I_Limit));
+           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.GYRO_PARAMS_ROLL_I_LIM, 2, octrlQuadConfiguration.QuadConfigStructure.GyroParams[1].I_Limit));
            Thread.Sleep(n);
-           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.GYRO_PARAMS_YAW_D, 2, octrlQuadConfiguration.QuadConfigStructure.GyroParams[1].D));
+           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.GYRO_PARAMS_ROLL_D, 2, octrlQuadConfiguration.QuadConfigStructure.GyroParams[1].D));
            Thread.Sleep(n);
-           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.GYRO_PARAMS_YAW_D_LIM, 2, octrlQuadConfiguration.QuadConfigStructure.GyroParams[1].D_Limit));
+           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.GYRO_PARAMS_ROLL_D_LIM, 2, octrlQuadConfiguration.QuadConfigStructure.GyroParams[1].D_Limit));
+           Thread.Sleep(n);
+
+           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.GYRO_PARAMS_ROLL_FILTER, 2, octrlQuadConfiguration.QuadConfigStructure.GyroParams[1].ComplementartyFilterAlpha));
+           Thread.Sleep(n);
+
+           
+            mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.GYRO_PARAMS_YAW_P, 2, octrlQuadConfiguration.QuadConfigStructure.GyroParams[2].P));
+           Thread.Sleep(n);
+           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.GYRO_PARAMS_YAW_P_LIM, 2, octrlQuadConfiguration.QuadConfigStructure.GyroParams[2].P_Limit));
+           Thread.Sleep(n);
+           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.GYRO_PARAMS_YAW_I, 2, octrlQuadConfiguration.QuadConfigStructure.GyroParams[2].I));
+           Thread.Sleep(n);
+           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.GYRO_PARAMS_YAW_I_LIM, 2, octrlQuadConfiguration.QuadConfigStructure.GyroParams[2].I_Limit));
+           Thread.Sleep(n);
+           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.GYRO_PARAMS_YAW_D, 2, octrlQuadConfiguration.QuadConfigStructure.GyroParams[2].D));
+           Thread.Sleep(n);
+           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.GYRO_PARAMS_YAW_D_LIM, 2, octrlQuadConfiguration.QuadConfigStructure.GyroParams[2].D_Limit));
 
 
-           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.GYRO_PARAMS_YAW_FILTER, 2, octrlQuadConfiguration.QuadConfigStructure.GyroParams[1].ComplementartuFilterAlpha));
+           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.GYRO_PARAMS_YAW_FILTER, 2, octrlQuadConfiguration.QuadConfigStructure.GyroParams[2].ComplementartyFilterAlpha));
            Thread.Sleep(n);
 
 
@@ -494,23 +485,40 @@ namespace QuadCopterTool
            mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.ACC_PARAMS_PITCH_D_LIM, 2, octrlQuadConfiguration.QuadConfigStructure.AccParams[0].D_Limit));
            Thread.Sleep(n);
 
-           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.ACC_PARAMS_PITCH_FILTER, 2, octrlQuadConfiguration.QuadConfigStructure.AccParams[0].ComplementartuFilterAlpha));
+           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.ACC_PARAMS_PITCH_FILTER, 2, octrlQuadConfiguration.QuadConfigStructure.AccParams[0].ComplementartyFilterAlpha));
            Thread.Sleep(n);
 
-           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.ACC_PARAMS_Z_P, 2, octrlQuadConfiguration.QuadConfigStructure.AccParams[1].P));
+
+           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.ACC_PARAMS_ROLL_P, 2, octrlQuadConfiguration.QuadConfigStructure.AccParams[1].P));
            Thread.Sleep(n);
-           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.ACC_PARAMS_Z_P_LIM, 2, octrlQuadConfiguration.QuadConfigStructure.AccParams[1].P_Limit));
+           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.ACC_PARAMS_ROLL_P_LIM, 2, octrlQuadConfiguration.QuadConfigStructure.AccParams[1].P_Limit));
            Thread.Sleep(n);
-           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.ACC_PARAMS_Z_I, 2, octrlQuadConfiguration.QuadConfigStructure.AccParams[1].I));
+           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.ACC_PARAMS_ROLL_I, 2, octrlQuadConfiguration.QuadConfigStructure.AccParams[1].I));
            Thread.Sleep(n);
-           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.ACC_PARAMS_Z_I_LIM, 2, octrlQuadConfiguration.QuadConfigStructure.AccParams[1].I_Limit));
+           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.ACC_PARAMS_ROLL_I_LIM, 2, octrlQuadConfiguration.QuadConfigStructure.AccParams[1].I_Limit));
            Thread.Sleep(n);
-           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.ACC_PARAMS_Z_D, 2, octrlQuadConfiguration.QuadConfigStructure.AccParams[1].D));
+           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.ACC_PARAMS_ROLL_D, 2, octrlQuadConfiguration.QuadConfigStructure.AccParams[1].D));
            Thread.Sleep(n);
-           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.ACC_PARAMS_Z_D_LIM, 2, octrlQuadConfiguration.QuadConfigStructure.AccParams[1].D_Limit));
+           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.ACC_PARAMS_ROLL_D_LIM, 2, octrlQuadConfiguration.QuadConfigStructure.AccParams[1].D_Limit));
+           Thread.Sleep(n);
+
+           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.ACC_PARAMS_ROLL_FILTER, 2, octrlQuadConfiguration.QuadConfigStructure.AccParams[1].ComplementartyFilterAlpha));
+           Thread.Sleep(n);
+
+           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.ACC_PARAMS_Z_P, 2, octrlQuadConfiguration.QuadConfigStructure.AccParams[2].P));
+           Thread.Sleep(n);
+           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.ACC_PARAMS_Z_P_LIM, 2, octrlQuadConfiguration.QuadConfigStructure.AccParams[2].P_Limit));
+           Thread.Sleep(n);
+           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.ACC_PARAMS_Z_I, 2, octrlQuadConfiguration.QuadConfigStructure.AccParams[2].I));
+           Thread.Sleep(n);
+           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.ACC_PARAMS_Z_I_LIM, 2, octrlQuadConfiguration.QuadConfigStructure.AccParams[2].I_Limit));
+           Thread.Sleep(n);
+           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.ACC_PARAMS_Z_D, 2, octrlQuadConfiguration.QuadConfigStructure.AccParams[2].D));
+           Thread.Sleep(n);
+           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.ACC_PARAMS_Z_D_LIM, 2, octrlQuadConfiguration.QuadConfigStructure.AccParams[2].D_Limit));
 
 
-           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.ACC_PARAMS_Z_FILTER, 2, octrlQuadConfiguration.QuadConfigStructure.AccParams[1].ComplementartuFilterAlpha));
+           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.ACC_PARAMS_Z_FILTER, 2, octrlQuadConfiguration.QuadConfigStructure.AccParams[2].ComplementartyFilterAlpha));
            Thread.Sleep(n);
 
 
@@ -528,7 +536,7 @@ namespace QuadCopterTool
            mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.SNR_PARAMS_Z_D_LIM, 2, octrlQuadConfiguration.QuadConfigStructure.SonarParams[0].D_Limit));
 
 
-           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.SNR_PARAMS_Z_FILTER, 2, octrlQuadConfiguration.QuadConfigStructure.SonarParams[0].ComplementartuFilterAlpha));
+           mHefnyCopterSerial.SendCommand(new HefnyCopterCommand(ENUM_Parameter.SNR_PARAMS_Z_FILTER, 2, octrlQuadConfiguration.QuadConfigStructure.SonarParams[0].ComplementartyFilterAlpha));
            Thread.Sleep(n);
 
             
@@ -538,7 +546,7 @@ namespace QuadCopterTool
 
         private void octrlQuadConfiguration_OnReadRequest(object sender, EventArgs e)
         {
-            mHefnyCopterSerial.SendCommand(ENUM_SerialCommands.READ_CONFIG);
+            mHefnyCopterSerial.SendCommand(ENUM_SerialCommands.PID_CONFIG);
             System.Windows.Forms.MessageBox.Show("Command Sent", "Communication", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 

@@ -7,13 +7,15 @@
     <Grid Loaded="Grid_Loaded" Background="#FF65B0CB" Height="494" Width="746">
         <Label Content="Volt Alram" Height="28" HorizontalAlignment="Left" Margin="12,12,0,0" Name="label1" VerticalAlignment="Top" ClipToBounds="False" />
         <TextBox Height="23" HorizontalAlignment="Left" Margin="84,14,0,0" Name="txtVoltageAlram" VerticalAlignment="Top" Width="120" TextChanged="txtVoltageAlram_TextChanged" />
-        <my:CtrlSensorParameters HorizontalAlignment="Left" Margin="12,46,0,0" x:Name="ctrlSensorGyroPitchRoll" VerticalAlignment="Top" Caption="Gyro Pitch &amp; Roll" />
-        <my:CtrlSensorParameters Caption="Acc Pitch &amp; Roll" HorizontalAlignment="Left" Margin="12,191,0,0" x:Name="ctrlSensorAccPitchRoll" VerticalAlignment="Top" />
-        <my:CtrlSensorParameters Caption="Gyro Yaw" HorizontalAlignment="Left" Margin="209,46,0,0" x:Name="ctrlSensorGyroYaw" VerticalAlignment="Top" />
-        <my:CtrlSensorParameters Caption="Acc Z-Axis" HorizontalAlignment="Left" Margin="209,191,0,0" x:Name="ctrlSensorAccZ" VerticalAlignment="Top" />
-        <my:CtrlSensorParameters Caption="Sonar" HorizontalAlignment="Left" Margin="425,192,0,0" x:Name="ctrlSensorSonar" VerticalAlignment="Top" />
+        <my:CtrlSensorParameters HorizontalAlignment="Left" Margin="12,46,0,0" x:Name="ctrlSensorGyroPitchRoll" VerticalAlignment="Top" Caption="Gyro Pitch" />
+        <my:CtrlSensorParameters Caption="Acc Pitch" HorizontalAlignment="Left" Margin="12,191,0,0" x:Name="ctrlSensorAccPitchRoll" VerticalAlignment="Top" TextLabel="Gyro / Acc Ratio" />
+        <my:CtrlSensorParameters Caption="Gyro Yaw" HorizontalAlignment="Left" Margin="425,45,0,0" x:Name="ctrlSensorGyroYaw" VerticalAlignment="Top" />
+        <my:CtrlSensorParameters Caption="Acc Z-Axis" HorizontalAlignment="Left" Margin="425,190,0,0" x:Name="ctrlSensorAccZ" VerticalAlignment="Top" />
+        <my:CtrlSensorParameters Caption="Sonar" HorizontalAlignment="Left" Margin="12,338,0,0" x:Name="ctrlSensorSonar" VerticalAlignment="Top" />
         <Button Content="Read" Height="23" HorizontalAlignment="Left" Margin="267,15,0,0" Name="btnRead" VerticalAlignment="Top" Width="49" Click="btnRead_Click" />
         <Button Content="Write" Height="23" Margin="322,15,0,0" Name="btnWrite" VerticalAlignment="Top" Click="btnWrite_Click" HorizontalAlignment="Left" Width="49" />
         <Button Content="Save" Height="23" HorizontalAlignment="Left" Margin="377,15,0,0" Name="btnSaveEPROM" VerticalAlignment="Top" Width="49" ToolTip="Save into EPROM" Click="btnSaveEPROM_Click" />
+        <my:CtrlSensorParameters Caption="Gyro Roll" HorizontalAlignment="Left" Margin="218,46,0,0" x:Name="ctrlSensorGyroRoll" VerticalAlignment="Top" />
+        <my:CtrlSensorParameters Caption="Acc Roll" HorizontalAlignment="Left" Margin="218,192,0,0" x:Name="ctrlSensorAccRoll" VerticalAlignment="Top" TextLabel="Gyro / Acc Ratio" />
     </Grid>
 </UserControl>

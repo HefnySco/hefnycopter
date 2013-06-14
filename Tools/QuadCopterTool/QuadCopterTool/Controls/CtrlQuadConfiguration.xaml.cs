@@ -12,7 +12,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-
 using HefnyCopter.CommunicationProtocol;
 
 namespace QuadCopterTool.Controls
@@ -25,6 +24,8 @@ namespace QuadCopterTool.Controls
         public event EventHandler OnReadRequest;
         public event EventHandler OnWriteRequest;
         public event EventHandler OnSaveEPROMRequest;
+
+       
 
         protected QuadConfigStructure mQuadConfigStructure;
 
@@ -70,9 +71,13 @@ namespace QuadCopterTool.Controls
         {
             txtVoltageAlram.Text = mQuadConfigStructure.VoltageAlarm.ToString();
             ctrlSensorAccPitchRoll.Parameters = mQuadConfigStructure.AccParams[0];
-            ctrlSensorAccZ.Parameters = mQuadConfigStructure.AccParams[1];
+            ctrlSensorAccRoll.Parameters = mQuadConfigStructure.AccParams[1];
+            ctrlSensorAccZ.Parameters = mQuadConfigStructure.AccParams[2];
+
             ctrlSensorGyroPitchRoll.Parameters = mQuadConfigStructure.GyroParams[0];
-            ctrlSensorGyroYaw.Parameters = mQuadConfigStructure.GyroParams[1];
+            ctrlSensorGyroRoll.Parameters = mQuadConfigStructure.GyroParams[1];
+            ctrlSensorGyroYaw.Parameters = mQuadConfigStructure.GyroParams[2];
+
             ctrlSensorSonar.Parameters = mQuadConfigStructure.SonarParams[0];
 
         }
@@ -82,9 +87,13 @@ namespace QuadCopterTool.Controls
         {
             mQuadConfigStructure.VoltageAlarm  = byte.Parse(txtVoltageAlram.Text);
             mQuadConfigStructure.AccParams[0]  = ctrlSensorAccPitchRoll.Parameters;
-            mQuadConfigStructure.AccParams[1]  = ctrlSensorAccZ.Parameters;
+            mQuadConfigStructure.AccParams[1] = ctrlSensorAccRoll.Parameters;
+            mQuadConfigStructure.AccParams[2] = ctrlSensorAccZ.Parameters;
+            
             mQuadConfigStructure.GyroParams[0] = ctrlSensorGyroPitchRoll.Parameters;
-            mQuadConfigStructure.GyroParams[1] = ctrlSensorGyroYaw.Parameters;
+            mQuadConfigStructure.GyroParams[1] = ctrlSensorGyroRoll.Parameters;
+            mQuadConfigStructure.GyroParams[2] = ctrlSensorGyroYaw.Parameters;
+
             mQuadConfigStructure.SonarParams[0] = ctrlSensorSonar.Parameters;
         }
 

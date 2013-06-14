@@ -38,6 +38,21 @@ namespace QuadCopterTool.Controls
             }
         }
 
+
+        [Browsable(true), Category("Misc"), Description("Label next to the text box in the bottom.")]
+        public string TextLabel
+        {
+            get
+            {
+                return lblText.Content.ToString();
+            }
+            set
+            {
+                lblText.Content = value;
+            }
+        }
+
+
         public PIDParameters Parameters
         {
             get
@@ -70,7 +85,7 @@ namespace QuadCopterTool.Controls
                 mParameters.P_Limit=short.Parse(txtPLimit.Text);
                 mParameters.I_Limit=short.Parse(txtILimit.Text);
                 mParameters.D_Limit=short.Parse(txtDLimit.Text);
-                mParameters.ComplementartuFilterAlpha=short.Parse(txtAlpha.Text);
+                mParameters.ComplementartyFilterAlpha=short.Parse(txtAlpha.Text);
 
             }
             catch
@@ -92,7 +107,7 @@ namespace QuadCopterTool.Controls
             txtPLimit.Text = mParameters.P_Limit.ToString();
             txtILimit.Text = mParameters.I_Limit.ToString();
             txtDLimit.Text = mParameters.D_Limit.ToString();
-            txtAlpha.Text = mParameters.ComplementartuFilterAlpha.ToString();
+            txtAlpha.Text = mParameters.ComplementartyFilterAlpha.ToString();
         }
     }
 }

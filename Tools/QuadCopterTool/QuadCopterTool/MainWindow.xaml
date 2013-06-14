@@ -88,7 +88,7 @@
             <TabItem Header="Configuration" Name="tabConfiguration" Background="#FF65B0CB" OpacityMask="#FF65B0CB">
                         
                 <Grid>
-                    <my1:CtrlQuadConfiguration Margin="6,6,0,0" x:Name="octrlQuadConfiguration" Height="382" Width="779" HorizontalAlignment="Left" VerticalAlignment="Top" OnWriteRequest="octrlQuadConfiguration_OnWriteRequest" OnReadRequest="octrlQuadConfiguration_OnReadRequest" OnSaveEPROMRequest="octrlQuadConfiguration_OnSaveEPROMRequest" />
+                    <my1:CtrlQuadConfiguration Margin="6,6,0,0" x:Name="octrlQuadConfiguration" Height="496" Width="800" HorizontalAlignment="Left" VerticalAlignment="Top" OnWriteRequest="octrlQuadConfiguration_OnWriteRequest" OnReadRequest="octrlQuadConfiguration_OnReadRequest" OnSaveEPROMRequest="octrlQuadConfiguration_OnSaveEPROMRequest" />
                 </Grid>
             </TabItem>
         </TabControl>

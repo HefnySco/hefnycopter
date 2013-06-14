@@ -139,12 +139,12 @@ namespace HefnyCopter.CommunicationProtocol
 
         public QuadConfigStructure()
         {
-            mGyroParams = new PIDParameters[2];
-            mAccParams = new PIDParameters[2];
+            mGyroParams = new PIDParameters[3];
+            mAccParams = new PIDParameters[3];
             mSonarParams = new PIDParameters[1];
 
             mSonarParams[0] = new PIDParameters();
-            for (int i = 0; i < 2; ++i)
+            for (int i = 0; i < 3; ++i)
             {
                 mGyroParams[i] = new PIDParameters();
                 mAccParams[i] = new PIDParameters();
