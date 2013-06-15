@@ -7,7 +7,7 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include <avr/delay.h>
+#include <util/delay.h>
 #include <avr/pgmspace.h>
 #include <stdlib.h>
 #include <avr/wdt.h>

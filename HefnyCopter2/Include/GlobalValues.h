@@ -16,6 +16,9 @@
 ///////////////////////////// Define Section
 
 
+//#define DEBUG_ME
+
+
 #define PID_I_LEAK_RATE	0.01
 int8_t SystemActions;
 #define SYS_ACT_NON					0b00000000
@@ -227,9 +230,10 @@ BOOL bResetTCNR1_X;
 static uint8_t SensorsIndex[SENSORS_ALL] = {GYRO_ROLL_PNUM,GYRO_PITCH_PNUM,GYRO_Z_PNUM,ACC_PITCH_PNUM,ACC_ROLL_PNUM,ACC_Z_PNUM,V_BAT_PNUM};
 
 
-#define ACC_Z_1G				256;
+#define ACC_Z_1G				256
+#define D90_RAD					1.5708
 #define	GYRO_RATE				0.00077 //0.00077 //0.027  //0.045
-#define RAD_TO_DEG				76.45    //57.324   [for 120]
+#define RAD_TO_DEG				76.4526    //57.324   [for 120]
 #define DEG_TO_RAD				0.01308		//(PI/2 = 120)
 #define GYRO_RATE_x_IVR_RAD		0.00058875	// = GYRO_RATE * ((3.14/2)/100) //0.01744444444444444444444444444444
 volatile double  Sensors_Latest [8];
@@ -267,7 +271,7 @@ double AltDiff;
 // TEMP
 volatile char Result[8]; 
 volatile uint16_t nResult[8];
-volatile uint16_t nTemp16;
+
 
 #define FRAMETYPE_QUADCOPTER		1
 #define FRAMETYPE_TRICOPTER			2
@@ -290,19 +294,18 @@ volatile uint16_t nTemp16;
 #define TRIFlyingMode_Y			0 
 #define TRIFlyingMode_A			1
 
+	
+//limits for sensor testing
+#define AccLowLimit			450
+#define AccHighLimit		850
+#define GyroLowLimit		450 
+#define GyroHighLimit		800 
 
-/*typedef struct
-{
-	double Pitch[4];
-	double Roll[4];
-	double Rudder[4];
-} Mixer_t;
 
-static Mixer_t Mixer[3];
 #define Mixer_Quad_PLUS		0
 #define Mixer_Quad_X		1
 #define Mixer_TRI			2
-*/
+
 
 #define PITCH_INDEX	0
 #define ROLL_INDEX	1

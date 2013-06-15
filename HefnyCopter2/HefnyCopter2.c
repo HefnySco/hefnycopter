@@ -9,7 +9,7 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include <avr/delay.h>
+#include <util/delay.h>
 #include <avr/pgmspace.h>
 #include <stdlib.h>
 #include <avr/wdt.h>
@@ -192,6 +192,12 @@ TCNT1H_OLD = TCNT1H;
 
 	Menu_EnableAllItems();
 	
+#ifdef DEBUG_ME
+		Menu_LoadPage(PAGE_DEBUG);
+		ZERO_Is();
+		IMU_Reset(); // reset angles for gyro [STABLE MODE]
+#endif
+
 				
 	while(1)
     {
@@ -276,6 +282,18 @@ void MainLoop(void)
     }
 
 	IMU();
+	
+#ifdef DEBUG_ME
+		// Sending Sensors & Motor Data 
+		if (Config.RX_mode==RX_mode_UARTMode)
+		{
+			//LED_Orange=~LED_Orange;
+			Send_Byte('S');
+			Send_Data((void *)(&Sensors_Latest[0]),24);
+			Send_Data((void *)(&MotorOut[0]),8);
+			Send_Byte('E');
+		}
+#endif
  
 	bResetTCNR1_X = true;
 	
@@ -367,8 +385,10 @@ void MainLoop(void)
 		
 		// Stop motors if Throttle Stick is less than minimum.
 		ZEROMotors();
+#ifndef DEBUG_ME
 		ZERO_Is();
 		IMU_Reset(); // reset angles for gyro [STABLE MODE]
+#endif
 	}
 	else
 	{	// Throttle stick is NOT Down .... TAKE CARE
@@ -587,8 +607,8 @@ void MainLoop(void)
 			{
 				//LED_Orange=~LED_Orange;
 				Send_Byte('S');
-				Send_Data(Sensors_Latest,12);
-				Send_Data(MotorOut,8);
+				Send_Data((void *)(Sensors_Latest),24);
+				Send_Data((void *)(MotorOut),8);
 				Send_Byte('E');
 			}
 			
@@ -670,9 +690,6 @@ void HandleSticksForArming (void)
 				bResetTCNR1_X = false;
 				if ( (CurrentTCNT1_X- TCNT1_X_snapshot1) > STICKPOSITION_LONG_TIME )
 				{
-					if ((Config.RX_mode==RX_mode_BuddyMode) && (!IS_TX1_GOOD)) return; 
-					// in Buddy mode you cannot arm is there is no signal from TX1
-					
 					Arm();
 					return ;
 				}

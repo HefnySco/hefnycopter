@@ -10,7 +10,7 @@
 #define VERSION_H_
 
 
-static const prog_char strVersionInfo[] = "HefnyCopter2 v1.0.1";
+static const prog_char strVersionInfo[] = "HefnyCopter2 v1.0.3b";
 #define VERSION_16INT	0x0190
 #define REQUIRE_FACTORY_RESET	
 
@@ -215,9 +215,16 @@ Function:
 *	.Max Acc Angle correction fix.
 *	.Scale Scale is 1/2 less when ACRO than Stable mode to avoid too much sensitivity in Acro
 
+version 1.0.2
+Function:
+*	.You should be on Main Screen to make ARMIN.
+*	.You cannot arm if sensors reads error. u will know it is a sensor error as you will go to Sensor Test instead of Home_Page.
+UI
+*	.Faulty sensor will be displayed in inverted font in "Sensor Test Menu" instead of X next to it.
 
-
-
+version 1.0.3
+IMU:
+*	.Better Stabilization algorithm.
 
 
 

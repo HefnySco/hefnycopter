@@ -9,7 +9,7 @@
 #include <avr/io.h> 
 #include <util/atomic.h>
 #include <avr/pgmspace.h>
-#include <avr/delay.h>
+#include <util/delay.h>
 
 #include <string.h>
 #include <stdlib.h>
