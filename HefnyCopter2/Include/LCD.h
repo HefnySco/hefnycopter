@@ -17,7 +17,7 @@
 
 void LCD_Init();
 void LCD_Clear();
-void LCD_SetPos(uint8_t line, uint8_t column);
+void LCD_SetPos(const uint8_t line, const uint8_t column);
 void lcdWriteChar(char c);
 void LCD_WriteString(char *s);
 void LCD_WriteStringex(uint8_t x, uint8_t y, char *str, BOOL LCDReverse);
@@ -32,9 +32,9 @@ void LCD_WriteValue_double_ex(uint8_t x, uint8_t y, double value, int8_t len, BO
 void lcdReverse(uint8_t reversed);
 void lcdSetContrast(uint8_t contrast);
 void lcdSetPixel(uint8_t x, uint8_t y, uint8_t on);
-void LCD_Line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1);
-void LCD_Rectangle(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t color);
-void LCD_FillRectangle(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t color);
+//void LCD_Line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1);
+//void LCD_Rectangle(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t color);
+//void LCD_FillRectangle(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t color);
 void LCD_Enable();
 void LCD_Disable();
 void LCD_SelectFont(const fontdescriptor_t *font);

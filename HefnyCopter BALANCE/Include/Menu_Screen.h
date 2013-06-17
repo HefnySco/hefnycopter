@@ -115,11 +115,11 @@ P_STR scrReceiverTest[] =
 	"RX:";
 
 P_STR scrSensorTest[] = 
-	"Gyro R:\n"
-	"Gyro P:\n"
+	"Gyro X:\n"
 	"Gyro Y:\n"
-	"Acc  P:\n"
-	"Acc  R:\n"
+	"Gyro Z:\n"
+	"Acc  X:\n"
+	"Acc  Y:\n"
 	"Acc  Z:\n"
 	"Batt:";
 

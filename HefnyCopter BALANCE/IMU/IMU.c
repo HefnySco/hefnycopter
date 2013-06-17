@@ -18,28 +18,25 @@
 //#include "../Include/DCM.h"
 
 
-// Rotate Estimated vector(s) with small angle approximation, according to the gyro data
-void RotateV() 
-{
+
+//
+//// inspired by to Multiwii
+//// 
+//void RotateV ()
+//{
 	///*
-	//// inspired by to Multiwii
 	//void rotateV(struct fp_vector *v,float* delta) {
 	  //fp_vector v_tmp = *v;
 	  //v->Z -= delta[ROLL]  * v_tmp.X + delta[PITCH] * v_tmp.Y;
 	  //v->X += delta[ROLL]  * v_tmp.Z - delta[YAW]   * v_tmp.Y;
 	  //v->Y += delta[PITCH] * v_tmp.Z + delta[YAW]   * v_tmp.X; 
 	//*/
-	//double oAnglePitch = AnglePitch;
-	//double oAngleRoll = AngleRoll;
-	//double oAngleZ     = AngleZ     ;
-	AngleZ     -= (CompGyroRoll  * AngleRoll )  * GYRO_RATE + ( CompGyroPitch * AnglePitch) * GYRO_RATE;
-	AngleRoll  += (CompGyroRoll  * AngleZ )     * GYRO_RATE - ( CompGyroZ     * AnglePitch) * GYRO_RATE;
-	AnglePitch += (CompGyroPitch * AngleZ )		* GYRO_RATE + ( CompGyroZ     * AngleRoll ) * GYRO_RATE;
-
-}
-
-
-
+	//
+	//AngleZ     -= ((Sensors_Latest[GYRO_ROLL_Index]  * AngleRoll ) + ( Sensors_Latest[GYRO_PITCH_Index] * AnglePitch)) * GYRO_RATE;
+	//AngleRoll  += ((Sensors_Latest[GYRO_ROLL_Index]  * AngleZ )    - ( Sensors_Latest[GYRO_Z_Index]     * AnglePitch)) * GYRO_RATE;
+	//AnglePitch += ((Sensors_Latest[GYRO_PITCH_Index] * AngleZ )	   + ( Sensors_Latest[GYRO_Z_Index]	    * AngleRoll )) * GYRO_RATE;
+//}
+//
 
 
 void IMU_Reset()
@@ -47,7 +44,7 @@ void IMU_Reset()
 	
 	AnglePitch=0;
 	AngleRoll=0;
-	AngleZ=0;
+AngleZ=0;
 	
 }
 //////////////////////////////////////////////////////////////////////////
@@ -58,7 +55,8 @@ void IMU (void)
 	
 		double Alpha;	
 		double Beta;
-	
+		//static bool InvertedQuad;
+		
 	    // calculate ACC-Z
 		Alpha = Config.AccParams[Z_INDEX].ComplementaryFilterAlpha / 1000.0;
 		Beta = 1- Alpha; // complementary filter to remove noise
@@ -80,15 +78,16 @@ void IMU (void)
 		// GYRO Always calculated.
 		gyroPitch =	PID_Calculate (Config.GyroParams[PITCH_INDEX],	&PID_GyroTerms[PITCH_INDEX],CompGyroPitch);	
 		gyroRoll  = PID_Calculate (Config.GyroParams[ROLL_INDEX],	&PID_GyroTerms[ROLL_INDEX],CompGyroRoll); 
-		gyroYaw   = PID_Calculate (Config.GyroParams[YAW_INDEX],	&PID_GyroTerms[YAW_INDEX],CompGyroZ -((double)((float)RX_Snapshot[RXChannel_RUD]  * 0.5f))); 
+		gyroYaw   = PID_Calculate (Config.GyroParams[YAW_INDEX],	&PID_GyroTerms[YAW_INDEX],CompGyroZ -((double)((float)RX_Snapshot[RXChannel_RUD]  / 2.0f))); 
 	
 			
 		// Read ACC and Trims
 		// ACC directions are same as GYRO direction [we added "-" for this purpose] 
 		double APitch = - Sensors_Latest[ACC_PITCH_Index] - Config.Acc_Pitch_Trim;
 		double ARoll  = - Sensors_Latest[ACC_ROLL_Index]  - Config.Acc_Roll_Trim;
-		double DT_YAW =  (double)Sensors_Latest[GYRO_Z_Index] * GYRO_RATE * TimeDef * 0.001; 
-		
+		double DT_YAW =  (double)CompGyroZ * GYRO_RATE  * TimeDef * 0.001 / 2; 
+			
+			
 		if ( TCNT1H > TCNT1H_OLD) 
 		{
 			TimeDef = TCNT1H - TCNT1H_OLD;
@@ -99,50 +98,68 @@ void IMU (void)
 		}
 		TCNT1H_OLD += TimeDef;
 		
-		//// Do the Magic of IMU LEVELING here
-		//// check also : http://scolton.blogspot.com/2012/09/fun-with-complementary-filter-multiwii.html
+		
+
+// Do the Magic of IMU LEVELING here
+		// check also : http://scolton.blogspot.com/2012/09/fun-with-complementary-filter-multiwii.html
+		double DeltaPitch =   (sin(AngleRoll * DEG_TO_RAD) * DT_YAW) ; // integrate component of yaw rate into pitch angle
+		double DeltaRoll  = - (sin(AnglePitch * DEG_TO_RAD) * DT_YAW);  // integrate component of yaw rate into roll angle
 		AnglePitch = AnglePitch
-				   + (double)Sensors_Latest[GYRO_PITCH_Index] * GYRO_RATE * TimeDef * 0.001
-					   + (sin(AngleRoll * DEG_TO_RAD) * DT_YAW)  // integrate component of yaw rate into pitch angle
+					+ (double)Sensors_Latest[GYRO_PITCH_Index] * GYRO_RATE * TimeDef * 0.001
+					//+ DeltaPitch
 						;
 		AngleRoll = AngleRoll  
-				  + (double)Sensors_Latest[GYRO_ROLL_Index]  * GYRO_RATE * TimeDef * 0.001
-					  - (sin(AnglePitch * DEG_TO_RAD) * DT_YAW)  // integrate component of yaw rate into roll angle
+					+ (double)Sensors_Latest[GYRO_ROLL_Index]  * GYRO_RATE * TimeDef * 0.001
+					//+ DeltaRoll
 					   ; 
-		//RotateV();	
 		// Correct Drift using ACC
 		Alpha = Config.AccParams[PITCH_INDEX].ComplementaryFilterAlpha / 1000.0; // TODO: optimize
 		Beta = 1- Alpha;
-		#define ACC_SMALL_ANGLE	140
-		//// if small angle then correct using ACC
-		if ((APitch < ACC_SMALL_ANGLE) && (APitch > -ACC_SMALL_ANGLE)) 
+		#define ACC_SMALL_ANGLE	40
+		// if small angle then correct using ACC
+		if ((APitch < ACC_SMALL_ANGLE) && (APitch > -ACC_SMALL_ANGLE))
 		{
-			AnglePitch = Alpha * AnglePitch + Beta * APitch ;
+			AnglePitch = Alpha * AnglePitch + Beta * APitch;
 		}
 		
 		Alpha = Config.AccParams[ROLL_INDEX].ComplementaryFilterAlpha / 1000.0; // TODO: optimize
 		Beta = 1- Alpha;
 		if ((ARoll  < ACC_SMALL_ANGLE) && (ARoll  > -ACC_SMALL_ANGLE))
 		{
-			AngleRoll =  Alpha * AngleRoll + Beta * ARoll ;
-			//AngleZ =  Alpha * AngleZ + Beta * CompAccZ * 10;
-//
+			AngleRoll =  Alpha * AngleRoll + Beta * ARoll;
 		}
-		//
+		
 			
-		////////// Attitude of the estimated vector
-		////////int32_t sqGZ = AngleZ * AngleZ;
-		////////int32_t sqGRoll = AngleRoll * AngleRoll;
-		////////int32_t sqGPitch = AnglePitch * AnglePitch;
-		////////int32_t sqGRoll_sqGZ = sqGRoll + sqGZ;
-		////////float invmagXZ  = InvSqrt(sqGRoll_sqGZ);
-		//////////invG = InvSqrt(sqGRoll_sqGZ + sqGPitch);
-		////////NavX = _atan2(AngleRoll , AngleZ) / 100.0f;
-		////////NavY = _atan2(AnglePitch , invmagXZ*sqGRoll_sqGZ) / 100.0f;
-		////////
-		return ; /// FOR TESTING
-	
+			
+			//if (Sensors_Latest[ACC_Z_Index] > -90)
+			//{
+				//InvertedQuad = false;
+			//}
+			//else if (Sensors_Latest[ACC_Z_Index] < -110)
+			//{
+				//InvertedQuad = true;
+			//}
 			//
+			//if (InvertedQuad==false)
+			//{
+				//NavY = AnglePitch;
+				//NavX = AngleRoll;
+			//}
+			//else
+			//{
+				//NavY = -AnglePitch;
+				//NavX = -AngleRoll;
+			//}			
+			
+
+			
+			NavY = AnglePitch;
+			NavX = AngleRoll;
+			
+			
+			//if ((Config.BoardOrientationMode==QuadFlyingMode_PLUS) && (Config.QuadFlyingMode==QuadFlyingMode_X))
+			//{
+
 		// multiwii HEADFREE ... compact formula
 /*
 	if(f.HEADFREE_MODE) 
@@ -157,11 +174,12 @@ void IMU (void)
 */	
 		// BUG:
 		// you should * by 0.7 in case of different directions between board nad flying mode
-		// this is to distribute sticks values and has nothing to do with *0.5 that u can keep.	
+		// this is to distribute sticks values and has nothing to do with /2.0 that u can keep.	
 		if ((Config.BoardOrientationMode==QuadFlyingMode_PLUS) && (Config.QuadFlyingMode==QuadFlyingMode_X))
 		{
 			if (Config.FrameType == FRAMETYPE_QUADCOPTER)
 			{	
+
 				NavY += ( -  (double)((float)RX_Snapshot[RXChannel_AIL]  * 0.7f));
 				NavY += ( -  (double)((float)RX_Snapshot[RXChannel_ELE]  * 0.7f));	
 				NavX += ( -  (double)((float)RX_Snapshot[RXChannel_AIL]  * 0.7f));
@@ -169,22 +187,23 @@ void IMU (void)
 			}
 			else
 			{	// if TRI Copter Fly in A mode.
-				NavY += ( +  (double)((float)RX_Snapshot[RXChannel_ELE] * 0.7f));	
-				NavX += ( +  (double)((float)RX_Snapshot[RXChannel_AIL] * 0.7f));
+				NavY += ( +  (double)((float)RX_Snapshot[RXChannel_ELE] ));	
+				NavX += ( +  (double)((float)RX_Snapshot[RXChannel_AIL] ));
 			}				
 		}
 		else if (Config.BoardOrientationMode==Config.QuadFlyingMode)  // ver 0.9.9 code optimization
 		{ // for [BoardOrientationMode==QuadFlyingMode_X] this is considered invalid for Tricopter
-				NavY += ( -  (double)((float)RX_Snapshot[RXChannel_ELE] * 0.7f));	
-				NavX += ( -  (double)((float)RX_Snapshot[RXChannel_AIL] * 0.7f));
+					NavY += ( -  (double)((float)RX_Snapshot[RXChannel_ELE] ));	
+					NavX += ( -  (double)((float)RX_Snapshot[RXChannel_AIL] ));
 		}
 		else if ((Config.BoardOrientationMode==QuadFlyingMode_X) && (Config.QuadFlyingMode==QuadFlyingMode_PLUS))
 		{  // !!INVALID mode for TRICOPTER
-				NavY += ( +  (double)((float)RX_Snapshot[RXChannel_AIL]  * 0.7f));
-				NavY += ( -  (double)((float)RX_Snapshot[RXChannel_ELE]  * 0.7f));	
-				NavX += ( -  (double)((float)RX_Snapshot[RXChannel_AIL]  * 0.7f));
-				NavX += ( -  (double)((float)RX_Snapshot[RXChannel_ELE]  * 0.7f));	
+					NavY += ( +  (double)((float)RX_Snapshot[RXChannel_AIL]  * 0.7f));
+					NavY += ( -  (double)((float)RX_Snapshot[RXChannel_ELE]  * 0.7f));	
+					NavX += ( -  (double)((float)RX_Snapshot[RXChannel_AIL]  * 0.7f));
+					NavX += ( -  (double)((float)RX_Snapshot[RXChannel_ELE]  * 0.7f));	
 		}
+					
 			
 		if (IS_FLYINGMODE_ACRO==0)
 		{
@@ -197,7 +216,7 @@ void IMU (void)
 	
 }
 
-
+		
 	
 
 	

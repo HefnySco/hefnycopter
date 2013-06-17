@@ -10,7 +10,7 @@
 #define VERSION_H_
 
 
-static const prog_char strVersionInfo[] = "HefnyCopter2 v1.0.0";
+static const prog_char strVersionInfo[] = "HefnyCopter2 v1.0.1";
 #define VERSION_16INT	0x0190
 #define REQUIRE_FACTORY_RESET	
 
@@ -199,6 +199,7 @@ UI
 *	. Mode: A & Y mode for TRI 
 *	. Mode: A & Y mode in HomePage for TRI
 
+
 version 1.0.0
 Function:
 *	. Pitch & Roll separated.
@@ -208,6 +209,11 @@ Function:
 * UI:
 *	. battery decimal
 *	. Sensor Test ACC-X & Acc-Y syntax error swapped.
+
+version 1.0.1
+Function:
+*	.Max Acc Angle correction fix.
+*	.Scale Scale is 1/2 less when ACRO than Stable mode to avoid too much sensitivity in Acro
 
 
 

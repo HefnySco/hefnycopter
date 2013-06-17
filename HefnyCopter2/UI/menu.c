@@ -339,9 +339,9 @@ static void startEditMode(void* valuePtr, int16_t loLimit, int16_t hiLimit, uint
 	editLoLimit = loLimit;
 	editHiLimit = hiLimit;
 	
-	LCD_FillRectangle(30, 11, 98, 34, 0);
-	LCD_Rectangle(30, 11, 98, 34, 1);
-	LCD_Rectangle(31, 12, 97, 33, 1);
+	//LCD_FillRectangle(30, 11, 98, 34, 0);
+	//LCD_Rectangle(30, 11, 98, 34, 1);
+	//LCD_Rectangle(31, 12, 97, 33, 1);
 	writeSoftkeys(_skEDIT);
 	LCD_SelectFont(&font12x16);
 	editModeHandler();
@@ -1067,16 +1067,22 @@ void _hDebug()
 			//gyroZangle=0;
 			//gyroYangle=0;
 			//gyroXangle=0;
-			AnglePitch=0;
-			AngleRoll=0;
-			AngleZ=0;
-			
+			//AnglePitch=0;
+			//AngleRoll=0;
+			//AngleZ=0;
+			//
 		}	
-		LCD_WriteValue_double_ex(1,12,NavY,9,false);
-		LCD_WriteValue_double_ex(2,12,AnglePitch,9,false);
-		LCD_WriteValue_double_ex(3,12,AngleZ * DEG_TO_RAD + 1.5708,9,false);
-		LCD_WriteValue_double_ex(4,12,TimeDef,9,false);
-
+#ifdef DEBUG_ME
+		OldAngle = OldAngle - CompAccZ ;
+		YAWAngle = YAWAngle + OldAngle;
+		LCD_WriteValue_double_ex(1,12,AnglePitch,10,false);
+		LCD_WriteValue_double_ex(2,12,AngleRoll,10,false);
+		LCD_WriteValue_double_ex(3,12,CompAccZ * DEG_TO_RAD+ D90_RADZ,10,false);
+		//Alpha * AngleZ + Beta * CompAccZ * DEG_TO_RAD; //+ D90_RAD
+		//LCD_WriteValue_double_ex(4,12,TimeDef,9,false);
+		
+		OldAngle = CompAccZ ;
+#endif
 	}
 }
 void _hFactoryReset()

@@ -60,7 +60,7 @@ void _helper_DisplayPitchRollYaw (const uint8_t subindex)
 	{
 		case 0:	
 			if (Config.PitchRollLinked==0)
-			{				   
+			{
 				strcpy_P(sXDeg,PSTR("Pitch        "));
 			}
 			else
@@ -622,27 +622,15 @@ void _hSensorTest()
 	#define AccHighLimit		850
 	#define GyroLowLimit		450 //500		
 	#define GyroHighLimit		850 //630
+
 	
 	for (int i=0; i<6;++i)
 	{
 		LCD_SetPos(i, 48);
 		LCD_WriteString(Sensors_Test(SensorsIndex[i],GyroLowLimit,GyroHighLimit));
 	}	
-	//LCD_SetPos(0, 48);
-	//LCD_WriteString(Sensors_Test(GYRO_ROLL_PNUM,GyroLowLimit,GyroHighLimit));
-	//LCD_SetPos(1, 48);
-	//LCD_WriteString(Sensors_Test(GYRO_PITCH_PNUM,GyroLowLimit,GyroHighLimit));
-	//LCD_SetPos(2, 48);
-	//LCD_WriteString(Sensors_Test(GYRO_Z_PNUM,GyroLowLimit,GyroHighLimit));
-	//
-	//LCD_SetPos(3, 48);
-	//LCD_WriteString(Sensors_Test(ACC_PITCH_PNUM,AccLowLimit,AccHighLimit));
-	//LCD_SetPos(4, 48);
-	//LCD_WriteString(Sensors_Test(ACC_ROLL_PNUM,AccLowLimit,AccHighLimit));
-	//LCD_SetPos(5, 48);
-	//LCD_WriteString(Sensors_Test(ACC_Z_PNUM,AccLowLimit,AccHighLimit));
-	//LCD_SetPos(6, 48);
-	//LCD_WriteValue_double(6,48,Sensor_GetBattery(),false);
+        
+     LCD_WriteValue_double(6,48,Sensor_GetBattery(),false);
 }
 
 void _hReceiverTest()
@@ -766,7 +754,7 @@ void _hSensorCalibration()
 	for (i=0; i<6;++i)
 	{ // order is aligned with ACC_PITCH_Index & GYRO_ROLL_Index
 		LCD_SetPos(i, 48);
-		LCD_WriteValue_double_ex(i,48,Config.Sensor_zero[i],9,false);
+		LCD_WriteValue(i,48,Config.Sensor_zero[i],5,false);
 	}	
 	
 }
@@ -864,7 +852,7 @@ void _hMiscSettings()
 	}
 	
 	LCD_WriteValue(0,84,Config.AutoDisarm,3,0==subpage);
-	double volt = (double)(Config.VoltageAlarm/10.0f);
+        double volt = (double)(Config.VoltageAlarm/10.0f);
 	LCD_WriteValue_double_ex(1,84,volt,8,1==subpage); 
 	//LCD_WriteValue(1,84,Config.VoltageAlarm,3,1==subpage);
 	LCD_WriteValue(2,84,Config.ThrottleMin,3,2==subpage);
@@ -1057,8 +1045,6 @@ void _hAltitudeHold()
 	static double YAWAngle;
 static double OldAngle;
 	static double YAWAngle2;
-	static double maxdiff=0;
-		
 void _hDebug()
 {
 
@@ -1089,30 +1075,150 @@ void _hDebug()
 			//gyroXangle=0;
 			AnglePitch=0;
 			AngleRoll=0;
-			AngleZ =0;
-			maxdiff=0;
+			YAWAngle2=0;
+			YAWAngle=0;
+			OldAngle=0;
 		}	
-		static double lastGyro=0;
-		LCD_SetPos(0, 18);
-		LCD_WriteString_P(PSTR("Meas"));
-		LCD_WriteValue_double_ex(1,48, AnglePitch,9,false);
-		LCD_WriteValue_double_ex(2,48, AngleRoll,9,false);
-		LCD_WriteValue_double_ex(3,48, AngleZ,9,false);
-		LCD_WriteValue_double_ex(4,48, NavX,9,false);
-		//lastGyro = Sensors_Latest[GYRO_ROLL_Index];
-		//if (abs(maxdiff) < abs(lastGyro)) maxdiff = lastGyro;
-		maxdiff = maxdiff + CompAccZ;
-		LCD_WriteValue_double_ex(5,48,AnglePitch,9,true);
-		LCD_WriteValue_double_ex(6,48,Sensors_Latest[ACC_PITCH_Index],9,false);
+	//IMU_CalculateAngles();
+	//
+	//for (int i=0;i<6;++i)
+	//{
 		
-		//LCD_WriteValue(4,48, MotorOut[3],9,false);
+		//LCD_WriteValue(i,0,StabilityMatrix_GX[i],4,false); 
+		//LCD_WriteValue(i,36,StabilityMatrix_GX[i+6],4,false); 
+		//LCD_WriteValue(i,72,StabilityMatrix_GX[i+12],4,false); 
+	//}
+	//	RX_Snapshot[RXChannel_AIL] = (RX_Latest[ActiveRXIndex][RXChannel_AIL] * 3) / 5 ;
+	
+			//RX_Snapshot[RXChannel_RUD] = (RX_Latest[ActiveRXIndex][RXChannel_RUD] * 3) / 5 ;
+	///if ((Config.RX_mode==RX_mode_UARTMode) && (IS_MISC_SENSOR_SONAR_ENABLED==true))
+	//{
+    double Temp;
+	//RX_SONAR_TRIGGER = HIGH;
+	//DisplayBuffer[9]=0;
+	//IMU();
+		RX_Snapshot   [RXChannel_RUD] = (RX_Latest[ActiveRXIndex][RXChannel_RUD] * Config.StickScaling / 20); // version 0.9.9 
+		
+				gyroYaw = gyroYaw * 4;
+				//LowpassOutYaw = (3 * LowpassOutYaw + gyroYaw) / 4;
+				MotorOut[3]  = gyroYaw + SERVO_IN_MIDDLE - (RX_Snapshot[RXChannel_RUD] / 2.0); //( 2.0 * MotorOut[3] +  gyroYaw + SERVO_IN_MIDDLE) / 3.0;
+				//MotorOut[3]  = MotorOut[3] + (RX_Snapshot[RXChannel_RUD] / 2.0);
+	//double DT_YAW =  (double)Sensors_Latest[GYRO_Z_Index] * GYRO_RATE; 
+	//YAWAngle +=  (double)Sensors_Latest[GYRO_PITCH_Index] * GYRO_RATE;// + (AngleRoll * DEG_TO_RAD * DT_YAW)  ;
+	//OldAngle += (double)Sensors_Latest[GYRO_Z_Index] * GYRO_RATE;
+	//LCD_WriteStringex(0,0,DisplayBuffer,false);   // UART RX
+				//SONAR
+				//IMU_HeightKeeping();
+				//ATOMIC_BLOCK(ATOMIC_FORCEON)
+				//{	
+					//Temp = RX_SONAR_RAW; 
+				//}
+				//LCD_WriteValue(0,48, Temp,6,false);
+				LCD_WriteValue(1,48, gyroYaw,9,false);
+				LCD_WriteValue(2,48, RX_Snapshot[RXChannel_RUD],9,false);
+				//LCD_WriteValue_double_ex(3,48, OldAngle,9,false);
+				LCD_WriteValue(4,48, MotorOut[3],9,false);
+	//LCD_WriteValue(4,48, OldAngle,6,false);
+	//LCD_WriteValue(5,48, - Sensors_Latest[ACC_PITCH_Index] - Config.Acc_Pitch_Trim,6,false);
+	//if (RX_SONAR_RAW < 500)
+//	{
+	//	OldAngle += (YAWAngle -RX_SONAR_RAW);
+//		YAWAngle =RX_SONAR_RAW;
+//	}	
+	//RX_SONAR_TRIGGER = LOW;
+	//}	
+
+	//LCD_WriteValue(1,48,ACC_Pitch_Offset,4,false); 
+	//LCD_WriteValue(2,48,Sensors_Latest[ACC_PITCH_Index],4,false);
+	//char s[12];
+	//dtostrf(gyroYaw, 9,1, s);
+	//LCD_SetPos(1,48);
+	//LCD_WritePadded(s,10);
+	//LCD_WriteValue_double_ex(2,48,CompAccRoll,9,false);
+	//LCD_WriteValue_double_ex(3,48,gyroYangle,9,false);
+	//LCD_WriteValue_double_ex(5,48,gyroYangle - (double)((float)RX_Snapshot[RXChannel_ELE] / 4.0f),9,false);
+	//double Tau;
+	//Tau = (Config.GyroParams[1].ComplementaryFilterAlpha / (1000.0 - Config.GyroParams[1].ComplementaryFilterAlpha)) * GYRO_RATE;
+	//YAWAngle +=  Tau * CompGyroZ  ;
+	//OldAngle += (Sensors_Latest[GYRO_Z_Index] * GYRO_RATE);		
+				
+	//LCD_WriteValue_double_ex(2,0,AnglePitch,9,false);
+	//LCD_WriteValue_double_ex(3,0,AngleRoll,9,false);	
+	 //YAWAngle2+= (double)Sensors_Latest[GYRO_Z_Index] * GYRO_RATE ;	
+	//LCD_WriteValue_double_ex(1,0,YAWAngle2,9,false); // Angle
+	//LCD_WriteValue_double_ex(2,0,DT_YAW,9,false);// PID OUTPUT
+	//LCD_WriteValue_double_ex(3,0,- Sensors_Latest[ACC_PITCH_Index] - Config.Acc_Pitch_Trim,9,false);// PID OUTPUT
+	//LCD_WriteValue_double_ex(4,0,- Sensors_Latest[ACC_ROLL_Index]  - Config.Acc_Roll_Trim,9,false);// PID OUTPUT
+	LCD_WriteValue_double_ex(5,0,Sensors_Latest[ACC_Z_Index],9,false);// PID OUTPUT
+	//LCD_WriteValue_double_ex(6,0,gyroYangle,9,false);// ANGLE
+	
+	//LCD_WriteValue(4,48,PID_AccTerms[0].I,4,false);
+	//LCD_WriteValue(5,48,Sensors_dt,5,false);
+	//LCD_WriteValue(0,0,PID_GyroTerms[0].P,4,false);
+	//LCD_WriteValue(4,0,PID_GyroTerms[0].I,4,false);
+	//LCD_WriteValue(6,0,Sensors_Latest[GYRO_Z_Index],4,false);
+	
+	//
+	//LCD_WriteValue_double(3,48,CompAccRoll,false);
+	//LCD_WriteValue_double(4,48,CompAccPitch,false);
+	
+	/*
+	itoa((Sensors_Latest[ACC_PITCH_Index] * 2.08), sXDeg,10);
+	LCD_SetPos(3,48);
+	strcat_P(sXDeg,strSPC3);
+	LCD_WriteString(sXDeg);
+	
+	itoa( CompAngleX, sXDeg,10);//itoa( term_I[0], sXDeg,10);
+	LCD_SetPos(4,48);
+	strcat_P(sXDeg,strSPC3);
+	LCD_WriteString(sXDeg);
+	
+	
+	itoa( Sensors_Latest[ACC_ROLL_Index] * 2.08, sXDeg,10);//itoa( term_I[0], sXDeg,10);
+	LCD_SetPos(5,48);
+	strcat_P(sXDeg,strSPC3);
+	LCD_WriteString(sXDeg);
+	
+	
+	
+	itoa( gyroRoll, sXDeg,10);
+	LCD_SetPos(6,48);
+	strcat_P(sXDeg,strSPC3);
+	LCD_WriteString(sXDeg);
+	*/
+	
+/*		 
+	int16_t t=ADCPort_Get(ACC_PITCH_PNUM);
+	AccTotal += t -OldAcc ; //Config.Sensor_zero[ACC_PITCH_Index];
+	OldAcc = t;
+	utoa(AccTotal, sXDeg,10);
+
+	IMU_CalculateAngles ();
+	dtostrf( CompAngleY, 4, 2, sXDeg);
+	LCD_SetPos(3,48);
+	strcat_P(sXDeg,strSPC3);
+	LCD_WriteString(sXDeg);
+	
+	gyroPitch= CompAngleY*10; //ScaleSensor ((CompAngleY*10),&(Config.AccParams));
+	itoa( gyroPitch, sXDeg,10);
+	LCD_SetPos(4,48);
+	strcat_P(sXDeg,strSPC3);
+	LCD_WriteString(sXDeg);
+	
+	gyroPitch= ScaleSensor (gyroPitch,&(Config.AccParams),Acc_Ratio);
+
+	itoa( gyroPitch, sXDeg,10);
+	LCD_SetPos(5,48);
+	strcat_P(sXDeg,strSPC3);
+	LCD_WriteString(sXDeg);
+*/
 	}
 }
 void _hFactoryReset()
 {
 	if (IS_INIT)
 	{
-		;
+		LCD_SetPos(3, 18);
 		LCD_WriteString_P(strAreYouSure);
 	}
 	else if (KEY4)	// Yes

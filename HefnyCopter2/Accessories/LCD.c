@@ -66,7 +66,7 @@ static void sendByte(uint8_t byte)
 	//LCD_CS = 1;
 //}
 
-static void sendData(uint8_t data, uint8_t CommandorData)
+static void sendData(const uint8_t data, const uint8_t CommandorData)
 {
 	LCD_CS = 0;
 	LCD_A0 = CommandorData;
@@ -74,7 +74,7 @@ static void sendData(uint8_t data, uint8_t CommandorData)
 	LCD_CS = 1;
 }
 
-static void setPos(uint8_t line, uint8_t column)
+static void setPos(const uint8_t line, const uint8_t column)
 {
 	sendData(0xB0 | (line & 0x07), LCD_COMMAND);
 	sendData(0x10 | (column >> 4), LCD_COMMAND);
@@ -127,8 +127,8 @@ static void lcdSetByte(uint8_t x, uint8_t y, uint8_t b)
 }
 
 
-void LCD_Line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1)
-{
+//void LCD_Line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1)
+//{
 	// simple optimized bresenham algorithm
 	////int8_t dx =  abs(x1 - x0);
 	////int8_t sx = x0 < x1 ? 1 : -1;
@@ -147,10 +147,10 @@ void LCD_Line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1)
 		////if (e2 > dy) { err += dy; x0 += sx; } /* e_xy + e_x > 0 */
 		////if (e2 < dx) { err += dx; y0 += sy; } /* e_xy + e_y < 0 */
 	////}
-}
+//}
 
-void LCD_Rectangle(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t color)
-{
+//void LCD_Rectangle(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t color)
+//{
 	//uint8_t a;
 	//if (x0 > x1) { a = x0; x0 = x1; x1 = a;}
 	//if (y0 > y1) { a = y0; y0 = y1; y1 = a;}
@@ -164,17 +164,17 @@ void LCD_Rectangle(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t color
 		//lcdSetPixel(x0, a, color);
 		//lcdSetPixel(x1, a, color);
 	//}
-}
+//}
 
-void LCD_FillRectangle(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t color)
-{
+//void LCD_FillRectangle(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t color)
+//{
 	//uint8_t a;
 	//if (x0 > x1) { a = x0; x0 = x1; x1 = a;}
 	//if (y0 > y1) { a = y0; y0 = y1; y1 = a;}
 	//for (a = y0; a <= y1; a++)
 		//for(uint8_t i = x0; i <= x1; i++)
 			//lcdSetPixel(i, a, color);
-}
+//}
  
 void LCD_Clear()
 {

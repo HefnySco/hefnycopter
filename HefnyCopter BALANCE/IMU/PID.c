@@ -114,13 +114,12 @@ float PID_Calculate (const pid_param_t PID_Params, pid_terms_t *PID_Term, const 
 
 void ZERO_Is()
 {
-	PID_GyroTerms[PITCH_INDEX].I=0;
-	PID_GyroTerms[ROLL_INDEX].I=0;
-	PID_GyroTerms[YAW_INDEX].I=0;
-	PID_AccTerms[PITCH_INDEX].I=0;
-	PID_AccTerms[ROLL_INDEX].I=0;
-	PID_AccTerms[Z_INDEX].I=0;
-
+	for (int i=0;i<3;++i)
+	{
+		PID_GyroTerms[i].I=0;
+		PID_AccTerms[i].I=0;
+	}
+	
 	PID_SonarTerms[0].I=0;
 }
 

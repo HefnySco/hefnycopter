@@ -231,7 +231,9 @@ static uint8_t SensorsIndex[SENSORS_ALL] = {GYRO_ROLL_PNUM,GYRO_PITCH_PNUM,GYRO_
 
 
 #define ACC_Z_1G				256
+
 #define D90_RAD					1.5708
+#define D90_RADZ				1.5708
 #define	GYRO_RATE				0.00077 //0.00077 //0.027  //0.045
 #define RAD_TO_DEG				76.4526    //57.324   [for 120]
 #define DEG_TO_RAD				0.01308		//(PI/2 = 120)

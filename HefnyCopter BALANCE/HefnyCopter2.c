@@ -147,7 +147,7 @@ if (Config.RX_mode==RX_mode_UARTMode)
 	
 	sei();
 	
-	delay_ms(30);
+	//delay_ms(30);
     
 }
 
@@ -166,8 +166,8 @@ int main(void)
 	DataPtr = (uint8_t *) (&Sensors_Latest);
 	DataCounter=0;
 	
-	
-	TCNT1H_OLD = TCNT1H;
+TCNT1H_OLD = TCNT1H;
+
 	// Never go to MainLoop "fly loop" unless Sensors & RX is calibrated.
 	// This loop to protect against any bug that might make the quad start or KB stick click
 	// as in this case crash is a must.
@@ -192,8 +192,11 @@ int main(void)
 
 	Menu_EnableAllItems();
 	
-	Menu_LoadPage(PAGE_DEBUG);
-	
+#ifdef DEBUG_ME
+		Menu_LoadPage(PAGE_DEBUG);
+#endif
+
+				
 	while(1)
     {
 		//LoopESCCalibration();
@@ -300,8 +303,8 @@ void MainLoop(void)
 	////////// Slow Actions inside
 	// HINT: you can try to skip this if flying to save time for more useful tasks as user cannot access menu when flying
 	
-	if (TCNT_X_snapshot2==0) TCNT_X_snapshot2 = CurrentTCNT1_X;
-	else if ( ((CurrentTCNT1_X- TCNT_X_snapshot2) > 4) )  // TCNT1_X ticks in 32.768us
+	if (TCNT_X_snapshot2 == 0) TCNT_X_snapshot2 = CurrentTCNT1_X;
+	else if ( ((CurrentTCNT1_X - TCNT_X_snapshot2) > 4) )  // TCNT1_X ticks in 32.768us
 	{
 		Menu_MenuShow();
 		
@@ -368,8 +371,10 @@ void MainLoop(void)
 		
 		// Stop motors if Throttle Stick is less than minimum.
 		ZEROMotors();
-		// DEBUG ONLY //ZERO_Is();  
-		// DEBUG ONLY //IMU_Reset(); // reset angles for gyro [STABLE MODE]
+#ifdef DEBUG_ME
+		ZERO_Is();
+		IMU_Reset(); // reset angles for gyro [STABLE MODE]
+#endif
 	}
 	else
 	{	// Throttle stick is NOT Down .... TAKE CARE
@@ -386,12 +391,17 @@ void MainLoop(void)
 		{	// MOTORS ARE ON HERE .... DANGEROUS
 			
 			
-			TCNT_X_snapshotAutoDisarm = 0; // ZERO [user may disarm then fly slowly..in this case the qud will disarm once he turned off the stick...because the counter counts once the quad is armed..e.g. if it takes n sec to disarm automatically..user took n-1 sec keeping the stick low after arming then it will take 1 sec to disarm again after lowing the stick under STICKThrottle_ARMING
+			TCNT_X_snapshotAutoDisarm = 0; // ZERO [user may disarm then fly slowly..in this case the qude will disarm once he turned off the stick...because the counter counts once the quad is armed..e.g. if it takes n sec to disarm automatically..user took n-1 sec keeping the stick low after arming then it will take 1 sec to disarm again after lowing the stick under STICKThrottle_ARMING
 			
 			// Armed & Throttle Stick > MIN . . . We should Fly now.
 			//RX_Snapshot_1 [RXChannel_AIL]= RX_Snapshot[RXChannel_AIL];
 			//RX_Snapshot_1 [RXChannel_ELE]= RX_Snapshot[RXChannel_ELE];
 			//RX_Snapshot_1 [RXChannel_RUD]= RX_Snapshot[RXChannel_RUD];
+			double ScalingFactor = 0.05;
+			if (nFlyingModes == FLYINGMODE_ACRO)
+			{
+				ScalingFactor = 0.025;
+			}
 			RX_Snapshot	  [RXChannel_AIL] = (RX_Latest[ActiveRXIndex][RXChannel_AIL] * Config.StickScaling * 0.05 );
 			RX_Snapshot   [RXChannel_ELE] = (RX_Latest[ActiveRXIndex][RXChannel_ELE] * Config.StickScaling * 0.05 ); 
 			RX_Snapshot   [RXChannel_RUD] = (RX_Latest[ActiveRXIndex][RXChannel_RUD] * Config.StickScaling * 0.05 ); // version 0.9.9 
@@ -497,8 +507,6 @@ void MainLoop(void)
 					else
 					{
 				
-						RX_Snapshot[RXChannel_AIL] = RX_Snapshot[RXChannel_AIL] * 0.9;		// 0.9: to reduce sensitivity more than STABLE mode
-						RX_Snapshot[RXChannel_ELE] = RX_Snapshot[RXChannel_ELE] * 0.9;
 						// {0.9,0,-0.9,0} QUAD_ELE_PLUS
 						MotorOut[0] += RX_Snapshot[RXChannel_ELE] ; 
 						MotorOut[2] -= RX_Snapshot[RXChannel_ELE] ; 
@@ -517,7 +525,7 @@ void MainLoop(void)
 							inv = -1;
 						}							
 							// {0.5,0.5,1.1,X} TRI_ELE_FRONT
-							MotorOut[2] -= inv * (RX_Snapshot[RXChannel_ELE] * 1.1); 
+							MotorOut[2] -= inv * (RX_Snapshot[RXChannel_ELE]); 
 							RX_Snapshot[RXChannel_ELE] = inv * RX_Snapshot[RXChannel_ELE] * 0.5;
 							MotorOut[0] += RX_Snapshot[RXChannel_ELE] ; 
 							MotorOut[1] += RX_Snapshot[RXChannel_ELE] ; 
@@ -565,7 +573,7 @@ void MainLoop(void)
 			{
 			
 				MotorOut[3]  = (Config.ReverseYAW * gyroYaw) + SERVO_IN_MIDDLE; 
-				MotorOut[3]  = MotorOut[3] - (Config.ReverseYAW * RX_Snapshot[RXChannel_RUD] * 0.2);
+				MotorOut[3]  = MotorOut[3] - (Config.ReverseYAW * RX_Snapshot[RXChannel_RUD]);
 			}						
 			
 			// Save motors from turning-off
@@ -584,10 +592,10 @@ void MainLoop(void)
 			if (Config.RX_mode==RX_mode_UARTMode)
 			{
 				//LED_Orange=~LED_Orange;
-				Send_Data("S",1);
+				Send_Byte('S');
 				Send_Data(Sensors_Latest,12);
 				Send_Data(MotorOut,8);
-				Send_Data("E",1);
+				Send_Byte('E');
 			}
 			
 			
@@ -649,7 +657,8 @@ void HandleSticksForArming (void)
 			
 			if (Config.AutoDisarm!=0)
 			{ // check auto disArm
-				if (TCNT_X_snapshotAutoDisarm==0) TCNT_X_snapshotAutoDisarm = CurrentTCNT1_X;
+				if (TCNT_X_snapshotAutoDisarm > CurrentTCNT1_X ) TCNT_X_snapshotAutoDisarm = 0; // the CurrentTCNT1_X was high so the disarm condition never true.
+				if (TCNT_X_snapshotAutoDisarm==0) TCNT_X_snapshotAutoDisarm = CurrentTCNT1_X; 
 				if ((CurrentTCNT1_X - TCNT_X_snapshotAutoDisarm) > (DISARM_TIME * Config.AutoDisarm))
 				{
 					Disarm();

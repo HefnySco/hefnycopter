@@ -26,6 +26,8 @@
 
 P_STR strOK[] ="OK  ";
 P_STR strFail[] ="Fail";
+	
+
 
 void Sensors_Init(void)
 {
@@ -95,7 +97,6 @@ char *Sensors_Test(uint8_t channel, uint16_t LowLimit ,uint16_t HighLimit)
 */
 void Sensors_Calibrate (void)
 {
-	
 	BOOL LEDOLD = LED_Orange;
 	int i;
 	for (i=0;i<6;++i)
@@ -103,29 +104,25 @@ void Sensors_Calibrate (void)
 		nResult [i]=0;
 	}
 	
-		
-		// check: http://www.x-firm.com/?page_id=191
-		for (i=0;i<25;++i)
+	// check: http://www.x-firm.com/?page_id=191
+	for (i=0;i<25;++i)
+	{
+		for (int s=0;s<SENSORS_ALL;++s)
 		{
-			for (int s=0;s<SENSORS_ALL;++s)
-			{
-				nResult[s] += ADCPort_Get(SensorsIndex[s]);		
-			}
-			_delay_ms(40);
-			LED_Orange =~LED_Orange;
+			nResult[s] += ADCPort_Get(SensorsIndex[s]);		
 		}
+
+
+		_delay_ms(40);
+		LED_Orange =~LED_Orange;
+	}
 	
-		LED_Orange = LEDOLD;
+	LED_Orange = LEDOLD;
 	
-		for (i=0;i<6;++i)
-		{
-			Config.Sensor_zero[i]  = (double)nResult[i] /25.0;
-		}	
-		
-		
-	
-	
-			
+	for (i=0;i<6;++i)
+	{
+		Config.Sensor_zero[i]  = (double)nResult[i] /25.0;
+	}	
 	
 	Config.IsCalibrated = (Config.IsCalibrated | CALIBRATED_SENSOR);
 		
@@ -147,7 +144,6 @@ void Sensors_ReadAll (void)
 		//TX= TCNT1_X;
    //}   
 	//
-	
 	for (int i=0;i<3;++i)  // gyro
 	{
 		Sensors_Latest[i] = ADCPort_Get(SensorsIndex[i])-Config.Sensor_zero[i]; 
@@ -159,7 +155,6 @@ void Sensors_ReadAll (void)
 		Sensors_Latest[i] = ADCPort_Get(SensorsIndex[i])-Config.Sensor_zero[i]; 
 		//if (abs(Sensors_Latest[i]) <= DEAD_BAND_GYRO) Sensors_Latest[i]=0;
 	}
-	
 	
 	Sensors_Latest[V_BAT_Index] = Sensor_GetBattery(); 
 	
