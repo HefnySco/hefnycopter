@@ -1076,8 +1076,10 @@ void _hDebug()
 		OldAngle = OldAngle - CompAccZ ;
 		YAWAngle = YAWAngle + OldAngle;
 		LCD_WriteValue_double_ex(1,12,AnglePitch,10,false);
-		LCD_WriteValue_double_ex(2,12,AngleRoll,10,false);
-		LCD_WriteValue_double_ex(3,12,CompAccZ * DEG_TO_RAD+ D90_RADZ,10,false);
+		LCD_WriteValue_double_ex(2,12,- Sensors_Latest[ACC_PITCH_Index] - Config.Acc_Pitch_Trim,10,false);
+		LCD_WriteValue_double_ex(3,12,(double)CompGyroPitch	* GYRO_RATE * TimeDef * 0.001 * DEG_TO_RAD,10,false);
+		LCD_WriteValue_double_ex(4,12,_atan2(AnglePitch,AngleZ) * 0.1360,10,false);
+		LCD_WriteValue_double_ex(5,12,_atan2(AngleRoll,AngleZ) * 0.1360,10,false);
 		//Alpha * AngleZ + Beta * CompAccZ * DEG_TO_RAD; //+ D90_RAD
 		//LCD_WriteValue_double_ex(4,12,TimeDef,9,false);
 		

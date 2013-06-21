@@ -16,7 +16,7 @@
 ///////////////////////////// Define Section
 
 
-//#define DEBUG_ME
+#define DEBUG_ME
 
 
 #define PID_I_LEAK_RATE	0.01
