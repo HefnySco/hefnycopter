@@ -36,10 +36,13 @@ void RotateV ()
 	double DeltaRoll  =	 (double)CompGyroRoll	* GYRO_RATE * TimeDef * 0.001 * DEG_TO_RAD;
 	double DT_YAW	  =  (double)CompGyroZ		* GYRO_RATE * TimeDef * 0.001 * DEG_TO_RAD; 
 		
+	double AngleRoll_T, AnglePitch_T;
+	AngleRoll_T = AngleRoll;
+	AnglePitch_T = AnglePitch;
+	AngleZ     -= ((DeltaRoll  * AngleRoll_T ) + (DeltaPitch * AnglePitch_T ));
+	AngleRoll  += (DeltaRoll  * AngleZ ) - (DT_YAW	* AnglePitch_T );
+	AnglePitch += (DeltaPitch * AngleZ ) + (DT_YAW	* AngleRoll_T  );
 	
-	AngleZ     -= ((DeltaRoll  * AngleRoll ) + (DeltaPitch * AnglePitch));
-	AngleRoll  += ((DeltaRoll  * AngleZ )    - (DT_YAW     * AnglePitch));
-	AnglePitch += ((DeltaPitch * AngleZ )	 + (DT_YAW	   * AngleRoll ));
 }
 
 
@@ -49,7 +52,7 @@ void IMU_Reset()
 	
 	AnglePitch=0;
 	AngleRoll=0;
-	AngleZ=D90_RAD;  // RAD 90 DEG
+	AngleZ=D90_RAD;//D90_RAD;  // RAD 90 DEG
 	
 }
 //////////////////////////////////////////////////////////////////////////
@@ -92,6 +95,11 @@ void IMU (void)
 		double APitch = - Sensors_Latest[ACC_PITCH_Index] - Config.Acc_Pitch_Trim;
 		double ARoll  = - Sensors_Latest[ACC_ROLL_Index]  - Config.Acc_Roll_Trim;
 		//double DT_YAW =  (double)CompGyroZ * GYRO_RATE  * TimeDef * 0.001 / 2; 
+		VectorLength=0;
+		for (int i=3;i<=5;++i)
+		{
+			VectorLength += ((Sensors_Latest[i] *  DEG_TO_VEC * Sensors_Latest[i]) * DEG_TO_VEC ) ; //DEG_TO_RAD2);  0.008333 = 120 ==> 1  = 1/120
+		}
 			
 			
 		if ( TCNT1H > TCNT1H_OLD) 
@@ -129,58 +137,32 @@ void IMU (void)
 			((APitch < ACC_SMALL_ANGLE) && (APitch > -ACC_SMALL_ANGLE))
 			&&
 			((ARoll  < ACC_SMALL_ANGLE) && (ARoll  > -ACC_SMALL_ANGLE))
-			
 			)
 		{
 			Alpha = Config.AccParams[PITCH_INDEX].ComplementaryFilterAlpha / 1000.0; // TODO: optimize
 			Beta = 1- Alpha;
-			//AnglePitch = Alpha * AnglePitch + Beta * APitch * DEG_TO_RAD;
+			AnglePitch = Alpha * AnglePitch + Beta * APitch * DEG_TO_RAD;
 			
 			Alpha = Config.AccParams[ROLL_INDEX].ComplementaryFilterAlpha / 1000.0; // TODO: optimize
 			Beta = 1- Alpha;
-			//AngleRoll =  Alpha * AngleRoll + Beta * ARoll * DEG_TO_RAD;
+			AngleRoll =  Alpha * AngleRoll + Beta * ARoll * DEG_TO_RAD;
 			
-			double temp = CompAccZ * DEG_TO_RAD+ D90_RADZ;
-			// if ((temp < 1.6) && (temp > 1.5))  much better rotation, and good in rotation
-			// if ((temp < 1.5) && (temp > 0.5))  very smooth flying, bad rotation !!!
-			if ((temp < 1.6) && (temp > 1.3))
-			{
-				//AngleZ = Alpha * AngleZ + Beta * temp ;		
-			}
-			
-		}
+		}			
 		
-		
-		
-		
-		
-				
+		if (			
+			(VectorLength < 1.5)
+			&&
+			(VectorLength > 0.5)
+			)
+		{
+			AngleZ = Alpha * AngleZ + Beta * CompAccZ * DEG_TO_RAD; // DEG_TO_RAD; // + D90_RADZ;
+		}			
 			
-			//if (Sensors_Latest[ACC_Z_Index] > -90)
-			//{
-				//InvertedQuad = false;
-			//}
-			//else if (Sensors_Latest[ACC_Z_Index] < -110)
-			//{
-				//InvertedQuad = true;
-			//}
-			//
-			//if (InvertedQuad==false)
-			//{
-				//NavY = AnglePitch;
-				//NavX = AngleRoll;
-			//}
-			//else
-			//{
-				//NavY = -AnglePitch;
-				//NavX = -AngleRoll;
-			//}			
+			//NavY = _atan2(AnglePitch,AngleZ) * 0.1360 ; //AnglePitch  * RAD_TO_DEG; //arctan2(AngleZ, AnglePitch  ); // AnglePitch  * RAD_TO_DEG;
+			//NavX = _atan2(AngleRoll,AngleZ) * 0.1360; //AngleRoll * RAD_TO_DEG; //arctan2(AngleRoll  , AngleZ); //AngleRoll * RAD_TO_DEG;
 			
-
-			
-			NavY = _atan2(AnglePitch,AngleZ) * 0.1360 ; //AnglePitch  * RAD_TO_DEG; //arctan2(AngleZ, AnglePitch  ); // AnglePitch  * RAD_TO_DEG;
-			NavX = _atan2(AngleRoll,AngleZ) * 0.1360; //AngleRoll * RAD_TO_DEG; //arctan2(AngleRoll  , AngleZ); //AngleRoll * RAD_TO_DEG;
-			
+			NavY = AnglePitch  * RAD_TO_DEG; //_atan2(AnglePitch,AngleZ) * 0.1360 ; //AnglePitch  * RAD_TO_DEG; //arctan2(AngleZ, AnglePitch  ); // AnglePitch  * RAD_TO_DEG;
+			NavX = AngleRoll * RAD_TO_DEG; //_atan2(AngleRoll,AngleZ) * 0.1360; //AngleRoll * RAD_TO_DEG; //arctan2(AngleRoll  , AngleZ); //AngleRoll * RAD_TO_DEG;
 			
 		
 		// multiwii HEADFREE ... compact formula
