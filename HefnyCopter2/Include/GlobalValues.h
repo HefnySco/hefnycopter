@@ -154,6 +154,7 @@ double CompAccZ;
 volatile double AngleRoll;
 volatile double AnglePitch;
 volatile double AngleZ;
+volatile double VectorLength;
 
 
 #define GYRO_MIN	-10
@@ -231,12 +232,13 @@ static uint8_t SensorsIndex[SENSORS_ALL] = {GYRO_ROLL_PNUM,GYRO_PITCH_PNUM,GYRO_
 
 
 #define ACC_Z_1G				256
-
+#define DEG_TO_VEC				0.008333  // = 1/120
 #define D90_RAD					1.5708
 #define D90_RADZ				1.5708
 #define	GYRO_RATE				0.00077 //0.00077 //0.027  //0.045
 #define RAD_TO_DEG				76.4526    //57.324   [for 120]
 #define DEG_TO_RAD				0.01308		//(PI/2 = 120)
+#define DEG_TO_RAD2				0.0001710864		//(PI/2 = 120)
 #define GYRO_RATE_x_IVR_RAD		0.00058875	// = GYRO_RATE * ((3.14/2)/100) //0.01744444444444444444444444444444
 volatile double  Sensors_Latest [8];
 /////////////////////////////////////////
