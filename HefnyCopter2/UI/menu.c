@@ -583,21 +583,21 @@ void _hHomeArmedESC (void)
 		Save_Config_to_EEPROM();
 	}
 	
-	LCD_SetPos(3,18);
-	itoa(MotorOut[0],sXDeg,10);
-	LCD_WritePadded(sXDeg,5);
-	
-	LCD_SetPos(3,78);
-	itoa(MotorOut[3],sXDeg,10);
-	LCD_WritePadded(sXDeg,5);
-	
-	LCD_SetPos(4,18);
-	itoa(MotorOut[1],sXDeg,10);
-	LCD_WritePadded(sXDeg,5);
-	
-	LCD_SetPos(4,78);
-	itoa(MotorOut[2],sXDeg,10);
-	LCD_WritePadded(sXDeg,5);
+	//////LCD_SetPos(3,18);
+	//////itoa(MotorOut[0],sXDeg,10);
+	//////LCD_WritePadded(sXDeg,5);
+	//////
+	//////LCD_SetPos(3,78);
+	//////itoa(MotorOut[3],sXDeg,10);
+	//////LCD_WritePadded(sXDeg,5);
+	//////
+	//////LCD_SetPos(4,18);
+	//////itoa(MotorOut[1],sXDeg,10);
+	//////LCD_WritePadded(sXDeg,5);
+	//////
+	//////LCD_SetPos(4,78);
+	//////itoa(MotorOut[2],sXDeg,10);
+	//////LCD_WritePadded(sXDeg,5);
 	
 }
 
@@ -1035,13 +1035,13 @@ void _hAltitudeHold()
 
 
 
-
+double min=9;
 	static double YAWAngle;
 static double OldAngle;
 	static double YAWAngle2;
 void _hDebug()
 {
-
+#ifdef DEBUG_ME
 	if (IS_INIT)
 	{
   	}
@@ -1067,25 +1067,29 @@ void _hDebug()
 			//gyroZangle=0;
 			//gyroYangle=0;
 			//gyroXangle=0;
-			//AnglePitch=0;
-			//AngleRoll=0;
+			AnglePitch=0;
+			AngleRoll=0;
 			//AngleZ=0;
 			//
 		}	
-#ifdef DEBUG_ME
-		OldAngle = OldAngle - CompAccZ ;
-		YAWAngle = YAWAngle + OldAngle;
-		LCD_WriteValue_double_ex(1,12,AnglePitch,10,false);
-		LCD_WriteValue_double_ex(2,12,- Sensors_Latest[ACC_PITCH_Index] - Config.Acc_Pitch_Trim,10,false);
-		LCD_WriteValue_double_ex(3,12,(double)CompGyroPitch	* GYRO_RATE * TimeDef * 0.001 * DEG_TO_RAD,10,false);
-		LCD_WriteValue_double_ex(4,12,_atan2(AnglePitch,AngleZ) * 0.1360,10,false);
-		LCD_WriteValue_double_ex(5,12,_atan2(AngleRoll,AngleZ) * 0.1360,10,false);
+
+		
+		
+		
+		OldAngle += (VectorLength-1);
+		YAWAngle += AngleZ - D90_RADZ;
+		//LCD_WriteValue_double_ex(1,12,Sensors_Latest[3],10,false);
+		LCD_WriteValue_double_ex(2,12,OldAngle,10,false);
+		LCD_WriteValue_double_ex(3,12,VectorLength,10,false);
+		LCD_WriteValue_double_ex(4,12,AngleZ,10,false);
+		LCD_WriteValue_double_ex(5,12,YAWAngle,10,false);
 		//Alpha * AngleZ + Beta * CompAccZ * DEG_TO_RAD; //+ D90_RAD
 		//LCD_WriteValue_double_ex(4,12,TimeDef,9,false);
 		
-		OldAngle = CompAccZ ;
-#endif
+		//OldAngle = CompAccZ ;
+
 	}
+	#endif
 }
 void _hFactoryReset()
 {
