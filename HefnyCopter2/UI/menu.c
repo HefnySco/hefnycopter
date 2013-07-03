@@ -1030,9 +1030,6 @@ void _hAltitudeHold()
 	LCD_WriteString_Pex(5,0,PSTR("                "),16,false);    
 				
 }
-//int16_t AccTotal;
-//int16_t OldAcc;
-
 
 
 double min=9;
@@ -1069,22 +1066,23 @@ void _hDebug()
 			//gyroXangle=0;
 			AnglePitch=0;
 			AngleRoll=0;
-			//AngleZ=0;
+			YAWAngle=0;
+			OldAngle=0;
 			//
 		}	
 
 		
-		
-		
-		OldAngle += (VectorLength-1);
-		YAWAngle += AngleZ - D90_RADZ;
-		//LCD_WriteValue_double_ex(1,12,Sensors_Latest[3],10,false);
-		LCD_WriteValue_double_ex(2,12,OldAngle,10,false);
-		LCD_WriteValue_double_ex(3,12,VectorLength,10,false);
-		LCD_WriteValue_double_ex(4,12,AngleZ,10,false);
-		LCD_WriteValue_double_ex(5,12,YAWAngle,10,false);
+		//YAWAngle += (double)CompGyroPitch	* GYRO_RATE * TimeDef_m * DEG_TO_RAD;
+		//OldAngle = (- Sensors_Latest[ACC_PITCH_Index] - Config.Acc_Pitch_Trim)* DEG_TO_RAD_ACC  ;
+		//YAWAngle += OldAngle ;
+		LCD_WriteValue_double_ex(1,12,APitch,10,false);
+		LCD_WriteValue_double_ex(2,12,AnglePitch ,10,false);
+		LCD_WriteValue_double_ex(3,12,AngleRoll,10,false);
+		LCD_WriteValue_double_ex(4,12,VectorLength ,10,false);
+		LCD_WriteValue_double_ex(5,12, AngleZ,10,false);
+		//LCD_WriteValue_double_ex(6,12, AngleZ * RAD_TO_DEG,10,false);
 		//Alpha * AngleZ + Beta * CompAccZ * DEG_TO_RAD; //+ D90_RAD
-		//LCD_WriteValue_double_ex(4,12,TimeDef,9,false);
+		//LCD_WriteValue_double_ex(4,12,CompAccZ,9,false);
 		
 		//OldAngle = CompAccZ ;
 

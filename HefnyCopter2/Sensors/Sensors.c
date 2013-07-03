@@ -126,7 +126,7 @@ void Sensors_Calibrate (void)
 	
 	Config.IsCalibrated = (Config.IsCalibrated | CALIBRATED_SENSOR);
 	
-	Config.Sensor_zero[ACC_Z_Index]	-= 120; // ACC_Z reads 120 by default.
+	//Config.Sensor_zero[ACC_Z_Index]	-= 120; // ACC_Z reads 120 by default.
 	
 	//nResult[ACC_Z_Index]-=100; // Sensor: horizontal, upward ... the caller of this function is responsible for updating Config.Sensor_zero[i] = nResult[i];
 		

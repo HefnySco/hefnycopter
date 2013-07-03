@@ -16,7 +16,7 @@
 ///////////////////////////// Define Section
 
 
-#define DEBUG_ME
+//#define DEBUG_ME
 
 
 #define PID_I_LEAK_RATE	0.01
@@ -155,13 +155,14 @@ volatile double AngleRoll;
 volatile double AnglePitch;
 volatile double AngleZ;
 volatile double VectorLength;
-
+volatile double APitch ;
+volatile double ARoll ; 
 
 #define GYRO_MIN	-10
 #define GYRO_MAX	10
 #define ACC_MIN		-10
 #define ACC_MAX		10
-
+#define COMPLEMENTRY_FILTER_ACC	0.997
 //int16_t StabilityMatrix_GX[20];
 //int16_t StabilityMatrix_GY[20];
 
@@ -207,6 +208,7 @@ volatile uint16_t TCNT1_X;				// TCNT1_X click every 0.0032768 sec [1 sec = 305.
 volatile uint16_t TCNT2_X;				// TCNT2  overflows every  3.2us x 0xff = 0.0008192 sec,  TCNT2_X value tick every 819.2 us and overflow every 53.6870912 sec
 volatile uint16_t TCNT1H_OLD;	
 uint16_t TimeDef ; 	
+double	TimeDef_m;
 //volatile uint16_t OCR0A_X;
 uint16_t TCNT1_X_snapshot1;				
 uint16_t TCNT_X_snapshot2;
@@ -235,10 +237,10 @@ static uint8_t SensorsIndex[SENSORS_ALL] = {GYRO_ROLL_PNUM,GYRO_PITCH_PNUM,GYRO_
 #define DEG_TO_VEC				0.008333  // = 1/120
 #define D90_RAD					1.5708
 #define D90_RADZ				1.5708
-#define	GYRO_RATE				0.00077 //0.00077 //0.027  //0.045
-#define RAD_TO_DEG				76.4526    //57.324   [for 120]
-#define DEG_TO_RAD				0.01308		//(PI/2 = 120)
-#define DEG_TO_RAD2				0.0001710864		//(PI/2 = 120)
+#define	GYRO_RATE				0.003107  // 0.00077 //0.00077 //0.027  //0.045
+#define RAD_TO_DEG				4.80469    //57.324   [for 120]
+#define DEG_TO_RAD				0.01297   //0.05234  //0.02617
+#define DEG_TO_RAD_ACC			0.01297
 #define GYRO_RATE_x_IVR_RAD		0.00058875	// = GYRO_RATE * ((3.14/2)/100) //0.01744444444444444444444444444444
 volatile double  Sensors_Latest [8];
 /////////////////////////////////////////

@@ -19,6 +19,7 @@
 
 
 
+		
 //
 //// inspired by to Multiwii
 //// 
@@ -32,16 +33,17 @@ void RotateV ()
 	  //v->Y += delta[PITCH] * v_tmp.Z + delta[YAW]   * v_tmp.X; 
 	//*/
 	
-	double DeltaPitch =  (double)CompGyroPitch	* GYRO_RATE * TimeDef * 0.001 * DEG_TO_RAD;
-	double DeltaRoll  =	 (double)CompGyroRoll	* GYRO_RATE * TimeDef * 0.001 * DEG_TO_RAD;
-	double DT_YAW	  =  (double)CompGyroZ		* GYRO_RATE * TimeDef * 0.001 * DEG_TO_RAD; 
+	double DeltaPitch =  (double)CompGyroPitch	* GYRO_RATE * TimeDef_m * DEG_TO_RAD;
+	double DeltaRoll  =	 (double)CompGyroRoll	* GYRO_RATE * TimeDef_m * DEG_TO_RAD;
+	double DT_YAW	  =  (double)CompGyroZ		* GYRO_RATE * TimeDef_m * DEG_TO_RAD; 
 		
-	double AngleRoll_T, AnglePitch_T;
+	double AngleRoll_T, AnglePitch_T,AngleZ_T;
 	AngleRoll_T = AngleRoll;
 	AnglePitch_T = AnglePitch;
+	AngleZ_T = AngleZ;
 	AngleZ     -= ((DeltaRoll  * AngleRoll_T ) + (DeltaPitch * AnglePitch_T ));
-	AngleRoll  += (DeltaRoll  * AngleZ ) - (DT_YAW	* AnglePitch_T );
-	AnglePitch += (DeltaPitch * AngleZ ) + (DT_YAW	* AngleRoll_T  );
+	AngleRoll  += (DeltaRoll  * AngleZ_T ) - (DT_YAW	* AnglePitch_T );
+	AnglePitch += (DeltaPitch * AngleZ_T ) + (DT_YAW	* AngleRoll_T  );
 	
 }
 
@@ -49,7 +51,8 @@ void RotateV ()
 
 void IMU_Reset()
 {
-	
+	APitch=0;
+	ARoll=0;
 	AnglePitch=0;
 	AngleRoll=0;
 	AngleZ=D90_RAD;//D90_RAD;  // RAD 90 DEG
@@ -63,12 +66,12 @@ void IMU (void)
 	
 		double Alpha;	
 		double Beta;
-		//static bool InvertedQuad;
+		double tZ = Sensors_Latest[ACC_Z_Index] + Config.AccParams[YAW_INDEX].ComplementaryFilterAlpha ;
 		
 	    // calculate ACC-Z
-		Alpha = Config.AccParams[Z_INDEX].ComplementaryFilterAlpha / 1000.0;
+		Alpha = 0.3; //Config.AccParams[Z_INDEX].ComplementaryFilterAlpha / 1000.0;
 		Beta = 1- Alpha; // complementary filter to remove noise
-		CompAccZ = (double) (Alpha * CompAccZ) + (double) (Beta * Sensors_Latest[ACC_Z_Index]);
+		CompAccZ = (double) (Alpha * CompAccZ) + (double) (Beta * (tZ));
 		
 		// calculate YAW
 		Alpha = Config.GyroParams[YAW_INDEX].ComplementaryFilterAlpha / 1000.0;
@@ -78,6 +81,7 @@ void IMU (void)
 		Alpha = Config.GyroParams[PITCH_INDEX].ComplementaryFilterAlpha / 1000.0;
 		Beta = 1- Alpha; // complementary filter to remove noise
 		CompGyroPitch = (double) (Alpha * CompGyroPitch) + (double) (Beta * Sensors_Latest[GYRO_PITCH_Index]);
+		
 		Alpha = Config.GyroParams[ROLL_INDEX].ComplementaryFilterAlpha / 1000.0;
 		Beta = 1- Alpha; // complementary filter to remove noise
 		CompGyroRoll  = (double) (Alpha * CompGyroRoll)  + (double) (Beta * Sensors_Latest[GYRO_ROLL_Index]);
@@ -92,14 +96,13 @@ void IMU (void)
 			
 		// Read ACC and Trims
 		// ACC directions are same as GYRO direction [we added "-" for this purpose] 
-		double APitch = - Sensors_Latest[ACC_PITCH_Index] - Config.Acc_Pitch_Trim;
-		double ARoll  = - Sensors_Latest[ACC_ROLL_Index]  - Config.Acc_Roll_Trim;
-		//double DT_YAW =  (double)CompGyroZ * GYRO_RATE  * TimeDef * 0.001 / 2; 
-		VectorLength=0;
-		for (int i=3;i<=5;++i)
-		{
-			VectorLength += ((Sensors_Latest[i] *  DEG_TO_VEC * Sensors_Latest[i]) * DEG_TO_VEC ) ; //DEG_TO_RAD2);  0.008333 = 120 ==> 1  = 1/120
-		}
+		APitch = 0.7 * APitch + 0.3 * (- Sensors_Latest[ACC_PITCH_Index] - Config.Acc_Pitch_Trim);
+		ARoll  = 0.7 * ARoll + 0.3 * (- Sensors_Latest[ACC_ROLL_Index]  - Config.Acc_Roll_Trim);
+		
+		
+		VectorLength = ((Sensors_Latest[ACC_PITCH_Index] *  DEG_TO_VEC * Sensors_Latest[ACC_PITCH_Index]) * DEG_TO_VEC )
+					 + ((Sensors_Latest[ACC_ROLL_Index] *  DEG_TO_VEC * Sensors_Latest[ACC_ROLL_Index]) * DEG_TO_VEC )
+					 + ((tZ *  DEG_TO_VEC * tZ) * DEG_TO_VEC );
 			
 			
 		if ( TCNT1H > TCNT1H_OLD) 
@@ -111,22 +114,9 @@ void IMU (void)
 			TimeDef = 0xffff - TCNT1H_OLD + TCNT1H ;
 		}
 		TCNT1H_OLD += TimeDef;
+		TimeDef_m = TimeDef * 0.001;
 		
 		
-
-// Do the Magic of IMU LEVELING here
-		// check also : http://scolton.blogspot.com/2012/09/fun-with-complementary-filter-multiwii.html
-		//double DeltaPitch =   (sin(AngleRoll * DEG_TO_RAD) * DT_YAW) ; // integrate component of yaw rate into pitch angle
-		//double DeltaRoll  = - (sin(AnglePitch * DEG_TO_RAD) * DT_YAW);  // integrate component of yaw rate into roll angle
-		//////////AnglePitch = AnglePitch
-					//////////+ (double)Sensors_Latest[GYRO_PITCH_Index] * GYRO_RATE * TimeDef * 0.001
-					////////////+ DeltaPitch
-						//////////;
-		//////////AngleRoll = AngleRoll  
-					//////////+ (double)Sensors_Latest[GYRO_ROLL_Index]  * GYRO_RATE * TimeDef * 0.001
-					////////////+ DeltaRoll
-					   //////////; 
-					   
 		RotateV();			   
 					   
 		// Correct Drift using ACC
@@ -139,30 +129,29 @@ void IMU (void)
 			((ARoll  < ACC_SMALL_ANGLE) && (ARoll  > -ACC_SMALL_ANGLE))
 			)
 		{
-			Alpha = Config.AccParams[PITCH_INDEX].ComplementaryFilterAlpha / 1000.0; // TODO: optimize
-			Beta = 1- Alpha;
-			AnglePitch = Alpha * AnglePitch + Beta * APitch * DEG_TO_RAD;
+			//Alpha = COMPLEMENTRY_FILTER_ACC; //Config.AccParams[PITCH_INDEX].ComplementaryFilterAlpha / 1000.0; // TODO: optimize
+			//Beta = 1- Alpha;
+			AnglePitch = 0.995 * AnglePitch + 0.005 * APitch * DEG_TO_RAD_ACC;
 			
-			Alpha = Config.AccParams[ROLL_INDEX].ComplementaryFilterAlpha / 1000.0; // TODO: optimize
-			Beta = 1- Alpha;
-			AngleRoll =  Alpha * AngleRoll + Beta * ARoll * DEG_TO_RAD;
+			//Alpha = COMPLEMENTRY_FILTER_ACC; // Config.AccParams[ROLL_INDEX].ComplementaryFilterAlpha / 1000.0; // TODO: optimize
+			//Beta = 1- Alpha;
+			AngleRoll =  0.995 * AngleRoll + 0.005  * ARoll * DEG_TO_RAD_ACC;
 			
 		}			
 		
 		if (			
-			(VectorLength < 1.5)
+			(VectorLength < (Config.AccParams[PITCH_INDEX].ComplementaryFilterAlpha / 100.0))
 			&&
-			(VectorLength > 0.5)
+			(VectorLength > (Config.AccParams[ROLL_INDEX].ComplementaryFilterAlpha / 100.0))
 			)
 		{
-			AngleZ = Alpha * AngleZ + Beta * CompAccZ * DEG_TO_RAD; // DEG_TO_RAD; // + D90_RADZ;
+			AngleZ = 0.99 * AngleZ + 0.01 * CompAccZ * DEG_TO_RAD_ACC; // DEG_TO_RAD; // + D90_RADZ;
 		}			
 			
 			//NavY = _atan2(AnglePitch,AngleZ) * 0.1360 ; //AnglePitch  * RAD_TO_DEG; //arctan2(AngleZ, AnglePitch  ); // AnglePitch  * RAD_TO_DEG;
 			//NavX = _atan2(AngleRoll,AngleZ) * 0.1360; //AngleRoll * RAD_TO_DEG; //arctan2(AngleRoll  , AngleZ); //AngleRoll * RAD_TO_DEG;
-			
-			NavY = AnglePitch  * RAD_TO_DEG; //_atan2(AnglePitch,AngleZ) * 0.1360 ; //AnglePitch  * RAD_TO_DEG; //arctan2(AngleZ, AnglePitch  ); // AnglePitch  * RAD_TO_DEG;
-			NavX = AngleRoll * RAD_TO_DEG; //_atan2(AngleRoll,AngleZ) * 0.1360; //AngleRoll * RAD_TO_DEG; //arctan2(AngleRoll  , AngleZ); //AngleRoll * RAD_TO_DEG;
+			NavY = AnglePitch   * RAD_TO_DEG; //_atan2(AnglePitch,AngleZ) * 0.1360 ; //AnglePitch  * RAD_TO_DEG; //arctan2(AngleZ, AnglePitch  ); // AnglePitch  * RAD_TO_DEG;
+			NavX = AngleRoll	* RAD_TO_DEG; //_atan2(AngleRoll,AngleZ) * 0.1360; //AngleRoll * RAD_TO_DEG; //arctan2(AngleRoll  , AngleZ); //AngleRoll * RAD_TO_DEG;
 			
 		
 		// multiwii HEADFREE ... compact formula
@@ -234,7 +223,7 @@ double IMU_HeightKeeping ()
 	
 	// calculate damping
 	
-	Landing = PID_Calculate (Config.AccParams[Z_INDEX], &PID_AccTerms[Z_INDEX],-CompAccZ,0) ;
+	Landing = PID_Calculate (Config.AccParams[Z_INDEX], &PID_AccTerms[Z_INDEX],-Sensors_Latest[ACC_Z_Index],0) ;
 			
 			
 	// Calculate Altitude Hold
