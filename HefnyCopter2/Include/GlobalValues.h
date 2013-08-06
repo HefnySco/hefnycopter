@@ -79,8 +79,8 @@ char sXDeg[20];
 // Defines output rate to ESC/Servo
 // either define by setting ESC_RATE (Max is approx 495Hz)
 // uses Timer 1 ticks to control output rate.
-#define ESC_RATE 250	// in Hz
-//#define ESC_RATE 400	// in Hz (at SINGLE_COPTER and DUAL_COPTER)
+//#define ESC_RATE 250	// in Hz
+#define ESC_RATE 400	// in Hz
 //#define ESC_RATE 450	// in Hz
 //#define ESC_RATE 495	// in Hz
 #define PWM_LOW_PULSE_INTERVAL 1000000 / ESC_RATE // time in ms for a delay.
@@ -99,7 +99,7 @@ volatile uint8_t ActiveRXIndex;			// 0: primary rx, 1: secondary rx, 3: buddy mo
 
 volatile uint16_t RX_Length   [2][RXChannels];
 volatile int16_t  RX_Latest   [2][RXChannels];   // the actual RX values that are used for calculations.
-int16_t			  RX_Snapshot    [RXChannels];
+double			  RX_Snapshot    [RXChannels];
 int16_t			  RX_Snapshot_1  [RXChannels];
 // used for calibration...not initialized... true values are in Config in case IsCalibrated & Stick = True.
 uint16_t RX_MAX_raw			  [2][RXChannels];
@@ -116,9 +116,9 @@ int16_t MotorOut[4];
 
 
 int8_t nFlyingModes;   
-#define FLYINGMODE_ACRO			0b00000001
-#define FLYINGMODE_LEVEL		0b00000010
-#define FLYINGMODE_ALTHOLD		0b00000100	// ALT HOLD & LEVEL
+#define FLYINGMODE_ACRO				0b00000001
+#define FLYINGMODE_LEVEL			0b00000010
+#define FLYINGMODE_ALTHOLD			0b00000100	// ALT HOLD & LEVEL
 #define IS_FLYINGMODE_LEVEL			(nFlyingModes & FLYINGMODE_LEVEL)
 #define IS_FLYINGMODE_ACRO			(nFlyingModes & FLYINGMODE_ACRO)
 #define IS_FLYINGMODE_ALTHOLD		(nFlyingModes & FLYINGMODE_ALTHOLD)
@@ -207,13 +207,14 @@ volatile uint16_t TCNT0_X;
 volatile uint16_t TCNT1_X;				// TCNT1_X click every 0.0032768 sec [1 sec = 305.17578125 TCNT1_X]
 volatile uint16_t TCNT2_X;				// TCNT2  overflows every  3.2us x 0xff = 0.0008192 sec,  TCNT2_X value tick every 819.2 us and overflow every 53.6870912 sec
 volatile uint16_t TCNT1H_OLD;	
-uint16_t TimeDef ; 	
+volatile uint16_t TimeDef ; 	
 double	TimeDef_m;
 //volatile uint16_t OCR0A_X;
 uint16_t TCNT1_X_snapshot1;				
 uint16_t TCNT_X_snapshot2;
 uint16_t TCNT_X_snapshotAutoDisarm;
 //uint16_t TCNT1_X_GlobalTimer;
+uint16_t MotorStartTCNT, ElapsedTCNT2, CurrentTCNT2;  // motor related
 volatile BOOL UpdateServo;
 BOOL bResetTCNR1_X;
 
@@ -265,6 +266,7 @@ double AltDiff;
 // BAUD RATES
 // Thanks to Retlaw: http://www.rcgroups.com/forums/showpost.php?p=24904574&postcount=258
 
+#define TELEMETRY_ENABLED
 #define BAUD_115200		10 	
 #define BAUD_57600		20 	
 #define BAUD_38400		30 
@@ -291,7 +293,8 @@ volatile uint16_t nResult[8];
 
 // eeProm data structure
 #define IMU_SelfLevelMode		1
-#define RX_mode_UARTMode		0xff
+#define RX_mode_SingleMode		0xff	// AKA  [RX_mode_UARTMode]
+//#define RX_mode_UARTMode		0xff	// Single mode was formally called UART mode as UART is available only in this mode.
 #define RX_mode_BuddyMode		0x00
 #define ESCCalibration_ON		1
 #define ESCCalibration_OFF		0

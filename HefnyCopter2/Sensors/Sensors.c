@@ -132,20 +132,13 @@ void Sensors_Calibrate (void)
 		
 }
 
-#define DEAD_BAND_GYRO	4
+#define DEAD_BAND_GYRO	2
 //uint32_t LastLoopTime[2];
 //uint16_t TX,TX1,TX2;
 void Sensors_ReadAll (void)
 {
    
-   //uint16_t *T;
-   //ATOMIC_BLOCK(ATOMIC_FORCEON)
-   //{
-		//TX1= TCNT1;
-		//TX= TCNT1_X;
-   //}   
-	//
-	for (int i=0;i<3;++i)  // gyro
+   	for (int i=0;i<3;++i)  // gyro
 	{
 		Sensors_Latest[i] = ADCPort_Get(SensorsIndex[i])-Config.Sensor_zero[i]; 
 		if (abs(Sensors_Latest[i]) <= DEAD_BAND_GYRO) Sensors_Latest[i]=0;
@@ -159,39 +152,8 @@ void Sensors_ReadAll (void)
 	
 	Sensors_Latest[V_BAT_Index] = Sensor_GetBattery(); 
 	
-	
-	
-	// Handle the odd case where the TCNT1 rolls over and LastLoopTime[0] < LastLoopTime[1]
-	/*
-	if (LastLoopTime[0] > LastLoopTime[1])
-		Sensors_dt = LastLoopTime[0] - LastLoopTime[1];
-	else 
-		Sensors_dt = (0xffffffff - LastLoopTime[1]) + LastLoopTime[0] ;
-		
-	LastLoopTime[1] = LastLoopTime[0]; // in 100 us unit
-	*/
-	//if (TX2 > TX1)
-	//{
-		////Sensors_dt = (0xffff - TX1) +  TX2;
-	//}
-	//else
-	//{
-		//Sensors_dt = TX1 - TX2;
-	//}
-	//TX2=TX1;
 }
 
-
-/*char * Sensor_GetBatteryTest(void)
-{
-		// Write Voltage
-	nTemp16 = Sensor_GetBattery();
-	utoa(nTemp16 /10,Result,10);
-	strcat_P(Result,PSTR("."));
-	utoa(nTemp16 %10,Result2,10);
-	strcat (Result,Result2);
-	return Result;
-}*/
 
 int16_t  Sensor_GetBattery(void)
 {

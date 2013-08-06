@@ -461,7 +461,7 @@ void _hHomePage()
 	}
 	
 	_helper_Words (3,48,  0,(Config.FrameType== FRAMETYPE_QUADCOPTER),PSTR("Quad"),PSTR("TRI "),5);
-	_helper_Words (3,84,0,(Config.RX_mode == RX_mode_BuddyMode),PSTR("Buddy"),PSTR("UART "),5);
+	_helper_Words (3,84,0,(Config.RX_mode == RX_mode_BuddyMode),PSTR("Buddy "),PSTR("Single"),6);
 	
 	_helper_DisplayRXStatus(5);
 	
@@ -804,7 +804,7 @@ void _hModeSettings ()
 	}
 	
 	_helper_Words  (0,84,(subpage==0),(Config.FrameType== FRAMETYPE_QUADCOPTER),PSTR("Quad"),PSTR("TRI "),5);
-	_helper_Words  (1,84,(subpage==1),(Config.RX_mode== RX_mode_BuddyMode),PSTR("Buddy"),PSTR("UART "),5);
+	_helper_Words  (1,84,(subpage==1),(Config.RX_mode== RX_mode_BuddyMode),PSTR("Buddy "),PSTR("Single"),6);
 	_helper_Words (2,84,(subpage==2),(Config.BoardOrientationMode == QuadFlyingMode_PLUS),PSTR("+ Quad"),PSTR("X Quad"),6);
 	if (Config.FrameType == FRAMETYPE_QUADCOPTER)
 	{
@@ -862,7 +862,7 @@ void _hMiscSettings()
 void _hStabilization()
 {
 	NOKEYRETURN;
-	PageKey(9);
+	PageKey(8);
 	
 	if (KEY4)
 	{
@@ -878,8 +878,8 @@ void _hStabilization()
 			case 4: startEditMode(&(Config.GyroParams[subindex]._ILimit),0,500,TYPE_INT16); return ;
 			case 5: startEditMode(&(Config.GyroParams[subindex]._D),-500,500,TYPE_INT16);  return ; 
 			case 6: startEditMode(&(Config.GyroParams[subindex]._DLimit),0,500,TYPE_INT16); return ;
-			case 7: startEditMode(&(Config.GyroParams[subindex].ComplementaryFilterAlpha),0,999,TYPE_INT16); return ;
-			case 8: if (Config.ReverseYAW==GYRO_NORMAL) Config.ReverseYAW =GYRO_REVERSE; else Config.ReverseYAW = GYRO_NORMAL; break; // update the UI
+			//case 7: startEditMode(&(Config.GyroParams[subindex].ComplementaryFilterAlpha),0,999,TYPE_INT16); return ;
+			case 7: if (Config.ReverseYAW==GYRO_NORMAL) Config.ReverseYAW =GYRO_REVERSE; else Config.ReverseYAW = GYRO_NORMAL; break; // update the UI
 		}
 		
 		
@@ -890,6 +890,7 @@ void _hStabilization()
 		if (Config.PitchRollLinked==1)
 		{
 			memcpy(&(Config.GyroParams[ROLL_INDEX]),&(Config.GyroParams[PITCH_INDEX]), sizeof(pid_param_t));
+			memcpy(&(Config.AccParams[ROLL_INDEX]),&(Config.AccParams[PITCH_INDEX]), sizeof(pid_param_t));
 		}
 		
 		_helper_SaveinEEPROM_ifChanged();
@@ -902,7 +903,7 @@ void _hStabilization()
 	if ((subindex==2) && (Config.FrameType == FRAMETYPE_TRICOPTER))
 	{
 		LCD_WriteString_Pex(5,0,PSTR("Reverse GYRO"),12,false);    
-		_helper_DisplayBiStateText(5,84 ,PSTR("N"), PSTR("R"), Config.ReverseYAW==GYRO_NORMAL, 8==subpage);
+		_helper_DisplayBiStateText(5,84 ,PSTR("N"), PSTR("R"), Config.ReverseYAW==GYRO_NORMAL, 7==subpage);
 	}		
 
 	
@@ -913,7 +914,7 @@ void _hStabilization()
 	LCD_WriteValue(2,84,Config.GyroParams[subindex]._ILimit,3,4==subpage);
 	LCD_WriteValue(3,30,Config.GyroParams[subindex]._D,3,5==subpage);
 	LCD_WriteValue(3,84,Config.GyroParams[subindex]._DLimit,3,6==subpage);
-	LCD_WriteValue(4,84,Config.GyroParams[subindex].ComplementaryFilterAlpha,3,7==subpage);
+	//LCD_WriteValue(4,84,Config.GyroParams[subindex].ComplementaryFilterAlpha,3,7==subpage);
 	
 	
 }
@@ -923,7 +924,7 @@ void _hStabilization()
 void _hSelfLeveling()
 {
 	NOKEYRETURN;
-	PageKey(10);
+	PageKey(9);
 	
 	if ((subindex==2) && (subpage>7)) subpage=0;
 		
@@ -952,9 +953,9 @@ void _hSelfLeveling()
 			case 4: startEditMode(&(Config.AccParams[subindex]._ILimit),0,500,TYPE_INT16); return ;
 			case 5: startEditMode(&(Config.AccParams[subindex]._D),-500,500,TYPE_INT16);  return ; // negative D
 			case 6: startEditMode(&(Config.AccParams[subindex]._DLimit),0,500,TYPE_INT16); return ;
-			case 7: startEditMode(&(Config.AccParams[subindex].ComplementaryFilterAlpha),0,999,TYPE_INT16); return ;
-			case 8: startEditMode(&(Config.Acc_Pitch_Trim),-25,25,TYPE_INT8);  return ; 
-			case 9: startEditMode(&(Config.Acc_Roll_Trim),-25,25,TYPE_INT8); return ;
+			//case 7: startEditMode(&(Config.AccParams[subindex].ComplementaryFilterAlpha),0,999,TYPE_INT16); return ;
+			case 7: startEditMode(&(Config.Acc_Pitch_Trim),-25,25,TYPE_INT8);  return ; 
+			case 8: startEditMode(&(Config.Acc_Roll_Trim),-25,25,TYPE_INT8); return ;
 		}
 	}
 	
@@ -962,6 +963,8 @@ void _hSelfLeveling()
 	{
 		if (Config.PitchRollLinked==1)
 		{ 
+			
+			memcpy(&(Config.GyroParams[ROLL_INDEX]),&(Config.GyroParams[PITCH_INDEX]), sizeof(pid_param_t));
 			memcpy(&(Config.AccParams[ROLL_INDEX]),&(Config.AccParams[PITCH_INDEX]), sizeof(pid_param_t));
 		}
 		
@@ -972,8 +975,8 @@ void _hSelfLeveling()
 	_helper_DisplayPitchRollYaw(subindex);
 	if (subindex<2)
 	{
-		LCD_WriteValue(5,42,Config.Acc_Pitch_Trim,3,8==subpage);
-		LCD_WriteValue(5,78,Config.Acc_Roll_Trim,3,9==subpage);
+		LCD_WriteValue(5,42,Config.Acc_Pitch_Trim,3,7==subpage);
+		LCD_WriteValue(5,78,Config.Acc_Roll_Trim,3,8==subpage);
 	}
 	else
 	{
@@ -987,7 +990,7 @@ void _hSelfLeveling()
 	LCD_WriteValue(2,84,Config.AccParams[subindex]._ILimit,3,4==subpage);
 	LCD_WriteValue(3,30,Config.AccParams[subindex]._D,3,5==subpage);
 	LCD_WriteValue(3,84,Config.AccParams[subindex]._DLimit,3,6==subpage);
-	LCD_WriteValue(4,84,Config.AccParams[subindex].ComplementaryFilterAlpha,3,7==subpage);
+	//LCD_WriteValue(4,84,Config.AccParams[subindex].ComplementaryFilterAlpha,3,7==subpage);
 	
 }
 
@@ -1071,16 +1074,16 @@ void _hDebug()
 			//
 		}	
 
-		
-		//YAWAngle += (double)CompGyroPitch	* GYRO_RATE * TimeDef_m * DEG_TO_RAD;
-		//OldAngle = (- Sensors_Latest[ACC_PITCH_Index] - Config.Acc_Pitch_Trim)* DEG_TO_RAD_ACC  ;
+		YAWAngle += (double)CompGyroPitch;
+		OldAngle += (double)CompGyroPitch * 0.1;// *  TimeDef_m;
 		//YAWAngle += OldAngle ;
-		LCD_WriteValue_double_ex(1,12,APitch,10,false);
-		LCD_WriteValue_double_ex(2,12,AnglePitch ,10,false);
-		LCD_WriteValue_double_ex(3,12,AngleRoll,10,false);
-		LCD_WriteValue_double_ex(4,12,VectorLength ,10,false);
-		LCD_WriteValue_double_ex(5,12, AngleZ,10,false);
-		//LCD_WriteValue_double_ex(6,12, AngleZ * RAD_TO_DEG,10,false);
+		LCD_WriteValue_double_ex(1,12,AnglePitch,10,false);
+		LCD_WriteValue_double_ex(2,12,NavY,10,false);
+		LCD_WriteValue_double_ex(3,12,PID_AccTerms[PITCH_INDEX].P,10,false);
+		LCD_WriteValue_double_ex(4,12,PID_AccTerms[PITCH_INDEX].I,10,false);
+		LCD_WriteValue_double_ex (5,12,PID_AccTerms[PITCH_INDEX].D,10,false);
+		LCD_WriteValue_double_ex(6,12,  (-(double)((float)RX_Snapshot[RXChannel_AIL] )),10,false);
+		//LCD_WriteValue_double_ex(6,12, CompAccZ * DEG_TO_RAD_ACC,10,false);
 		//Alpha * AngleZ + Beta * CompAccZ * DEG_TO_RAD; //+ D90_RAD
 		//LCD_WriteValue_double_ex(4,12,CompAccZ,9,false);
 		

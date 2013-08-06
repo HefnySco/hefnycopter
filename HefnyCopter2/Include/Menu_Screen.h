@@ -90,10 +90,7 @@ P_STR scrHomePageArmedESCCalibration[] =
     "ESC Calibration mode\n";
 
 	
-P_STR scrSelfLeveling[] =
-	"\n"
-	"LPF:\n"
-	;
+
 	
 	
 P_STR scrStabilization[]=
@@ -101,7 +98,8 @@ P_STR scrStabilization[]=
 	"P:       Lim:\n"
 	"I:       Lim:\n"
 	"D:       Lim:\n"
-	"Noise Filter:\n"
+	//"Noise Filter:\n"
+	"\n"
 	"Trim P:    R:"    
 	;
 
@@ -171,7 +169,7 @@ P_STR scrESCCal1[] =
 	"\n"
 	"Press CONTINUE to\n"
 	"save.";
-*/
+
 P_STR scrMixerEditor[] = 
 	"Throttle:       Ch:\n"
 	"Aileron:\n"
@@ -179,7 +177,7 @@ P_STR scrMixerEditor[] =
 	"Rudder:\n"
 	"Offset:\n"
 	"Type:       Rate:";
-
+*/
 
 //////////////////////////////////////////////////////////////////////////
 // softkeys

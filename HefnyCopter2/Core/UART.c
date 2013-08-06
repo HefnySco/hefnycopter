@@ -5,6 +5,8 @@
  *  Author: M.Hefny
  */ 
 
+
+
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
@@ -21,6 +23,8 @@
 #include "../Include/Arming.h"
 #include "../Include/Sensors.h"
 #include "../Include/LED.h"
+
+#ifdef TELEMETRY_ENABLED
 
 volatile uint8_t  RXIndex=0;
 volatile uint16_t LastRXTime;
@@ -151,9 +155,10 @@ void ParseCommand ()
 	
 }
 
+
 void UART_Init( unsigned int ubrr)
 {
-	if (Config.RX_mode==RX_mode_UARTMode)
+	if (Config.RX_mode==RX_mode_SingleMode)
 	{
 		//memcpy(DisplayBuffer,"STR",3);
 		RXIndex=0;
@@ -195,3 +200,4 @@ void Send_Data (void * msg, uint8_t len)
 	
 }
 
+#endif /*TELEMETRY_ENABLED*/

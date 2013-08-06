@@ -29,8 +29,8 @@ int16_t	PMW_Pulse_Interval ;
 
 
 
-volatile uint16_t i;
-uint16_t MotorStartTCNT, ElapsedTCNT2, CurrentTCNT2;
+//volatile uint16_t i;
+
 volatile uint16_t m1,m2,m3,m4;
 	
 uint16_t tempTCNT1;
@@ -41,6 +41,7 @@ static  uint8_t times=0;
 
 void Motor_GenerateOutputSignal(void)
 {
+	int i;
 	// Only enable motors when armed or not connected to the GUI
 	
 	
@@ -116,7 +117,7 @@ void Motor_GenerateOutputSignal(void)
 	}
 	else if (Config.FrameType== FRAMETYPE_TRICOPTER)
 	{
-		if (times==5)
+		if (times==4)
 		{
 			M4 = 1;		// time to update servo
 			//UpdateServo = FALSE;
@@ -144,7 +145,7 @@ void Motor_GenerateOutputSignal(void)
 	}
 		
 	
-	for (i=0;i<MOTORS_HIGH_VALUE+4;i+=4)			// 1000 gives a max of 2200us 
+	for (i=0;i<MOTORS_HIGH_VALUE+4;i+=2)			// 1000 gives a max of 2200us 
 	{
 		/*
 		MOTORS_HIGH_VALUE+4

@@ -210,7 +210,7 @@ ISR (RX1_YAW_vect)
 {   
 	// SONAR IS HERE IN UART MODE
 	// SONAR RAW VALUE = RX_Length[0][RXChannel_RUD]
-	if ((Config.RX_mode==RX_mode_UARTMode) && (IS_MISC_SENSOR_SONAR_ENABLED==true))
+	if ((Config.RX_mode==RX_mode_SingleMode) && (IS_MISC_SENSOR_SONAR_ENABLED==true))
 	{
 		if (RX1_YAW)
 		{

@@ -80,7 +80,7 @@ P_STR strAreYouSure[] = "Are you sure?";
 
 P_STR strMotor[]	  = "Motor:";
 P_STR strOutput[]     = "Output:";
-P_STR strDirSeen[]    = "Direction\nseen from\nabove:";
+//P_STR strDirSeen[]    = "Direction\nseen from\nabove:";
 //P_STR strCW[]		  = "CW";
 //P_STR strCCW[]        = "CCW";
 P_STR strALL[]        = "ALL";

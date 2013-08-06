@@ -34,6 +34,8 @@ Protocol:
 					DataValue:	6
 					CHKSUM:		1 byte
 */
+#ifdef TELEMETRY_ENABLED
+
 
 //#define SERIAL_OFFSET_ThrottleMin	
 #define SERIAL_CMD_LED_BLINK		0x01
@@ -68,4 +70,9 @@ void Send_Data (void * msg, uint8_t len);
 //volatile char UART_Buffer_TX[256];
 uint8_t *DataPtr;
 uint8_t DataCounter;
+
+#endif /*TELEMETRY_ENABLED*/
+
 #endif /* UART_H_ */
+
+

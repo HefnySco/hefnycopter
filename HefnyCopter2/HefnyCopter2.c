@@ -96,7 +96,7 @@ void Setup (void)
 	//Config.QuadFlyingMode = QuadFlyingMode_PLUS;
 	
 	RX_Init();
-	if ((Config.RX_mode==RX_mode_UARTMode) && (IS_MISC_SENSOR_SONAR_ENABLED==true))
+	if ((Config.RX_mode==RX_mode_SingleMode) && (IS_MISC_SENSOR_SONAR_ENABLED==true))
 	{
 		Ultrasonic_Init();
 	}		
@@ -124,11 +124,12 @@ void Setup (void)
 	TCCR1B = 0;
 	TCCR1C = 0;
 	
-
-if (Config.RX_mode==RX_mode_UARTMode)
+#ifdef TELEMETRY_ENABLED
+if (Config.RX_mode==RX_mode_SingleMode)
 {
 	UART_Init(SERIAL_BAUD_RATE); //57600 = 20   115200=10
 }	
+#endif
 
 
 
@@ -166,7 +167,7 @@ int main(void)
 	DataPtr = (uint8_t *) (&Sensors_Latest);
 	DataCounter=0;
 	
-TCNT1H_OLD = TCNT1H;
+	TCNT1H_OLD = TCNT1H;
 
 	// Never go to MainLoop "fly loop" unless Sensors & RX is calibrated.
 	// This loop to protect against any bug that might make the quad start or KB stick click
@@ -285,7 +286,7 @@ void MainLoop(void)
 	
 #ifdef DEBUG_ME
 		// Sending Sensors & Motor Data 
-		if (Config.RX_mode==RX_mode_UARTMode)
+		if (Config.RX_mode==RX_mode_SingleMode)
 		{
 			//LED_Orange=~LED_Orange;
 			Send_Byte('S');
@@ -345,7 +346,7 @@ void MainLoop(void)
 			Buzzer = OFF;
 		}
 		
-		if (Config.RX_mode==RX_mode_UARTMode)
+		if (Config.RX_mode==RX_mode_SingleMode)
 		{
 				if ((FlyingModesToggle != LOW) && ( RX_Latest[RX_MAIN][RXChannel_AUX] < STICK_RIGHT ))
 				{
@@ -386,6 +387,7 @@ void MainLoop(void)
 		// Stop motors if Throttle Stick is less than minimum.
 		ZEROMotors();
 #ifndef DEBUG_ME
+		// Disable when debug
 		ZERO_Is();
 		IMU_Reset(); // reset angles for gyro [STABLE MODE]
 #endif
@@ -399,7 +401,12 @@ void MainLoop(void)
 			
 			// Sticks as Keyboard --- we are already disarmed to reach here.
 			HandleSticksAsKeys();
-			
+#ifdef DEBUG_ME  
+			// ENable when debug
+			RX_Snapshot	  [RXChannel_AIL] = ((RX_Latest[ActiveRXIndex][RXChannel_AIL] * Config.StickScaling * 0.05 ));
+			RX_Snapshot   [RXChannel_ELE] = ((RX_Latest[ActiveRXIndex][RXChannel_ELE] * Config.StickScaling * 0.05 )); 
+			RX_Snapshot   [RXChannel_RUD] = (RX_Latest[ActiveRXIndex][RXChannel_RUD] * Config.StickScaling * 0.05 ); // version 0.9.9 
+#endif			
 		}
 		else
 		{	// MOTORS ARE ON HERE .... DANGEROUS
@@ -408,16 +415,13 @@ void MainLoop(void)
 			TCNT_X_snapshotAutoDisarm = 0; // ZERO [user may disarm then fly slowly..in this case the qude will disarm once he turned off the stick...because the counter counts once the quad is armed..e.g. if it takes n sec to disarm automatically..user took n-1 sec keeping the stick low after arming then it will take 1 sec to disarm again after lowing the stick under STICKThrottle_ARMING
 			
 			// Armed & Throttle Stick > MIN . . . We should Fly now.
-			//RX_Snapshot_1 [RXChannel_AIL]= RX_Snapshot[RXChannel_AIL];
-			//RX_Snapshot_1 [RXChannel_ELE]= RX_Snapshot[RXChannel_ELE];
-			//RX_Snapshot_1 [RXChannel_RUD]= RX_Snapshot[RXChannel_RUD];
-			double ScalingFactor = 0.05;
+			double ScalingFactor = 0.05;	// STick Scale is from 1 to 20 @20 Scale = 1
 			if (nFlyingModes == FLYINGMODE_ACRO)
-			{
+			{ // to maintain sensitivity reasonable between ACRO & Stable Mode.
 				ScalingFactor = 0.025;
 			}
-			RX_Snapshot	  [RXChannel_AIL] = (RX_Latest[ActiveRXIndex][RXChannel_AIL] * Config.StickScaling * 0.05 );
-			RX_Snapshot   [RXChannel_ELE] = (RX_Latest[ActiveRXIndex][RXChannel_ELE] * Config.StickScaling * 0.05 ); 
+			RX_Snapshot	  [RXChannel_AIL] = ((int32_t)(RX_Latest[ActiveRXIndex][RXChannel_AIL] * Config.StickScaling * 0.05 ));
+			RX_Snapshot   [RXChannel_ELE] = ((int32_t)(RX_Latest[ActiveRXIndex][RXChannel_ELE] * Config.StickScaling * 0.05 )); 
 			RX_Snapshot   [RXChannel_RUD] = (RX_Latest[ActiveRXIndex][RXChannel_RUD] * Config.StickScaling * 0.05 ); // version 0.9.9 
 			
 			
@@ -477,9 +481,9 @@ void MainLoop(void)
 			{	// Balance Tri-Copter
 				// NOT VALID if Board Orientation is X
 					
-				MotorOut[2] += gyroPitch; // * 1.0;
+				MotorOut[2] += gyroPitch * 1.34; // 4/3
 					
-				gyroPitch    = gyroPitch * 0.5; // distribute pitch on two front motors .... half the effect. 
+				gyroPitch    = gyroPitch * 0.67; // 2/3
 				MotorOut[0] -= gyroPitch  ;
 				MotorOut[1] -= gyroPitch  ;
 					
@@ -539,8 +543,8 @@ void MainLoop(void)
 							inv = -1;
 						}							
 							// {0.5,0.5,1.1,X} TRI_ELE_FRONT
-							MotorOut[2] -= inv * (RX_Snapshot[RXChannel_ELE]); 
-							RX_Snapshot[RXChannel_ELE] = inv * RX_Snapshot[RXChannel_ELE] * 0.5;
+							MotorOut[2] -= inv * (RX_Snapshot[RXChannel_ELE]);	
+							RX_Snapshot[RXChannel_ELE] = inv * RX_Snapshot[RXChannel_ELE] ;  
 							MotorOut[0] += RX_Snapshot[RXChannel_ELE] ; 
 							MotorOut[1] += RX_Snapshot[RXChannel_ELE] ; 
 						
@@ -603,7 +607,7 @@ void MainLoop(void)
 			
 		
 			// Sending Sensors & Motor Data 
-			if (Config.RX_mode==RX_mode_UARTMode)
+			if (Config.RX_mode==RX_mode_SingleMode)
 			{
 				//LED_Orange=~LED_Orange;
 				Send_Byte('S');
@@ -811,7 +815,7 @@ void ZEROMotors()
 	MotorOut[2] = 0;
 	if (Config.FrameType == FRAMETYPE_TRICOPTER)
 	{
-		MotorOut[3] = SERVO_IN_MIDDLE;
+		MotorOut[3] = SERVO_IN_MIDDLE + RX_Latest[RX_MAIN][RXChannel_RUD];
 	}	
 	else
 	{

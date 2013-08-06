@@ -10,7 +10,7 @@
 #define VERSION_H_
 
 
-static const prog_char strVersionInfo[] = "HefnyCopter2 v1.0.3b";
+static const prog_char strVersionInfo[] = "HefnyCopter2 v1.1.0";
 #define VERSION_16INT	0x0190
 #define REQUIRE_FACTORY_RESET	
 
@@ -222,9 +222,16 @@ Function:
 UI
 *	.Faulty sensor will be displayed in inverted font in "Sensor Test Menu" instead of X next to it.
 
-version 1.0.3
+version 1.1.0
 IMU:
 *	.Better Stabilization algorithm.
+Function:
+*	.Higher Refresh rate.
+*	.Rescaling PID factors.
+*	.When Linking Pitch & Roll u need to change either Gyro PID or ACC PID to copy all Gyro & ACC from Pitch to Roll PIDs
+UI:
+*	.Remove Noise Filters from UI. can be set through code.
+*	.Rename UART mode to single mode
 
 
 
