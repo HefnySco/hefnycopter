@@ -129,7 +129,7 @@ int16_t gyroPitch;
 int16_t gyroRoll;
 int16_t gyroYaw;
 
-
+	
 double NavY, NavX;
 ///////////////////////////////////////////////////
 // Intermediate results for IMU_CalculateAngles

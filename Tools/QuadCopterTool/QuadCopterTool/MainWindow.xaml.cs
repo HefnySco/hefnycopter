@@ -239,6 +239,7 @@ namespace QuadCopterTool
             switch (oSerialPacket.DataType)
             {
                 case ENUM_RxDataType.Sensors:
+                case    ENUM_RxDataType.IMU:
                     Offset = 0;
                     SensorManager.Gyro_X.AddValue((Int16)(BitConverter.ToSingle(oSerialPacket.Array, 0 + Offset)));
                     SensorManager.Gyro_Y.AddValue((Int16)BitConverter.ToSingle(oSerialPacket.Array, 4 + Offset));

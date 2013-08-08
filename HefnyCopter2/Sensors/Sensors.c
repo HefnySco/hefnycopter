@@ -24,10 +24,6 @@
 
 
 
-P_STR strOK[] ="OK  ";
-P_STR strFail[] ="Fail";
-	
-
 
 void Sensors_Init(void)
 {
@@ -132,7 +128,7 @@ void Sensors_Calibrate (void)
 		
 }
 
-#define DEAD_BAND_GYRO	2
+#define DEAD_BAND_GYRO	3
 //uint32_t LastLoopTime[2];
 //uint16_t TX,TX1,TX2;
 void Sensors_ReadAll (void)

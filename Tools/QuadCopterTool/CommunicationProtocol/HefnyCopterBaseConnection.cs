@@ -9,6 +9,7 @@ namespace HefnyCopter.CommunicationProtocol
     public enum ENUM_RxDataType
     {
         Undefined,
+        IMU,
         Sensors,
         Settings
     }

@@ -42,9 +42,11 @@ void RotateV ()
 	AnglePitch_T = AnglePitch;
 	//AngleZ_T = DT_YAW;
 	//AngleZ     -= ((DeltaRoll  * AngleRoll_T ) + (DeltaPitch * AnglePitch_T ));
-	//AngleRoll  = (DeltaRoll  * AngleZ_T ) - (DT_YAW	* AnglePitch_T );  *********** MISSING PLUS
+	//AngleRoll  += (DeltaRoll  * AngleZ_T ) - (DT_YAW	* AnglePitch_T ); 
 	//AnglePitch += (DeltaPitch * AngleZ_T ) + (DT_YAW	* AngleRoll_T  );
 	//AngleZ     += DT_YAW;
+	
+	// COntrifugal forces does affect rotation
 	AngleRoll  += DeltaRoll  - (DT_YAW	* APitch * 0.008064);
 	AnglePitch += DeltaPitch + (DT_YAW	* ARoll * 0.008064);  // 0.008064  = 1/124
 	
@@ -68,16 +70,17 @@ void IMU (void)
 {
 		double Alpha;	
 		double Beta;
-		double tZ = Sensors_Latest[ACC_Z_Index] + Config.AccParams[YAW_INDEX].ComplementaryFilterAlpha / 1000.0;
-		
+		//double tZ = Sensors_Latest[ACC_Z_Index] + Config.AccParams[YAW_INDEX].ComplementaryFilterAlpha / 1000.0;
+		double APitchZero;
+		double ARollhZero;
 	    // calculate ACC-Z
-		Alpha = 0.0; //0.01; //Config.AccParams[Z_INDEX].ComplementaryFilterAlpha / 1000.0;
-		Beta = 1- Alpha; // complementary filter to remove noise
-		CompAccZ = (double) (Alpha * CompAccZ) + (double) (Beta * (tZ));
+		//Alpha = 0.0;  //Config.AccParams[Z_INDEX].ComplementaryFilterAlpha / 1000.0;
+		//Beta = 1.0- Alpha; // complementary filter to remove noise
+		//CompAccZ = (double) (Alpha * CompAccZ) + (double) (Beta * (tZ));
 		
 		// calculate YAW
 		Alpha =0.0; // 0.01; //Config.GyroParams[YAW_INDEX].ComplementaryFilterAlpha / 1000.0;
-		Beta = 1- Alpha; // complementary filter to remove noise
+		Beta = 1.0- Alpha; // complementary filter to remove noise
 		CompGyroZ = (double) (Alpha * CompGyroZ) + (double) (Beta * Sensors_Latest[GYRO_Z_Index]);
 		
 		//Alpha = 0.0; //Config.GyroParams[PITCH_INDEX].ComplementaryFilterAlpha / 1000.0;
@@ -96,19 +99,17 @@ void IMU (void)
 		gyroRoll  = PID_Calculate (Config.GyroParams[ROLL_INDEX],	&PID_GyroTerms[ROLL_INDEX],CompGyroRoll,0); 
 		gyroYaw   = PID_Calculate (Config.GyroParams[YAW_INDEX],	&PID_GyroTerms[YAW_INDEX],CompGyroZ -((double)((float)RX_Snapshot[RXChannel_RUD]  / 2.0f)),0); 
 	
-			
+		
+		APitchZero = (- Sensors_Latest[ACC_PITCH_Index] - Config.Acc_Pitch_Trim) ;
+		ARollhZero = (- Sensors_Latest[ACC_ROLL_Index]  - Config.Acc_Roll_Trim)  ;
 		// Read ACC and Trims
 		// ACC directions are same as GYRO direction [we added "-" for this purpose] 
-		Alpha = 0.01; //Config.GyroParams[PITCH_INDEX].ComplementaryFilterAlpha / 1000.0; // TODO: optimize
-		Beta = 1- Alpha;
-		APitch = Alpha * APitch + Beta * (- Sensors_Latest[ACC_PITCH_Index] - Config.Acc_Pitch_Trim);
-		ARoll  = Alpha * ARoll  + Beta * (- Sensors_Latest[ACC_ROLL_Index]  - Config.Acc_Roll_Trim);
+		Alpha = 0.5; //Config.GyroParams[PITCH_INDEX].ComplementaryFilterAlpha / 1000.0; // TODO: optimize
+		Beta = 1.0- Alpha;
+		APitch = Alpha * APitch + Beta * APitchZero;
+		ARoll  = Alpha * ARoll  + Beta * ARollhZero;
 		
 		
-		//VectorLength = ((Sensors_Latest[ACC_PITCH_Index] * Sensors_Latest[ACC_PITCH_Index]) )
-					 //+ ((Sensors_Latest[ACC_ROLL_Index] *  DEG_TO_VEC * Sensors_Latest[ACC_ROLL_Index]) * DEG_TO_VEC )
-					 //+ ((tZ *  DEG_TO_VEC * tZ) * DEG_TO_VEC );
-			
 		TimeDef = CurrentTCNT1_X - TCNT1H_OLD;
 		
 		TCNT1H_OLD =CurrentTCNT1_X;
@@ -118,7 +119,7 @@ void IMU (void)
 		RotateV();			   
 					   
 		// Correct Drift using ACC
-		#define ACC_SMALL_ANGLE	30.0
+		#define ACC_SMALL_ANGLE	150.0
 		
 		// if small angle then correct using ACC
 		if (
@@ -127,52 +128,15 @@ void IMU (void)
 			((ARoll  < ACC_SMALL_ANGLE) && (ARoll  > -ACC_SMALL_ANGLE))
 			)
 		{
-			Alpha = 0.997; // Config.AccParams[PITCH_INDEX].ComplementaryFilterAlpha / 1000.0; // TODO: optimize
-			Beta = 1- Alpha;
-			AnglePitch = Alpha * AnglePitch + Beta * APitch ;
-			
-			//Alpha = COMPLEMENTRY_FILTER_ACC; // Config.AccParams[ROLL_INDEX].ComplementaryFilterAlpha / 1000.0; // TODO: optimize
-			//Beta = 1- Alpha;
-			AngleRoll =  Alpha * AngleRoll + Beta  * ARoll ;
-			
+			Alpha = 0.98; //Config.AccParams[PITCH_INDEX].ComplementaryFilterAlpha / 1000.0; // TODO: optimize
+			Beta = 1.0- Alpha;
+			AngleRoll =  Alpha * AngleRoll + Beta  * ARollhZero ;
+			AnglePitch = Alpha * AnglePitch + Beta *  APitchZero;
 		}			
-		
-		////////if (			
-			////////(VectorLength < (Config.AccParams[PITCH_INDEX].ComplementaryFilterAlpha / 100.0))
-			////////&&
-			////////(VectorLength > (Config.AccParams[ROLL_INDEX].ComplementaryFilterAlpha / 100.0))
-			////////)
-		////////{
-			////////AngleZ = 0.99 * AngleZ + 0.01 * CompAccZ * DEG_TO_RAD_ACC; // DEG_TO_RAD; // + D90_RADZ;
-		////////}			
-			////////
 			NavY = AnglePitch; 
 			NavX = AngleRoll; 
 		
 		// multiwii HEADFREE ... compact formula
-/*
-	if(f.HEADFREE_MODE) 
-	{ //to optimize
-		float radDiff = (heading - headFreeModeHold) * 0.0174533f; // where PI/180 ~= 0.0174533
-		float cosDiff = cos(radDiff);
-		float sinDiff = sin(radDiff);
-		int16_t rcCommand_PITCH = rcCommand[PITCH]*cosDiff + rcCommand[ROLL]*sinDiff;
-		rcCommand[ROLL] =  rcCommand[ROLL]*cosDiff - rcCommand[PITCH]*sinDiff; 
-		rcCommand[PITCH] = rcCommand_PITCH;
-		
-		radDiff = 0
-		rcCommand[ROLL] =  rcCommand[ROLL]; 
-		rcCommand[PITCH] = rcCommand_PITCH;
-		
-		radDiff = 45
-		rcCommand[ROLL] =  +rcCommand[ROLL]  x  0.7  -  rcCommand[PITCH] x 0.7; 
-		rcCommand[PITCH] = + rcCommand[PITCH] x  0.7	+  rcCommand[ROLL]  x  0.7;
-		radDiff = -45
-		rcCommand[ROLL] =  -rcCommand[ROLL]  x  0.7  -  rcCommand[PITCH] x 0.7; 
-		rcCommand[PITCH] = - rcCommand[PITCH] x  0.7	+  rcCommand[ROLL]  x  0.7;
-		
-	}
-*/	
 		double mix[4];
 
 		if ((Config.BoardOrientationMode==QuadFlyingMode_PLUS) && (Config.QuadFlyingMode==QuadFlyingMode_X))

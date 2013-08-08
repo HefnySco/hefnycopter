@@ -289,10 +289,23 @@ void MainLoop(void)
 		if (Config.RX_mode==RX_mode_SingleMode)
 		{
 			//LED_Orange=~LED_Orange;
+#ifdef	UART_SEND_SENSORS			
 			Send_Byte('S');
 			Send_Data((void *)(&Sensors_Latest[0]),24);
 			Send_Data((void *)(&MotorOut[0]),8);
 			Send_Byte('E');
+#else
+
+			Send_Byte('I');
+			Send_Data((void *)(&Sensors_Latest[0]),12);
+			Send_Data((void *)(&AnglePitch),4);
+			Send_Data((void *)(&AngleRoll),4);
+			Send_Data((void *)(&CompAccZ),4);
+			Send_Data((void *)(&MotorOut[0]),8);
+			Send_Byte('E');
+			
+#endif
+			
 		}
 #endif
  
@@ -561,7 +574,7 @@ void MainLoop(void)
 				// in stabilization mode ... activate Acc-Z & Sonar if enabled.
 				
 				double Landing;
-				
+				// Handles Sonar & ACC-Z (Z is always handles even if ALTHLD is false)
 				Landing = IMU_HeightKeeping();
 				MotorOut[0] += Landing;
 				MotorOut[1] += Landing;
@@ -609,11 +622,22 @@ void MainLoop(void)
 			// Sending Sensors & Motor Data 
 			if (Config.RX_mode==RX_mode_SingleMode)
 			{
-				//LED_Orange=~LED_Orange;
-				Send_Byte('S');
-				Send_Data((void *)(Sensors_Latest),24);
-				Send_Data((void *)(MotorOut),8);
-				Send_Byte('E');
+#ifdef	UART_SEND_SENSORS			
+			Send_Byte('S');
+			Send_Data((void *)(&Sensors_Latest[0]),24);
+			Send_Data((void *)(&MotorOut[0]),8);
+			Send_Byte('E');
+#else
+
+			Send_Byte('I');
+			Send_Data((void *)(&Sensors_Latest[0]),12);
+			Send_Data((void *)(&AnglePitch),4);
+			Send_Data((void *)(&AngleRoll),4);
+			Send_Data((void *)(&CompAccZ),4);
+			Send_Data((void *)(&MotorOut[0]),8);
+			Send_Byte('E');
+			
+#endif		
 			}
 			
 			

@@ -176,6 +176,14 @@ namespace HefnyCopter.CommunicationProtocol
             for (int i = 0; i < array.Length; ++i) // j; ++i)
             {
                 // Sensors Start Tag .... Data of Gyros & Acc readinsg while flying is being recived.
+                if ((!bStartCopy) && (array[i] == 'I'))
+                {
+                    mRxDataType = ENUM_RxDataType.IMU;
+                    bStartCopy = true;
+                    Command = 0;
+                    Idx = 0;
+                    continue;
+                } 
                 if ((!bStartCopy) && (array[i] == 'S'))
                 {
                     mRxDataType = ENUM_RxDataType.Sensors;
@@ -216,6 +224,17 @@ namespace HefnyCopter.CommunicationProtocol
                 {
                     switch (mRxDataType)
                     {
+                        case ENUM_RxDataType.IMU:
+                            if (Idx == 32)
+                            {
+                                Idx = 0;
+                                bStartCopy = false;
+                                ExpectEOF = true;
+                                i -= 1; // stepback to check for 'E'
+                                continue;
+                            }
+                            cArray[Idx] = array[i];
+                            break;
                         case ENUM_RxDataType.Sensors:
                             if (Idx == 32)
                             {
