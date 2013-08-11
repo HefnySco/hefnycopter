@@ -46,37 +46,30 @@
 
 static config_t const defaultConfig PROGMEM = 
 {
-	.signature = HEFNYCOPTER2_SIGNATURE,
-	.Version = VERSION_16INT,
-	.IsCalibrated=0,
-	.FrameType = FRAMETYPE_QUADCOPTER,
-	.RX_mode=RX_mode_SingleMode,
-	.BoardOrientationMode = QuadFlyingMode_PLUS,
-	.QuadFlyingMode = QuadFlyingMode_PLUS,
-	.GyroParams[PITCH_INDEX]	= {35,200,10,150,-4,40,0},		// pitch roll gyro.
-	.GyroParams[ROLL_INDEX]		= {35,200,10,150,-4,40,0},		// pitch roll gyro.
-	.GyroParams[YAW_INDEX]		= {50,80,50,90,0,20,200},	// Yaw gyro
-	.AccParams[PITCH_INDEX]		= {20,200,5,170,0,20,997},	// ACC_PITCH & Y
-	.AccParams[ROLL_INDEX]		= {20,200,5,170,0,20,997},	// ACC_PITCH & Y
-	.AccParams[YAW_INDEX]		= {15,35,0,10,0,20,200},	// ACC_Z
-	.SonarParams[0] ={15,25,0,10,0,10,0},
-	.ReverseYAW = GYRO_NORMAL,
-	//.RX_mode = 0, //RX_MODE_CPPM,
-	//.Sensor_zero[GYRO_ROLL_Index] = 548,
-	//.Sensor_zero[GYRO_PITCH_Index] = 548,
-	//.Sensor_zero[GYRO_Z_Index] = 570,
-	//.Sensor_zero[ACC_PITCH_Index] = 610,
-	//.Sensor_zero[ACC_ROLL_Index] = 610,
-	//.Sensor_zero[ACC_Z_Index] = 700,
-	//.SelfLevelMode = IMU_SelfLevelMode,
-	.AutoDisarm = 3,  // auto disarm
-	.MiscSensors = NO_MISC_SENSORS,
-	//.LCDContrast = 32,
-	.ThrottleMin = 150,
-	.StickScaling = 8,
-	.VoltageAlarm=0, // off		[40 means 4 volt]
-	.Acc_Pitch_Trim=0,
-	.Acc_Roll_Trim=0,
+	.signature					= HEFNYCOPTER2_SIGNATURE,
+	.Version					= VERSION_16INT,
+	.IsCalibrated				= 0,
+	.FrameType					= FRAMETYPE_QUADCOPTER,
+	.RX_mode					= RX_mode_SingleMode,
+	.BoardOrientationMode		= QuadFlyingMode_PLUS,
+	.QuadFlyingMode				= QuadFlyingMode_PLUS,
+	.GyroParams[PITCH_INDEX]	= {35,200,10,150,-4,40,500},		// pitch roll gyro.
+	.GyroParams[ROLL_INDEX]		= {35,200,10,150,-4,40,500},		// pitch roll gyro.
+	.GyroParams[YAW_INDEX]		= {50,100,50,100,0,20,200},		// Yaw gyro
+	.AccParams[PITCH_INDEX]		= {40,200,5,170,0,20,990},		// ACC_PITCH & Y
+	.AccParams[ROLL_INDEX]		= {40,200,5,170,0,20,990},		// ACC_PITCH & Y
+	.AccParams[YAW_INDEX]		= {15,35,0,30,0,20,200},		// ACC_Z
+	.SonarParams[0]				= {15,25,0,10,0,10,0},
+	.ReverseYAW					= GYRO_NORMAL,
+	.RCExpo						= 50,
+	.RCLimit					= 90,
+	.AutoDisarm					= 3,  // auto disarm
+	.MiscSensors				= NO_MISC_SENSORS,
+	.ThrottleMin				= 150,
+	.VoltageAlarm				= 0, // off		[40 means 4 volt]
+	.Acc_Pitch_Trim				= 0,
+	.Acc_Roll_Trim				= 0,
+	.PitchRollLinked			= 0x01,
 };
 
 

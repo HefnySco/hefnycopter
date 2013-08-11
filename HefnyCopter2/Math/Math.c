@@ -10,6 +10,7 @@
 #include <util/atomic.h>
 
 
+#include "../Include/GlobalValues.h"
 #include "../Include/Math.h"
 #define PI 3.14159
 
@@ -61,13 +62,13 @@ float Limiterf (float Value, float Limit)
 	return Value;
 }
 
-//int16_t Limiter (int16_t Value, int16_t Limit)
-//{
-	//if (Value > Limit) return   Limit;
-	//if (Value < -Limit) return -Limit;
-	//
-	//return Value;
-//}
+int16_t Limiter (int16_t Value, int16_t Limit)
+{
+	if (Value > Limit) return   Limit;
+	if (Value < -Limit) return -Limit;
+	
+	return Value;
+}
 //
 
 //int16_t ScaleSensor (int16_t SensorValue, int16_t minSource, int16_t maxSource, int16_t minDest, int16_t maxDest, double Ratio)
@@ -102,3 +103,45 @@ float Limiterf (float Value, float Limit)
 	//return 0;	
 //}
 //
+
+
+void GenerateExpoCurve ()
+{
+	
+	double a = (double) Config.RCExpo / 100.0;
+	double b = (double)Config.RCLimit / 100.0 - a;
+	double tmp;
+	for (int i=0;i<=10;++i)
+	{
+		tmp = (i * i /100.0) * a + (i * b / 10.0);
+		RXExpoCurve[i] = tmp;
+	}
+}	
+
+void GetExpoPoint (int16_t RXValue)
+{
+	/*
+		the 50s magic numbers are scaling numbers assuming stick range from 500 to - 500
+	*/
+	int16_t RXValueAbs = abs(RXValue);
+	int8_t Idx = (RXValueAbs  / 55);
+	
+	double pt1  = (double)RXExpoCurve[Idx];
+	double v ;
+	Idx = Limiter(Idx,10)	;
+	if (Idx < 10)
+	{
+		double pt2  = (double)RXExpoCurve[Idx + 1];
+		v = pt1 + ((pt2 - pt1) / 50.0) * (RXValueAbs - (double)Idx * 50);	
+		
+	}
+	else
+	{
+		v = (double)RXExpoCurve[Idx];
+	}		
+	if (RXValue < 0) v= v * -1;
+	
+	RXResult = v * 500.0;
+}
+	
+	

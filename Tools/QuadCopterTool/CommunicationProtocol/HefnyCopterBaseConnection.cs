@@ -3,8 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+
+
+
 namespace HefnyCopter.CommunicationProtocol
 {
+
+     
 
     public enum ENUM_RxDataType
     {
@@ -26,6 +31,7 @@ namespace HefnyCopter.CommunicationProtocol
     /// <summary>
     /// Value offset for each parameter in GlobalValues.h in HefnyCopter2
     /// </summary>
+    /// 
     public enum ENUM_Parameter 
     {
         AUTO_DISARM         = 5,
@@ -34,71 +40,71 @@ namespace HefnyCopter.CommunicationProtocol
         THROTTLE_MIN        = 11, 
         STICK_SCALING       = 12,
         
-        GYRO_PARAMS_PITCH_P         = 16,
-        GYRO_PARAMS_PITCH_P_LIM     = 18,
-        GYRO_PARAMS_PITCH_I         = 20,
-        GYRO_PARAMS_PITCH_I_LIM     = 22,
-        GYRO_PARAMS_PITCH_D         = 24,
-        GYRO_PARAMS_PITCH_D_LIM     = 26,
-        GYRO_PARAMS_PITCH_FILTER    = 28,
+        GYRO_PARAMS_PITCH_P         = 18,
+        GYRO_PARAMS_PITCH_P_LIM     = 20,
+        GYRO_PARAMS_PITCH_I         = 22,
+        GYRO_PARAMS_PITCH_I_LIM     = 24,
+        GYRO_PARAMS_PITCH_D         = 26,
+        GYRO_PARAMS_PITCH_D_LIM     = 28,
+        GYRO_PARAMS_PITCH_FILTER    = 30,
 
-        GYRO_PARAMS_ROLL_P           = 30,
-        GYRO_PARAMS_ROLL_P_LIM       = 32,
-        GYRO_PARAMS_ROLL_I           = 34,
-        GYRO_PARAMS_ROLL_I_LIM       = 36,
-        GYRO_PARAMS_ROLL_D           = 38,
-        GYRO_PARAMS_ROLL_D_LIM       = 40,
-        GYRO_PARAMS_ROLL_FILTER      = 42,
+        GYRO_PARAMS_ROLL_P           = 32,
+        GYRO_PARAMS_ROLL_P_LIM       = 34,
+        GYRO_PARAMS_ROLL_I           = 36,
+        GYRO_PARAMS_ROLL_I_LIM       = 38,
+        GYRO_PARAMS_ROLL_D           = 40,
+        GYRO_PARAMS_ROLL_D_LIM       = 42,
+        GYRO_PARAMS_ROLL_FILTER      = 44,
 
-        GYRO_PARAMS_YAW_P            = 44,
-        GYRO_PARAMS_YAW_P_LIM        = 46,
-        GYRO_PARAMS_YAW_I            = 48,
-        GYRO_PARAMS_YAW_I_LIM        = 50,
-        GYRO_PARAMS_YAW_D            = 52,
-        GYRO_PARAMS_YAW_D_LIM        = 54,
-        GYRO_PARAMS_YAW_FILTER       = 56,
-
-
-        ACC_PARAMS_PITCH_P          = 58,
-        ACC_PARAMS_PITCH_P_LIM      = 60,
-        ACC_PARAMS_PITCH_I          = 62,
-        ACC_PARAMS_PITCH_I_LIM      = 64,
-        ACC_PARAMS_PITCH_D          = 66,
-        ACC_PARAMS_PITCH_D_LIM      = 68,
-        ACC_PARAMS_PITCH_FILTER     = 70,
+        GYRO_PARAMS_YAW_P            = 46,
+        GYRO_PARAMS_YAW_P_LIM        = 48,
+        GYRO_PARAMS_YAW_I            = 50,
+        GYRO_PARAMS_YAW_I_LIM        = 52,
+        GYRO_PARAMS_YAW_D            = 54,
+        GYRO_PARAMS_YAW_D_LIM        = 56,
+        GYRO_PARAMS_YAW_FILTER       = 58,
 
 
-        ACC_PARAMS_ROLL_P           = 72,
-        ACC_PARAMS_ROLL_P_LIM       = 74,
-        ACC_PARAMS_ROLL_I           = 76,
-        ACC_PARAMS_ROLL_I_LIM       = 78,
-        ACC_PARAMS_ROLL_D           = 80,
-        ACC_PARAMS_ROLL_D_LIM       = 82,
-        ACC_PARAMS_ROLL_FILTER      = 84,
+        ACC_PARAMS_PITCH_P          = 60,
+        ACC_PARAMS_PITCH_P_LIM      = 62,
+        ACC_PARAMS_PITCH_I          = 64,
+        ACC_PARAMS_PITCH_I_LIM      = 66,
+        ACC_PARAMS_PITCH_D          = 68,
+        ACC_PARAMS_PITCH_D_LIM      = 70,
+        ACC_PARAMS_PITCH_FILTER     = 72,
 
 
-        ACC_PARAMS_Z_P              = 86,
-        ACC_PARAMS_Z_P_LIM          = 88,
-        ACC_PARAMS_Z_I              = 90,
-        ACC_PARAMS_Z_I_LIM          = 92,
-        ACC_PARAMS_Z_D              = 94,
-        ACC_PARAMS_Z_D_LIM          = 96,
-        ACC_PARAMS_Z_FILTER         = 98,
+        ACC_PARAMS_ROLL_P           = 74,
+        ACC_PARAMS_ROLL_P_LIM       = 76,
+        ACC_PARAMS_ROLL_I           = 78,
+        ACC_PARAMS_ROLL_I_LIM       = 80,
+        ACC_PARAMS_ROLL_D           = 82,
+        ACC_PARAMS_ROLL_D_LIM       = 84,
+        ACC_PARAMS_ROLL_FILTER      = 86,
+
+
+        ACC_PARAMS_Z_P              = 88,
+        ACC_PARAMS_Z_P_LIM          = 90,
+        ACC_PARAMS_Z_I              = 92,
+        ACC_PARAMS_Z_I_LIM          = 94,
+        ACC_PARAMS_Z_D              = 96,
+        ACC_PARAMS_Z_D_LIM          = 98,
+        ACC_PARAMS_Z_FILTER         = 100,
 
         // Altitude Sonar
-        SNR_PARAMS_Z_P              = 100,            
-        SNR_PARAMS_Z_P_LIM          = 102,
-        SNR_PARAMS_Z_I              = 104,
-        SNR_PARAMS_Z_I_LIM          = 106,
-        SNR_PARAMS_Z_D              = 108,
-        SNR_PARAMS_Z_D_LIM          = 110,
-        SNR_PARAMS_Z_FILTER         = 112,
+        SNR_PARAMS_Z_P              = 102,            
+        SNR_PARAMS_Z_P_LIM          = 104,
+        SNR_PARAMS_Z_I              = 106,
+        SNR_PARAMS_Z_I_LIM          = 108,
+        SNR_PARAMS_Z_D              = 110,
+        SNR_PARAMS_Z_D_LIM          = 112,
+        SNR_PARAMS_Z_FILTER         = 114,
 
 
         //ACC_PARAMS          = 42,
-        VOLTAGE_ALARM               = 114,
-        VOLTAGE_PITCH_TRIM          = 116,
-        VOLTAGE_ROLL_TRIM           = 118,
+        VOLTAGE_ALARM               = 116,
+        VOLTAGE_PITCH_TRIM          = 118,
+        VOLTAGE_ROLL_TRIM           = 120,
     }
 
 

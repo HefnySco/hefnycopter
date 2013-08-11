@@ -192,13 +192,14 @@ int main(void)
 */
 
 	Menu_EnableAllItems();
+	 
 	
 #ifdef DEBUG_ME
 		Menu_LoadPage(PAGE_DEBUG);
 		ZERO_Is();
 		IMU_Reset(); // reset angles for gyro [STABLE MODE]
 #endif
-
+	GenerateExpoCurve();
 				
 	while(1)
     {
@@ -265,7 +266,7 @@ void Loop(void)
 	This is the main loop of the application.
 */
 
-static uint16_t LowpassOutYaw;
+
 void MainLoop(void)
 {
 	
@@ -416,9 +417,11 @@ void MainLoop(void)
 			HandleSticksAsKeys();
 #ifdef DEBUG_ME  
 			// ENable when debug
-			RX_Snapshot	  [RXChannel_AIL] = ((RX_Latest[ActiveRXIndex][RXChannel_AIL] * Config.StickScaling * 0.05 ));
-			RX_Snapshot   [RXChannel_ELE] = ((RX_Latest[ActiveRXIndex][RXChannel_ELE] * Config.StickScaling * 0.05 )); 
-			RX_Snapshot   [RXChannel_RUD] = (RX_Latest[ActiveRXIndex][RXChannel_RUD] * Config.StickScaling * 0.05 ); // version 0.9.9 
+			GetExpoPoint(RX_Latest[ActiveRXIndex][RXChannel_AIL]);
+			RX_Snapshot	  [RXChannel_AIL] = (RXResult );
+			GetExpoPoint(RX_Latest[ActiveRXIndex][RXChannel_ELE]);
+			RX_Snapshot   [RXChannel_ELE] = (RXResult ); 
+			RX_Snapshot   [RXChannel_RUD] = (RX_Latest[ActiveRXIndex][RXChannel_RUD] * 0.5 ); // version 0.9.9 
 #endif			
 		}
 		else
@@ -428,14 +431,11 @@ void MainLoop(void)
 			TCNT_X_snapshotAutoDisarm = 0; // ZERO [user may disarm then fly slowly..in this case the qude will disarm once he turned off the stick...because the counter counts once the quad is armed..e.g. if it takes n sec to disarm automatically..user took n-1 sec keeping the stick low after arming then it will take 1 sec to disarm again after lowing the stick under STICKThrottle_ARMING
 			
 			// Armed & Throttle Stick > MIN . . . We should Fly now.
-			double ScalingFactor = 0.05;	// STick Scale is from 1 to 20 @20 Scale = 1
-			if (nFlyingModes == FLYINGMODE_ACRO)
-			{ // to maintain sensitivity reasonable between ACRO & Stable Mode.
-				ScalingFactor = 0.025;
-			}
-			RX_Snapshot	  [RXChannel_AIL] = ((int32_t)(RX_Latest[ActiveRXIndex][RXChannel_AIL] * Config.StickScaling * 0.05 ));
-			RX_Snapshot   [RXChannel_ELE] = ((int32_t)(RX_Latest[ActiveRXIndex][RXChannel_ELE] * Config.StickScaling * 0.05 )); 
-			RX_Snapshot   [RXChannel_RUD] = (RX_Latest[ActiveRXIndex][RXChannel_RUD] * Config.StickScaling * 0.05 ); // version 0.9.9 
+			GetExpoPoint(RX_Latest[ActiveRXIndex][RXChannel_AIL]);
+			RX_Snapshot	  [RXChannel_AIL] = (RXResult);
+			GetExpoPoint(RX_Latest[ActiveRXIndex][RXChannel_ELE]);
+			RX_Snapshot   [RXChannel_ELE] = (RXResult); 
+			RX_Snapshot   [RXChannel_RUD] = (RX_Latest[ActiveRXIndex][RXChannel_RUD] * 0.5 ); // version 0.9.9 
 			
 			
 		

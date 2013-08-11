@@ -104,7 +104,7 @@ void IMU (void)
 		ARollhZero = (- Sensors_Latest[ACC_ROLL_Index]  - Config.Acc_Roll_Trim)  ;
 		// Read ACC and Trims
 		// ACC directions are same as GYRO direction [we added "-" for this purpose] 
-		Alpha = 0.5; //Config.GyroParams[PITCH_INDEX].ComplementaryFilterAlpha / 1000.0; // TODO: optimize
+		Alpha = Config.GyroParams[PITCH_INDEX].ComplementaryFilterAlpha / 1000.0; // TODO: optimize
 		Beta = 1.0- Alpha;
 		APitch = Alpha * APitch + Beta * APitchZero;
 		ARoll  = Alpha * ARoll  + Beta * ARollhZero;
@@ -128,7 +128,7 @@ void IMU (void)
 			((ARoll  < ACC_SMALL_ANGLE) && (ARoll  > -ACC_SMALL_ANGLE))
 			)
 		{
-			Alpha = 0.98; //Config.AccParams[PITCH_INDEX].ComplementaryFilterAlpha / 1000.0; // TODO: optimize
+			Alpha = Config.AccParams[PITCH_INDEX].ComplementaryFilterAlpha / 1000.0; // TODO: optimize
 			Beta = 1.0- Alpha;
 			AngleRoll =  Alpha * AngleRoll + Beta  * ARollhZero ;
 			AnglePitch = Alpha * AnglePitch + Beta *  APitchZero;

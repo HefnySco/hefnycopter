@@ -821,21 +821,28 @@ void _hModeSettings ()
 void _hMiscSettings()
 {
 	NOKEYRETURN;
-	PageKey(5);
+	PageKey(6);
 	
 		
+	if ((KEY1) && (bValueChanged==true))
+	{
+		_helper_SaveinEEPROM_ifChanged();
+		GenerateExpoCurve();
+		return;
+	}
 	if (KEY4)
 	{
 		bValueChanged = true;
 		currentPage.softkeys = _skMENUSAVE;
-		
 		switch (subpage)
 		{
 			case 0: startEditMode(&(Config.AutoDisarm),0,10,TYPE_UINT8); return ;
 			case 1: startEditMode(&(Config.VoltageAlarm),0,120,TYPE_UINT8);  return ;
 			case 2: startEditMode(&(Config.ThrottleMin),0,255,TYPE_UINT8);  return ;
-			case 3: startEditMode(&(Config.StickScaling),1,20,TYPE_UINT8);  return ;
-			case 4:	Config.PitchRollLinked=  ((~Config.PitchRollLinked) & 0x01); break; 
+			//case 3: startEditMode(&(Config.StickScaling),1,20,TYPE_UINT8);  return ;
+			case 3: startEditMode(&(Config.RCLimit),abs(Config.RCExpo),100,TYPE_UINT8);  return ;
+			case 4: startEditMode(&(Config.RCExpo),-Config.RCLimit,Config.RCLimit,TYPE_INT8);  return ;
+			case 5:	Config.PitchRollLinked=  ((~Config.PitchRollLinked) & 0x01); break; 
 		}
 		
 	}
@@ -850,8 +857,10 @@ void _hMiscSettings()
 	LCD_WriteValue_double_ex(1,84,volt,8,1==subpage); 
 	//LCD_WriteValue(1,84,Config.VoltageAlarm,3,1==subpage);
 	LCD_WriteValue(2,84,Config.ThrottleMin,3,2==subpage);
-	LCD_WriteValue(3,84,Config.StickScaling,3,3==subpage);
-	_helper_Words (4,84,(4==subpage),(Config.PitchRollLinked),PSTR("yes"),PSTR("no "),5);
+	//LCD_WriteValue(3,84,Config.StickScaling,3,3==subpage);
+	LCD_WriteValue(3,84,Config.RCLimit,4,3==subpage);
+	LCD_WriteValue(4,84,Config.RCExpo,4,4==subpage);
+	_helper_Words (5,84,(5==subpage),(Config.PitchRollLinked),PSTR("yes"),PSTR("no "),5);
 	
 		
 }
@@ -1034,11 +1043,12 @@ void _hAltitudeHold()
 				
 }
 
-
+#ifdef DEBUG_ME
 double min=9;
 	static double YAWAngle;
 static double OldAngle;
 	static double YAWAngle2;
+#endif
 void _hDebug()
 {
 #ifdef DEBUG_ME
@@ -1077,12 +1087,16 @@ void _hDebug()
 		YAWAngle += (double)CompGyroPitch;
 		OldAngle += (double)CompGyroPitch * 0.1;// *  TimeDef_m;
 		//YAWAngle += OldAngle ;
-		LCD_WriteValue_double_ex(1,12,AnglePitch,10,false);
-		LCD_WriteValue_double_ex(2,12,NavY,10,false);
-		LCD_WriteValue_double_ex(3,12,PID_AccTerms[PITCH_INDEX].P,10,false);
-		LCD_WriteValue_double_ex(4,12,PID_AccTerms[PITCH_INDEX].I,10,false);
-		LCD_WriteValue_double_ex (5,12,PID_AccTerms[PITCH_INDEX].D,10,false);
-		LCD_WriteValue_double_ex(6,12,  (-(double)((float)RX_Snapshot[RXChannel_AIL] )),10,false);
+		LCD_WriteValue(1,12,(RX_Latest[ActiveRXIndex][RXChannel_AIL]) ,4,false);
+		LCD_WriteValue(2,12,abs(RX_Latest[ActiveRXIndex][RXChannel_AIL]) / 50,10,false);
+		LCD_WriteValue_double_ex(3,12,RXExpoCurve[(abs(RX_Latest[ActiveRXIndex][RXChannel_AIL]) / 50)],10,false);
+		GetExpoPoint((RX_Latest[ActiveRXIndex][RXChannel_AIL]));
+		LCD_WriteValue_double_ex(4,12,RXResult,10,false);
+		LCD_WriteValue_double_ex(5,12,RX_Snapshot	  [RXChannel_AIL],10,false);
+		LCD_WriteValue_double_ex(6,12,RX_Snapshot   [RXChannel_ELE],10,false);
+		//LCD_WriteValue_double_ex(4,12,RX_Snapshot   [RXChannel_ELE][PITCH_INDEX].I,10,false);
+		//LCD_WriteValue_double_ex (5,12,PID_AccTerms[PITCH_INDEX].D,10,false);
+		//LCD_WriteValue_double_ex(6,12,  (-(double)((float)RX_Snapshot[RXChannel_AIL] )),10,false);
 		//LCD_WriteValue_double_ex(6,12, CompAccZ * DEG_TO_RAD_ACC,10,false);
 		//Alpha * AngleZ + Beta * CompAccZ * DEG_TO_RAD; //+ D90_RAD
 		//LCD_WriteValue_double_ex(4,12,CompAccZ,9,false);

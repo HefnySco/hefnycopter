@@ -11,7 +11,7 @@
 
 
 static const prog_char strVersionInfo[] = "HefnyCopter2 v1.1.0";
-#define VERSION_16INT	0x0190
+#define VERSION_16INT	0x0191
 #define REQUIRE_FACTORY_RESET	
 
 /*
@@ -229,6 +229,7 @@ Function:
 *	.Higher Refresh rate.
 *	.Rescaling PID factors.
 *	.When Linking Pitch & Roll u need to change either Gyro PID or ACC PID to copy all Gyro & ACC from Pitch to Roll PIDs
+*	. Adding RC Rate EXPO & LIMIT to replace old stick scaling for better adjusting.
 UI:
 *	.Remove Noise Filters from UI. can be set through code.
 *	.Rename UART mode to single mode

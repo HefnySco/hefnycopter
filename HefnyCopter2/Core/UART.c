@@ -120,7 +120,7 @@ void ParseCommand ()
 						LED_FlashOrangeLED (LED_SHORT_TOGGLE,4);
 					break;
 					case SERIAL_CMD_PID_CONFIG:
-						Length = sizeof(pid_param_t) * 7;
+						Length = sizeof(pid_param_t) * 7; // Gyro, Acc, Sonar
 						Send_Byte('C');
 						Send_Byte (SERIAL_CMD_PID_CONFIG);
 						Send_Data(&Length,2);

@@ -97,20 +97,19 @@ char sXDeg[20];
 // Receiver Signal Values
 volatile uint8_t ActiveRXIndex;			// 0: primary rx, 1: secondary rx, 3: buddy mode [primary & secondary] 
 
-volatile uint16_t RX_Length   [2][RXChannels];
-volatile int16_t  RX_Latest   [2][RXChannels];   // the actual RX values that are used for calculations.
-double			  RX_Snapshot    [RXChannels];
-int16_t			  RX_Snapshot_1  [RXChannels];
+volatile uint16_t	RX_Length   [2][RXChannels];
+volatile int16_t	RX_Latest   [2][RXChannels];   // the actual RX values that are used for calculations.
+double				RX_Snapshot    [RXChannels];
+int16_t				RX_Snapshot_1  [RXChannels];
 // used for calibration...not initialized... true values are in Config in case IsCalibrated & Stick = True.
-uint16_t RX_MAX_raw			  [2][RXChannels];
-uint16_t RX_MIN_raw			  [2][RXChannels];
+uint16_t			RX_MAX_raw	[2][RXChannels];
+uint16_t			RX_MIN_raw	[2][RXChannels];
 	
 
 BOOL	UIEnableStickCommands;
 BOOL	IsArmed;
-
-uint16_t Sensors_dt; // time in 100us between sensors reading
-
+volatile double  RXExpoCurve[11];
+double RXResult;
 // Motors Signals
 int16_t MotorOut[4];
 
@@ -124,6 +123,16 @@ int8_t nFlyingModes;
 #define IS_FLYINGMODE_ALTHOLD		(nFlyingModes & FLYINGMODE_ALTHOLD)
 
 
+
+
+// **********************************************************  PIDs
+
+
+#define PITCH_INDEX	0
+#define ROLL_INDEX	1
+#define YAW_INDEX	2
+#define Z_INDEX		2
+
 // Holds final calculated values of Pitch, Roll, Yaw based on the sensors and stabilization algorithm
 int16_t gyroPitch;
 int16_t gyroRoll;
@@ -131,18 +140,7 @@ int16_t gyroYaw;
 
 	
 double NavY, NavX;
-///////////////////////////////////////////////////
-// Intermediate results for IMU_CalculateAngles
-//gyros
-	//double gyroXangle;
-	//double gyroYangle;
-	//double gyroZangle;
 
-	//accelerometers
-	//double accXangle;
-	//double accYangle;
-	//float accZangle;
-///////////////////////////////////////////////////
 
 double CompGyroRoll;
 double CompGyroPitch;
@@ -154,7 +152,6 @@ double CompAccZ;
 volatile double AngleRoll;
 volatile double AnglePitch;
 volatile double AngleZ;
-volatile double VectorLength;
 volatile double APitch ;
 volatile double ARoll ; 
 
@@ -201,7 +198,11 @@ typedef struct
 // Structure that hold PID calculated values for Gyro & ACC
 pid_terms_t PID_GyroTerms[3], PID_AccTerms[3], PID_SonarTerms[1];
 
-// TIMERS
+// **********************************************************  EO-PIDs
+
+
+// **********************************************************  TIMERS
+
 uint16_t CurrentTCNT1_X;				// equal to TCNT1_X value -- read every loop entry [it provide a safe read for TCNT1_X... it is updated only @ start of the loop
 volatile uint16_t TCNT0_X;
 volatile uint16_t TCNT1_X;				// TCNT1_X click every 0.0032768 sec [1 sec = 305.17578125 TCNT1_X]
@@ -217,8 +218,10 @@ uint16_t TCNT_X_snapshotAutoDisarm;
 uint16_t MotorStartTCNT, ElapsedTCNT2, CurrentTCNT2;  // motor related
 volatile BOOL UpdateServo;
 BOOL bResetTCNR1_X;
+// **********************************************************  EO-TIMERS
 
 
+// **********************************************************  SENSOR VARIABLES
 
 // ADC Values
 // Order is aligned with Menu Screens
@@ -244,7 +247,8 @@ static uint8_t SensorsIndex[SENSORS_ALL] = {GYRO_ROLL_PNUM,GYRO_PITCH_PNUM,GYRO_
 #define DEG_TO_RAD_ACC			0.01297
 #define GYRO_RATE_x_IVR_RAD		0.00058875	// = GYRO_RATE * ((3.14/2)/100) //0.01744444444444444444444444444444
 volatile double  Sensors_Latest [8];
-/////////////////////////////////////////
+
+
 
 // MISC SENSORS
 
@@ -260,7 +264,7 @@ uint16_t LastAltitudeHold;
 double Landing;							
 double AltDiff;
 
-/////////////////////////////////////////
+// **********************************************************  EO- SENSOR VARIAVLES
 
 
 // BAUD RATES
@@ -316,10 +320,6 @@ volatile uint16_t nResult[8];
 #define Mixer_TRI			2
 
 
-#define PITCH_INDEX	0
-#define ROLL_INDEX	1
-#define YAW_INDEX	2
-#define Z_INDEX		2
 
 
 #define GYRO_NORMAL			 1
@@ -340,12 +340,18 @@ typedef struct
 	uint8_t QuadFlyingMode;			//	offset: +9	
 	uint8_t LCDContrast;			//	offset: +10	
 	uint8_t ThrottleMin;			//	offset: +11	
-	uint8_t StickScaling;			//	offset: +12	
+	uint8_t RESERVED;				//	offset: +12	
 	uint8_t MiscSensors;			//	offset: +13	0b00000001		bit0: true/false SONAR
+	int8_t RCExpo;					//	offset: +14	Range -100	-	100
+	uint8_t RCLimit;				//	offset: +15	0	-	100
 	
+	//uint8_t RESERVED[50];
+	///////////////////// dont add variable between ... should be together for UART serialization
 	pid_param_t GyroParams[3];		
 	pid_param_t AccParams[3];		
 	pid_param_t SonarParams[1];		
+	/////////////////////
+	
 	
 	uint8_t VoltageAlarm;			
 	int8_t	Acc_Pitch_Trim;
