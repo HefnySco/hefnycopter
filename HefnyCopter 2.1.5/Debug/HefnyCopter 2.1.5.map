@@ -1,0 +1,1297 @@
+Archive member included because of file (symbol)
+
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(addsf3.o)
+                              HefnyCopter2.o (__subsf3)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(addsf3x.o)
+                              d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(addsf3.o) (__addsf3x)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(cmpsf2.o)
+                              IMU/IMU.o (__eqsf2)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(divsf3.o)
+                              IMU/PID.o (__divsf3)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(divsf3x.o)
+                              d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(divsf3.o) (__divsf3x)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fixsfsi.o)
+                              HefnyCopter2.o (__fixsfsi)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fixunssfsi.o)
+                              IMU/IMU.o (__fixunssfsi)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(floatsisf.o)
+                              IMU/IMU.o (__floatunsisf)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_cmp.o)
+                              d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(cmpsf2.o) (__fp_cmp)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_inf.o)
+                              d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(addsf3x.o) (__fp_inf)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_nan.o)
+                              d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(addsf3x.o) (__fp_nan)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_pscA.o)
+                              d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(addsf3x.o) (__fp_pscA)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_pscB.o)
+                              d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(addsf3x.o) (__fp_pscB)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_round.o)
+                              d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(addsf3.o) (__fp_round)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_split3.o)
+                              d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(addsf3x.o) (__fp_split3)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_zero.o)
+                              d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(addsf3x.o) (__fp_zero)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(gesf2.o)
+                              IMU/ZERO_PID.o (__gesf2)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(mulsf3.o)
+                              HefnyCopter2.o (__mulsf3)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(mulsf3x.o)
+                              d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(mulsf3.o) (__mulsf3x)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(sqrt.o)
+                              Math/Vector3D.o (sqrt)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_mpack.o)
+                              d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(sqrt.o) (__fp_mpack)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_norm2.o)
+                              d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(sqrt.o) (__fp_norm2)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_udivmodhi4.o)
+                              Sensors/Sensors.o (__udivmodhi4)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_divmodhi4.o)
+                              IMU/ZERO_PID.o (__divmodhi4)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_exit.o)
+                              d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5/crtm644pa.o (exit)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_copy_data.o)
+                              IMU/PID.o (__do_copy_data)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_clear_bss.o)
+                              Accessories/KeyBoard.o (__do_clear_bss)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(abs.o)
+                              IMU/ZERO_PID.o (abs)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(dtostrf.o)
+                              Accessories/LCD.o (dtostrf)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(memcpy_P.o)
+                              Accessories/LCD.o (memcpy_P)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(strcpy_P.o)
+                              UI/menu.o (strcpy_P)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(strlen_P.o)
+                              Accessories/LCD.o (strlen_P)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(memcpy.o)
+                              Core/UART.o (memcpy)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(strcat.o)
+                              Sensors/Sensors.o (strcat)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(itoa.o)
+                              Accessories/LCD.o (itoa)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(utoa.o)
+                              Sensors/Sensors.o (utoa)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(eerd_block_atmega644pa.o)
+                              Core/eepROM.o (__eerd_block_m644pa)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(eerd_byte_atmega644pa.o)
+                              Core/eepROM.o (__eerd_byte_m644pa)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(eewr_byte_atmega644pa.o)
+                              Core/eepROM.o (__eewr_byte_m644pa)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(dtoa_prf.o)
+                              d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(dtostrf.o) (dtoa_prf)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(ftoa_engine.o)
+                              d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(dtoa_prf.o) (__ftoa_engine)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(strrev.o)
+                              d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(itoa.o) (strrev)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_prologue.o)
+                              d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(dtoa_prf.o) (__prologue_saves__)
+d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_epilogue.o)
+                              d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(dtoa_prf.o) (__epilogue_restores__)
+
+Allocating common symbols
+Common symbol       size              file
+
+NavX                0x4               Accessories/KeyBoard.o
+SystemActions       0x1               Accessories/KeyBoard.o
+RX2_LastValidSignal_timestampAux
+                    0x2               Receiver.o
+ShortTime           0x2               Receiver.o
+PID_AccTerms        0x30              Accessories/KeyBoard.o
+MotorOut            0x8               Accessories/KeyBoard.o
+DataCounter         0x1               Core/UART.o
+nResult             0x10              Accessories/KeyBoard.o
+Result              0xa               Accessories/KeyBoard.o
+RX2_LastValidSignal_timestamp
+                    0x2               Receiver.o
+gyroRoll            0x2               Accessories/KeyBoard.o
+ZERO_PID            0x12              Accessories/KeyBoard.o
+DisplayBuffer       0xa               Core/UART.o
+TCNT0_X             0x2               Accessories/KeyBoard.o
+menuEnabled         0x11              Arming.o
+_mykey              0x1               Accessories/KeyBoard.o
+TCNT2_X             0x2               Accessories/KeyBoard.o
+lastKeys            0x1               Accessories/KeyBoard.o
+RXChar              0x1               Core/UART.o
+editHiLimit         0x2               Arming.o
+RX_Snapshot         0x14              Accessories/KeyBoard.o
+ElapsedTCNT2        0x2               Accessories/KeyBoard.o
+editValuePtr        0x2               Arming.o
+LastRXTime          0x2               Core/UART.o
+ActiveRXIndex       0x1               Accessories/KeyBoard.o
+TimeDef_m           0x4               Accessories/KeyBoard.o
+_keyrepeat          0x1               Accessories/KeyBoard.o
+RX_Length           0x14              Accessories/KeyBoard.o
+RXExpoCurve         0x2c              Accessories/KeyBoard.o
+CompGyroPitch       0x4               Accessories/KeyBoard.o
+m4                  0x2               Motor.o
+UIEnableStickCommands
+                    0x1               Accessories/KeyBoard.o
+RX1_LastValidSignal_timestamp
+                    0x2               Receiver.o
+TCNT1_X_snapshot1   0x2               Accessories/KeyBoard.o
+m2                  0x2               Motor.o
+bError              0x1               UI/menu.o
+TCNT_X_snapshot2    0x2               Accessories/KeyBoard.o
+RX1_LastValidSignal_timestampAux
+                    0x2               Receiver.o
+sXDeg               0x14              Accessories/KeyBoard.o
+NavY                0x4               Accessories/KeyBoard.o
+subpage             0x1               Arming.o
+editValueType       0x1               Arming.o
+MotorStartTCNT      0x2               Accessories/KeyBoard.o
+oldPage             0x1               UI/menu.o
+tempTCNT2           0x1               Motor.o
+RX_Latest           0x14              Accessories/KeyBoard.o
+AnglePitch          0x4               Accessories/KeyBoard.o
+nFlyingModes        0x1               Accessories/KeyBoard.o
+TCNT_X_snapshotAutoDisarm
+                    0x2               Accessories/KeyBoard.o
+CompGyroZ           0x4               Accessories/KeyBoard.o
+RX_MAX_raw          0x14              Accessories/KeyBoard.o
+DataPtr             0x2               Core/UART.o
+PMW_Pulse_Interval  0x2               Motor.o
+iTemp16             0x2               Receiver.o
+editMode            0x1               Arming.o
+gyroPitch           0x2               Accessories/KeyBoard.o
+APitch              0x4               Accessories/KeyBoard.o
+CompAccZ            0x4               Accessories/KeyBoard.o
+Sensors_Latest      0x20              Accessories/KeyBoard.o
+OldPortCValue       0x1               Receiver.o
+subindex            0x1               Arming.o
+editLoLimit         0x2               Arming.o
+RX_Snapshot_1       0xa               Accessories/KeyBoard.o
+bResetTCNR1_X       0x1               Accessories/KeyBoard.o
+RX_Good             0x1               Arming.o
+Landing             0x4               Accessories/KeyBoard.o
+CurrentTCNT1_X      0x2               Accessories/KeyBoard.o
+AngleZ              0x4               Accessories/KeyBoard.o
+TCNT1_X             0x2               Accessories/KeyBoard.o
+OldPortAValue       0x1               Receiver.o
+ARoll               0x4               Accessories/KeyBoard.o
+CompGyroRoll        0x4               Accessories/KeyBoard.o
+PID_GyroTerms       0x30              Accessories/KeyBoard.o
+AltDiff             0x4               Accessories/KeyBoard.o
+RXBuffer            0x9               Core/UART.o
+page                0x1               Arming.o
+RX_MIN_raw          0x14              Accessories/KeyBoard.o
+m1                  0x2               Motor.o
+_TXKeys             0x1               Accessories/KeyBoard.o
+LongTime            0x2               Receiver.o
+SystemErrorType     0x1               Accessories/KeyBoard.o
+tempTCNT1           0x2               Motor.o
+LastAltitudeHold    0x2               Accessories/KeyBoard.o
+TCNT1H_OLD          0x2               Accessories/KeyBoard.o
+AngleRoll           0x4               Accessories/KeyBoard.o
+RXResult            0x4               Accessories/KeyBoard.o
+RX_raw              0x14              Receiver.o
+TimeDef             0x2               Accessories/KeyBoard.o
+editValue           0x2               Arming.o
+m3                  0x2               Motor.o
+UpdateServo         0x1               Accessories/KeyBoard.o
+gyroYaw             0x2               Accessories/KeyBoard.o
+CurrentTCNT2        0x2               Accessories/KeyBoard.o
+Config              0xcf              Accessories/KeyBoard.o
+PID_SonarTerms      0x10              Accessories/KeyBoard.o
+IsArmed             0x1               Accessories/KeyBoard.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+text             0x00000000         0x00020000         xr
+data             0x00800060         0x0000ffa0         rw !x
+eeprom           0x00810000         0x00010000         rw !x
+fuse             0x00820000         0x00000400         rw !x
+lock             0x00830000         0x00000400         rw !x
+signature        0x00840000         0x00000400         rw !x
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+Address of section .data set to 0x800100
+LOAD d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5/crtm644pa.o
+LOAD Accessories/Beeper.o
+LOAD Accessories/KeyBoard.o
+LOAD Accessories/LCD.o
+LOAD Accessories/LED.o
+LOAD Accessories/Misc.o
+LOAD Accessories/Ultrasonic.o
+LOAD Arming.o
+LOAD Core/eepROM.o
+LOAD Core/I2C.o
+LOAD Core/Timer.o
+LOAD Core/twimastertimeout.o
+LOAD Core/UART.o
+LOAD GFX/font12x16.o
+LOAD GFX/font6x8.o
+LOAD GFX/Fonts.o
+LOAD GFX/glyphs.o
+LOAD GFX/logo.o
+LOAD HefnyCopter2.o
+LOAD IMU/DCM.o
+LOAD IMU/PID.o
+LOAD IMU/IMU.o
+LOAD IMU/Kalman.o
+LOAD IMU/ZERO_PID.o
+LOAD Math/Math.o
+LOAD Math/Vector3D.o
+LOAD Motor.o
+LOAD Receiver.o
+LOAD Sensors/Sensors.o
+LOAD Sensors/ADC_PORT.o
+LOAD UI/menu.o
+LOAD d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a
+LOAD d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a
+LOAD d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a
+LOAD d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a
+
+.hash
+ *(.hash)
+
+.dynsym
+ *(.dynsym)
+
+.dynstr
+ *(.dynstr)
+
+.gnu.version
+ *(.gnu.version)
+
+.gnu.version_d
+ *(.gnu.version_d)
+
+.gnu.version_r
+ *(.gnu.version_r)
+
+.rel.init
+ *(.rel.init)
+
+.rela.init
+ *(.rela.init)
+
+.rel.text
+ *(.rel.text)
+ *(.rel.text.*)
+ *(.rel.gnu.linkonce.t*)
+
+.rela.text
+ *(.rela.text)
+ *(.rela.text.*)
+ *(.rela.gnu.linkonce.t*)
+
+.rel.fini
+ *(.rel.fini)
+
+.rela.fini
+ *(.rela.fini)
+
+.rel.rodata
+ *(.rel.rodata)
+ *(.rel.rodata.*)
+ *(.rel.gnu.linkonce.r*)
+
+.rela.rodata
+ *(.rela.rodata)
+ *(.rela.rodata.*)
+ *(.rela.gnu.linkonce.r*)
+
+.rel.data
+ *(.rel.data)
+ *(.rel.data.*)
+ *(.rel.gnu.linkonce.d*)
+
+.rela.data
+ *(.rela.data)
+ *(.rela.data.*)
+ *(.rela.gnu.linkonce.d*)
+
+.rel.ctors
+ *(.rel.ctors)
+
+.rela.ctors
+ *(.rela.ctors)
+
+.rel.dtors
+ *(.rel.dtors)
+
+.rela.dtors
+ *(.rela.dtors)
+
+.rel.got
+ *(.rel.got)
+
+.rela.got
+ *(.rela.got)
+
+.rel.bss
+ *(.rel.bss)
+
+.rela.bss
+ *(.rela.bss)
+
+.rel.plt
+ *(.rel.plt)
+
+.rela.plt
+ *(.rela.plt)
+
+.text           0x00000000     0x844c
+ *(.vectors)
+ .vectors       0x00000000       0x7c d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5/crtm644pa.o
+                0x00000000                __vector_default
+                0x00000000                __vectors
+ *(.vectors)
+ *(.progmem.gcc*)
+ *(.progmem*)
+ .progmem.data  0x0000007c       0x14 Accessories/LCD.o
+ .progmem.data  0x00000090       0xcf Core/eepROM.o
+ .progmem.data  0x0000015f      0x604 GFX/font12x16.o
+                0x0000015f                font12x16
+ .progmem.data  0x00000763      0x244 GFX/font6x8.o
+                0x00000763                font6x8
+ .progmem.data  0x000009a7        0x4 GFX/Fonts.o
+                0x000009a7                fonts
+ .progmem.data  0x000009ab      0x5fc UI/menu.o
+                0x000009ab                scrESCCal
+ .progmem.data  0x00000fa7       0xfa d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(ftoa_engine.o)
+                0x000010a2                . = ALIGN (0x2)
+ *fill*         0x000010a1        0x1 00
+                0x000010a2                __trampolines_start = .
+ *(.trampolines)
+ .trampolines   0x000010a2        0x0 linker stubs
+ *(.trampolines*)
+                0x000010a2                __trampolines_end = .
+ *(.jumptables)
+ *(.jumptables*)
+ *(.lowtext)
+ .lowtext       0x000010a2       0xb2 Accessories/LCD.o
+                0x000010a2                __vector_18
+ .lowtext       0x00001154      0x426 Receiver.o
+                0x00001154                __vector_4
+                0x00001208                __vector_6
+                0x00001300                __vector_2
+                0x0000137c                __vector_1
+                0x000013f8                __vector_7
+                0x0000145a                __vector_3
+                0x00001502                __vector_5
+ *(.lowtext*)
+                0x0000157a                __ctors_start = .
+ *(.ctors)
+                0x0000157a                __ctors_end = .
+                0x0000157a                __dtors_start = .
+ *(.dtors)
+                0x0000157a                __dtors_end = .
+ SORT(*)(.ctors)
+ SORT(*)(.dtors)
+ *(.init0)
+ .init0         0x0000157a        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5/crtm644pa.o
+                0x0000157a                __init
+ *(.init0)
+ *(.init1)
+ *(.init1)
+ *(.init2)
+ .init2         0x0000157a        0xc d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5/crtm644pa.o
+ *(.init2)
+ *(.init3)
+ *(.init3)
+ *(.init4)
+ .init4         0x00001586       0x16 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_copy_data.o)
+                0x00001586                __do_copy_data
+ .init4         0x0000159c       0x10 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_clear_bss.o)
+                0x0000159c                __do_clear_bss
+ *(.init4)
+ *(.init5)
+ *(.init5)
+ *(.init6)
+ *(.init6)
+ *(.init7)
+ *(.init7)
+ *(.init8)
+ *(.init8)
+ *(.init9)
+ .init9         0x000015ac        0x8 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5/crtm644pa.o
+ *(.init9)
+ *(.text)
+ .text          0x000015b4        0x4 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5/crtm644pa.o
+                0x000015b4                __vector_22
+                0x000015b4                __vector_24
+                0x000015b4                __vector_12
+                0x000015b4                __bad_interrupt
+                0x000015b4                __vector_23
+                0x000015b4                __vector_30
+                0x000015b4                __vector_25
+                0x000015b4                __vector_13
+                0x000015b4                __vector_17
+                0x000015b4                __vector_19
+                0x000015b4                __vector_27
+                0x000015b4                __vector_9
+                0x000015b4                __vector_21
+                0x000015b4                __vector_29
+                0x000015b4                __vector_8
+                0x000015b4                __vector_26
+                0x000015b4                __vector_14
+                0x000015b4                __vector_10
+                0x000015b4                __vector_16
+                0x000015b4                __vector_20
+ .text          0x000015b8       0x40 Accessories/Beeper.o
+                0x000015b8                Beeper_Beep
+ .text          0x000015f8       0x82 Accessories/KeyBoard.o
+                0x000015f8                KeyBoard_Init
+                0x00001606                Keyboard_Read
+                0x00001674                Keyboard_State
+ .text          0x0000167a      0x550 Accessories/LCD.o
+                0x000016a6                LCD_SetPos
+                0x000016b8                lcdXY
+                0x000016c2                lcdSetPixel
+                0x00001710                LCD_Clear
+                0x00001732                lcdWriteSprite_P
+                0x00001820                lcdWriteGlyph_P
+                0x00001832                LCD_WriteChar
+                0x00001872                LCD_WriteString
+                0x0000189a                LCD_WriteString_P
+                0x000018b6                lcdReverse
+                0x000018ca                LCD_WriteStringex
+                0x00001922                LCD_WriteRepeated
+                0x00001952                LCD_WritePadded
+                0x0000198c                LCD_WritePadded_P
+                0x000019be                LCD_WriteString_Pex
+                0x00001a08                LCD_WriteValue_double_ex
+                0x00001a88                LCD_WriteValue_double
+                0x00001a9a                LCD_WriteValue
+                0x00001b0c                LCD_Enable
+                0x00001b1e                LCD_Disable
+                0x00001b2a                lcdSetContrast
+                0x00001b5c                LCD_SelectFont
+                0x00001b74                LCD_Init
+ .text          0x00001bca       0x9e Accessories/LED.o
+                0x00001bca                LED_FlashOrangeLED
+ .text          0x00001c68       0x4c Accessories/Misc.o
+                0x00001c68                delay_us
+                0x00001c8e                delay_ms
+ .text          0x00001cb4       0x14 Accessories/Ultrasonic.o
+                0x00001cb4                Ultrasonic_Init
+ .text          0x00001cc8       0xee Arming.o
+                0x00001cc8                Disarm
+                0x00001ce8                Arm
+ .text          0x00001db6      0x12a Core/eepROM.o
+                0x00001db6                Set_EEPROM_Default_Config
+                0x00001dc8                eeprom_write_byte_changed
+                0x00001df6                eeprom_write_block_changes
+                0x00001e3a                Load_Config_from_EEPROM
+                0x00001e4c                Save_Config_to_EEPROM
+                0x00001e6c                Save_Default_Config_to_EEPROM
+                0x00001e9a                Initial_EEPROM_Config_Load
+ .text          0x00001ee0       0xbc Core/I2C.o
+                0x00001ee0                writeI2Cbyte
+                0x00001f12                readI2CbyteArray
+ .text          0x00001f9c       0x88 Core/Timer.o
+                0x00001f9c                __vector_15
+                0x00001fca                __vector_11
+                0x00001ff8                Timer_Init
+ .text          0x00002024      0x1da Core/twimastertimeout.o
+                0x00002024                i2c_init
+                0x00002036                i2c_start
+                0x000020b8                i2c_start_wait
+                0x00002136                i2c_rep_start
+                0x0000213c                i2c_stop
+                0x0000215a                i2c_write
+                0x0000219a                i2c_readAck
+                0x000021cc                i2c_readNak
+ .text          0x000021fe      0x23a Core/UART.o
+                0x000021fe                UART_Init
+                0x00002220                Send_Byte
+                0x0000222e                Send_Data
+                0x00002268                ParseCommand
+                0x00002350                __vector_28
+ .text          0x00002438       0x20 GFX/font12x16.o
+ .text          0x00002458       0x1a GFX/font6x8.o
+ .text          0x00002472        0x0 GFX/Fonts.o
+ .text          0x00002472        0x0 GFX/glyphs.o
+ .text          0x00002472        0x0 GFX/logo.o
+ .text          0x00002472     0x1074 HefnyCopter2.o
+                0x00002472                Setup
+                0x000024e8                Loop
+                0x00002530                LoopESCCalibration
+                0x0000253c                LoopCalibration
+                0x00002564                HandleSticksForArming
+                0x00002840                HandleSticksAsKeys
+                0x0000295a                ZEROMotors
+                0x0000299e                MainLoop
+                0x00003490                main
+ .text          0x000034e6        0x0 IMU/DCM.o
+ .text          0x000034e6      0x2ce IMU/PID.o
+                0x000034e6                PID_Calculate
+                0x0000373c                ZERO_Is
+ .text          0x000037b4      0xda8 IMU/IMU.o
+                0x000037b4                RotateV
+                0x0000396e                IMU_Reset
+                0x000039b6                IMU
+                0x00004296                IMU_HeightKeeping
+ .text          0x0000455c        0x0 IMU/Kalman.o
+ .text          0x0000455c      0x382 IMU/ZERO_PID.o
+                0x0000455c                Calculate_ZEROPID
+ .text          0x000048de      0x4c4 Math/Math.o
+                0x000048de                _atan2
+                0x00004a9c                Limiterf
+                0x00004b16                Limiter
+                0x00004b2e                GenerateExpoCurve
+                0x00004c58                GetExpoPoint
+ .text          0x00004da2      0x458 Math/Vector3D.o
+                0x00004da2                vector3d_modulus
+                0x00004e4a                vector3d_normalize
+                0x00004ec6                vector3d_dot
+                0x00004f4e                vector3d_cross
+                0x00005050                vector3d_scale
+                0x000050c4                vector3d_add
+                0x00005144                vector3d_skew_plus_identity
+ .text          0x000051fa      0x212 Motor.o
+                0x000051fa                Motor_GenerateOutputSignal
+ .text          0x0000540c      0x5c0 Receiver.o
+                0x0000540c                CalculateSignalLength1
+                0x0000545e                CalculateSignalLength2
+                0x000054a8                RX_Init
+                0x00005584                RX_raw_GetReceiverValues
+                0x000055ac                RX_GetReceiverValues
+                0x0000560a                RX_GetReceiverThrottleValue
+                0x0000572c                RX_CopyLatestReceiverValues
+                0x000057e0                RX_StickCenterCalibrationInit
+                0x0000592e                RX_StickCenterCalibration
+ .text          0x000059cc      0x528 Sensors/Sensors.o
+                0x000059cc                get_raw_accs
+                0x00005aa6                get_raw_gyros
+                0x00005b80                init_i2c_gyros
+                0x00005bb6                init_i2c_accs
+                0x00005bce                Sensors_Init
+                0x00005bd8                Sensors_Calibrate
+                0x00005d36                Sensor_GetBattery
+                0x00005d5c                Sensors_ReadAll
+                0x00005e4e                Sensors_Test
+ .text          0x00005ef4       0x2a Sensors/ADC_PORT.o
+                0x00005ef4                ADCPort_Init
+                0x00005f00                ADCPort_Get
+ .text          0x00005f1e     0x19a2 UI/menu.o
+                0x00005f1e                _hHomeRestart
+                0x00005f2c                _hMPU6050Settings
+                0x00005f2e                tsmMain
+                0x00005f6c                _hDebug
+                0x00006014                _hHomeArmedESC
+                0x0000604e                _hSensorCalibration
+                0x000060d0                _hSensorTest
+                0x0000613c                _helper_DisplayPitchRollYaw
+                0x00006182                _helper_SwitchPitchRollYaw
+                0x000061aa                _helper_DisplayBiStateText
+                0x00006202                _helper_SaveinEEPROM_ifChanged
+                0x00006214                _helper_DisplayRXStatus
+                0x00006286                _hStickCentering
+                0x00006596                _hReceiverTest
+                0x0000661c                _helper_Words
+                0x00006648                Menu_LoadPage
+                0x0000666c                _hFactoryReset
+                0x00006696                _hESCCalibration
+                0x000066d0                _hHomeArmed
+                0x00006708                _hHomePage
+                0x000068ca                PageKey
+                0x00006900                _hModeSettings
+                0x00006ad6                editModeHandler
+                0x00006c4c                _hAltitudeHold
+                0x00006da0                _hSelfLeveling
+                0x00007150                _hStabilization
+                0x000074be                _hMiscSettings
+                0x00007690                defaultHandler
+                0x000076dc                doMenu
+                0x000077e2                _hMenu
+                0x00007814                Menu_MenuShow
+                0x0000789a                Menu_MenuInit
+                0x000078a8                tsmLoadModelLayout
+                0x000078aa                Menu_EnableAllItems
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(addsf3.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(addsf3x.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(cmpsf2.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(divsf3.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(divsf3x.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fixsfsi.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fixunssfsi.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(floatsisf.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_cmp.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_inf.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_nan.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_pscA.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_pscB.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_round.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_split3.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_zero.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(gesf2.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(mulsf3.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(mulsf3x.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(sqrt.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_mpack.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_norm2.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_udivmodhi4.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_divmodhi4.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_exit.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_copy_data.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_clear_bss.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(abs.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(dtostrf.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(memcpy_P.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(strcpy_P.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(strlen_P.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(memcpy.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(strcat.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(itoa.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(utoa.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(eerd_block_atmega644pa.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(eerd_byte_atmega644pa.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(eewr_byte_atmega644pa.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(dtoa_prf.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(ftoa_engine.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(strrev.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_prologue.o)
+ .text          0x000078c0        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_epilogue.o)
+                0x000078c0                . = ALIGN (0x2)
+ *(.text.*)
+ .text.avr-libc.fplib
+                0x000078c0        0xa d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(addsf3.o)
+                0x000078c0                __subsf3
+                0x000078c2                __addsf3
+ .text.avr-libc.fplib
+                0x000078ca       0xc0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(addsf3x.o)
+                0x000078e4                __addsf3x
+ .text.avr-libc.fplib
+                0x0000798a        0x8 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(cmpsf2.o)
+                0x0000798a                __nesf2
+                0x0000798a                __eqsf2
+                0x0000798a                __cmpsf2
+                0x0000798a                __ltsf2
+                0x0000798a                __lesf2
+ .text.avr-libc.fplib
+                0x00007992        0x4 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(divsf3.o)
+                0x00007992                __divsf3
+ .text.avr-libc.fplib
+                0x00007996       0xcc d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(divsf3x.o)
+                0x000079ac                __divsf3x
+                0x000079b0                __divsf3_pse
+ .text.avr-libc.fplib
+                0x00007a62        0xa d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fixsfsi.o)
+                0x00007a62                __fixsfsi
+ .text.avr-libc.fplib
+                0x00007a6c       0x58 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fixunssfsi.o)
+                0x00007a6c                __fixunssfsi
+ .text.avr-libc.fplib
+                0x00007ac4       0x7a d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(floatsisf.o)
+                0x00007ac4                __floatunsisf
+                0x00007ac8                __floatsisf
+ .text.avr-libc.fplib
+                0x00007b3e       0x48 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_cmp.o)
+                0x00007b3e                __fp_cmp
+ .text.avr-libc.fplib
+                0x00007b86        0xc d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_inf.o)
+                0x00007b86                __fp_inf
+ .text.avr-libc.fplib
+                0x00007b92        0x6 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_nan.o)
+                0x00007b92                __fp_nan
+ .text.avr-libc.fplib
+                0x00007b98        0xe d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_pscA.o)
+                0x00007b98                __fp_pscA
+ .text.avr-libc.fplib
+                0x00007ba6        0xe d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_pscB.o)
+                0x00007ba6                __fp_pscB
+ .text.avr-libc.fplib
+                0x00007bb4       0x22 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_round.o)
+                0x00007bb4                __fp_round
+ .text.avr-libc.fplib
+                0x00007bd6       0x44 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_split3.o)
+                0x00007bd6                __fp_split3
+                0x00007be6                __fp_splitA
+ .text.avr-libc.fplib
+                0x00007c1a        0xe d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_zero.o)
+                0x00007c1a                __fp_zero
+                0x00007c1c                __fp_szero
+ .text.avr-libc.fplib
+                0x00007c28        0x8 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(gesf2.o)
+                0x00007c28                __gesf2
+                0x00007c28                __gtsf2
+ .text.avr-libc.fplib
+                0x00007c30        0x4 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(mulsf3.o)
+                0x00007c30                __mulsf3
+ .text.avr-libc.fplib
+                0x00007c34       0xc2 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(mulsf3x.o)
+                0x00007c48                __mulsf3x
+                0x00007c4c                __mulsf3_pse
+ .text.avr-libc.fplib
+                0x00007cf6       0x84 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(sqrt.o)
+                0x00007cfe                sqrt
+ .text.avr-libc.fplib
+                0x00007d7a       0x1c d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_mpack.o)
+                0x00007d7a                __fp_mpack
+                0x00007d7e                __fp_mpack_finite
+ .text.avr-libc.fplib
+                0x00007d96        0xe d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_norm2.o)
+                0x00007d96                __fp_norm2
+ .text.libgcc   0x00007da4       0x28 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_udivmodhi4.o)
+                0x00007da4                __udivmodhi4
+ .text.libgcc   0x00007dcc       0x26 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_divmodhi4.o)
+                0x00007dcc                _div
+                0x00007dcc                __divmodhi4
+ .text.libgcc   0x00007df2        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_exit.o)
+ .text.libgcc   0x00007df2        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_copy_data.o)
+ .text.libgcc   0x00007df2        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_clear_bss.o)
+ .text.avr-libc
+                0x00007df2       0x12 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(abs.o)
+                0x00007df2                abs
+ .text.avr-libc
+                0x00007e04       0x44 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(dtostrf.o)
+                0x00007e04                dtostrf
+ .text.avr-libc
+                0x00007e48       0x12 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(memcpy_P.o)
+                0x00007e48                memcpy_P
+ .text.avr-libc
+                0x00007e5a        0xe d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(strcpy_P.o)
+                0x00007e5a                strcpy_P
+ .text.avr-libc
+                0x00007e68       0x12 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(strlen_P.o)
+                0x00007e68                strlen_P
+ .text.avr-libc
+                0x00007e7a       0x12 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(memcpy.o)
+                0x00007e7a                memcpy
+ .text.avr-libc
+                0x00007e8c       0x16 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(strcat.o)
+                0x00007e8c                strcat
+ .text.avr-libc
+                0x00007ea2       0x42 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(itoa.o)
+                0x00007ea2                itoa
+ .text.avr-libc
+                0x00007ee4       0x2c d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(utoa.o)
+                0x00007ee4                utoa
+ .text.avr-libc
+                0x00007f10       0x20 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(eerd_block_atmega644pa.o)
+                0x00007f10                __eerd_block_m644pa
+                0x00007f14                __eerd_blraw_m644pa
+ .text.avr-libc
+                0x00007f30       0x10 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(eerd_byte_atmega644pa.o)
+                0x00007f30                __eerd_byte_m644pa
+ .text.avr-libc
+                0x00007f40       0x1c d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(eewr_byte_atmega644pa.o)
+                0x00007f40                __eewr_byte_m644pa
+                0x00007f42                __eewr_r18_m644pa
+ .text.avr-libc
+                0x00007f5c      0x2ae d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(dtoa_prf.o)
+                0x00007f5c                dtoa_prf
+ .text.avr-libc
+                0x0000820a      0x1b0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(ftoa_engine.o)
+                0x0000820a                __ftoa_engine
+ .text.avr-libc
+                0x000083ba       0x20 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(strrev.o)
+                0x000083ba                strrev
+ .text.libgcc   0x000083da       0x38 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_prologue.o)
+                0x000083da                __prologue_saves__
+ .text.libgcc   0x00008412       0x36 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_epilogue.o)
+                0x00008412                __epilogue_restores__
+                0x00008448                . = ALIGN (0x2)
+ *(.fini9)
+ .fini9         0x00008448        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_exit.o)
+                0x00008448                _exit
+                0x00008448                exit
+ *(.fini9)
+ *(.fini8)
+ *(.fini8)
+ *(.fini7)
+ *(.fini7)
+ *(.fini6)
+ *(.fini6)
+ *(.fini5)
+ *(.fini5)
+ *(.fini4)
+ *(.fini4)
+ *(.fini3)
+ *(.fini3)
+ *(.fini2)
+ *(.fini2)
+ *(.fini1)
+ *(.fini1)
+ *(.fini0)
+ .fini0         0x00008448        0x4 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_exit.o)
+ *(.fini0)
+                0x0000844c                _etext = .
+
+.data           0x00800100       0x24 load address 0x0000844c
+                0x00800100                PROVIDE (__data_start, .)
+ *(.data)
+ .data          0x00800100        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5/crtm644pa.o
+ .data          0x00800100        0x0 Accessories/Beeper.o
+ .data          0x00800100        0x0 Accessories/KeyBoard.o
+ .data          0x00800100        0x0 Accessories/LCD.o
+ .data          0x00800100        0x0 Accessories/LED.o
+ .data          0x00800100        0x0 Accessories/Misc.o
+ .data          0x00800100        0x0 Accessories/Ultrasonic.o
+ .data          0x00800100        0x0 Arming.o
+ .data          0x00800100        0x0 Core/eepROM.o
+ .data          0x00800100        0x0 Core/I2C.o
+ .data          0x00800100        0x0 Core/Timer.o
+ .data          0x00800100        0x0 Core/twimastertimeout.o
+ .data          0x00800100        0x0 Core/UART.o
+ .data          0x00800100        0x0 GFX/font12x16.o
+ .data          0x00800100        0x0 GFX/font6x8.o
+ .data          0x00800100        0x0 GFX/Fonts.o
+ .data          0x00800100        0x0 GFX/glyphs.o
+ .data          0x00800100        0x0 GFX/logo.o
+ .data          0x00800100        0x0 HefnyCopter2.o
+ .data          0x00800100        0x0 IMU/DCM.o
+ .data          0x00800100       0x18 IMU/PID.o
+                0x00800100                PIDFactors
+ .data          0x00800118        0x0 IMU/IMU.o
+ .data          0x00800118        0x0 IMU/Kalman.o
+ .data          0x00800118        0x0 IMU/ZERO_PID.o
+ .data          0x00800118        0x0 Math/Math.o
+ .data          0x00800118        0x0 Math/Vector3D.o
+ .data          0x00800118        0x0 Motor.o
+ .data          0x00800118        0x0 Receiver.o
+ .data          0x00800118        0x6 Sensors/Sensors.o
+ .data          0x0080011e        0x0 Sensors/ADC_PORT.o
+ .data          0x0080011e        0x5 UI/menu.o
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(addsf3.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(addsf3x.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(cmpsf2.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(divsf3.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(divsf3x.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fixsfsi.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fixunssfsi.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(floatsisf.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_cmp.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_inf.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_nan.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_pscA.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_pscB.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_round.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_split3.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_zero.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(gesf2.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(mulsf3.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(mulsf3x.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(sqrt.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_mpack.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_norm2.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_udivmodhi4.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_divmodhi4.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_exit.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_copy_data.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_clear_bss.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(abs.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(dtostrf.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(memcpy_P.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(strcpy_P.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(strlen_P.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(memcpy.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(strcat.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(itoa.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(utoa.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(eerd_block_atmega644pa.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(eerd_byte_atmega644pa.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(eewr_byte_atmega644pa.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(dtoa_prf.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(ftoa_engine.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(strrev.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_prologue.o)
+ .data          0x00800123        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_epilogue.o)
+ *(.data*)
+ *(.rodata)
+ *(.rodata*)
+ *(.gnu.linkonce.d*)
+                0x00800124                . = ALIGN (0x2)
+ *fill*         0x00800123        0x1 00
+                0x00800124                _edata = .
+                0x00800124                PROVIDE (__data_end, .)
+
+.bss            0x00800124      0x751
+                0x00800124                PROVIDE (__bss_start, .)
+ *(.bss)
+ .bss           0x00800124        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5/crtm644pa.o
+ .bss           0x00800124        0x0 Accessories/Beeper.o
+ .bss           0x00800124        0x2 Accessories/KeyBoard.o
+                0x00800124                TCNT_X_snapshot3
+ .bss           0x00800126      0x409 Accessories/LCD.o
+ .bss           0x0080052f        0x0 Accessories/LED.o
+ .bss           0x0080052f        0x0 Accessories/Misc.o
+ .bss           0x0080052f        0x0 Accessories/Ultrasonic.o
+ .bss           0x0080052f        0x0 Arming.o
+ .bss           0x0080052f        0x0 Core/eepROM.o
+ .bss           0x0080052f        0x0 Core/I2C.o
+ .bss           0x0080052f        0x0 Core/Timer.o
+ .bss           0x0080052f        0x0 Core/twimastertimeout.o
+ .bss           0x0080052f        0x2 Core/UART.o
+                0x0080052f                RXIndex
+ .bss           0x00800531        0x0 GFX/font12x16.o
+ .bss           0x00800531        0x0 GFX/font6x8.o
+ .bss           0x00800531        0x0 GFX/Fonts.o
+ .bss           0x00800531        0x0 GFX/glyphs.o
+ .bss           0x00800531        0x0 GFX/logo.o
+ .bss           0x00800531        0x1 HefnyCopter2.o
+ .bss           0x00800532        0x0 IMU/DCM.o
+ .bss           0x00800532        0x0 IMU/PID.o
+ .bss           0x00800532        0x6 IMU/IMU.o
+ .bss           0x00800538        0x0 IMU/Kalman.o
+ .bss           0x00800538       0x18 IMU/ZERO_PID.o
+ .bss           0x00800550        0x0 Math/Math.o
+ .bss           0x00800550        0x8 Math/Vector3D.o
+ .bss           0x00800558        0x1 Motor.o
+ .bss           0x00800559        0x0 Receiver.o
+ .bss           0x00800559        0x0 Sensors/Sensors.o
+ .bss           0x00800559        0x0 Sensors/ADC_PORT.o
+ .bss           0x00800559        0x8 UI/menu.o
+                0x00800559                bValueChanged
+                0x0080055a                bNeedRestart
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(addsf3.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(addsf3x.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(cmpsf2.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(divsf3.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(divsf3x.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fixsfsi.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fixunssfsi.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(floatsisf.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_cmp.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_inf.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_nan.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_pscA.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_pscB.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_round.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_split3.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_zero.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(gesf2.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(mulsf3.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(mulsf3x.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(sqrt.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_mpack.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_norm2.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_udivmodhi4.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_divmodhi4.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_exit.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_copy_data.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_clear_bss.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(abs.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(dtostrf.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(memcpy_P.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(strcpy_P.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(strlen_P.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(memcpy.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(strcat.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(itoa.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(utoa.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(eerd_block_atmega644pa.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(eerd_byte_atmega644pa.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(eewr_byte_atmega644pa.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(dtoa_prf.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(ftoa_engine.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(strrev.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_prologue.o)
+ .bss           0x00800561        0x0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_epilogue.o)
+ *(.bss*)
+ *(COMMON)
+ COMMON         0x00800561      0x2a9 Accessories/KeyBoard.o
+                0x00800561                NavX
+                0x00800565                SystemActions
+                0x00800566                PID_AccTerms
+                0x00800596                MotorOut
+                0x0080059e                nResult
+                0x008005ae                Result
+                0x008005b8                gyroRoll
+                0x008005ba                ZERO_PID
+                0x008005cc                TCNT0_X
+                0x008005ce                _mykey
+                0x008005cf                TCNT2_X
+                0x008005d1                lastKeys
+                0x008005d2                RX_Snapshot
+                0x008005e6                ElapsedTCNT2
+                0x008005e8                ActiveRXIndex
+                0x008005e9                TimeDef_m
+                0x008005ed                _keyrepeat
+                0x008005ee                RX_Length
+                0x00800602                RXExpoCurve
+                0x0080062e                CompGyroPitch
+                0x00800632                UIEnableStickCommands
+                0x00800633                TCNT1_X_snapshot1
+                0x00800635                TCNT_X_snapshot2
+                0x00800637                sXDeg
+                0x0080064b                NavY
+                0x0080064f                MotorStartTCNT
+                0x00800651                RX_Latest
+                0x00800665                AnglePitch
+                0x00800669                nFlyingModes
+                0x0080066a                TCNT_X_snapshotAutoDisarm
+                0x0080066c                CompGyroZ
+                0x00800670                RX_MAX_raw
+                0x00800684                gyroPitch
+                0x00800686                APitch
+                0x0080068a                CompAccZ
+                0x0080068e                Sensors_Latest
+                0x008006ae                RX_Snapshot_1
+                0x008006b8                bResetTCNR1_X
+                0x008006b9                Landing
+                0x008006bd                CurrentTCNT1_X
+                0x008006bf                AngleZ
+                0x008006c3                TCNT1_X
+                0x008006c5                ARoll
+                0x008006c9                CompGyroRoll
+                0x008006cd                PID_GyroTerms
+                0x008006fd                AltDiff
+                0x00800701                RX_MIN_raw
+                0x00800715                _TXKeys
+                0x00800716                SystemErrorType
+                0x00800717                LastAltitudeHold
+                0x00800719                TCNT1H_OLD
+                0x0080071b                AngleRoll
+                0x0080071f                RXResult
+                0x00800723                TimeDef
+                0x00800725                UpdateServo
+                0x00800726                gyroYaw
+                0x00800728                CurrentTCNT2
+                0x0080072a                Config
+                0x008007f9                PID_SonarTerms
+                0x00800809                IsArmed
+ COMMON         0x0080080a       0x1f Arming.o
+                0x0080080a                menuEnabled
+                0x0080081b                editHiLimit
+                0x0080081d                editValuePtr
+                0x0080081f                subpage
+                0x00800820                editValueType
+                0x00800821                editMode
+                0x00800822                subindex
+                0x00800823                editLoLimit
+                0x00800825                RX_Good
+                0x00800826                page
+                0x00800827                editValue
+ COMMON         0x00800829       0x19 Core/UART.o
+                0x00800829                DataCounter
+                0x0080082a                DisplayBuffer
+                0x00800834                RXChar
+                0x00800835                LastRXTime
+                0x00800837                DataPtr
+                0x00800839                RXBuffer
+ COMMON         0x00800842        0xd Motor.o
+                0x00800842                m4
+                0x00800844                m2
+                0x00800846                tempTCNT2
+                0x00800847                PMW_Pulse_Interval
+                0x00800849                m1
+                0x0080084b                tempTCNT1
+                0x0080084d                m3
+ COMMON         0x0080084f       0x24 Receiver.o
+                0x0080084f                RX2_LastValidSignal_timestampAux
+                0x00800851                ShortTime
+                0x00800853                RX2_LastValidSignal_timestamp
+                0x00800855                RX1_LastValidSignal_timestamp
+                0x00800857                RX1_LastValidSignal_timestampAux
+                0x00800859                iTemp16
+                0x0080085b                OldPortCValue
+                0x0080085c                OldPortAValue
+                0x0080085d                LongTime
+                0x0080085f                RX_raw
+ COMMON         0x00800873        0x2 UI/menu.o
+                0x00800873                bError
+                0x00800874                oldPage
+                0x00800875                PROVIDE (__bss_end, .)
+                0x0000844c                __data_load_start = LOADADDR (.data)
+                0x00008470                __data_load_end = (__data_load_start + SIZEOF (.data))
+
+.noinit         0x00800875        0x0
+                0x00800875                PROVIDE (__noinit_start, .)
+ *(.noinit*)
+                0x00800875                PROVIDE (__noinit_end, .)
+                0x00800875                _end = .
+                0x00800875                PROVIDE (__heap_start, .)
+
+.eeprom         0x00810000        0x0
+ *(.eeprom*)
+                0x00810000                __eeprom_end = .
+
+.fuse
+ *(.fuse)
+ *(.lfuse)
+ *(.hfuse)
+ *(.efuse)
+
+.lock
+ *(.lock*)
+
+.signature
+ *(.signature*)
+
+.stab           0x00000000     0x3c00
+ *(.stab)
+ .stab          0x00000000      0x6cc d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5/crtm644pa.o
+ .stab          0x000006cc       0x78 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(addsf3.o)
+                                 0x84 (size before relaxing)
+ .stab          0x00000744      0x4bc d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(addsf3x.o)
+                                0x4c8 (size before relaxing)
+ .stab          0x00000c00       0x90 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(cmpsf2.o)
+                                 0x9c (size before relaxing)
+ .stab          0x00000c90       0x48 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(divsf3.o)
+                                 0x54 (size before relaxing)
+ .stab          0x00000cd8      0x510 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(divsf3x.o)
+                                0x51c (size before relaxing)
+ .stab          0x000011e8       0x6c d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fixsfsi.o)
+                                 0x78 (size before relaxing)
+ .stab          0x00001254      0x240 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fixunssfsi.o)
+                                0x24c (size before relaxing)
+ .stab          0x00001494      0x318 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(floatsisf.o)
+                                0x324 (size before relaxing)
+ .stab          0x000017ac      0x1e0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_cmp.o)
+                                0x1ec (size before relaxing)
+ .stab          0x0000198c       0x78 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_inf.o)
+                                 0x84 (size before relaxing)
+ .stab          0x00001a04       0x54 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_nan.o)
+                                 0x60 (size before relaxing)
+ .stab          0x00001a58       0x84 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_pscA.o)
+                                 0x90 (size before relaxing)
+ .stab          0x00001adc       0x84 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_pscB.o)
+                                 0x90 (size before relaxing)
+ .stab          0x00001b60       0xfc d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_round.o)
+                                0x108 (size before relaxing)
+ .stab          0x00001c5c      0x1d4 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_split3.o)
+                                0x1e0 (size before relaxing)
+ .stab          0x00001e30       0x90 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_zero.o)
+                                 0x9c (size before relaxing)
+ .stab          0x00001ec0       0x6c d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(gesf2.o)
+                                 0x78 (size before relaxing)
+ .stab          0x00001f2c       0x48 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(mulsf3.o)
+                                 0x54 (size before relaxing)
+ .stab          0x00001f74      0x4d4 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(mulsf3x.o)
+                                0x4e0 (size before relaxing)
+ .stab          0x00002448      0x354 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(sqrt.o)
+                                0x360 (size before relaxing)
+ .stab          0x0000279c       0xe4 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_mpack.o)
+                                 0xf0 (size before relaxing)
+ .stab          0x00002880       0x84 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libm.a(fp_norm2.o)
+                                 0x90 (size before relaxing)
+ .stab          0x00002904       0x84 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(memcpy_P.o)
+                                 0x90 (size before relaxing)
+ .stab          0x00002988       0x6c d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(strcpy_P.o)
+                                 0x78 (size before relaxing)
+ .stab          0x000029f4       0x84 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(strlen_P.o)
+                                 0x90 (size before relaxing)
+ .stab          0x00002a78       0x84 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(memcpy.o)
+                                 0x90 (size before relaxing)
+ .stab          0x00002afc       0x9c d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(strcat.o)
+                                 0xa8 (size before relaxing)
+ .stab          0x00002b98      0x1b0 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(itoa.o)
+                                0x1bc (size before relaxing)
+ .stab          0x00002d48      0x12c d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(utoa.o)
+                                0x138 (size before relaxing)
+ .stab          0x00002e74      0x108 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(eerd_block_atmega644pa.o)
+                                0x114 (size before relaxing)
+ .stab          0x00002f7c       0x90 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(eerd_byte_atmega644pa.o)
+                                 0x9c (size before relaxing)
+ .stab          0x0000300c       0xe4 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(eewr_byte_atmega644pa.o)
+                                 0xf0 (size before relaxing)
+ .stab          0x000030f0      0xa38 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(ftoa_engine.o)
+                                0xa44 (size before relaxing)
+ .stab          0x00003b28       0xd8 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(strrev.o)
+                                 0xe4 (size before relaxing)
+
+.stabstr        0x00000000      0xf25
+ *(.stabstr)
+ .stabstr       0x00000000      0xf25 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5/crtm644pa.o
+
+.stab.excl
+ *(.stab.excl)
+
+.stab.exclstr
+ *(.stab.exclstr)
+
+.stab.index
+ *(.stab.index)
+
+.stab.indexstr
+ *(.stab.indexstr)
+
+.comment
+ *(.comment)
+
+.debug
+ *(.debug)
+
+.line
+ *(.line)
+
+.debug_srcinfo
+ *(.debug_srcinfo)
+
+.debug_sfnames
+ *(.debug_sfnames)
+
+.debug_aranges  0x00000000       0x60
+ *(.debug_aranges)
+ .debug_aranges
+                0x00000000       0x20 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(abs.o)
+ .debug_aranges
+                0x00000020       0x20 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(dtostrf.o)
+ .debug_aranges
+                0x00000040       0x20 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(dtoa_prf.o)
+
+.debug_pubnames
+                0x00000000       0x61
+ *(.debug_pubnames)
+ .debug_pubnames
+                0x00000000       0x24 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(abs.o)
+ .debug_pubnames
+                0x00000024       0x1e d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(dtostrf.o)
+ .debug_pubnames
+                0x00000042       0x1f d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(dtoa_prf.o)
+
+.debug_info     0x00000000      0x27d
+ *(.debug_info)
+ .debug_info    0x00000000       0x66 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(abs.o)
+ .debug_info    0x00000066       0xdb d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(dtostrf.o)
+ .debug_info    0x00000141      0x13c d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(dtoa_prf.o)
+ *(.gnu.linkonce.wi.*)
+
+.debug_abbrev   0x00000000      0x173
+ *(.debug_abbrev)
+ .debug_abbrev  0x00000000       0x53 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(abs.o)
+ .debug_abbrev  0x00000053       0x79 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(dtostrf.o)
+ .debug_abbrev  0x000000cc       0xa7 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(dtoa_prf.o)
+
+.debug_line     0x00000000      0x609
+ *(.debug_line)
+ .debug_line    0x00000000       0xbd d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(abs.o)
+ .debug_line    0x000000bd       0xc9 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(dtostrf.o)
+ .debug_line    0x00000186      0x483 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(dtoa_prf.o)
+
+.debug_frame    0x00000000       0x60
+ *(.debug_frame)
+ .debug_frame   0x00000000       0x20 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(abs.o)
+ .debug_frame   0x00000020       0x20 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(dtostrf.o)
+ .debug_frame   0x00000040       0x20 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(dtoa_prf.o)
+
+.debug_str      0x00000000      0x1a3
+ *(.debug_str)
+ .debug_str     0x00000000       0x74 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(abs.o)
+                                 0x8a (size before relaxing)
+ .debug_str     0x00000074       0xb6 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(dtostrf.o)
+                                 0xfb (size before relaxing)
+ .debug_str     0x0000012a       0x79 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(dtoa_prf.o)
+                                0x109 (size before relaxing)
+
+.debug_loc      0x00000000      0x63a
+ *(.debug_loc)
+ .debug_loc     0x00000000       0x18 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(abs.o)
+ .debug_loc     0x00000018       0x90 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(dtostrf.o)
+ .debug_loc     0x000000a8      0x592 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(dtoa_prf.o)
+
+.debug_macinfo
+ *(.debug_macinfo)
+OUTPUT(HefnyCopter 2.1.5.elf elf32-avr)
+LOAD linker stubs
+
+.debug_pubtypes
+                0x00000000       0x36
+ .debug_pubtypes
+                0x00000000       0x12 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(abs.o)
+ .debug_pubtypes
+                0x00000012       0x12 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(dtostrf.o)
+ .debug_pubtypes
+                0x00000024       0x12 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(dtoa_prf.o)
+
+.debug_ranges   0x00000000       0x30
+ .debug_ranges  0x00000000       0x10 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(abs.o)
+ .debug_ranges  0x00000010       0x10 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(dtostrf.o)
+ .debug_ranges  0x00000020       0x10 d:/program files (x86)/atmel/avr studio 5.1/extensions/atmel/avrgcc/3.3.1.27/avrtoolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a(dtoa_prf.o)
